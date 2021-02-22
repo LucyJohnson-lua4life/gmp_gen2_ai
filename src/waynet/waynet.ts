@@ -2,13 +2,13 @@ import * as waynetReader from './waynetReader';
 import {IWaynet, Freepoint, Waypoint, WaypointDict} from './iwaynet';
 
 /**
- * Represents a node in a Waynet. It contains additional information about distances to other
+ * Represents a node in the waynet. It contains additional information about distances to other
  * nodes in the waynet that are necessary for path finding.
  * @interface NodeInfo
  * @field **waypoint**: represents the concrete waypoint of the current node
  * @field **distanceToStart**: distance from the current node to the start, summing up the distances of the nodes in between
  * @field **distanceToEnd**: distance from the current node to the end, summing up the distances of the nodes in between
- * @field **absAirlineDistance**: an aproximate absolute distance summing up 'distanceToStart' + the flight distance between the current node and the end node (NOT considering the distances of the nodes in between)
+ * @field **aproximateAbsDistance**: an aproximate absolute distance summing up 'distanceToStart' + the flight distance between the current node and the end node (NOT considering the distances of the nodes in between)
  */
 interface NodeInfo extends Waypoint {
     distanceToStart: number;
@@ -16,10 +16,16 @@ interface NodeInfo extends Waypoint {
     aproximateAbsDistance: number;
 }
 
+/**
+ * Maps the waypoint name to a {@interface NodeInfo}.
+ */
 interface NodeDict {
     [details: string]: NodeInfo;
 }
 
+/**
+ * Standard implementation of the waynet. Provides methods for path finding.
+ */
 export class Waynet implements IWaynet {
     waypoints: WaypointDict;
     freepoints: Array<Freepoint>;
@@ -29,6 +35,11 @@ export class Waynet implements IWaynet {
         this.freepoints = waynetReader.readFreepoints(freepointFile);
     }
 
+    /**
+     * Returns the waypoints to visit (the route) to get from waypoint A to waypoint B.
+     * @param start name of the start waypoint
+     * @param end name of the end waypoint
+     */
      getWayroute(start: string, end: string): Array<Waypoint> {
         let routeNodes:NodeDict = this.getRouteNodes(this.waypoints[start], this.waypoints[end]);
 

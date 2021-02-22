@@ -2,11 +2,19 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Waynet = void 0;
 var waynetReader = require("./waynetReader");
+/**
+ * Standard implementation of the waynet. Provides methods for path finding.
+ */
 var Waynet = /** @class */ (function () {
     function Waynet(waypointFile, freepointFile) {
         this.waypoints = this.toWaypointDict(waynetReader.readWaypoints(waypointFile));
         this.freepoints = waynetReader.readFreepoints(freepointFile);
     }
+    /**
+     * Returns the waypoints to visit (the route) to get from waypoint A to waypoint B.
+     * @param start name of the start waypoint
+     * @param end name of the end waypoint
+     */
     Waynet.prototype.getWayroute = function (start, end) {
         var routeNodes = this.getRouteNodes(this.waypoints[start], this.waypoints[end]);
         if (Object.keys(routeNodes).length === 0) {
