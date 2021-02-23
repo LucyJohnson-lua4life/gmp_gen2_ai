@@ -52,5 +52,3 @@ test('Returns the right route from WP_TEST1 to WP_TEST5', () => {
 
 
 
-
-

@@ -1,5 +1,6 @@
 import * as waynetReader from './waynetReader';
-import {IWaynet, Freepoint, Waypoint, WaypointDict} from './iwaynet';
+import {IWaynet, Freepoint, Waypoint} from './iwaynet';
+import {StringKeyMap} from '../utils/mapStructs';
 
 /**
  * Represents a node in the waynet. It contains additional information about distances to other
@@ -17,17 +18,10 @@ interface NodeInfo extends Waypoint {
 }
 
 /**
- * Maps the waypoint name to a {@interface NodeInfo}.
- */
-interface NodeDict {
-    [details: string]: NodeInfo;
-}
-
-/**
  * Standard implementation of the waynet. Provides methods for path finding.
  */
 export class Waynet implements IWaynet {
-    waypoints: WaypointDict;
+    waypoints: StringKeyMap<Waypoint>;
     freepoints: Array<Freepoint>;
 
     constructor(waypointFile: string, freepointFile: string) {
@@ -40,8 +34,8 @@ export class Waynet implements IWaynet {
      * @param start name of the start waypoint
      * @param end name of the end waypoint
      */
-     getWayroute(start: string, end: string): Array<Waypoint> {
-        let routeNodes:NodeDict = this.getRouteNodes(this.waypoints[start], this.waypoints[end]);
+    public getWayroute(start: string, end: string): Array<Waypoint> {
+        let routeNodes:StringKeyMap<NodeInfo> = this.getRouteNodes(this.waypoints[start], this.waypoints[end]);
 
         if(Object.keys(routeNodes).length === 0){
             return []
@@ -63,9 +57,9 @@ export class Waynet implements IWaynet {
         return wayroute.reverse();
     }
 
-    private getRouteNodes(start: Waypoint, end: Waypoint): NodeDict {
-        let nodesToVisit: NodeDict = {};
-        let routeNodes: NodeDict = {};
+    private getRouteNodes(start: Waypoint, end: Waypoint): StringKeyMap<NodeInfo> {
+        let nodesToVisit: StringKeyMap<NodeInfo> = {};
+        let routeNodes: StringKeyMap<NodeInfo> = {};
         nodesToVisit[start.wpName] = this.createNodeWithWaypointData(start);
 
         while (Object.keys(nodesToVisit).length > 0){
@@ -100,7 +94,7 @@ export class Waynet implements IWaynet {
         return node;
     }
 
-    private expandNodesToVisit(nodesToVisit: NodeDict, routeNodes: NodeDict, currentNode: NodeInfo, end: Waypoint): void {
+    private expandNodesToVisit(nodesToVisit: StringKeyMap<NodeInfo>, routeNodes: StringKeyMap<NodeInfo>, currentNode: NodeInfo, end: Waypoint): void {
         if (currentNode.otherWps.length == 0) {
             return;
         }
@@ -126,7 +120,7 @@ export class Waynet implements IWaynet {
         })
     }
 
-    private getNextMinAbsDistanceWaypoint(currentWp: Waypoint, routeNodes: NodeDict): Waypoint | undefined {
+    private getNextMinAbsDistanceWaypoint(currentWp: Waypoint, routeNodes: StringKeyMap<NodeInfo>): Waypoint | undefined {
         let smallestDistance = 99999999;
         let nextMinWaypoint: Waypoint | undefined;
 
@@ -148,7 +142,7 @@ export class Waynet implements IWaynet {
         return nextMinWaypoint;
     }
 
-    private popNodeWithMinAproximateAbsDistance(nodesToVisit: NodeDict): NodeInfo | undefined {
+    private popNodeWithMinAproximateAbsDistance(nodesToVisit: StringKeyMap<NodeInfo>): NodeInfo | undefined {
         let lowestDistance = 99999999;
         let closestWpToGoal: string | undefined;
         let closestNodeToGoal: NodeInfo | undefined;
@@ -174,8 +168,8 @@ export class Waynet implements IWaynet {
         return Math.sqrt(x * x + y * y + z * z);
     }
 
-    private toWaypointDict(waypoints: Array<Waypoint>): WaypointDict {
-        const reducer = (wpDict: WaypointDict, wp: Waypoint): WaypointDict => {
+    private toWaypointDict(waypoints: Array<Waypoint>): StringKeyMap<Waypoint> {
+        const reducer = (wpDict: StringKeyMap<Waypoint>, wp: Waypoint): StringKeyMap<Waypoint> => {
             wpDict[wp.wpName] = wp;
             return wpDict;
         }
