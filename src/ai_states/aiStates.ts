@@ -6,7 +6,6 @@ export class AIState {
     private allPlayers:NumberKeyMap<IPlayer>;
     private allBots:NumberKeyMap<IAiNpc>;
 
-
     constructor() {
         this.allPlayers = []
         this.allBots = []
@@ -19,6 +18,5 @@ export class AIState {
     putBot(bot:IAiNpc){
         this.allBots[bot.id] = bot;
     }
-
 
 }

@@ -34,7 +34,7 @@ export class Waynet implements IWaynet {
      * @param start name of the start waypoint
      * @param end name of the end waypoint
      */
-     getWayroute(start: string, end: string): Array<Waypoint> {
+    public getWayroute(start: string, end: string): Array<Waypoint> {
         let routeNodes:StringKeyMap<NodeInfo> = this.getRouteNodes(this.waypoints[start], this.waypoints[end]);
 
         if(Object.keys(routeNodes).length === 0){
