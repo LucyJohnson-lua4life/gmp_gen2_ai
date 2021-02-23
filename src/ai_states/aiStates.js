@@ -6,8 +6,12 @@ var AIState = /** @class */ (function () {
         this.allPlayers = [];
         this.allBots = [];
     }
-    AIState.prototype.addBot = function (bot) {
-        this.allBots.push(bot);
+    /**
+     * Puts bot in the bot map, using it's id as a key.
+     * @param bot bot to put into the map.
+     */
+    AIState.prototype.putBot = function (bot) {
+        this.allBots[bot.id] = bot;
     };
     return AIState;
 }());
