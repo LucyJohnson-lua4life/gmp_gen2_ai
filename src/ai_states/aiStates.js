@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AIState = void 0;
 var AIState = /** @class */ (function () {
     function AIState() {
         this.allPlayers = [];
@@ -10,3 +11,4 @@ var AIState = /** @class */ (function () {
     };
     return AIState;
 }());
+exports.AIState = AIState;
