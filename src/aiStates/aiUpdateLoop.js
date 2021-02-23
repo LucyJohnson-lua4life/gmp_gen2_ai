@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var aiStates_1 = require("./aiStates");
+exports.AiUpdateLoop = void 0;
 var AiUpdateLoop = /** @class */ (function () {
-    function AiUpdateLoop() {
-        this._state = new aiStates_1.AIState();
+    function AiUpdateLoop(state) {
+        this._state = state;
     }
     Object.defineProperty(AiUpdateLoop.prototype, "state", {
         get: function () {
@@ -12,5 +12,12 @@ var AiUpdateLoop = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
+    AiUpdateLoop.prototype.updateAi = function (aiId) {
+        var npc = this._state.allBots[aiId];
+        if (typeof npc !== 'undefined') {
+            npc.executeNextAction();
+        }
+    };
     return AiUpdateLoop;
 }());
+exports.AiUpdateLoop = AiUpdateLoop;

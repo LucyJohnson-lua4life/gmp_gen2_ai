@@ -7,6 +7,6 @@ export interface IAiNpc extends IPlayer{
     friendIds: Array<number>,
     respawnTime: number,
     nextActions: Heap<IAiAction>,
-    executeNextAction(aiNpcId:number):void
+    executeNextAction():void
     onNpcHitted(aiNpcId:number, attackerId:number):void
 }
