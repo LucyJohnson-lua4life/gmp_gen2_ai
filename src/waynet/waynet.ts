@@ -6,10 +6,10 @@ import {StringKeyMap} from '../utils/mapStructs';
  * Represents a node in the waynet. It contains additional information about distances to other
  * nodes in the waynet that are necessary for path finding.
  * @interface NodeInfo
- * @field **waypoint**: represents the concrete waypoint of the current node
- * @field **distanceToStart**: distance from the current node to the start, summing up the distances of the nodes in between
- * @field **distanceToEnd**: distance from the current node to the end, summing up the distances of the nodes in between
- * @field **aproximateAbsDistance**: an aproximate absolute distance summing up 'distanceToStart' + the flight distance between the current node and the end node (NOT considering the distances of the nodes in between)
+ * @field waypoint: represents the concrete waypoint of the current node
+ * @field distanceToStart: distance from the current node to the start, summing up the distances of the nodes in between
+ * @field distanceToEnd: distance from the current node to the end, summing up the distances of the nodes in between
+ * @field aproximateAbsDistance: an aproximate absolute distance summing up 'distanceToStart' + the flight distance between the current node and the end node (NOT considering the distances of the nodes in between)
  */
 interface NodeInfo extends Waypoint {
     distanceToStart: number;
