@@ -7,14 +7,14 @@ import { AIState } from "../aiStates/aiStates";
  * structure is used to compare the current time with the time period to decide,
  * if a new DailyRoutine should be triggered. 
  * 
- * @field startHour: start hour of the period
- * @field startMinute: start minute of the period
- * @field endHour: end hour of the period
- * @field endMinute: end minute of the period
- * @field currentHour: current hour
- * @field currentMinute: current minute
+ * @field startHour: start hour of the period - on which the new daily routine should be triggered
+ * @field startMinute: start minute of the period - on which the new daily routine should be triggered
+ * @field endHour: end hour of the period - on which the new daily routine should be triggered
+ * @field endMinute: end minute of the period - on which the new daily routine should be triggered
+ * @field currentHour: current hour - on which the new daily routine should be triggered
+ * @field currentMinute: current minute - on which the new daily routine should be triggered
  */
-interface DRTimeInfo{
+export interface DrTimeTriggerInfo{
     startHour:number,
     startMinute:number,
     endHour:number,
@@ -23,7 +23,10 @@ interface DRTimeInfo{
     currentMinute:number
 }
 
-class DalyRoutineHandler{
+/**
+ * Handles all functionalities about daily routines of the monster ai.
+ */
+export class DailyRoutineHandler{
     private aiState:AIState;
     constructor(state:AIState){
         this.aiState = state;
