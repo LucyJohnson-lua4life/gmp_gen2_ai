@@ -42,17 +42,17 @@ export class DailyRoutineHandler {
             }
 
             if (this.playerOverlapsWithTriggerPeriodFirstTime(playerid, info)) {
-                this.aiState.allBots[playerid].aiFlags[DR_START_HOUR] = info.startHour
-                this.aiState.allBots[playerid].aiFlags[DR_START_MINUTE] = info.startMinute
-                this.aiState.allBots[playerid].aiFlags[DR_END_HOUR] = info.endHour
-                this.aiState.allBots[playerid].aiFlags[DR_END_MINUTE] = info.endMinute
-                this.aiState.allBots[playerid].aiFlags[DR_LAST_HOUR] = info.currentHour
-                this.aiState.allBots[playerid].aiFlags[DR_LAST_MINUTE] = info.currentMinute
+                this.aiState.botMap[playerid].aiFlags[DR_START_HOUR] = info.startHour
+                this.aiState.botMap[playerid].aiFlags[DR_START_MINUTE] = info.startMinute
+                this.aiState.botMap[playerid].aiFlags[DR_END_HOUR] = info.endHour
+                this.aiState.botMap[playerid].aiFlags[DR_END_MINUTE] = info.endMinute
+                this.aiState.botMap[playerid].aiFlags[DR_LAST_HOUR] = info.currentHour
+                this.aiState.botMap[playerid].aiFlags[DR_LAST_MINUTE] = info.currentMinute
                 return true;
             }
             else {
-                this.aiState.allBots[playerid].aiFlags[DR_LAST_HOUR] = info.currentHour
-                this.aiState.allBots[playerid].aiFlags[DR_LAST_MINUTE] = info.currentMinute
+                this.aiState.botMap[playerid].aiFlags[DR_LAST_HOUR] = info.currentHour
+                this.aiState.botMap[playerid].aiFlags[DR_LAST_MINUTE] = info.currentMinute
                 return false;
             }
 
@@ -61,7 +61,7 @@ export class DailyRoutineHandler {
     }
 
     private playerOverlapsWithTriggerPeriodFirstTime(playerid: number, info: DrTimeTriggerInfo) {
-        let aiFlags: StringKeyMap<number | string> = this.aiState.allBots[playerid].aiFlags;
+        let aiFlags: StringKeyMap<number | string> = this.aiState.botMap[playerid].aiFlags;
         return (typeof aiFlags[DR_START_HOUR] === 'undefined')
             || ((aiFlags[DR_START_HOUR] !== info.startHour || aiFlags[DR_START_MINUTE] !== info.startMinute)
                 || (aiFlags[DR_END_HOUR] !== info.endHour || aiFlags[DR_END_MINUTE] !== info.endMinute))

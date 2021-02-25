@@ -13,7 +13,7 @@ var AiUpdateLoop = /** @class */ (function () {
         configurable: true
     });
     AiUpdateLoop.prototype.updateAi = function (aiId) {
-        var npc = this._state.allBots[aiId];
+        var npc = this._state.botMap[aiId];
         if (typeof npc !== 'undefined') {
             npc.executeNextAction();
         }

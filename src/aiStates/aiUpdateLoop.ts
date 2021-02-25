@@ -11,7 +11,7 @@ export class AiUpdateLoop{
     }
 
     public updateAi(aiId:number){
-        let npc = this._state.allBots[aiId];
+        let npc = this._state.botMap[aiId];
         if(typeof npc !== 'undefined'){
             npc.executeNextAction();
         }

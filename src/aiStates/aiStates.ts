@@ -1,18 +1,20 @@
 import { IAiNpc } from '../aiEntities/iAiNpc';
 import { IPlayer } from '../aiEntities/iPlayer';
-import { NumberKeyMap } from '../utils/mapStructs';
+import { NumberKeyMap, StringKeyMap } from '../utils/mapStructs';
 
 export class AIState {
-    private _allPlayers:NumberKeyMap<IPlayer>;
-    private _allBots:NumberKeyMap<IAiNpc>;
+    private allPlayers:NumberKeyMap<IPlayer>;
+    private allBots:NumberKeyMap<IAiNpc>;
+    private allPositions:StringKeyMap<NumberKeyMap<number>>;
     
     constructor() {
-        this._allPlayers = []
-        this._allBots = []
+        this.allPlayers = []
+        this.allBots = []
+        this.allPositions = {}
     }
 
-    get allBots():NumberKeyMap<IAiNpc>{
-        return this._allBots
+    get botMap():NumberKeyMap<IAiNpc>{
+        return this.allBots
     }
 
 

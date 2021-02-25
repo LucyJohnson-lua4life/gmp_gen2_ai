@@ -15,24 +15,24 @@ var DailyRoutineHandler = /** @class */ (function () {
                 return false;
             }
             if (this.playerOverlapsWithTriggerPeriodFirstTime(playerid, info)) {
-                this.aiState.allBots[playerid].aiFlags[aiFlags_1.DR_START_HOUR] = info.startHour;
-                this.aiState.allBots[playerid].aiFlags[aiFlags_1.DR_START_MINUTE] = info.startMinute;
-                this.aiState.allBots[playerid].aiFlags[aiFlags_1.DR_END_HOUR] = info.endHour;
-                this.aiState.allBots[playerid].aiFlags[aiFlags_1.DR_END_MINUTE] = info.endMinute;
-                this.aiState.allBots[playerid].aiFlags[aiFlags_1.DR_LAST_HOUR] = info.currentHour;
-                this.aiState.allBots[playerid].aiFlags[aiFlags_1.DR_LAST_MINUTE] = info.currentMinute;
+                this.aiState.botMap[playerid].aiFlags[aiFlags_1.DR_START_HOUR] = info.startHour;
+                this.aiState.botMap[playerid].aiFlags[aiFlags_1.DR_START_MINUTE] = info.startMinute;
+                this.aiState.botMap[playerid].aiFlags[aiFlags_1.DR_END_HOUR] = info.endHour;
+                this.aiState.botMap[playerid].aiFlags[aiFlags_1.DR_END_MINUTE] = info.endMinute;
+                this.aiState.botMap[playerid].aiFlags[aiFlags_1.DR_LAST_HOUR] = info.currentHour;
+                this.aiState.botMap[playerid].aiFlags[aiFlags_1.DR_LAST_MINUTE] = info.currentMinute;
                 return true;
             }
             else {
-                this.aiState.allBots[playerid].aiFlags[aiFlags_1.DR_LAST_HOUR] = info.currentHour;
-                this.aiState.allBots[playerid].aiFlags[aiFlags_1.DR_LAST_MINUTE] = info.currentMinute;
+                this.aiState.botMap[playerid].aiFlags[aiFlags_1.DR_LAST_HOUR] = info.currentHour;
+                this.aiState.botMap[playerid].aiFlags[aiFlags_1.DR_LAST_MINUTE] = info.currentMinute;
                 return false;
             }
         }
         return false;
     };
     DailyRoutineHandler.prototype.playerOverlapsWithTriggerPeriodFirstTime = function (playerid, info) {
-        var aiFlags = this.aiState.allBots[playerid].aiFlags;
+        var aiFlags = this.aiState.botMap[playerid].aiFlags;
         return (typeof aiFlags[aiFlags_1.DR_START_HOUR] === 'undefined')
             || ((aiFlags[aiFlags_1.DR_START_HOUR] !== info.startHour || aiFlags[aiFlags_1.DR_START_MINUTE] !== info.startMinute)
                 || (aiFlags[aiFlags_1.DR_END_HOUR] !== info.endHour || aiFlags[aiFlags_1.DR_END_MINUTE] !== info.endMinute))
