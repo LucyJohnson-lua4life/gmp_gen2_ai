@@ -27,14 +27,14 @@ export class NpcActionUtils{
      */
     public getNearbyNpcs(world:string, x:number, y:number, z:number):Array<number>{
         let worldPositionMap = this.state.positionMap[world]
-        let deepCopyOfNarbyNpcs:Array<number> = []
+        let deepCopyOfNearbyNpcs:Array<number> = []
         if(typeof worldPositionMap !== 'undefined'){
             let nearbyNpcs = worldPositionMap[this.calculatePositionCheckSum(x,y,z)];
             if(typeof nearbyNpcs !== 'undefined'){
-                nearbyNpcs.forEach(id => deepCopyOfNarbyNpcs.push(id))
+                nearbyNpcs.forEach(id => deepCopyOfNearbyNpcs.push(id))
             }
         }
-        return deepCopyOfNarbyNpcs;
+        return deepCopyOfNearbyNpcs;
     }
 
     private calculatePositionCheckSum(x:number, y:number, z:number):number{

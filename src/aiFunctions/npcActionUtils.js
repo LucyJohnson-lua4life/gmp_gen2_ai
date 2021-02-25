@@ -23,14 +23,14 @@ var NpcActionUtils = /** @class */ (function () {
      */
     NpcActionUtils.prototype.getNearbyNpcs = function (world, x, y, z) {
         var worldPositionMap = this.state.positionMap[world];
-        var deepCopyOfNarbyNpcs = [];
+        var deepCopyOfNearbyNpcs = [];
         if (typeof worldPositionMap !== 'undefined') {
             var nearbyNpcs = worldPositionMap[this.calculatePositionCheckSum(x, y, z)];
             if (typeof nearbyNpcs !== 'undefined') {
-                nearbyNpcs.forEach(function (id) { return deepCopyOfNarbyNpcs.push(id); });
+                nearbyNpcs.forEach(function (id) { return deepCopyOfNearbyNpcs.push(id); });
             }
         }
-        return deepCopyOfNarbyNpcs;
+        return deepCopyOfNearbyNpcs;
     };
     NpcActionUtils.prototype.calculatePositionCheckSum = function (x, y, z) {
         return Math.floor(x / AI_TARGET_DISTANCE) + 1000 * Math.floor(y / AI_TARGET_DISTANCE) + 1000 * Math.floor(z / AI_TARGET_DISTANCE) * 1000;
