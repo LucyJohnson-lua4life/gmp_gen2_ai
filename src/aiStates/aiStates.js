@@ -24,6 +24,9 @@ var AIState = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
+    AIState.prototype.registerBot = function (bot) {
+        this.allBots[bot.id] = bot;
+    };
     return AIState;
 }());
 exports.AIState = AIState;

@@ -22,4 +22,8 @@ export class AIState {
         return this.allPositions
     }
 
+    public registerBot(bot:IAiNpc):void{
+        this.allBots[bot.id] = bot;
+    }
+
 }

@@ -635,7 +635,7 @@ declare namespace revmp {
      * @returns {number?} Item entity or null.
      * @throws Will throw if entity is not valid, instance contains non-ascii characters, instance doesn't exists or entity doesn't have Inventory component.
      */
-    export function getItem(entity: number, instance: string|number): number?
+    export function getItem(entity: number, instance: string|number): number
 
     /**
      * Adds and returns item to an entity with an inventory component.

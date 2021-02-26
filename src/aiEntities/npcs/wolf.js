@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.Wolf = void 0;
 var heap_js_1 = require("heap-js");
 var npcInits_1 = require("./npcInits");
@@ -12,7 +12,7 @@ var Wolf = /** @class */ (function () {
         this.enemyIds = [];
         this.friendIds = [];
         this.respawnTime = 240;
-        this.nextActions = new heap_js_1["default"](function (a, b) { return a.priority - b.priority; });
+        this.nextActions = new heap_js_1.default(function (a, b) { return a.priority - b.priority; });
         this.aiFlags = {};
     }
     Wolf.prototype.executeNextAction = function () {

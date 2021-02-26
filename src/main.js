@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var wolf_1 = require("./aiEntities/npcs/wolf");
 var aiStateFunctions_1 = require("./aiStates/aiStateFunctions");
 var aiStates_1 = require("./aiStates/aiStates");
@@ -10,7 +10,7 @@ revmp.on("init", function () {
         id: "new_world",
         name: "New World",
         zen: "NEWWORLD\\NEWWORLD.ZEN",
-        waypoint: "NW_CITY_HABOUR_02_B"
+        waypoint: "NW_CITY_HABOUR_02_B",
     });
     var world = revmp.createWorld("new_world");
     revmp.setTime(world, { hour: 15, minute: 0 });
