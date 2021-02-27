@@ -1,9 +1,9 @@
 "use strict";
 
-const {Wolf} = require("./scripts/aiEntities/npcs/wolf");
-const {SpawnNpc} = require("./scripts/aiStates/aiStateFunctions");
-const {AIState} = require("./scripts/aiStates/aiStates");
-let state = new AIState();
+const wolf = require("./scripts/aiEntities/npcs/wolf");
+const funs = require("./scripts/aiStates/aiStateFunctions");
+const state1 = require("./scripts/aiStates/aiStates");
+let state = new state1.AIState();
 
 
 revmp.createInstanceTemplate({
@@ -90,6 +90,6 @@ revmp.on("chatCommand", (entity, msg) => {
     const command = words[0];
     console.log(words);
     if (command === "/spawn") {
-        SpawnNpc(state, new Wolf(), 0, 0, 0);
+        funs.SpawnNpc(state, new wolf.Wolf(), 0, 0, 0);
     }
 });
