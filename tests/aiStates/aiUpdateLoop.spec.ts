@@ -1,10 +1,10 @@
-import {AiUpdateLoop} from "../../src/aiStates/aiUpdateLoop";
-import {IAiNpc} from "../../src/aiEntities/iAiNpc";
-import {IAiAction} from "../../src/aiEntities/iAiAction";
+import {AiUpdateLoop} from "../../scripts/aiStates/aiUpdateLoop";
+import {IAiNpc} from "../../scripts/aiEntities/iAiNpc";
+import {IAiAction} from "../../scripts/aiEntities/iAiAction";
 import {Heap} from 'heap-js';
-import { AIState } from "../../src/aiStates/aiStates";
+import { AIState } from "../../scripts/aiStates/aiStates";
 import { mock,verify, instance } from "ts-mockito";
-import { StringKeyMap } from "../../src/utils/mapStructs";
+import { StringKeyMap } from "../../scripts/utils/mapStructs";
 
 
 class TestAiNpc implements IAiNpc{

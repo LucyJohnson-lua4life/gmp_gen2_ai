@@ -4,9 +4,9 @@ exports.NpcActionUtils = void 0;
 /**
  * Provides utility functions for npc's to execute their actions.
  */
-var AI_TARGET_DISTANCE = 2500;
-var NpcActionUtils = /** @class */ (function () {
-    function NpcActionUtils(s) {
+const AI_TARGET_DISTANCE = 2500;
+class NpcActionUtils {
+    constructor(s) {
         this.state = s;
     }
     /**
@@ -21,20 +21,19 @@ var NpcActionUtils = /** @class */ (function () {
      * @param y the y value of the point, for which nearby npc ids should be found
      * @param z the z value of the point, for which nearby npc ids should be found
      */
-    NpcActionUtils.prototype.getNearbyNpcs = function (world, x, y, z) {
-        var worldPositionMap = this.state.positionMap[world];
-        var deepCopyOfNearbyNpcs = [];
+    getNearbyNpcs(world, x, y, z) {
+        let worldPositionMap = this.state.positionMap[world];
+        let deepCopyOfNearbyNpcs = [];
         if (typeof worldPositionMap !== 'undefined') {
-            var nearbyNpcs = worldPositionMap[this.calculatePositionCheckSum(x, y, z)];
+            let nearbyNpcs = worldPositionMap[this.calculatePositionCheckSum(x, y, z)];
             if (typeof nearbyNpcs !== 'undefined') {
-                nearbyNpcs.forEach(function (id) { return deepCopyOfNearbyNpcs.push(id); });
+                nearbyNpcs.forEach(id => deepCopyOfNearbyNpcs.push(id));
             }
         }
         return deepCopyOfNearbyNpcs;
-    };
-    NpcActionUtils.prototype.calculatePositionCheckSum = function (x, y, z) {
+    }
+    calculatePositionCheckSum(x, y, z) {
         return Math.floor(x / AI_TARGET_DISTANCE) + 1000 * Math.floor(y / AI_TARGET_DISTANCE) + 1000 * Math.floor(z / AI_TARGET_DISTANCE) * 1000;
-    };
-    return NpcActionUtils;
-}());
+    }
+}
 exports.NpcActionUtils = NpcActionUtils;

@@ -1,10 +1,10 @@
 import Heap from 'heap-js';
-import { IAiAction } from '../../src/aiEntities/iAiAction';
-import { IAiNpc } from '../../src/aiEntities/iAiNpc';
-import {AIState} from '../../src/aiStates/aiStates';
-import {DrTimeTriggerInfo, DailyRoutineHandler} from '../../src/aiFunctions/dailyRoutineHandler';
-import { StringKeyMap } from '../../src/utils/mapStructs';
-import { DR_START_HOUR, DR_START_MINUTE, DR_END_HOUR, DR_END_MINUTE, DR_LAST_HOUR, DR_LAST_MINUTE } from '../../src/aiStates/aiFlags';
+import { IAiAction } from '../../scripts/aiEntities/iAiAction';
+import { IAiNpc } from '../../scripts/aiEntities/iAiNpc';
+import {AIState} from '../../scripts/aiStates/aiStates';
+import {DrTimeTriggerInfo, DailyRoutineHandler} from '../../scripts/aiFunctions/dailyRoutineHandler';
+import { StringKeyMap } from '../../scripts/utils/mapStructs';
+import { DR_START_HOUR, DR_START_MINUTE, DR_END_HOUR, DR_END_MINUTE, DR_LAST_HOUR, DR_LAST_MINUTE } from '../../scripts/aiStates/aiFlags';
 
 //TODO: this combinatorics of these test cases are still pretty complicated, think about ways to make it easier to understand them.
 class TestAiNpc implements IAiNpc{

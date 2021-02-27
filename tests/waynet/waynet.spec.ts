@@ -1,4 +1,4 @@
-import * as waynet from "../../src/waynet/waynet";
+import * as waynet from "../../scripts/waynet/waynet";
 test('Waynet should load freepoints correctly.', () => {
     
     var wn = new waynet.Waynet("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
