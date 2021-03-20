@@ -41,8 +41,8 @@ test('Executes for the given id the executeNextAction() - method of the correct 
     const npc1Mock:IAiNpc = mock(TestAiNpc);
     const npc2Mock:IAiNpc = mock(TestAiNpc);
 
-    state.botMap[1] = instance(npc1Mock)
-    state.botMap[2] = instance(npc2Mock)
+    state.botMap.set(1, instance(npc1Mock))
+    state.botMap.set(2, instance(npc2Mock));
     let updateLoop = new AiUpdateLoop(state);
 
     updateLoop.updateAi(2);

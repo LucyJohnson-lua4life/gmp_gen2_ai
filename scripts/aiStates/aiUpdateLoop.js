@@ -9,7 +9,7 @@ class AiUpdateLoop {
         return this._state;
     }
     updateAi(aiId) {
-        let npc = this._state.botMap[aiId];
+        let npc = this._state.botMap.get(aiId);
         if (typeof npc !== 'undefined') {
             npc.executeNextAction();
         }
