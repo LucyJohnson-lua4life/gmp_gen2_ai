@@ -4,7 +4,6 @@ import {IAiAction} from "../../scripts/aiEntities/iAiAction";
 import {Heap} from 'heap-js';
 import { AIState } from "../../scripts/aiStates/aiStates";
 import { mock,verify, instance } from "ts-mockito";
-import { StringKeyMap } from "../../scripts/utils/mapStructs";
 
 
 class TestAiNpc implements IAiNpc{
@@ -15,7 +14,7 @@ class TestAiNpc implements IAiNpc{
     friendIds: Array<number>;
     respawnTime: number;
     nextActions: Heap<IAiAction>;
-    aiFlags: StringKeyMap<number|string>;
+    aiFlags: Map<string, number|string>;
     constructor(id:number, actions:Heap<IAiAction>){
         this.id = id;
         this.isDead = false;
@@ -24,7 +23,7 @@ class TestAiNpc implements IAiNpc{
         this.friendIds = [];
         this.respawnTime = 100;
         this.nextActions = actions;
-        this.aiFlags = {}
+        this.aiFlags = new Map();
     }
 
     executeNextAction():void{

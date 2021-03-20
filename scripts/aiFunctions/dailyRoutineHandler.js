@@ -15,28 +15,28 @@ class DailyRoutineHandler {
                 return false;
             }
             if (this.playerOverlapsWithTriggerPeriodFirstTime(playerid, info)) {
-                this.aiState.botMap[playerid].aiFlags[aiFlags_1.DR_START_HOUR] = info.startHour;
-                this.aiState.botMap[playerid].aiFlags[aiFlags_1.DR_START_MINUTE] = info.startMinute;
-                this.aiState.botMap[playerid].aiFlags[aiFlags_1.DR_END_HOUR] = info.endHour;
-                this.aiState.botMap[playerid].aiFlags[aiFlags_1.DR_END_MINUTE] = info.endMinute;
-                this.aiState.botMap[playerid].aiFlags[aiFlags_1.DR_LAST_HOUR] = info.currentHour;
-                this.aiState.botMap[playerid].aiFlags[aiFlags_1.DR_LAST_MINUTE] = info.currentMinute;
+                this.aiState.botMap.get(playerid).aiFlags.set(aiFlags_1.DR_START_HOUR, info.startHour);
+                this.aiState.botMap.get(playerid).aiFlags.set(aiFlags_1.DR_START_MINUTE, info.startMinute);
+                this.aiState.botMap.get(playerid).aiFlags.set(aiFlags_1.DR_END_HOUR, info.endHour);
+                this.aiState.botMap.get(playerid).aiFlags.set(aiFlags_1.DR_END_MINUTE, info.endMinute);
+                this.aiState.botMap.get(playerid).aiFlags.set(aiFlags_1.DR_LAST_HOUR, info.currentHour);
+                this.aiState.botMap.get(playerid).aiFlags.set(aiFlags_1.DR_LAST_MINUTE, info.currentMinute);
                 return true;
             }
             else {
-                this.aiState.botMap[playerid].aiFlags[aiFlags_1.DR_LAST_HOUR] = info.currentHour;
-                this.aiState.botMap[playerid].aiFlags[aiFlags_1.DR_LAST_MINUTE] = info.currentMinute;
+                this.aiState.botMap.get(playerid).aiFlags.set(aiFlags_1.DR_LAST_HOUR, info.currentHour);
+                this.aiState.botMap.get(playerid).aiFlags.set(aiFlags_1.DR_LAST_MINUTE, info.currentMinute);
                 return false;
             }
         }
         return false;
     }
     playerOverlapsWithTriggerPeriodFirstTime(playerid, info) {
-        let aiFlags = this.aiState.botMap[playerid].aiFlags;
-        return (typeof aiFlags[aiFlags_1.DR_START_HOUR] === 'undefined')
-            || ((aiFlags[aiFlags_1.DR_START_HOUR] !== info.startHour || aiFlags[aiFlags_1.DR_START_MINUTE] !== info.startMinute)
-                || (aiFlags[aiFlags_1.DR_END_HOUR] !== info.endHour || aiFlags[aiFlags_1.DR_END_MINUTE] !== info.endMinute))
-            || (info.startHour === 0 && info.startMinute === 0 && info.endHour === 24 && info.endMinute === 0 && aiFlags[aiFlags_1.DR_LAST_HOUR] === 23 && info.currentHour === 0);
+        let aiFlags = this.aiState.botMap.get(playerid).aiFlags;
+        return (typeof aiFlags.get(aiFlags_1.DR_START_HOUR) === 'undefined')
+            || ((aiFlags.get(aiFlags_1.DR_START_HOUR) !== info.startHour || aiFlags.get(aiFlags_1.DR_START_MINUTE) !== info.startMinute)
+                || (aiFlags.get(aiFlags_1.DR_END_HOUR) !== info.endHour || aiFlags.get(aiFlags_1.DR_END_MINUTE) !== info.endMinute))
+            || (info.startHour === 0 && info.startMinute === 0 && info.endHour === 24 && info.endMinute === 0 && aiFlags.get(aiFlags_1.DR_LAST_HOUR) === 23 && info.currentHour === 0);
     }
     currentHourOverlapsWithTriggerPeriod(info) {
         let offsettedEndHour;

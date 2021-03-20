@@ -3,9 +3,7 @@ import { instance, mock, verify, when } from "ts-mockito";
 import { IAiAction } from "../../scripts/aiEntities/iAiAction";
 import { IAiNpc } from "../../scripts/aiEntities/iAiNpc";
 import { AIState } from "../../scripts/aiStates/aiStates";
-import { StringKeyMap } from "../../scripts/utils/mapStructs";
 import { SpawnNpc } from "../../scripts/aiStates/aiStateFunctions";
-import { assert } from "console";
 
 
 
@@ -17,7 +15,7 @@ class TestAiNpc implements IAiNpc{
     friendIds: Array<number>;
     respawnTime: number;
     nextActions: Heap<IAiAction>;
-    aiFlags: StringKeyMap<number|string>;
+    aiFlags: Map<string, number|string>;
     constructor(id:number, actions:Heap<IAiAction>){
         this.id = id;
         this.isDead = false;
@@ -26,7 +24,7 @@ class TestAiNpc implements IAiNpc{
         this.friendIds = [];
         this.respawnTime = 100;
         this.nextActions = actions;
-        this.aiFlags = {}
+        this.aiFlags = new Map();
     }
 
     executeNextAction():void{

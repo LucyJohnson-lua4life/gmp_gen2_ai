@@ -1,5 +1,4 @@
 import Heap from "heap-js";
-import { StringKeyMap } from "../../utils/mapStructs";
 import { IAiAction } from "../iAiAction";
 import { IAiNpc } from "../iAiNpc";
 import { INSTANCE_WOLF } from "./npcInits";
@@ -9,7 +8,7 @@ export class Wolf implements IAiNpc{
     friendIds: number[];
     respawnTime: number;
     nextActions: Heap<IAiAction>;
-    aiFlags: StringKeyMap<string | number>;
+    aiFlags: Map<string, string | number>;
     id: number;
     isDead: boolean;
     isUnconscious: boolean;
@@ -23,7 +22,7 @@ export class Wolf implements IAiNpc{
         this.friendIds = [];
         this.respawnTime = 240;
         this.nextActions = new Heap((a:IAiAction, b:IAiAction) => a.priority - b.priority);
-        this.aiFlags = {};
+        this.aiFlags = new Map();
     }
 
     executeNextAction(): void {

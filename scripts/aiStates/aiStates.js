@@ -4,10 +4,10 @@ exports.AIState = void 0;
 const worldNames = ["NEWWORLD\\NEWWORLD.ZEN", "OLDWORLD\\OLDWORLD.ZEN", "ADDON\\ADDONWORLD.ZEN"];
 class AIState {
     constructor() {
-        this.allPlayers = [];
-        this.allBots = [];
-        this.allPositions = {};
-        worldNames.forEach(name => this.allPositions[name] = {});
+        this.allPlayers = new Map();
+        this.allBots = new Map();
+        this.allPositions = new Map();
+        worldNames.forEach(name => this.allPositions.set(name, new Map()));
     }
     get botMap() {
         return this.allBots;

@@ -22,10 +22,10 @@ class NpcActionUtils {
      * @param z the z value of the point, for which nearby npc ids should be found
      */
     getNearbyNpcs(world, x, y, z) {
-        let worldPositionMap = this.state.positionMap[world];
+        let worldPositionMap = this.state.positionMap.get(world);
         let deepCopyOfNearbyNpcs = [];
         if (typeof worldPositionMap !== 'undefined') {
-            let nearbyNpcs = worldPositionMap[this.calculatePositionCheckSum(x, y, z)];
+            let nearbyNpcs = worldPositionMap.get(this.calculatePositionCheckSum(x, y, z));
             if (typeof nearbyNpcs !== 'undefined') {
                 nearbyNpcs.forEach(id => deepCopyOfNearbyNpcs.push(id));
             }

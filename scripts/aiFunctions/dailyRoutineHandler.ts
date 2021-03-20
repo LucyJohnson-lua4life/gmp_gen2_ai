@@ -1,7 +1,4 @@
-import { info } from "console";
-import { NodeFlags } from "typescript";
 import { AIState } from "../aiStates/aiStates";
-import { StringKeyMap } from "../utils/mapStructs";
 import { DR_START_HOUR, DR_START_MINUTE, DR_END_HOUR, DR_END_MINUTE, DR_LAST_HOUR, DR_LAST_MINUTE } from '../aiStates/aiFlags';
 
 /**
@@ -42,17 +39,17 @@ export class DailyRoutineHandler {
             }
 
             if (this.playerOverlapsWithTriggerPeriodFirstTime(playerid, info)) {
-                this.aiState.botMap[playerid].aiFlags[DR_START_HOUR] = info.startHour
-                this.aiState.botMap[playerid].aiFlags[DR_START_MINUTE] = info.startMinute
-                this.aiState.botMap[playerid].aiFlags[DR_END_HOUR] = info.endHour
-                this.aiState.botMap[playerid].aiFlags[DR_END_MINUTE] = info.endMinute
-                this.aiState.botMap[playerid].aiFlags[DR_LAST_HOUR] = info.currentHour
-                this.aiState.botMap[playerid].aiFlags[DR_LAST_MINUTE] = info.currentMinute
+                this.aiState.botMap.get(playerid).aiFlags.set(DR_START_HOUR, info.startHour) 
+                this.aiState.botMap.get(playerid).aiFlags.set(DR_START_MINUTE, info.startMinute) 
+                this.aiState.botMap.get(playerid).aiFlags.set(DR_END_HOUR, info.endHour)  
+                this.aiState.botMap.get(playerid).aiFlags.set(DR_END_MINUTE, info.endMinute)  
+                this.aiState.botMap.get(playerid).aiFlags.set(DR_LAST_HOUR, info.currentHour)  
+                this.aiState.botMap.get(playerid).aiFlags.set(DR_LAST_MINUTE, info.currentMinute) 
                 return true;
             }
             else {
-                this.aiState.botMap[playerid].aiFlags[DR_LAST_HOUR] = info.currentHour
-                this.aiState.botMap[playerid].aiFlags[DR_LAST_MINUTE] = info.currentMinute
+                this.aiState.botMap.get(playerid).aiFlags.set(DR_LAST_HOUR, info.currentHour)  
+                this.aiState.botMap.get(playerid).aiFlags.set(DR_LAST_MINUTE, info.currentMinute);
                 return false;
             }
 
@@ -61,11 +58,11 @@ export class DailyRoutineHandler {
     }
 
     private playerOverlapsWithTriggerPeriodFirstTime(playerid: number, info: DrTimeTriggerInfo) {
-        let aiFlags: StringKeyMap<number | string> = this.aiState.botMap[playerid].aiFlags;
-        return (typeof aiFlags[DR_START_HOUR] === 'undefined')
-            || ((aiFlags[DR_START_HOUR] !== info.startHour || aiFlags[DR_START_MINUTE] !== info.startMinute)
-                || (aiFlags[DR_END_HOUR] !== info.endHour || aiFlags[DR_END_MINUTE] !== info.endMinute))
-            || (info.startHour === 0 && info.startMinute === 0 && info.endHour === 24 && info.endMinute === 0 && aiFlags[DR_LAST_HOUR] === 23 && info.currentHour === 0)
+        let aiFlags: Map<string, number | string> = this.aiState.botMap.get(playerid).aiFlags;
+        return (typeof aiFlags.get(DR_START_HOUR) === 'undefined')
+            || ((aiFlags.get(DR_START_HOUR) !== info.startHour || aiFlags.get(DR_START_MINUTE) !== info.startMinute)
+                || (aiFlags.get(DR_END_HOUR) !== info.endHour || aiFlags.get(DR_END_MINUTE) !== info.endMinute))
+            || (info.startHour === 0 && info.startMinute === 0 && info.endHour === 24 && info.endMinute === 0 && aiFlags.get(DR_LAST_HOUR) === 23 && info.currentHour === 0)
     }
 
     private currentHourOverlapsWithTriggerPeriod(info: DrTimeTriggerInfo): boolean {

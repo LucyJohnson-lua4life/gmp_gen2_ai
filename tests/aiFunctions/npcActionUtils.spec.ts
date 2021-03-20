@@ -21,11 +21,11 @@ test('Should only return npc ids that are in the same 2500x2500x2500 distance se
 })
 
 function addNpcByChecksum(state:AIState, checksum:number, npcid:number){
-    let npclist = state.positionMap[worldName][checksum];
+    let npclist = state.positionMap.get(worldName).get(checksum);
     if(typeof npclist === 'undefined'){
-        state.positionMap[worldName][checksum] = []
+        state.positionMap.get(worldName).set(checksum, []);
     }
-    state.positionMap[worldName][checksum].push(npcid);
+    state.positionMap.get(worldName).get(checksum).push(npcid);
 }
 
 function calculatePositionCheckSum(x:number, y:number, z:number){

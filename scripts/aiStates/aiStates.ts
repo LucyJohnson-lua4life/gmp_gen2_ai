@@ -1,24 +1,23 @@
 import { IAiNpc } from '../aiEntities/iAiNpc';
 import { IPlayer } from '../aiEntities/iPlayer';
-import { NumberKeyMap, StringKeyMap } from '../utils/mapStructs';
 const worldNames: Array<string> = ["NEWWORLD\\NEWWORLD.ZEN", "OLDWORLD\\OLDWORLD.ZEN", "ADDON\\ADDONWORLD.ZEN"]
 export class AIState {
-    private allPlayers: NumberKeyMap<IPlayer>;
-    private allBots: NumberKeyMap<IAiNpc>;
-    private allPositions: StringKeyMap<NumberKeyMap<Array<number>>>;
+    private allPlayers: Map<number, IPlayer>;
+    private allBots: Map<number, IAiNpc>;
+    private allPositions: Map<string, Map<number, Array<number>>>;
 
     constructor() {
-        this.allPlayers = []
-        this.allBots = []
-        this.allPositions = {}
-        worldNames.forEach(name =>this.allPositions[name] = {});
+        this.allPlayers = new Map()
+        this.allBots = new Map()
+        this.allPositions = new Map()
+        worldNames.forEach(name =>this.allPositions.set(name, new Map()));
     }
 
-    get botMap(): NumberKeyMap<IAiNpc> {
+    get botMap(): Map<number, IAiNpc> {
         return this.allBots
     }
 
-    get positionMap(): StringKeyMap<NumberKeyMap<Array<number>>> {
+    get positionMap(): Map<string, Map<number, Array<number>>> {
         return this.allPositions
     }
 

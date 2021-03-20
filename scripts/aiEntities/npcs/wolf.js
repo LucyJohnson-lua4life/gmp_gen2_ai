@@ -13,7 +13,7 @@ class Wolf {
         this.friendIds = [];
         this.respawnTime = 240;
         this.nextActions = new heap_js_1.default((a, b) => a.priority - b.priority);
-        this.aiFlags = {};
+        this.aiFlags = new Map();
     }
     executeNextAction() {
         console.log("Nothing implemented yet.");
