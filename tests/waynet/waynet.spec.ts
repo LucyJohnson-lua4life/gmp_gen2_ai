@@ -17,8 +17,8 @@ test('Waynet should load freepoints correctly.', () => {
 
 test('Waynet should load the waypoints correctly.', () => {
     var wn = new waynet.Waynet("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
-    var testwp = wn.waypoints["WP_TEST1"]
-    expect(Object.keys(wn.waypoints).length).toBe(7)
+    var testwp = wn.waypoints.get("WP_TEST1");
+    expect(wn.waypoints.size).toBe(7)
     expect(testwp.wpName).toBe("WP_TEST1")
     expect(testwp.x).toBe(1000)
     expect(testwp.y).toBe(2000)

@@ -7,7 +7,7 @@ const waynetReader = require("./waynetReader");
  */
 class Waynet {
     constructor(waypointFile, freepointFile) {
-        this.waypoints = this.toWaypointDict(waynetReader.readWaypoints(waypointFile));
+        this.waypoints = this.toWaypointMap(waynetReader.readWaypoints(waypointFile));
         this.freepoints = waynetReader.readFreepoints(freepointFile);
     }
     /**
@@ -16,11 +16,11 @@ class Waynet {
      * @param end name of the end waypoint
      */
     getWayroute(start, end) {
-        let routeNodes = this.getRouteNodes(this.waypoints[start], this.waypoints[end]);
-        if (Object.keys(routeNodes).length === 0) {
+        let routeNodes = this.getRouteNodes(this.waypoints.get(start), this.waypoints.get(end));
+        if (routeNodes.size === 0) {
             return [];
         }
-        let currentWp = this.waypoints[end];
+        let currentWp = this.waypoints.get(end);
         let wayroute = [];
         wayroute.push(currentWp);
         while (currentWp.wpName !== start) {
@@ -30,27 +30,27 @@ class Waynet {
                 return [];
             }
             wayroute.push(currentWp);
-            delete routeNodes[lastCurrentWp.wpName];
+            routeNodes.delete(lastCurrentWp.wpName);
         }
         return wayroute.reverse();
     }
     getRouteNodes(start, end) {
-        let nodesToVisit = {};
-        let routeNodes = {};
-        nodesToVisit[start.wpName] = this.createNodeWithWaypointData(start);
-        while (Object.keys(nodesToVisit).length > 0) {
+        let nodesToVisit = new Map();
+        let routeNodes = new Map();
+        nodesToVisit.set(start.wpName, this.createNodeWithWaypointData(start));
+        while (nodesToVisit.size > 0) {
             let currentNode = this.popNodeWithMinAproximateAbsDistance(nodesToVisit);
             if (typeof currentNode === 'undefined') {
-                return {};
+                return new Map();
             }
             if (currentNode.wpName === end.wpName) {
-                routeNodes[currentNode.wpName] = currentNode;
+                routeNodes.set(currentNode.wpName, currentNode);
                 return routeNodes;
             }
             this.expandNodesToVisit(nodesToVisit, routeNodes, currentNode, end);
-            routeNodes[currentNode.wpName] = currentNode;
+            routeNodes.set(currentNode.wpName, currentNode);
         }
-        return {};
+        return new Map();
     }
     createNodeWithWaypointData(waypoint) {
         let node = {
@@ -72,11 +72,11 @@ class Waynet {
             return;
         }
         currentNode.otherWps.forEach(neighborWpName => {
-            if (typeof routeNodes[neighborWpName] === 'undefined') {
-                let neighborWp = this.waypoints[neighborWpName];
+            if (typeof routeNodes.get(neighborWpName) === 'undefined') {
+                let neighborWp = this.waypoints.get(neighborWpName);
                 let distanceToNeighbor = this.getDistance(currentNode.x, currentNode.y, currentNode.z, neighborWp.x, neighborWp.y, neighborWp.z);
                 let distNodeToStart = currentNode.distanceToStart + distanceToNeighbor;
-                let neighborNode = nodesToVisit[neighborWpName];
+                let neighborNode = nodesToVisit.get(neighborWpName);
                 if (!(typeof neighborNode !== 'undefined' && distNodeToStart > neighborNode.distanceToStart)) {
                     /*aproximate means, that we are measuring the distance straight between point a to b, without measuring the distances of the nodes in between
                       measuring the aproximate absolute distance is enough of an heuristic for us to decide which node to chose next*/
@@ -85,7 +85,7 @@ class Waynet {
                     let newNodeToVisit = this.createNodeWithWaypointData(neighborWp);
                     newNodeToVisit.distanceToStart = distNodeToStart;
                     newNodeToVisit.aproximateAbsDistance = aproximateAbsDistance;
-                    nodesToVisit[neighborWpName] = newNodeToVisit;
+                    nodesToVisit.set(neighborWpName, newNodeToVisit);
                 }
             }
         });
@@ -94,14 +94,14 @@ class Waynet {
         let smallestDistance = 99999999;
         let nextMinWaypoint;
         currentWp.otherWps.forEach(neighborWpName => {
-            let neighborNode = routeNodes[neighborWpName];
+            let neighborNode = routeNodes.get(neighborWpName);
             if (typeof neighborNode !== 'undefined') {
                 let distance = this.getDistance(currentWp.x, currentWp.y, currentWp.z, neighborNode.x, neighborNode.y, neighborNode.z);
-                let absoluteDistance = routeNodes[currentWp.wpName].distanceToEnd + distance + routeNodes[neighborWpName].distanceToStart;
+                let absoluteDistance = routeNodes.get(currentWp.wpName).distanceToEnd + distance + routeNodes.get(neighborWpName).distanceToStart;
                 if (smallestDistance > absoluteDistance) {
                     smallestDistance = absoluteDistance;
-                    nextMinWaypoint = this.waypoints[neighborNode.wpName];
-                    routeNodes[neighborWpName].distanceToEnd = routeNodes[currentWp.wpName].distanceToEnd + distance;
+                    nextMinWaypoint = this.waypoints.get(neighborNode.wpName);
+                    routeNodes.get(neighborWpName).distanceToEnd = routeNodes.get(currentWp.wpName).distanceToEnd + distance;
                 }
             }
         });
@@ -111,15 +111,15 @@ class Waynet {
         let lowestDistance = 99999999;
         let closestWpToGoal;
         let closestNodeToGoal;
-        Object.keys(nodesToVisit).forEach(wpName => {
-            if (nodesToVisit[wpName].aproximateAbsDistance < lowestDistance) {
-                lowestDistance = nodesToVisit[wpName].aproximateAbsDistance;
+        Array.from(nodesToVisit.keys()).forEach(wpName => {
+            if (nodesToVisit.get(wpName).aproximateAbsDistance < lowestDistance) {
+                lowestDistance = nodesToVisit.get(wpName).aproximateAbsDistance;
                 closestWpToGoal = wpName;
-                closestNodeToGoal = nodesToVisit[wpName];
+                closestNodeToGoal = nodesToVisit.get(wpName);
             }
         });
         if (typeof closestWpToGoal !== 'undefined') {
-            delete nodesToVisit[closestWpToGoal];
+            nodesToVisit.delete(closestWpToGoal);
         }
         return closestNodeToGoal;
     }
@@ -129,12 +129,12 @@ class Waynet {
         let z = z1 - z2;
         return Math.sqrt(x * x + y * y + z * z);
     }
-    toWaypointDict(waypoints) {
-        const reducer = (wpDict, wp) => {
-            wpDict[wp.wpName] = wp;
-            return wpDict;
+    toWaypointMap(waypoints) {
+        const reducer = (wpMap, wp) => {
+            wpMap.set(wp.wpName, wp);
+            return wpMap;
         };
-        return waypoints.reduce(reducer, {});
+        return waypoints.reduce(reducer, new Map());
     }
 }
 exports.Waynet = Waynet;

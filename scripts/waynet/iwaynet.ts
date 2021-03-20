@@ -1,10 +1,9 @@
-import {StringKeyMap} from '../utils/mapStructs';
 /**
  * Interface that represents the waynet. The waynet is a datastructure that connects nodes (waypoints) to create a
  * net on which the npc's can move along the edges (the paths/way).
  */
 export interface IWaynet {
-    waypoints: StringKeyMap<Waypoint>,
+    waypoints: Map<String, Waypoint>,
     freepoints: Array<Freepoint>
     getWayroute(start: string, end: string): Array<Waypoint>
 }
