@@ -85,10 +85,29 @@ revmp.on("init", () => {
     const world = revmp.createWorld("new_world");
     revmp.setTime(world, { hour: 15, minute: 0 });
 });
+//export function sendChatMessage(player: number|number[], message: string, color?: [number, number, number, number?]): void
+function debugCommands(entity, msg){
+    const words = msg.toLowerCase().split(' ');
+    const command = words[0];
+    if (command === "/getpos") {
+        let pos = revmp.getPosition(entity)
+        revmp.sendChatMessage(entity, `pos: ${pos.x},${pos.y},${pos.z}`)
+    }
+    if (command === "/sendsomething") {
+        revmp.sendChatMessage(entity, 'testo')
+    }
+
+    if(command === "/walk"){
+        
+    }
+}
+
 revmp.on("chatCommand", (entity, msg) => {
     const words = msg.toLowerCase().split(' ');
     const command = words[0];
     console.log(words);
+    debugCommands(entity, msg)
+
     if (command === "/spawn") {
         funs.SpawnNpc(state, new wolf.Wolf(), 0, 0, 0);
     }

@@ -15,6 +15,14 @@ class TestAiNpc implements IAiNpc{
     respawnTime: number;
     nextActions: Heap<IAiAction>;
     aiFlags: Map<string, number|string>;
+    lastPosUpdate: number;
+    lastPosX: number;
+    lastPosY: number;
+    lastPosZ: number;
+    currentPosX: number;
+    currentPosY: number;
+    currentPosZ: number;
+    
     constructor(id:number, actions:Heap<IAiAction>){
         this.id = id;
         this.isDead = false;
@@ -25,6 +33,8 @@ class TestAiNpc implements IAiNpc{
         this.nextActions = actions;
         this.aiFlags = new Map();
     }
+    
+
 
     executeNextAction():void{
         //nothing

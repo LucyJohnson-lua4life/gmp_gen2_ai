@@ -12,6 +12,14 @@ export class Wolf implements IAiNpc{
     id: number;
     isDead: boolean;
     isUnconscious: boolean;
+    //todo: set values for pos
+    lastPosUpdate:number;
+    lastPosX: number;
+    lastPosY: number;
+    lastPosZ: number;
+    currentPosX: number;
+    currentPosY: number;
+    currentPosZ: number;
 
 
     constructor(){
@@ -24,6 +32,7 @@ export class Wolf implements IAiNpc{
         this.nextActions = new Heap((a:IAiAction, b:IAiAction) => a.priority - b.priority);
         this.aiFlags = new Map();
     }
+
 
     executeNextAction(): void {
         console.log("Nothing implemented yet.")

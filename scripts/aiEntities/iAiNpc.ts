@@ -8,6 +8,13 @@ export interface IAiNpc extends IPlayer{
     respawnTime: number,
     nextActions: Heap<IAiAction>,
     aiFlags: Map<string, number|string>,
+    lastPosUpdate:number,
+    lastPosX:number,
+    lastPosY:number,
+    lastPosZ:number,
+    currentPosX:number,
+    currentPosY:number,
+    currentPosZ:number,
     executeNextAction():void
     onNpcHitted(aiNpcId:number, attackerId:number):void
 }

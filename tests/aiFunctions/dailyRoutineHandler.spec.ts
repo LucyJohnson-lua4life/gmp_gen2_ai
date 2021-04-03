@@ -7,6 +7,7 @@ import { DR_START_HOUR, DR_START_MINUTE, DR_END_HOUR, DR_END_MINUTE, DR_LAST_HOU
 
 //TODO: this combinatorics of these test cases are still pretty complicated, think about ways to make it easier to understand them.
 class TestAiNpc implements IAiNpc{
+    
     id:number;
     isDead:boolean;
     isUnconscious:boolean;
@@ -15,6 +16,13 @@ class TestAiNpc implements IAiNpc{
     respawnTime: number;
     nextActions: Heap<IAiAction>;
     aiFlags: Map<string, number|string>;
+    lastPosUpdate: number;
+    lastPosX: number;
+    lastPosY: number;
+    lastPosZ: number;
+    currentPosX: number;
+    currentPosY: number;
+    currentPosZ: number;
     constructor(id:number){
         this.id = id;
         this.isDead = false;
@@ -25,6 +33,7 @@ class TestAiNpc implements IAiNpc{
         this.nextActions = new Heap();
         this.aiFlags = new Map();
     }
+
 
     executeNextAction():void{
         //nothing
