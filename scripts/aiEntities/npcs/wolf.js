@@ -15,6 +15,9 @@ class Wolf {
         this.nextActions = new heap_js_1.default((a, b) => a.priority - b.priority);
         this.aiFlags = new Map();
     }
+    addAction(action, priority, shouldLoop) {
+        throw new Error("Method not implemented.");
+    }
     executeNextAction() {
         console.log("Nothing implemented yet.");
     }

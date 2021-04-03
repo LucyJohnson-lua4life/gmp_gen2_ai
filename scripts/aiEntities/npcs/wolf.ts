@@ -32,6 +32,9 @@ export class Wolf implements IAiNpc{
         this.nextActions = new Heap((a:IAiAction, b:IAiAction) => a.priority - b.priority);
         this.aiFlags = new Map();
     }
+    addAction(action: IAiAction, priority: number, shouldLoop: boolean) {
+        throw new Error("Method not implemented.");
+    }
 
 
     executeNextAction(): void {
