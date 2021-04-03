@@ -4,6 +4,9 @@ const wolf = require("./scripts/aiEntities/npcs/wolf");
 const funs = require("./scripts/aiStates/aiStateFunctions");
 const state1 = require("./scripts/aiStates/aiStates");
 const aiUpdateLoop = require("./scripts/aiStates/aiUpdateLoop");
+//const ai = require("./scripts/aiStates/aiUpdateLoop");
+
+const posFuncs = require("./scripts/waynet/positionFunctions");
 let state = new state1.AIState();
 let updateLoop = new aiUpdateLoop.AiUpdateLoop(state);
 
@@ -91,12 +94,17 @@ revmp.on("init", () => {
     setInterval(updateLoop.updateAll.bind(updateLoop), 1000);
     funs.SpawnNpc(state, new wolf.Wolf(), 0, 0, 0);
     
+    console.log(state.botMap.get(4))
 
 });
+
+
+
 //export function sendChatMessage(player: number|number[], message: string, color?: [number, number, number, number?]): void
 function debugCommands(entity, msg){
     const words = msg.toLowerCase().split(' ');
     const command = words[0];
+    
     if (command === "/getpos") {
         let pos = revmp.getPosition(entity)
         revmp.sendChatMessage(entity, `pos: ${pos.x},${pos.y},${pos.z}`)
@@ -106,6 +114,22 @@ function debugCommands(entity, msg){
     }
 
     if(command === "/walk"){
+        const param1 = words[1];
+        let npc = state.botMap.get(parseInt(param1))
+        
+        let aiAction = {
+            priority:1,
+            aiId:param1,
+            shouldLoop: true,
+            executeAction: function(){
+                posFuncs.gotoPosition(npc, 566, -79, -964)
+            }
+        }
+
+        
+        console.log(npc)
+        //todo: push die aiActions in den npc
+        npc.addAction(aiAction)
 
     }
 }

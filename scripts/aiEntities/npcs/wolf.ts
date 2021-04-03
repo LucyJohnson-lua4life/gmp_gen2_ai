@@ -3,7 +3,7 @@ import { IAiAction } from "../iAiAction";
 import { IAiNpc } from "../iAiNpc";
 import { INSTANCE_WOLF } from "./npcInits";
 
-export class Wolf implements IAiNpc{
+export class Wolf implements IAiNpc {
     enemyIds: number[];
     friendIds: number[];
     respawnTime: number;
@@ -13,7 +13,7 @@ export class Wolf implements IAiNpc{
     isDead: boolean;
     isUnconscious: boolean;
     //todo: set values for pos
-    lastPosUpdate:number;
+    lastPosUpdate: number;
     lastPosX: number;
     lastPosY: number;
     lastPosZ: number;
@@ -22,23 +22,42 @@ export class Wolf implements IAiNpc{
     currentPosZ: number;
 
 
-    constructor(){
+    constructor() {
         this.id = revmp.createBot(INSTANCE_WOLF);;
         this.isDead = false;
         this.isUnconscious = false;
         this.enemyIds = [];
         this.friendIds = [];
         this.respawnTime = 240;
-        this.nextActions = new Heap((a:IAiAction, b:IAiAction) => a.priority - b.priority);
+        this.nextActions = new Heap((a: IAiAction, b: IAiAction) => a.priority - b.priority);
         this.aiFlags = new Map();
-    }
-    addAction(action: IAiAction, priority: number, shouldLoop: boolean) {
-        throw new Error("Method not implemented.");
-    }
 
+        this.lastPosUpdate = 0
+        this.lastPosX = 0
+        this.lastPosY = 0
+        this.lastPosZ = 0
+        this.currentPosX = 0
+        this.currentPosY = 0
+        this.currentPosZ = 0
+    }
+    addAction(action: IAiAction) {
+        this.nextActions.push(action)
+    }
 
     executeNextAction(): void {
-        console.log("Nothing implemented yet.")
+
+        let pos:revmp.Position = revmp.getPosition(this.id) 
+        this.currentPosX = pos.x
+        this.currentPosY = pos.y
+        this.currentPosZ = pos.z
+
+
+        let nextAction = this.nextActions.peek()
+        if ((typeof nextAction !== 'undefined')) {
+            nextAction.shouldLoop ? nextAction.executeAction() : this.nextActions.pop().executeAction();
+
+        }
+
     }
     onNpcHitted(aiNpcId: number, attackerId: number): void {
         console.log("Nothing implemented yet.")

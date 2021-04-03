@@ -28,7 +28,7 @@ export class StubAiNpc implements IAiNpc{
         this.nextActions = new Heap();
         this.aiFlags = new Map();
     }
-    addAction(action: IAiAction, priority: number, shouldLoop: boolean) {
+    addAction(action: IAiAction) {
         //nothing
     }
 
