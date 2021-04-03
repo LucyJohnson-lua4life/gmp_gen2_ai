@@ -16,7 +16,7 @@ class AIState {
         return this.allPositions;
     }
     registerBot(bot) {
-        this.allBots[bot.id] = bot;
+        this.allBots.set(bot.id, bot);
     }
 }
 exports.AIState = AIState;

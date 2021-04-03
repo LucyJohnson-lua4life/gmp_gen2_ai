@@ -22,7 +22,7 @@ export class AIState {
     }
 
     public registerBot(bot:IAiNpc):void{
-        this.allBots[bot.id] = bot;
+        this.allBots.set(bot.id, bot)
     }
 
 }

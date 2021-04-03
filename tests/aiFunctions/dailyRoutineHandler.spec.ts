@@ -4,8 +4,6 @@ import {AIState} from '../../scripts/aiStates/aiStates';
 import {DrTimeTriggerInfo, DailyRoutineHandler} from '../../scripts/aiFunctions/dailyRoutineHandler';
 import { DR_START_HOUR, DR_START_MINUTE, DR_END_HOUR, DR_END_MINUTE, DR_LAST_HOUR, DR_LAST_MINUTE } from '../../scripts/aiStates/aiFlags';
 
-
-
 function createTestNpc(id:number, drStartHour:number, drStartMinute:number, drEndHour:number, drEndMinute:number, drLastHour:number, drLastMinute:number):StubAiNpc{
     let npc = new StubAiNpc(id);
 

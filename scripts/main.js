@@ -3,8 +3,9 @@
 const wolf = require("./scripts/aiEntities/npcs/wolf");
 const funs = require("./scripts/aiStates/aiStateFunctions");
 const state1 = require("./scripts/aiStates/aiStates");
+const aiUpdateLoop = require("./scripts/aiStates/aiUpdateLoop");
 let state = new state1.AIState();
-
+let updateLoop = new aiUpdateLoop.AiUpdateLoop(state);
 
 revmp.createInstanceTemplate({
     type: revmp.InstanceType.Character,
@@ -75,6 +76,7 @@ revmp.createInstanceTemplate({
 });
 
 revmp.on("init", () => {
+
     revmp.createInstanceTemplate({
         type: revmp.InstanceType.World,
         id: "new_world",
@@ -84,6 +86,12 @@ revmp.on("init", () => {
     });
     const world = revmp.createWorld("new_world");
     revmp.setTime(world, { hour: 15, minute: 0 });
+
+    
+    setInterval(updateLoop.updateAll.bind(updateLoop), 1000);
+    funs.SpawnNpc(state, new wolf.Wolf(), 0, 0, 0);
+    
+
 });
 //export function sendChatMessage(player: number|number[], message: string, color?: [number, number, number, number?]): void
 function debugCommands(entity, msg){
@@ -98,7 +106,7 @@ function debugCommands(entity, msg){
     }
 
     if(command === "/walk"){
-        
+
     }
 }
 

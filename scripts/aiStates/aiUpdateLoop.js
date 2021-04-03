@@ -8,7 +8,12 @@ class AiUpdateLoop {
     get state() {
         return this._state;
     }
+    updateAll() {
+        console.log(Array.from(this._state.botMap.keys()).length);
+        Array.from(this._state.botMap.keys()).forEach((aiId) => this.updateAi(aiId));
+    }
     updateAi(aiId) {
+        console.log("hello?");
         let npc = this._state.botMap.get(aiId);
         if (typeof npc !== 'undefined') {
             npc.executeNextAction();
