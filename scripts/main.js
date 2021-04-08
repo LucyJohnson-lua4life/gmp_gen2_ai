@@ -98,7 +98,16 @@ revmp.on("init", () => {
 
 });
 
+function getDistance(x1, y1, z1, x2, y2, z2) {
+    if ([x1, y1, z1, , x2, y2, z2].some((val) => (typeof val === 'undefined'))) {
+        return 99999
+    }
+    let x = x1 - x2
+    let y = y1 - y2
+    let z = z1 - z2
 
+    return Math.sqrt(x * x + y * y + z * z);
+}
 
 //export function sendChatMessage(player: number|number[], message: string, color?: [number, number, number, number?]): void
 function debugCommands(entity, msg){
@@ -116,13 +125,20 @@ function debugCommands(entity, msg){
     if(command === "/walk"){
         const param1 = words[1];
         let npc = state.botMap.get(parseInt(param1))
-        
+        //todo : liefer aiAction den state mit, und entferne die die aktion selbst, wenn die position erreicht wurde
         let aiAction = {
             priority:1,
-            aiId:param1,
+            aiId:parseInt(param1),
             shouldLoop: true,
             executeAction: function(){
+                
                 posFuncs.gotoPosition(npc, 566, -79, -964)
+                let position = revmp.getPosition(this.aiId)
+                console.log(this.aiId)
+
+                if(getDistance(566, -79, -964, position.x, position.y, position.z) < 50){
+                    this.shouldLoop = false
+                }
             }
         }
 

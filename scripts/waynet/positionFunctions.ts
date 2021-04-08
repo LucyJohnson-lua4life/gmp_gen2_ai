@@ -19,8 +19,6 @@ function getDistance(x1: number, y1: number, z1: number, x2: number, y2: number,
 }
 
 export function gotoPosition(npc: IAiNpc, x: number, y: number, z: number) {
-    console.log("a: " + Date.now)
-    console.log("b: " + npc.lastPosUpdate)
     if ((typeof npc.lastPosUpdate == 'undefined') || npc.lastPosUpdate == 0) {
         npc.lastPosUpdate = Date.now()
         npc.lastPosX = npc.currentPosX;
@@ -28,7 +26,6 @@ export function gotoPosition(npc: IAiNpc, x: number, y: number, z: number) {
         npc.lastPosZ = npc.currentPosZ;
         
     } else if (npc.lastPosUpdate + 500 < Date.now()) {
-        console.log("got in here")
         if (getDistance(npc.lastPosX, npc.lastPosY, npc.lastPosZ, npc.currentPosX, npc.currentPosY, npc.currentPosZ) < 2) {
             let timeDiff = Date.now() - npc.lastPosUpdate
             let speed = (5*100)*(timeDiff/1000.0)
@@ -37,6 +34,11 @@ export function gotoPosition(npc: IAiNpc, x: number, y: number, z: number) {
             let dirY = y-npc.currentPosY;
             let dirZ = z-npc.currentPosZ;
 
+            let dirNorm = Math.sqrt(dirX*dirX + dirY*dirY + dirZ*dirZ)
+            dirX = dirX / dirNorm;
+            dirY = dirY / dirNorm;
+            dirZ = dirZ / dirNorm;
+
             let distance = getDistance(npc.currentPosX, npc.currentPosY, npc.currentPosZ, x, y, z)
 
             if(speed > distance){
@@ -44,13 +46,13 @@ export function gotoPosition(npc: IAiNpc, x: number, y: number, z: number) {
                 npc.currentPosX = x
                 npc.currentPosY = y
                 npc.currentPosZ = z
-                console.log("set pos to "+ x + " ," + y + " ," + z)
+                console.log("1 set pos to "+ x + " ," + y + " ," + z)
             }else{
                 npc.currentPosX = npc.currentPosX + (dirX*speed)
                 npc.currentPosY = npc.currentPosY + (dirY*speed)
                 npc.currentPosZ = npc.currentPosZ + (dirZ*speed)
                 revmp.setPosition(npc.id,  { x: npc.currentPosX, y: npc.currentPosY, z: npc.currentPosZ})
-                console.log("set pos to "+ npc.currentPosX + " ," + npc.currentPosY + " ," + npc.currentPosZ)
+                console.log("2 set pos to "+ npc.currentPosX + " ," + npc.currentPosY + " ," + npc.currentPosZ)
             }
         }
 
