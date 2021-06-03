@@ -1,14 +1,18 @@
 import { IActionsComponent } from "../aiEntities/components/iActionsComponent";
-import { IDailyRoutineComponent } from "../aiEntities/components/iDailyRoutineComponent";
+import { IDrInfoComponent } from "../aiEntities/components/iDrInfoComponent";
 import { INpcStateComponent } from "../aiEntities/components/iNpcStateComponent";
 import { IPositionComponent } from "../aiEntities/components/iPositionComponent";
 import { IRespawnComponent } from "../aiEntities/components/iRespawnComponent";
 
 const worldNames: Array<string> = ["NEWWORLD\\NEWWORLD.ZEN", "OLDWORLD\\OLDWORLD.ZEN", "ADDON\\ADDONWORLD.ZEN"]
+/**
+ * Central class that contains all lookups between the entity id and it's components.
+ * TODO: document the different components and the interface.
+ */
 export class EntityManager {
 
     private allPositions: Map<string, Map<number, Array<number>>>;
-    private dailyRoutineComponents:Map<number, IDailyRoutineComponent>;
+    private dailyRoutineComponents:Map<number, IDrInfoComponent>;
     private actionsComponents:Map<number, IActionsComponent>;
     private positionsComponents:Map<number, IPositionComponent>;
     private npcStateComponents:Map<number, INpcStateComponent>;
@@ -29,11 +33,11 @@ export class EntityManager {
         return this.allPositions
     }
 
-    getDailyRoutineComponent(entityId: number): IDailyRoutineComponent{
+    getDailyRoutineComponent(entityId: number): IDrInfoComponent{
         return this.dailyRoutineComponents.get(entityId);
     }
 
-    setDailyRoutineComponent(entityId: number, component: IDailyRoutineComponent){
+    setDailyRoutineComponent(entityId: number, component: IDrInfoComponent){
         this.dailyRoutineComponents.set(entityId, component)
     }
 
