@@ -2,25 +2,32 @@ import { EntityManager } from "../aiStates/entityManager";
 import { IDrInfoComponent } from "../aiEntities/components/iDrInfoComponent";
 
 /**
- * @interface DRTimeInfo
- * Encapsulates the current time and a time period in minutes and hours. This 
- * structure is used to compare the current time with the previous time period to decide,
- * if a new DailyRoutine should be triggered. 
+ * @interface DrTargetTime
+ * Contains the target time to which a new daily routine should be triggered.
  * 
  * @field startHour: start hour of the period - on which the new daily routine should be triggered
  * @field startMinute: start minute of the period - on which the new daily routine should be triggered
  * @field endHour: end hour of the period - on which the new daily routine should be triggered
  * @field endMinute: end minute of the period - on which the new daily routine should be triggered
- * @field currentHour: current hour - on which the new daily routine should be triggered
- * @field currentMinute: current minute - on which the new daily routine should be triggered
+
  */
-export interface DrTimeInfo {
+export interface DrTargetTime {
     startHour: number,
     startMinute: number,
     endHour: number,
-    endMinute: number,
-    currentHour: number,
-    currentMinute: number
+    endMinute: number
+}
+
+
+/**
+ * @interface DrCurrentTime
+ * Contains the current time which should be compared against the target time.
+ * @field hour: current hour - on which the new daily routine should be triggered
+ * @field minute: current minute - on which the new daily routine should be triggered
+ */
+export interface DrCurrentTime{
+    hour: number,
+    minute: number
 }
 
 /**
@@ -32,29 +39,29 @@ export class DailyRoutineSystem {
         this.entityManager = state;
     }
 
-    public newDrTimePeriodEntered(playerid: number, info: DrTimeInfo): boolean {
-        if (this.currentHourOverlapsWithTriggerPeriod(info)) {
-            if (!this.currentMinuteOverlapsWithTriggerPeriod(info)) {
+    public newDrTimePeriodEntered(playerid: number, currentTime:DrCurrentTime, targetPeriod: DrTargetTime): boolean {
+        if (this.hoursOverlap(currentTime, targetPeriod)) {
+            if (!this.minutesOverlap(currentTime, targetPeriod)) {
                 return false;
             }
 
-            if (this.playerOverlapsWithTriggerPeriodFirstTime(playerid, info)) {
+            if (this.isFirstOverlapWithTargetTime(playerid, currentTime, targetPeriod)) {
                 this.entityManager.setDailyRoutineComponent(playerid, {
                     entityId: playerid,
-                    startHour: info.startHour,
-                    startMinute: info.startMinute,
-                    endHour: info.endHour,
-                    endMinute: info.endMinute,
-                    lastHour: info.currentHour,
-                    lastMinute: info.currentMinute
+                    startHour: targetPeriod.startHour,
+                    startMinute: targetPeriod.startMinute,
+                    endHour: targetPeriod.endHour,
+                    endMinute: targetPeriod.endMinute,
+                    lastHour: currentTime.hour,
+                    lastMinute: currentTime.minute
                 });
 
                 return true;
             }
             else {
                 let dailyRoutineComponent: IDrInfoComponent = this.entityManager.getDailyRoutineComponent(playerid)
-                dailyRoutineComponent.lastHour = info.currentHour
-                dailyRoutineComponent.lastMinute = info.currentMinute
+                dailyRoutineComponent.lastHour = currentTime.hour
+                dailyRoutineComponent.lastMinute = currentTime.minute
                 this.entityManager.setDailyRoutineComponent(playerid, dailyRoutineComponent)
                 return false;
             }
@@ -63,31 +70,31 @@ export class DailyRoutineSystem {
         return false;
     }
 
-    private playerOverlapsWithTriggerPeriodFirstTime(playerid: number, info: DrTimeInfo) {
-        let dailyRoutineComponent: IDrInfoComponent = this.entityManager.getDailyRoutineComponent(playerid)
-        return (typeof dailyRoutineComponent.startHour === 'undefined')
-            || ((dailyRoutineComponent.startHour !== info.startHour || dailyRoutineComponent.startMinute !== info.startMinute)
-                || (dailyRoutineComponent.endHour !== info.endHour || dailyRoutineComponent.endMinute !== info.endMinute))
-            || (info.startHour === 0 && info.startMinute === 0 && info.endHour === 24 && info.endMinute === 0 && dailyRoutineComponent.lastHour === 23 && info.currentHour === 0)
+    private isFirstOverlapWithTargetTime(playerid: number, currentTime: DrCurrentTime, targetTime: DrTargetTime) {
+        let lastTime: IDrInfoComponent = this.entityManager.getDailyRoutineComponent(playerid)
+        return (typeof lastTime.startHour === 'undefined')
+            || ((lastTime.startHour !== targetTime.startHour || lastTime.startMinute !== targetTime.startMinute)
+                || (lastTime.endHour !== targetTime.endHour || lastTime.endMinute !== targetTime.endMinute))
+            || (targetTime.startHour === 0 && targetTime.startMinute === 0 && targetTime.endHour === 24 && targetTime.endMinute === 0 && lastTime.lastHour === 23 && currentTime.hour === 0)
     }
 
-    private currentHourOverlapsWithTriggerPeriod(info: DrTimeInfo): boolean {
+    private hoursOverlap(currentTime:DrCurrentTime, targetTime: DrTargetTime): boolean {
         let offsettedEndHour: number | undefined;
 
-        if (info.startHour > info.endHour) {
-            offsettedEndHour = info.endHour + 24
+        if (targetTime.startHour > targetTime.endHour) {
+            offsettedEndHour = targetTime.endHour + 24
         }
-        return (info.currentHour >= info.startHour && info.currentHour <= info.endHour)
-            || (typeof offsettedEndHour !== 'undefined' && info.currentHour + 24 >= info.startHour && info.currentHour <= info.endHour)
-            || (typeof offsettedEndHour !== 'undefined' && info.currentHour >= info.startHour && info.currentHour <= offsettedEndHour)
+        return (currentTime.hour >= targetTime.startHour && currentTime.hour <= targetTime.endHour)
+            || (typeof offsettedEndHour !== 'undefined' && currentTime.hour + 24 >= targetTime.startHour && currentTime.hour <= targetTime.endHour)
+            || (typeof offsettedEndHour !== 'undefined' && currentTime.hour >= targetTime.startHour && currentTime.hour <= offsettedEndHour)
     }
 
-    private currentMinuteOverlapsWithTriggerPeriod(info: DrTimeInfo): boolean {
+    private minutesOverlap(currentTime:DrCurrentTime, info: DrTargetTime): boolean {
         let isOverlapping: boolean = true;
-        if (info.currentHour == info.startHour && info.currentMinute < info.startMinute) {
+        if (currentTime.hour == info.startHour && currentTime.minute < info.startMinute) {
             isOverlapping = false;
         }
-        if (info.currentHour == info.endHour && info.currentMinute >= info.endMinute) {
+        if (currentTime.hour == info.endHour && currentTime.minute >= info.endMinute) {
             isOverlapping = false
         }
         return isOverlapping;

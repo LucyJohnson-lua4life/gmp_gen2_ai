@@ -8,55 +8,55 @@ class DailyRoutineSystem {
     constructor(state) {
         this.entityManager = state;
     }
-    newDrTimePeriodEntered(playerid, info) {
-        if (this.currentHourOverlapsWithTriggerPeriod(info)) {
-            if (!this.currentMinuteOverlapsWithTriggerPeriod(info)) {
+    newDrTimePeriodEntered(playerid, currentTime, targetPeriod) {
+        if (this.hoursOverlap(currentTime, targetPeriod)) {
+            if (!this.minutesOverlap(currentTime, targetPeriod)) {
                 return false;
             }
-            if (this.playerOverlapsWithTriggerPeriodFirstTime(playerid, info)) {
+            if (this.isFirstOverlapWithTargetTime(playerid, currentTime, targetPeriod)) {
                 this.entityManager.setDailyRoutineComponent(playerid, {
                     entityId: playerid,
-                    startHour: info.startHour,
-                    startMinute: info.startMinute,
-                    endHour: info.endHour,
-                    endMinute: info.endMinute,
-                    lastHour: info.currentHour,
-                    lastMinute: info.currentMinute
+                    startHour: targetPeriod.startHour,
+                    startMinute: targetPeriod.startMinute,
+                    endHour: targetPeriod.endHour,
+                    endMinute: targetPeriod.endMinute,
+                    lastHour: currentTime.hour,
+                    lastMinute: currentTime.minute
                 });
                 return true;
             }
             else {
                 let dailyRoutineComponent = this.entityManager.getDailyRoutineComponent(playerid);
-                dailyRoutineComponent.lastHour = info.currentHour;
-                dailyRoutineComponent.lastMinute = info.currentMinute;
+                dailyRoutineComponent.lastHour = currentTime.hour;
+                dailyRoutineComponent.lastMinute = currentTime.minute;
                 this.entityManager.setDailyRoutineComponent(playerid, dailyRoutineComponent);
                 return false;
             }
         }
         return false;
     }
-    playerOverlapsWithTriggerPeriodFirstTime(playerid, info) {
-        let dailyRoutineComponent = this.entityManager.getDailyRoutineComponent(playerid);
-        return (typeof dailyRoutineComponent.startHour === 'undefined')
-            || ((dailyRoutineComponent.startHour !== info.startHour || dailyRoutineComponent.startMinute !== info.startMinute)
-                || (dailyRoutineComponent.endHour !== info.endHour || dailyRoutineComponent.endMinute !== info.endMinute))
-            || (info.startHour === 0 && info.startMinute === 0 && info.endHour === 24 && info.endMinute === 0 && dailyRoutineComponent.lastHour === 23 && info.currentHour === 0);
+    isFirstOverlapWithTargetTime(playerid, currentTime, targetTime) {
+        let lastTime = this.entityManager.getDailyRoutineComponent(playerid);
+        return (typeof lastTime.startHour === 'undefined')
+            || ((lastTime.startHour !== targetTime.startHour || lastTime.startMinute !== targetTime.startMinute)
+                || (lastTime.endHour !== targetTime.endHour || lastTime.endMinute !== targetTime.endMinute))
+            || (targetTime.startHour === 0 && targetTime.startMinute === 0 && targetTime.endHour === 24 && targetTime.endMinute === 0 && lastTime.lastHour === 23 && currentTime.hour === 0);
     }
-    currentHourOverlapsWithTriggerPeriod(info) {
+    hoursOverlap(currentTime, targetTime) {
         let offsettedEndHour;
-        if (info.startHour > info.endHour) {
-            offsettedEndHour = info.endHour + 24;
+        if (targetTime.startHour > targetTime.endHour) {
+            offsettedEndHour = targetTime.endHour + 24;
         }
-        return (info.currentHour >= info.startHour && info.currentHour <= info.endHour)
-            || (typeof offsettedEndHour !== 'undefined' && info.currentHour + 24 >= info.startHour && info.currentHour <= info.endHour)
-            || (typeof offsettedEndHour !== 'undefined' && info.currentHour >= info.startHour && info.currentHour <= offsettedEndHour);
+        return (currentTime.hour >= targetTime.startHour && currentTime.hour <= targetTime.endHour)
+            || (typeof offsettedEndHour !== 'undefined' && currentTime.hour + 24 >= targetTime.startHour && currentTime.hour <= targetTime.endHour)
+            || (typeof offsettedEndHour !== 'undefined' && currentTime.hour >= targetTime.startHour && currentTime.hour <= offsettedEndHour);
     }
-    currentMinuteOverlapsWithTriggerPeriod(info) {
+    minutesOverlap(currentTime, info) {
         let isOverlapping = true;
-        if (info.currentHour == info.startHour && info.currentMinute < info.startMinute) {
+        if (currentTime.hour == info.startHour && currentTime.minute < info.startMinute) {
             isOverlapping = false;
         }
-        if (info.currentHour == info.endHour && info.currentMinute >= info.endMinute) {
+        if (currentTime.hour == info.endHour && currentTime.minute >= info.endMinute) {
             isOverlapping = false;
         }
         return isOverlapping;
