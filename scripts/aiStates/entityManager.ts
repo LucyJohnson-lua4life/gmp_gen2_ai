@@ -17,6 +17,12 @@ export class EntityManager {
     constructor() {
         this.allPositions = new Map()
         worldNames.forEach(name =>this.allPositions.set(name, new Map()));
+        this.allPositions = new Map()
+        this.dailyRoutineComponents = new Map()
+        this.actionsComponents = new Map()
+        this.positionsComponents = new Map()
+        this.npcStateComponents = new Map()
+        this.respawnComponents = new Map()
     }
 
     get positionMap(): Map<string, Map<number, Array<number>>> {
@@ -27,21 +33,42 @@ export class EntityManager {
         return this.dailyRoutineComponents.get(entityId);
     }
 
+    setDailyRoutineComponent(entityId: number, component: IDailyRoutineComponent){
+        this.dailyRoutineComponents.set(entityId, component)
+    }
+
     getActionsComponent(entityId: number): IActionsComponent{
         return this.actionsComponents.get(entityId);
+    }
+
+    setActionsComponent(entityId: number, component: IActionsComponent){
+        this.actionsComponents.set(entityId, component)
     }
 
     getPositionsComponents(entityId: number): IPositionComponent{
         return this.positionsComponents.get(entityId);
     }
 
+    setPositionsComponent(entityId: number, component: IPositionComponent){
+        this.positionsComponents.set(entityId, component)
+    }
+
     getNpcStateComponent(entityId: number): INpcStateComponent{
         return this.npcStateComponents.get(entityId);
+    }
+    setNpcStateComponent(entityId: number, component: INpcStateComponent){
+        this.npcStateComponents.set(entityId, component)
     }
 
     getRespawnComponent(entityId: number): IRespawnComponent{
         return this.respawnComponents.get(entityId);
     }
+
+    setRespawnComponent(entityId: number, component: IRespawnComponent){
+        this.respawnComponents.set(entityId, component)
+    }
+
+    
 
 
 }

@@ -66,8 +66,6 @@ test('hour & minute overlap trigger period first time, while start hour > end ho
     expect(handler.newDrTimePeriodEntered(botId, drTimeInfo)).toBe(true);
 })
 
-
-
 test('hour overlaps trigger period first time but not minute, while start hour > end hour of trigger period AND current time > start trigger period ... SHOULD RETURN false', () => {
     let botId = 1;
     let state:AIState = new AIState();
