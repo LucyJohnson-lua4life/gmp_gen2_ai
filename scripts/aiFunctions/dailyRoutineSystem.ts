@@ -1,11 +1,10 @@
 import { EntityManager } from "../aiStates/entityManager";
-import { DR_START_HOUR, DR_START_MINUTE, DR_END_HOUR, DR_END_MINUTE, DR_LAST_HOUR, DR_LAST_MINUTE } from '../aiStates/aiFlags';
-import { IDailyRoutineComponent } from "../aiEntities/components/iDailyRoutineComponent";
+import { IDrInfoComponent } from "../aiEntities/components/iDrInfoComponent";
 
 /**
  * @interface DRTimeInfo
  * Encapsulates the current time and a time period in minutes and hours. This 
- * structure is used to compare the current time with the time period to decide,
+ * structure is used to compare the current time with the previous time period to decide,
  * if a new DailyRoutine should be triggered. 
  * 
  * @field startHour: start hour of the period - on which the new daily routine should be triggered
@@ -15,7 +14,7 @@ import { IDailyRoutineComponent } from "../aiEntities/components/iDailyRoutineCo
  * @field currentHour: current hour - on which the new daily routine should be triggered
  * @field currentMinute: current minute - on which the new daily routine should be triggered
  */
-export interface DrTimeTriggerInfo {
+export interface DrTimeInfo {
     startHour: number,
     startMinute: number,
     endHour: number,
@@ -33,7 +32,7 @@ export class DailyRoutineSystem {
         this.entityManager = state;
     }
 
-    public newDrTimePeriodEntered(playerid: number, info: DrTimeTriggerInfo): boolean {
+    public newDrTimePeriodEntered(playerid: number, info: DrTimeInfo): boolean {
         if (this.currentHourOverlapsWithTriggerPeriod(info)) {
             if (!this.currentMinuteOverlapsWithTriggerPeriod(info)) {
                 return false;
@@ -53,7 +52,7 @@ export class DailyRoutineSystem {
                 return true;
             }
             else {
-                let dailyRoutineComponent: IDailyRoutineComponent = this.entityManager.getDailyRoutineComponent(playerid)
+                let dailyRoutineComponent: IDrInfoComponent = this.entityManager.getDailyRoutineComponent(playerid)
                 dailyRoutineComponent.lastHour = info.currentHour
                 dailyRoutineComponent.lastMinute = info.currentMinute
                 this.entityManager.setDailyRoutineComponent(playerid, dailyRoutineComponent)
@@ -64,15 +63,15 @@ export class DailyRoutineSystem {
         return false;
     }
 
-    private playerOverlapsWithTriggerPeriodFirstTime(playerid: number, info: DrTimeTriggerInfo) {
-        let dailyRoutineComponent: IDailyRoutineComponent = this.entityManager.getDailyRoutineComponent(playerid)
+    private playerOverlapsWithTriggerPeriodFirstTime(playerid: number, info: DrTimeInfo) {
+        let dailyRoutineComponent: IDrInfoComponent = this.entityManager.getDailyRoutineComponent(playerid)
         return (typeof dailyRoutineComponent.startHour === 'undefined')
             || ((dailyRoutineComponent.startHour !== info.startHour || dailyRoutineComponent.startMinute !== info.startMinute)
                 || (dailyRoutineComponent.endHour !== info.endHour || dailyRoutineComponent.endMinute !== info.endMinute))
             || (info.startHour === 0 && info.startMinute === 0 && info.endHour === 24 && info.endMinute === 0 && dailyRoutineComponent.lastHour === 23 && info.currentHour === 0)
     }
 
-    private currentHourOverlapsWithTriggerPeriod(info: DrTimeTriggerInfo): boolean {
+    private currentHourOverlapsWithTriggerPeriod(info: DrTimeInfo): boolean {
         let offsettedEndHour: number | undefined;
 
         if (info.startHour > info.endHour) {
@@ -83,7 +82,7 @@ export class DailyRoutineSystem {
             || (typeof offsettedEndHour !== 'undefined' && info.currentHour >= info.startHour && info.currentHour <= offsettedEndHour)
     }
 
-    private currentMinuteOverlapsWithTriggerPeriod(info: DrTimeTriggerInfo): boolean {
+    private currentMinuteOverlapsWithTriggerPeriod(info: DrTimeInfo): boolean {
         let isOverlapping: boolean = true;
         if (info.currentHour == info.startHour && info.currentMinute < info.startMinute) {
             isOverlapping = false;

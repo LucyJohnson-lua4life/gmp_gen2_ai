@@ -1,5 +1,5 @@
 
-export interface IDailyRoutineComponent {
+export interface IDrInfoComponent {
     entityId:number,
     startHour:number,
     startMinute:number,
