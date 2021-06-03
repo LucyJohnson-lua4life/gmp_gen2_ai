@@ -8,32 +8,44 @@ class DailyRoutineSystem {
     constructor(state) {
         this.entityManager = state;
     }
-    newDrTimePeriodEntered(playerid, currentTime, targetPeriod) {
-        if (this.hoursOverlap(currentTime, targetPeriod)) {
-            if (!this.minutesOverlap(currentTime, targetPeriod)) {
-                return false;
-            }
-            if (this.isFirstOverlapWithTargetTime(playerid, currentTime, targetPeriod)) {
-                this.entityManager.setDailyRoutineComponent(playerid, {
-                    entityId: playerid,
-                    startHour: targetPeriod.startHour,
-                    startMinute: targetPeriod.startMinute,
-                    endHour: targetPeriod.endHour,
-                    endMinute: targetPeriod.endMinute,
-                    lastHour: currentTime.hour,
-                    lastMinute: currentTime.minute
-                });
-                return true;
-            }
-            else {
-                let dailyRoutineComponent = this.entityManager.getDailyRoutineComponent(playerid);
-                dailyRoutineComponent.lastHour = currentTime.hour;
-                dailyRoutineComponent.lastMinute = currentTime.minute;
-                this.entityManager.setDailyRoutineComponent(playerid, dailyRoutineComponent);
-                return false;
-            }
+    /**
+     * Returns if the current time overlaps the target time for the first time, in which case a new daily routine should be triggered.
+     * @param playerid name of the entity for which the daily routine is checked
+     * @param currentTime the current time
+     * @param targetTime the time on which a new daily routine should be triggered.
+     * @returns true if a new daily routine should be triggered, otherwise false
+     */
+    shouldTriggerDailyRoutine(playerid, currentTime, targetTime) {
+        let result = false;
+        if (!this.hoursOverlap(currentTime, targetTime) || !this.minutesOverlap(currentTime, targetTime)) {
+            result = false;
         }
-        return false;
+        else if (this.isFirstOverlapWithTargetTime(playerid, currentTime, targetTime)) {
+            this.updateEntityDrInfo(playerid, targetTime, currentTime);
+            result = true;
+        }
+        else {
+            this.updateEntityLastHourAndMinute(playerid, currentTime);
+            result = false;
+        }
+        return result;
+    }
+    updateEntityLastHourAndMinute(playerid, currentTime) {
+        let dailyRoutineComponent = this.entityManager.getDailyRoutineComponent(playerid);
+        dailyRoutineComponent.lastHour = currentTime.hour;
+        dailyRoutineComponent.lastMinute = currentTime.minute;
+        this.entityManager.setDailyRoutineComponent(playerid, dailyRoutineComponent);
+    }
+    updateEntityDrInfo(playerid, targetTime, currentTime) {
+        this.entityManager.setDailyRoutineComponent(playerid, {
+            entityId: playerid,
+            startHour: targetTime.startHour,
+            startMinute: targetTime.startMinute,
+            endHour: targetTime.endHour,
+            endMinute: targetTime.endMinute,
+            lastHour: currentTime.hour,
+            lastMinute: currentTime.minute
+        });
     }
     isFirstOverlapWithTargetTime(playerid, currentTime, targetTime) {
         let lastTime = this.entityManager.getDailyRoutineComponent(playerid);
