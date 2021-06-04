@@ -1,5 +1,6 @@
 import * as waynetReader from './waynetReader';
-import {IWaynet, Freepoint, Waypoint} from './iwaynet';
+import { IWaynet, Freepoint, Waypoint } from './iwaynet';
+import { Node } from 'typescript';
 
 /**
  * Represents a node in the waynet. It contains additional information about distances to other
@@ -20,11 +21,11 @@ interface NodeInfo extends Waypoint {
  * Standard implementation of the waynet. Provides methods for path finding.
  */
 export class Waynet implements IWaynet {
-    waypoints: Map<String,Waypoint>;
+    waypoints: Map<String, Waypoint>;
     freepoints: Array<Freepoint>;
 
     constructor(waypointFile: string, freepointFile: string) {
-        this.waypoints = this.toWaypointMap(waynetReader.readWaypoints(waypointFile));
+        this.waypoints = waynetReader.readWaypointsMap(waypointFile);
         this.freepoints = waynetReader.readFreepoints(freepointFile);
     }
 
@@ -34,19 +35,21 @@ export class Waynet implements IWaynet {
      * @param end name of the end waypoint
      */
     public getWayroute(start: string, end: string): Array<Waypoint> {
-        let routeNodes:Map<string, NodeInfo> = this.getRouteNodes(this.waypoints.get(start), this.waypoints.get(end));
-
-        if(routeNodes.size === 0){
-            return []
+        let unorderedRouteNodes: Map<string, NodeInfo> = this.getUnorderedRouteNodes(this.waypoints.get(start), this.waypoints.get(end));
+        if (unorderedRouteNodes.size === 0) {
+            return new Array();
         }
-        
-        let currentWp:Waypoint | undefined  = this.waypoints.get(end);
+        return this.getNodeRoutesOrderedByMinNetDistance(unorderedRouteNodes, start, end)
+    }
+
+    private getNodeRoutesOrderedByMinNetDistance(routeNodes: Map<string, NodeInfo>, start: string, end: string){
+        let currentWp: Waypoint | undefined = this.waypoints.get(end);
         let wayroute = []
         wayroute.push(currentWp)
-        while(currentWp.wpName !== start){
+        while (currentWp.wpName !== start) {
             let lastCurrentWp = currentWp;
-            currentWp = this.getNextMinAbsDistanceWaypoint(currentWp, routeNodes);
-            if(typeof currentWp === 'undefined'){
+            currentWp = this.getNeighborWithMinNetDistance(currentWp, routeNodes);
+            if (typeof currentWp === 'undefined') {
                 return []
             }
             wayroute.push(currentWp);
@@ -56,47 +59,51 @@ export class Waynet implements IWaynet {
         return wayroute.reverse();
     }
 
-    private getRouteNodes(start: Waypoint, end: Waypoint): Map<string, NodeInfo> {
-        let nodesToVisit: Map<string,NodeInfo> = new Map();
-        let routeNodes: Map<string,NodeInfo> = new Map();
-        nodesToVisit.set(start.wpName,this.createNodeWithWaypointData(start));
+    private getUnorderedRouteNodes(start: Waypoint, end: Waypoint): Map<string, NodeInfo> {
+        let nodesToVisit: Map<string, NodeInfo> = new Map();
+        let routeNodes: Map<string, NodeInfo> = new Map();
+        nodesToVisit.set(start.wpName, this.createNodeInfo(start));
 
-        while (nodesToVisit.size > 0){
-            let currentNode: NodeInfo | undefined = this.popNodeWithMinAproximateAbsDistance(nodesToVisit);
+        while (nodesToVisit.size > 0) {
+            let currentNode: NodeInfo | undefined = this.popNodeWithMinFlightDistance(nodesToVisit);
             if (typeof currentNode === 'undefined') {
-                return new Map();
+                routeNodes = new Map();
+                break;
             }
 
             if (currentNode.wpName === end.wpName) {
-                routeNodes.set(currentNode.wpName,currentNode);
-                return routeNodes;
+                routeNodes.set(currentNode.wpName, currentNode);
+                break;
             }
-            this.expandNodesToVisit(nodesToVisit, routeNodes, currentNode, end);
-            routeNodes.set(currentNode.wpName,currentNode);
+            let nextNodesToVisit: Map<string, NodeInfo> = this.getNextNodesToVisit(nodesToVisit, routeNodes, currentNode, end);
+            // merge current nodes and nodes to visit
+            nodesToVisit = new Map([...Array.from(nodesToVisit.entries()), ...Array.from(nextNodesToVisit.entries())]);
+            routeNodes.set(currentNode.wpName, currentNode);
         }
-        return new Map();
+        return routeNodes
     }
 
-    private createNodeWithWaypointData(waypoint:Waypoint):NodeInfo{
-        let node:NodeInfo = {
-            x: waypoint.x, 
-            y:waypoint.y, 
-            z: waypoint.z, 
-            rotX: waypoint.rotX, 
+    private createNodeInfo(waypoint: Waypoint): NodeInfo {
+        let node: NodeInfo = {
+            x: waypoint.x,
+            y: waypoint.y,
+            z: waypoint.z,
+            rotX: waypoint.rotX,
             rotY: waypoint.rotY,
             wpName: waypoint.wpName,
             otherWps: waypoint.otherWps,
             distanceToStart: 0,
-            distanceToEnd:0,
-            aproximateAbsDistance:0
+            distanceToEnd: 0,
+            aproximateAbsDistance: 0
         }
         return node;
     }
 
-    private expandNodesToVisit(nodesToVisit: Map<string, NodeInfo>, routeNodes: Map<string, NodeInfo>, currentNode: NodeInfo, end: Waypoint): void {
+    private getNextNodesToVisit(nodesToVisit: Map<string, NodeInfo>, routeNodes: Map<string, NodeInfo>, currentNode: NodeInfo, end: Waypoint): Map<string, NodeInfo> {
         if (currentNode.otherWps.length == 0) {
             return;
         }
+        let result: Map<string, NodeInfo> = new Map();
 
         currentNode.otherWps.forEach(neighborWpName => {
             if (typeof routeNodes.get(neighborWpName) === 'undefined') {
@@ -104,29 +111,33 @@ export class Waynet implements IWaynet {
                 let distanceToNeighbor = this.getDistance(currentNode.x, currentNode.y, currentNode.z, neighborWp.x, neighborWp.y, neighborWp.z);
                 let distNodeToStart = currentNode.distanceToStart + distanceToNeighbor;
                 let neighborNode = nodesToVisit.get(neighborWpName);
-                if (!(typeof neighborNode !== 'undefined' && distNodeToStart > neighborNode.distanceToStart)) {
-                   /*aproximate means, that we are measuring the distance straight between point a to b, without measuring the distances of the nodes in between
-                     measuring the aproximate absolute distance is enough of an heuristic for us to decide which node to chose next*/
+                if (!this.neighborDistanceToStartIsGreater(neighborNode, distNodeToStart)) {
+                    /*aproximate means, that we are measuring the distance straight between point a to b, without measuring the distances of the nodes in between
+                      measuring the aproximate absolute distance is enough of an heuristic for us to decide which node to chose next*/
                     let aproximateDistNodeToEnd = this.getDistance(end.x, end.y, end.z, neighborWp.x, neighborWp.y, neighborWp.z);
                     let aproximateAbsDistance = distNodeToStart + aproximateDistNodeToEnd
-                    let newNodeToVisit = this.createNodeWithWaypointData(neighborWp);
+                    let newNodeToVisit = this.createNodeInfo(neighborWp);
                     newNodeToVisit.distanceToStart = distNodeToStart;
                     newNodeToVisit.aproximateAbsDistance = aproximateAbsDistance;
-                    nodesToVisit.set(neighborWpName, newNodeToVisit);
-                    
+                    result.set(neighborWpName, newNodeToVisit)
                 }
             }
         })
+        return result
     }
 
-    private getNextMinAbsDistanceWaypoint(currentWp: Waypoint, routeNodes: Map<string, NodeInfo>): Waypoint | undefined {
+    private neighborDistanceToStartIsGreater(neighborNode: NodeInfo, distNodeToStart: number) {
+        return typeof neighborNode !== 'undefined' && distNodeToStart > neighborNode.distanceToStart;
+    }
+
+    private getNeighborWithMinNetDistance(currentWp: Waypoint, routeNodes: Map<string, NodeInfo>): Waypoint | undefined {
         let smallestDistance = 99999999;
         let nextMinWaypoint: Waypoint | undefined;
 
         currentWp.otherWps.forEach(neighborWpName => {
-            let neighborNode:NodeInfo = routeNodes.get(neighborWpName);
+            let neighborNode: NodeInfo = routeNodes.get(neighborWpName);
             if (typeof neighborNode !== 'undefined') {
-                
+
                 let distance = this.getDistance(currentWp.x, currentWp.y, currentWp.z, neighborNode.x, neighborNode.y, neighborNode.z);
                 let absoluteDistance = routeNodes.get(currentWp.wpName).distanceToEnd + distance + routeNodes.get(neighborWpName).distanceToStart
 
@@ -136,12 +147,12 @@ export class Waynet implements IWaynet {
                     routeNodes.get(neighborWpName).distanceToEnd = routeNodes.get(currentWp.wpName).distanceToEnd + distance
                 }
             }
-        }
-        )
+        })
         return nextMinWaypoint;
     }
 
-    private popNodeWithMinAproximateAbsDistance(nodesToVisit: Map<string, NodeInfo>): NodeInfo | undefined {
+
+    private popNodeWithMinFlightDistance(nodesToVisit: Map<string, NodeInfo>): NodeInfo | undefined {
         let lowestDistance = 99999999;
         let closestWpToGoal: string | undefined;
         let closestNodeToGoal: NodeInfo | undefined;
@@ -152,7 +163,7 @@ export class Waynet implements IWaynet {
                 closestNodeToGoal = nodesToVisit.get(wpName);
             }
         });
-        
+
         if (typeof closestWpToGoal !== 'undefined') {
             nodesToVisit.delete(closestWpToGoal);
         }
@@ -165,14 +176,6 @@ export class Waynet implements IWaynet {
         let y = y1 - y2;
         let z = z1 - z2;
         return Math.sqrt(x * x + y * y + z * z);
-    }
-
-    private toWaypointMap(waypoints: Array<Waypoint>): Map<string,Waypoint> {
-        const reducer = (wpMap: Map<string, Waypoint>, wp: Waypoint): Map<string, Waypoint> => {
-            wpMap.set(wp.wpName, wp);
-            return wpMap;
-        }
-        return waypoints.reduce(reducer, new Map())
     }
 
 }
