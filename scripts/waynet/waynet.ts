@@ -1,6 +1,5 @@
 import * as waynetReader from './waynetReader';
 import { IWaynet, Freepoint, Waypoint } from './iwaynet';
-import { Node } from 'typescript';
 
 /**
  * Represents a node in the waynet. It contains additional information about distances to other
@@ -42,7 +41,7 @@ export class Waynet implements IWaynet {
         return this.getNodeRoutesOrderedByMinNetDistance(unorderedRouteNodes, start, end)
     }
 
-    private getNodeRoutesOrderedByMinNetDistance(routeNodes: Map<string, NodeInfo>, start: string, end: string){
+    private getNodeRoutesOrderedByMinNetDistance(routeNodes: Map<string, NodeInfo>, start: string, end: string) {
         let currentWp: Waypoint | undefined = this.waypoints.get(end);
         let wayroute = []
         wayroute.push(currentWp)
