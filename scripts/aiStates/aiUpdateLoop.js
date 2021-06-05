@@ -2,19 +2,22 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AiUpdateLoop = void 0;
 class AiUpdateLoop {
-    constructor(state) {
-        this._state = state;
+    constructor(em) {
+        this._entityManager = em;
     }
     get state() {
-        return this._state;
+        return this._entityManager;
     }
     updateAll() {
-        Array.from(this._state.botMap.keys()).forEach((aiId) => this.updateAi(aiId));
+        this._entityManager.getAllBots.forEach((aiId) => this.updateAi(aiId));
     }
     updateAi(aiId) {
-        let npc = this._state.botMap.get(aiId);
-        if (typeof npc !== 'undefined') {
-            npc.executeNextAction();
+        let actionsComponent = this._entityManager.getActionsComponent(aiId);
+        if (typeof actionsComponent !== 'undefined') {
+            let nextAction = actionsComponent.nextActions.peek();
+            if (typeof nextAction !== 'undefined') {
+                nextAction.executeAction();
+            }
         }
     }
 }

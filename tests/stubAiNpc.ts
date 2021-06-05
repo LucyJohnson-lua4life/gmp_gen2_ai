@@ -25,11 +25,11 @@ export class StubAiNpc implements IAiNpc{
         this.enemyIds = []
         this.friendIds = [];
         this.respawnTime = 100;
-        this.nextActions = new Heap();
+        this.nextActions = new Heap((a: IAiAction, b: IAiAction) => a.priority - b.priority);
         this.aiFlags = new Map();
     }
     addAction(action: IAiAction) {
-        //nothing
+        this.nextActions.push(action)
     }
 
 
