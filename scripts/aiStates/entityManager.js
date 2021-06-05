@@ -10,6 +10,8 @@ class EntityManager {
     constructor() {
         this.allPositions = new Map();
         worldNames.forEach(name => this.allPositions.set(name, new Map()));
+        this.allBots = new Array();
+        this.allPlayer = new Array();
         this.allPositions = new Map();
         this.dailyRoutineComponents = new Map();
         this.actionsComponents = new Map();
@@ -19,6 +21,19 @@ class EntityManager {
     }
     get positionMap() {
         return this.allPositions;
+    }
+    get getAllBots() {
+        return this.allBots;
+    }
+    //todo: add more functionality once revmp functions are available
+    registerBot(npc) {
+        this.allBots.push(npc.id);
+        let stateInfo = { entityId: npc.id, isDead: false, isUnconscious: false };
+        let respawnInfo = { entityId: npc.id, respawnTime: npc.respawnTime };
+        let actionInfo = { entityId: npc.id, nextActions: npc.nextActions };
+        this.setNpcStateComponent(npc.id, stateInfo);
+        this.setRespawnComponent(npc.id, respawnInfo);
+        this.setActionsComponent(npc.id, actionInfo);
     }
     getDailyRoutineComponent(entityId) {
         return this.dailyRoutineComponents.get(entityId);
