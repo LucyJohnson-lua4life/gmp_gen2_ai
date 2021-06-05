@@ -6,8 +6,6 @@ import { EntityManager } from "../../scripts/aiStates/entityManager";
 import { SpawnNpc } from "../../scripts/aiStates/aiStateFunctions";
 
 
-
-
 // all revmp API calls made in this unit test are mocked globally
 Object.defineProperty(global, "revmp", {
     value: {

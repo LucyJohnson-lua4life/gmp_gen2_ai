@@ -12,7 +12,6 @@ class EntityManager {
         worldNames.forEach(name => this.allPositions.set(name, new Map()));
         this.allBots = new Array();
         this.allPlayer = new Array();
-        this.allPositions = new Map();
         this.dailyRoutineComponents = new Map();
         this.actionsComponents = new Map();
         this.positionsComponents = new Map();
