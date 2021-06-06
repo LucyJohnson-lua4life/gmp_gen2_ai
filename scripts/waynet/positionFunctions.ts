@@ -1,11 +1,4 @@
 import { IAiNpc } from "../aiEntities/iAiNpc";
-import { AIState } from "../aiStates/aiStates";
-
-
-
-
-
-
 
 function getDistance(x1: number, y1: number, z1: number, x2: number, y2: number, z2: number) {
     if ([x1, y1, z1, , x2, y2, z2].some((val) => (typeof val === 'undefined'))) {

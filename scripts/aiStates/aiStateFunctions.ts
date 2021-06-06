@@ -1,5 +1,4 @@
 import { IAiNpc } from "../aiEntities/iAiNpc";
-import { AIState } from "./aiStates";
 import { EntityManager } from "./entityManager";
 
 
