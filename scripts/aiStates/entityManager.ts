@@ -56,7 +56,7 @@ export class EntityManager {
 
     }
 
-    getDailyRoutineComponent(entityId: number): IDrInfoComponent{
+    getDailyRoutineComponent(entityId: number): IDrInfoComponent|undefined{
         return this.dailyRoutineComponents.get(entityId);
     }
 
@@ -64,7 +64,7 @@ export class EntityManager {
         this.dailyRoutineComponents.set(entityId, component)
     }
 
-    getActionsComponent(entityId: number): IActionsComponent{
+    getActionsComponent(entityId: number): IActionsComponent|undefined{
         return this.actionsComponents.get(entityId);
     }
 
@@ -72,7 +72,7 @@ export class EntityManager {
         this.actionsComponents.set(entityId, component)
     }
 
-    getPositionsComponents(entityId: number): IPositionComponent{
+    getPositionsComponents(entityId: number): IPositionComponent|undefined{
         return this.positionsComponents.get(entityId);
     }
 
@@ -80,14 +80,14 @@ export class EntityManager {
         this.positionsComponents.set(entityId, component)
     }
 
-    getNpcStateComponent(entityId: number): INpcStateComponent{
+    getNpcStateComponent(entityId: number): INpcStateComponent|undefined{
         return this.npcStateComponents.get(entityId);
     }
     setNpcStateComponent(entityId: number, component: INpcStateComponent){
         this.npcStateComponents.set(entityId, component)
     }
 
-    getRespawnComponent(entityId: number): IRespawnComponent{
+    getRespawnComponent(entityId: number): IRespawnComponent|undefined{
         return this.respawnComponents.get(entityId);
     }
 

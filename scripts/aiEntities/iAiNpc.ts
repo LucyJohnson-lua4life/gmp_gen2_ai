@@ -15,7 +15,5 @@ export interface IAiNpc extends IPlayer{
     currentPosX:number,
     currentPosY:number,
     currentPosZ:number,
-    executeNextAction():void
     addAction(action:IAiAction)
-    onNpcHitted(aiNpcId:number, attackerId:number):void
 }

@@ -32,13 +32,4 @@ export class StubAiNpc implements IAiNpc{
         this.nextActions.push(action)
     }
 
-
-    executeNextAction():void{
-        //nothing
-    }
-
-    onNpcHitted():void{
-        //nothing
-    }
-
 }

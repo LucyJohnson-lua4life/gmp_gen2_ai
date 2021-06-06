@@ -1,4 +1,3 @@
-import { off } from 'node:process';
 import { IActionsComponent } from '../aiEntities/components/iActionsComponent';
 import { IAiAction } from '../aiEntities/iAiAction';
 import { EntityManager } from './entityManager';
@@ -19,6 +18,7 @@ export class AiUpdateLoop {
 
     public updateAi(aiId: number) {
         let actionsComponent:IActionsComponent | undefined = this._entityManager.getActionsComponent(aiId);
+
         if (typeof actionsComponent !== 'undefined') {
             let nextAction:IAiAction|undefined = actionsComponent.nextActions.peek();
             if(typeof nextAction !== 'undefined'){
