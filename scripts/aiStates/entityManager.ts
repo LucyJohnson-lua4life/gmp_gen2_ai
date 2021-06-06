@@ -95,7 +95,4 @@ export class EntityManager {
         this.respawnComponents.set(entityId, component)
     }
 
-    
-
-
 }

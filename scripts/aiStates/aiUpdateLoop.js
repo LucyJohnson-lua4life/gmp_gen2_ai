@@ -16,7 +16,7 @@ class AiUpdateLoop {
         if (typeof actionsComponent !== 'undefined') {
             let nextAction = actionsComponent.nextActions.peek();
             if (typeof nextAction !== 'undefined') {
-                nextAction.executeAction();
+                nextAction.shouldLoop ? nextAction.executeAction() : actionsComponent.nextActions.pop().executeAction();
             }
         }
     }
