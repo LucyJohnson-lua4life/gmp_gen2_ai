@@ -1,18 +1,18 @@
 import { NpcActionUtils } from '../../scripts/aiFunctions/npcActionUtils';
-import {AIState} from '../../scripts/aiStates/aiStates';
+import {EntityManager} from '../../scripts/aiStates/entityManager';
 
 const worldName = "NEWWORLD\\NEWWORLD.ZEN"
 const AITargetDistance = 2500;
 test('Should only return npc ids that are in the same 2500x2500x2500 distance sector.', () => {
-    let state:AIState = new AIState();
+    let entityManager:EntityManager = new EntityManager();
    // state.positionMap[worldName][calculatePositionCheckSum(3200,3000,)]
-    addNpcByChecksum(state, calculatePositionCheckSum(2700,2800,2900), 1);
-    addNpcByChecksum(state, calculatePositionCheckSum(3800,3900,3000), 2);
-    addNpcByChecksum(state, calculatePositionCheckSum(5100,3900,3000), 3);
-    addNpcByChecksum(state, calculatePositionCheckSum(7100,7000,7450), 4);
-    addNpcByChecksum(state, calculatePositionCheckSum(5500,6100,5700), 5);
+    addNpcByChecksum(entityManager, calculatePositionCheckSum(2700,2800,2900), 1);
+    addNpcByChecksum(entityManager, calculatePositionCheckSum(3800,3900,3000), 2);
+    addNpcByChecksum(entityManager, calculatePositionCheckSum(5100,3900,3000), 3);
+    addNpcByChecksum(entityManager, calculatePositionCheckSum(7100,7000,7450), 4);
+    addNpcByChecksum(entityManager, calculatePositionCheckSum(5500,6100,5700), 5);
 
-   let actionUtils:NpcActionUtils = new NpcActionUtils(state);
+   let actionUtils:NpcActionUtils = new NpcActionUtils(entityManager);
 
    expect(actionUtils.getNearbyNpcs(worldName, 3000,3000,3000)).toStrictEqual([1,2]) 
    expect(actionUtils.getNearbyNpcs(worldName, 5100,3000,3000)).toStrictEqual([3]) 
@@ -20,12 +20,12 @@ test('Should only return npc ids that are in the same 2500x2500x2500 distance se
 
 })
 
-function addNpcByChecksum(state:AIState, checksum:number, npcid:number){
-    let npclist = state.positionMap.get(worldName).get(checksum);
+function addNpcByChecksum(entityManager:EntityManager, checksum:number, npcid:number){
+    let npclist = entityManager.positionMap.get(worldName).get(checksum);
     if(typeof npclist === 'undefined'){
-        state.positionMap.get(worldName).set(checksum, []);
+        entityManager.positionMap.get(worldName).set(checksum, []);
     }
-    state.positionMap.get(worldName).get(checksum).push(npcid);
+    entityManager.positionMap.get(worldName).get(checksum).push(npcid);
 }
 
 function calculatePositionCheckSum(x:number, y:number, z:number){

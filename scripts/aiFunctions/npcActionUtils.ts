@@ -1,4 +1,4 @@
-import { AIState } from "../aiStates/aiStates";
+import { EntityManager } from "../aiStates/entityManager";
 
 
 /**
@@ -7,10 +7,10 @@ import { AIState } from "../aiStates/aiStates";
 const AI_TARGET_DISTANCE:number = 2500; 
 export class NpcActionUtils{
 
-    private state:AIState;
+    private entityManager:EntityManager;
     
-    constructor(s:AIState){
-        this.state = s;
+    constructor(em:EntityManager){
+        this.entityManager = em;
     }
 
     /**
@@ -26,7 +26,7 @@ export class NpcActionUtils{
      * @param z the z value of the point, for which nearby npc ids should be found
      */
     public getNearbyNpcs(world:string, x:number, y:number, z:number):Array<number>{
-        let worldPositionMap = this.state.positionMap.get(world);
+        let worldPositionMap = this.entityManager.positionMap.get(world);
         let deepCopyOfNearbyNpcs:Array<number> = []
         if(typeof worldPositionMap !== 'undefined'){
             let nearbyNpcs = worldPositionMap.get(this.calculatePositionCheckSum(x,y,z));

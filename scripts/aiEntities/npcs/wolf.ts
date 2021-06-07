@@ -44,23 +44,4 @@ export class Wolf implements IAiNpc {
         this.nextActions.push(action)
     }
 
-    executeNextAction(): void {
-
-        let pos:revmp.Position = revmp.getPosition(this.id) 
-        this.currentPosX = pos.x
-        this.currentPosY = pos.y
-        this.currentPosZ = pos.z
-
-
-        let nextAction = this.nextActions.peek()
-        if ((typeof nextAction !== 'undefined')) {
-            nextAction.shouldLoop ? nextAction.executeAction() : this.nextActions.pop().executeAction();
-
-        }
-
-    }
-    onNpcHitted(aiNpcId: number, attackerId: number): void {
-        console.log("Nothing implemented yet.")
-    }
-
 }

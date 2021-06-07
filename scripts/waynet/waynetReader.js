@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.readWaypoints = exports.readFreepoints = void 0;
+exports.readWaypointsMap = exports.readWaypoints = exports.readFreepoints = void 0;
 const fs = require("fs");
 function isBlank(string) {
     return string.length == 0 || !string.trim();
@@ -33,3 +33,9 @@ function readWaypoints(path) {
     }));
 }
 exports.readWaypoints = readWaypoints;
+function readWaypointsMap(path) {
+    let waypointsMap = new Map();
+    readWaypoints(path).forEach(element => waypointsMap.set(element.wpName, element));
+    return waypointsMap;
+}
+exports.readWaypointsMap = readWaypointsMap;

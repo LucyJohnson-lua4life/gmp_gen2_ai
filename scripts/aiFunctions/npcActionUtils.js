@@ -6,8 +6,8 @@ exports.NpcActionUtils = void 0;
  */
 const AI_TARGET_DISTANCE = 2500;
 class NpcActionUtils {
-    constructor(s) {
-        this.state = s;
+    constructor(em) {
+        this.entityManager = em;
     }
     /**
      * Returns all npc id's that are in the same 2500x2500x2500 distance sector of the given point.
@@ -22,7 +22,7 @@ class NpcActionUtils {
      * @param z the z value of the point, for which nearby npc ids should be found
      */
     getNearbyNpcs(world, x, y, z) {
-        let worldPositionMap = this.state.positionMap.get(world);
+        let worldPositionMap = this.entityManager.positionMap.get(world);
         let deepCopyOfNearbyNpcs = [];
         if (typeof worldPositionMap !== 'undefined') {
             let nearbyNpcs = worldPositionMap.get(this.calculatePositionCheckSum(x, y, z));

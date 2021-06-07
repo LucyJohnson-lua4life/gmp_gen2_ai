@@ -25,18 +25,5 @@ class Wolf {
     addAction(action) {
         this.nextActions.push(action);
     }
-    executeNextAction() {
-        let pos = revmp.getPosition(this.id);
-        this.currentPosX = pos.x;
-        this.currentPosY = pos.y;
-        this.currentPosZ = pos.z;
-        let nextAction = this.nextActions.peek();
-        if ((typeof nextAction !== 'undefined')) {
-            nextAction.shouldLoop ? nextAction.executeAction() : this.nextActions.pop().executeAction();
-        }
-    }
-    onNpcHitted(aiNpcId, attackerId) {
-        console.log("Nothing implemented yet.");
-    }
 }
 exports.Wolf = Wolf;

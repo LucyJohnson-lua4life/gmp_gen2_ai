@@ -7,7 +7,7 @@ const waynetReader = require("./waynetReader");
  */
 class Waynet {
     constructor(waypointFile, freepointFile) {
-        this.waypoints = this.toWaypointMap(waynetReader.readWaypoints(waypointFile));
+        this.waypoints = waynetReader.readWaypointsMap(waypointFile);
         this.freepoints = waynetReader.readFreepoints(freepointFile);
     }
     /**
@@ -16,16 +16,19 @@ class Waynet {
      * @param end name of the end waypoint
      */
     getWayroute(start, end) {
-        let routeNodes = this.getRouteNodes(this.waypoints.get(start), this.waypoints.get(end));
-        if (routeNodes.size === 0) {
-            return [];
+        let unorderedRouteNodes = this.getUnorderedRouteNodes(this.waypoints.get(start), this.waypoints.get(end));
+        if (unorderedRouteNodes.size === 0) {
+            return new Array();
         }
+        return this.getNodeRoutesOrderedByMinNetDistance(unorderedRouteNodes, start, end);
+    }
+    getNodeRoutesOrderedByMinNetDistance(routeNodes, start, end) {
         let currentWp = this.waypoints.get(end);
         let wayroute = [];
         wayroute.push(currentWp);
         while (currentWp.wpName !== start) {
             let lastCurrentWp = currentWp;
-            currentWp = this.getNextMinAbsDistanceWaypoint(currentWp, routeNodes);
+            currentWp = this.getNeighborWithMinNetDistance(currentWp, routeNodes);
             if (typeof currentWp === 'undefined') {
                 return [];
             }
@@ -34,25 +37,28 @@ class Waynet {
         }
         return wayroute.reverse();
     }
-    getRouteNodes(start, end) {
+    getUnorderedRouteNodes(start, end) {
         let nodesToVisit = new Map();
         let routeNodes = new Map();
-        nodesToVisit.set(start.wpName, this.createNodeWithWaypointData(start));
+        nodesToVisit.set(start.wpName, this.createNodeInfo(start));
         while (nodesToVisit.size > 0) {
-            let currentNode = this.popNodeWithMinAproximateAbsDistance(nodesToVisit);
+            let currentNode = this.popNodeWithMinFlightDistance(nodesToVisit);
             if (typeof currentNode === 'undefined') {
-                return new Map();
+                routeNodes = new Map();
+                break;
             }
             if (currentNode.wpName === end.wpName) {
                 routeNodes.set(currentNode.wpName, currentNode);
-                return routeNodes;
+                break;
             }
-            this.expandNodesToVisit(nodesToVisit, routeNodes, currentNode, end);
+            let nextNodesToVisit = this.getNextNodesToVisit(nodesToVisit, routeNodes, currentNode, end);
+            // merge current nodes and nodes to visit
+            nodesToVisit = new Map([...Array.from(nodesToVisit.entries()), ...Array.from(nextNodesToVisit.entries())]);
             routeNodes.set(currentNode.wpName, currentNode);
         }
-        return new Map();
+        return routeNodes;
     }
-    createNodeWithWaypointData(waypoint) {
+    createNodeInfo(waypoint) {
         let node = {
             x: waypoint.x,
             y: waypoint.y,
@@ -67,30 +73,35 @@ class Waynet {
         };
         return node;
     }
-    expandNodesToVisit(nodesToVisit, routeNodes, currentNode, end) {
+    getNextNodesToVisit(nodesToVisit, routeNodes, currentNode, end) {
         if (currentNode.otherWps.length == 0) {
             return;
         }
+        let result = new Map();
         currentNode.otherWps.forEach(neighborWpName => {
             if (typeof routeNodes.get(neighborWpName) === 'undefined') {
                 let neighborWp = this.waypoints.get(neighborWpName);
                 let distanceToNeighbor = this.getDistance(currentNode.x, currentNode.y, currentNode.z, neighborWp.x, neighborWp.y, neighborWp.z);
                 let distNodeToStart = currentNode.distanceToStart + distanceToNeighbor;
                 let neighborNode = nodesToVisit.get(neighborWpName);
-                if (!(typeof neighborNode !== 'undefined' && distNodeToStart > neighborNode.distanceToStart)) {
+                if (!this.neighborDistanceToStartIsGreater(neighborNode, distNodeToStart)) {
                     /*aproximate means, that we are measuring the distance straight between point a to b, without measuring the distances of the nodes in between
                       measuring the aproximate absolute distance is enough of an heuristic for us to decide which node to chose next*/
                     let aproximateDistNodeToEnd = this.getDistance(end.x, end.y, end.z, neighborWp.x, neighborWp.y, neighborWp.z);
                     let aproximateAbsDistance = distNodeToStart + aproximateDistNodeToEnd;
-                    let newNodeToVisit = this.createNodeWithWaypointData(neighborWp);
+                    let newNodeToVisit = this.createNodeInfo(neighborWp);
                     newNodeToVisit.distanceToStart = distNodeToStart;
                     newNodeToVisit.aproximateAbsDistance = aproximateAbsDistance;
-                    nodesToVisit.set(neighborWpName, newNodeToVisit);
+                    result.set(neighborWpName, newNodeToVisit);
                 }
             }
         });
+        return result;
     }
-    getNextMinAbsDistanceWaypoint(currentWp, routeNodes) {
+    neighborDistanceToStartIsGreater(neighborNode, distNodeToStart) {
+        return typeof neighborNode !== 'undefined' && distNodeToStart > neighborNode.distanceToStart;
+    }
+    getNeighborWithMinNetDistance(currentWp, routeNodes) {
         let smallestDistance = 99999999;
         let nextMinWaypoint;
         currentWp.otherWps.forEach(neighborWpName => {
@@ -107,7 +118,7 @@ class Waynet {
         });
         return nextMinWaypoint;
     }
-    popNodeWithMinAproximateAbsDistance(nodesToVisit) {
+    popNodeWithMinFlightDistance(nodesToVisit) {
         let lowestDistance = 99999999;
         let closestWpToGoal;
         let closestNodeToGoal;
@@ -128,13 +139,6 @@ class Waynet {
         let y = y1 - y2;
         let z = z1 - z2;
         return Math.sqrt(x * x + y * y + z * z);
-    }
-    toWaypointMap(waypoints) {
-        const reducer = (wpMap, wp) => {
-            wpMap.set(wp.wpName, wp);
-            return wpMap;
-        };
-        return waypoints.reduce(reducer, new Map());
     }
 }
 exports.Waynet = Waynet;

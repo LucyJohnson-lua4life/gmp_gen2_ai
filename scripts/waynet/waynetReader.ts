@@ -35,3 +35,11 @@ export function readWaypoints(path: string): Array<Waypoint> {
         otherWps: waypoint.slice(6).map(wpName => wpName.replace(/\r?\n|\r/, ""))
     }))
 }
+
+
+
+export function readWaypointsMap(path: string): Map<String,Waypoint> {
+    let waypointsMap = new Map();
+    readWaypoints(path).forEach(element => waypointsMap.set(element.wpName, element))
+    return waypointsMap;
+}

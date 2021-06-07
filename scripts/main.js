@@ -2,13 +2,13 @@
 
 const wolf = require("./scripts/aiEntities/npcs/wolf");
 const funs = require("./scripts/aiStates/aiStateFunctions");
-const state1 = require("./scripts/aiStates/aiStates");
+const entityManager = require("./scripts/aiStates/entityManager");
 const aiUpdateLoop = require("./scripts/aiStates/aiUpdateLoop");
 //const ai = require("./scripts/aiStates/aiUpdateLoop");
 
 const posFuncs = require("./scripts/waynet/positionFunctions");
-let state = new state1.AIState();
-let updateLoop = new aiUpdateLoop.AiUpdateLoop(state);
+let em = new entityManager.EntityManager();
+let updateLoop = new aiUpdateLoop.AiUpdateLoop(em);
 
 revmp.createInstanceTemplate({
     type: revmp.InstanceType.Character,
@@ -90,11 +90,11 @@ revmp.on("init", () => {
     const world = revmp.createWorld("new_world");
     revmp.setTime(world, { hour: 15, minute: 0 });
 
-    
+    let w = new wolf.Wolf()
     setInterval(updateLoop.updateAll.bind(updateLoop), 1000);
-    funs.SpawnNpc(state, new wolf.Wolf(), 0, 0, 0);
+    funs.SpawnNpc(em, w, 0, 0, 0);
     
-    console.log(state.botMap.get(4))
+    console.log(w.id)
 
 });
 
@@ -124,17 +124,23 @@ function debugCommands(entity, msg){
 
     if(command === "/walk"){
         const param1 = words[1];
-        let npc = state.botMap.get(parseInt(param1))
+        let npcid = parseInt(param1)
         //todo : liefer aiAction den state mit, und entferne die die aktion selbst, wenn die position erreicht wurde
         let aiAction = {
             priority:1,
-            aiId:parseInt(param1),
+            aiId:npcid,
             shouldLoop: true,
             executeAction: function(){
+                let pos = revmp.getPosition(npcid) 
+                let positionComponent =  em.getPositionsComponents(npcid)
+                positionComponent.currentPosX = pos.x
+                positionComponent.currentPosY = pos.y
+                positionComponent.currentPosZ = pos.z
+                em.setPositionsComponent(npcid, positionComponent)
                 
-                posFuncs.gotoPosition(npc, 566, -79, -964)
-                let position = revmp.getPosition(this.aiId)
-                console.log(this.aiId)
+                posFuncs.gotoPosition(positionComponent, 566, -79, -964)
+                let position = revmp.getPosition(npcid)
+                console.log(npcid)
 
                 if(getDistance(566, -79, -964, position.x, position.y, position.z) < 50){
                     this.shouldLoop = false
@@ -143,9 +149,10 @@ function debugCommands(entity, msg){
         }
 
         
-        console.log(npc)
+        //console.log(npc)
         //todo: push die aiActions in den npc
-        npc.addAction(aiAction)
+        //npc.addAction(aiAction)
+        em.getActionsComponent(npcid).nextActions.push(aiAction)
 
     }
 }
@@ -157,6 +164,6 @@ revmp.on("chatCommand", (entity, msg) => {
     debugCommands(entity, msg)
 
     if (command === "/spawn") {
-        funs.SpawnNpc(state, new wolf.Wolf(), 0, 0, 0);
+        funs.SpawnNpc(em, new wolf.Wolf(), 0, 0, 0);
     }
 });
