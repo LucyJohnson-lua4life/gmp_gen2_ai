@@ -30,9 +30,11 @@ class EntityManager {
         let stateInfo = { entityId: npc.id, isDead: false, isUnconscious: false };
         let respawnInfo = { entityId: npc.id, respawnTime: npc.respawnTime };
         let actionInfo = { entityId: npc.id, nextActions: npc.nextActions };
+        let positionInfo = { entityId: npc.id, currentPosX: 0, currentPosY: 0, currentPosZ: 0, lastPosX: 0, lastPosY: 0, lastPosZ: 0, lastPosUpdate: 0 };
         this.setNpcStateComponent(npc.id, stateInfo);
         this.setRespawnComponent(npc.id, respawnInfo);
         this.setActionsComponent(npc.id, actionInfo);
+        this.setPositionsComponent(npc.id, positionInfo);
     }
     getDailyRoutineComponent(entityId) {
         return this.dailyRoutineComponents.get(entityId);

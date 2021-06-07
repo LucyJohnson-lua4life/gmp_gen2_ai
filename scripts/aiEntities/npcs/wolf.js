@@ -6,6 +6,7 @@ const npcInits_1 = require("./npcInits");
 class Wolf {
     constructor() {
         this.id = revmp.createBot(npcInits_1.INSTANCE_WOLF);
+        ;
         this.isDead = false;
         this.isUnconscious = false;
         this.enemyIds = [];
