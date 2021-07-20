@@ -5,11 +5,7 @@ import { EntityManager } from "./entityManager";
 
 export function SpawnNpc(entityManager:EntityManager, npc:IAiNpc, x:number, y:number, z:number){
     entityManager.registerBot(npc)
-<<<<<<< Updated upstream
-    revmp.setPosition(npc.id, { x: x, y: y, z: z});
-=======
     revmp.setPosition(npc.id, [x,y,z]);
->>>>>>> Stashed changes
     let position:IPositionComponent =  entityManager.getPositionsComponents(npc.id)
     position.currentPosX = x
     position.currentPosY = y
