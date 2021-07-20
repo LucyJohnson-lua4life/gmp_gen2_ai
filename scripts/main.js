@@ -1,99 +1,80 @@
 "use strict";
 
-const wolf = require("./scripts/aiEntities/npcs/wolf");
-const funs = require("./scripts/aiStates/aiStateFunctions");
-const entityManager = require("./scripts/aiStates/entityManager");
-const aiUpdateLoop = require("./scripts/aiStates/aiUpdateLoop");
+const wolf = require("./aiEntities/npcs/wolf");
+const funs = require("./aiStates/aiStateFunctions");
+const entityManager = require("./aiStates/entityManager");
+const aiUpdateLoop = require("./aiStates/aiUpdateLoop");
 //const ai = require("./scripts/aiStates/aiUpdateLoop");
 
-const posFuncs = require("./scripts/waynet/positionFunctions");
+const posFuncs = require("./waynet/positionFunctions");
 let em = new entityManager.EntityManager();
 let updateLoop = new aiUpdateLoop.AiUpdateLoop(em);
 
-revmp.createInstanceTemplate({
-    type: revmp.InstanceType.Character,
-    id: "revmp_pc_hero",
-    name: "Ich",
-    maxHealth: 100,
-    maxMana: 10,
-    attributes: {
-        strength: 10,
-        dexterity: 10,
-        magicCircle: 0,
-        oneHanded: 0,
-        twoHanded: 0,
-        bow: 0,
-        crossbow: 0,
-    },
-    meleeAttack: {
-        blunt: 5,
-        edge: 0,
-        point: 0,
-        fire: 0,
-        fly: 0,
-        magic: 0,
-        fall: 0,
-        range: 40,
-    },
-    protection: { 
-        blunt: 0,
-        edge: 0,
-        point: 0,
-        fire: 0,
-        fly: 0,
-        magic: 0,
-        fall: 0,
-    },
-    visual: "humans.mds",
-    visualBody: {
-        bodyMesh: "hum_body_Naked0",
-        bodyTexture: 9,
-        skinColor: 0,
-        headMesh: "Hum_Head_Pony",
-        headTexture: 18,
-        teethTexture: 0,
-        bodyMass: 0,
-    },
-});
+function createWolf() {
+    return revmp.createBot({
+        name: "Wolf",
+        maxHealth: 60,
+        visual: "Wolf.mds",
+        visualBody: {
+            bodyMesh: "Wol_Body"
+        },
+        meleeAttack: {
+            edge: 30,
+            range: 80
+        },
+        protection: {
+            blunt: 30,
+            edge: 30,
+            fire: 30,
+            fly: 30,
+        },
+        weaponMode: revmp.WeaponMode.Fist
+    });
+}
 
-revmp.createInstanceTemplate({
-    type: revmp.InstanceType.Character,
-    id: "revmp_wolf",
-    name: "Wolf",
-    maxHealth: 60,
-    meleeAttack: {
-        edge: 30,
-        range: 80,
-    },
-    protection: { 
-        blunt: 30,
-        edge: 30,
-        fire: 30,
-        fly: 30,
-    },
-    visual: "Wolf.mds",
-    visualBody: {
-        bodyMesh: "Wol_Body",
-    },
-    weaponMode: revmp.WeaponState.Fist,
-});
+function createHuman() {
+    return revmp.createBot({
+        name: "Dar",
+        maxHealth: 100,
+        visual: "humans.mds",
+        visualBody: {
+            bodyMesh: "hum_body_Naked0",
+            bodyTexture: 1,
+            headMesh: "Hum_Head_Bald",
+            headTexture: 69
+        },
+        attributes: {
+            strength: 80,
+            dexterity: 80,
+            magicCircle: 4,
+            oneHanded: 50,
+            twoHanded: 50,
+            bow: 50,
+            crossbow: 50
+        },
+        meleeAttack: {
+            blunt: 5,
+            range: 80
+        }
+    });
+}
 
 revmp.on("init", () => {
 
-    revmp.createInstanceTemplate({
-        type: revmp.InstanceType.World,
-        id: "new_world",
+    const world = revmp.createWorld({
+        zen: "NEWWORLD/NEWWORLD.ZEN",
+        startpoint: "NW_CITY_HABOUR_02_B",
         name: "New World",
-        zen: "NEWWORLD\\NEWWORLD.ZEN",
-        waypoint: "NW_CITY_HABOUR_02_B",
+        time: { hour: 15 }
     });
-    const world = revmp.createWorld("new_world");
+
     revmp.setTime(world, { hour: 15, minute: 0 });
 
     let w = new wolf.Wolf()
     setInterval(updateLoop.updateAll.bind(updateLoop), 1000);
     funs.SpawnNpc(em, w, 0, 0, 0);
-    
+    console.log(w.id)
+    funs.SpawnNpc(em, w, 0, 0, 0);
     console.log(w.id)
 
 });
@@ -113,7 +94,6 @@ function getDistance(x1, y1, z1, x2, y2, z2) {
 function debugCommands(entity, msg){
     const words = msg.toLowerCase().split(' ');
     const command = words[0];
-    
     if (command === "/getpos") {
         let pos = revmp.getPosition(entity)
         revmp.sendChatMessage(entity, `pos: ${pos.x},${pos.y},${pos.z}`)
@@ -131,13 +111,13 @@ function debugCommands(entity, msg){
             aiId:npcid,
             shouldLoop: true,
             executeAction: function(){
-                let pos = revmp.getPosition(npcid) 
+                let pos = revmp.getPosition(npcid).position
                 let positionComponent =  em.getPositionsComponents(npcid)
-                positionComponent.currentPosX = pos.x
-                positionComponent.currentPosY = pos.y
-                positionComponent.currentPosZ = pos.z
+                positionComponent.currentPosX = pos[0]
+                positionComponent.currentPosY = pos[1]
+                positionComponent.currentPosZ = pos[2]
+                console.log(positionComponent.currentPosX)
                 em.setPositionsComponent(npcid, positionComponent)
-                
                 posFuncs.gotoPosition(positionComponent, 566, -79, -964)
                 let position = revmp.getPosition(npcid)
                 console.log(npcid)
@@ -148,8 +128,6 @@ function debugCommands(entity, msg){
             }
         }
 
-        
-        //console.log(npc)
         //todo: push die aiActions in den npc
         //npc.addAction(aiAction)
         em.getActionsComponent(npcid).nextActions.push(aiAction)

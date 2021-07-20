@@ -1,7 +1,7 @@
 import Heap from "heap-js";
 import { IAiAction } from "../iAiAction";
 import { IAiNpc } from "../iAiNpc";
-import { INSTANCE_WOLF } from "./npcInits";
+import { getWolfInstance} from "./npcInits";
 
 export class Wolf implements IAiNpc {
     enemyIds: number[];
@@ -23,7 +23,7 @@ export class Wolf implements IAiNpc {
 
 
     constructor() {
-        this.id = revmp.createBot(INSTANCE_WOLF);;
+        this.id = revmp.createBot(getWolfInstance());;
         this.isDead = false;
         this.isUnconscious = false;
         this.enemyIds = [];

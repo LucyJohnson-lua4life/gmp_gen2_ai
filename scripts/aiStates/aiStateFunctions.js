@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SpawnNpc = void 0;
 function SpawnNpc(entityManager, npc, x, y, z) {
     entityManager.registerBot(npc);
-    revmp.setPosition(npc.id, { x: x, y: y, z: z });
+    revmp.setPosition(npc.id, [x, y, z]);
     let position = entityManager.getPositionsComponents(npc.id);
     position.currentPosX = x;
     position.currentPosY = y;

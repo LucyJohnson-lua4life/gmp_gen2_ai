@@ -5,7 +5,7 @@ const heap_js_1 = require("heap-js");
 const npcInits_1 = require("./npcInits");
 class Wolf {
     constructor() {
-        this.id = revmp.createBot(npcInits_1.INSTANCE_WOLF);
+        this.id = revmp.createBot(npcInits_1.getWolfInstance());
         ;
         this.isDead = false;
         this.isUnconscious = false;

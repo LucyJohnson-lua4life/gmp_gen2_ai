@@ -12,13 +12,11 @@ function getDistance(x1: number, y1: number, z1: number, x2: number, y2: number,
 }
 
 export function gotoPosition(npcPosition:IPositionComponent, x: number, y: number, z: number) {
-    
     if ((typeof npcPosition.lastPosUpdate == 'undefined') || npcPosition.lastPosUpdate == 0) {
         npcPosition.lastPosUpdate = Date.now()
         npcPosition.lastPosX = npcPosition.currentPosX;
         npcPosition.lastPosY = npcPosition.currentPosY;
         npcPosition.lastPosZ = npcPosition.currentPosZ;
-        
     } else if (npcPosition.lastPosUpdate + 500 < Date.now()) {
         if (getDistance(npcPosition.lastPosX, npcPosition.lastPosY, npcPosition.lastPosZ, npcPosition.currentPosX, npcPosition.currentPosY, npcPosition.currentPosZ) < 2) {
             let timeDiff = Date.now() - npcPosition.lastPosUpdate
@@ -36,7 +34,7 @@ export function gotoPosition(npcPosition:IPositionComponent, x: number, y: numbe
             let distance = getDistance(npcPosition.currentPosX, npcPosition.currentPosY, npcPosition.currentPosZ, x, y, z)
 
             if(speed > distance){
-                revmp.setPosition(npcPosition.entityId, { x: x, y: y, z: z})
+                revmp.setPosition(npcPosition.entityId,  [x, y, z])
                 npcPosition.currentPosX = x
                 npcPosition.currentPosY = y
                 npcPosition.currentPosZ = z
@@ -45,7 +43,7 @@ export function gotoPosition(npcPosition:IPositionComponent, x: number, y: numbe
                 npcPosition.currentPosX = npcPosition.currentPosX + (dirX*speed)
                 npcPosition.currentPosY = npcPosition.currentPosY + (dirY*speed)
                 npcPosition.currentPosZ = npcPosition.currentPosZ + (dirZ*speed)
-                revmp.setPosition(npcPosition.entityId,  { x: npcPosition.currentPosX, y: npcPosition.currentPosY, z: npcPosition.currentPosZ})
+                revmp.setPosition(npcPosition.entityId,  [npcPosition.currentPosX, npcPosition.currentPosY, npcPosition.currentPosZ ])
                 console.log("2 set pos to "+ npcPosition.currentPosX + " ," + npcPosition.currentPosY + " ," + npcPosition.currentPosZ)
             }
         }

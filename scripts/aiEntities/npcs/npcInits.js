@@ -1,16 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.initAllNpcInstances = exports.INSTANCE_WOLF = void 0;
+exports.getWolfInstance = exports.INSTANCE_WOLF = void 0;
 exports.INSTANCE_WOLF = "revmp_wolf";
-function initAllNpcInstances() {
-    revmp.createInstanceTemplate({
-        type: revmp.InstanceType.Character,
-        id: exports.INSTANCE_WOLF,
+function getWolfInstance() {
+    return {
         name: "Wolf",
         maxHealth: 60,
+        visual: "Wolf.mds",
+        visualBody: {
+            bodyMesh: "Wol_Body"
+        },
         meleeAttack: {
             edge: 30,
-            range: 80,
+            range: 80
         },
         protection: {
             blunt: 30,
@@ -18,11 +20,7 @@ function initAllNpcInstances() {
             fire: 30,
             fly: 30,
         },
-        visual: "Wolf.mds",
-        visualBody: {
-            bodyMesh: "Wol_Body",
-        },
-        weaponMode: { mode: revmp.WeaponState.Fist },
-    });
+        weaponMode: revmp.WeaponMode.Fist
+    };
 }
-exports.initAllNpcInstances = initAllNpcInstances;
+exports.getWolfInstance = getWolfInstance;

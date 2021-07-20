@@ -30,7 +30,7 @@ function gotoPosition(npcPosition, x, y, z) {
             dirZ = dirZ / dirNorm;
             let distance = getDistance(npcPosition.currentPosX, npcPosition.currentPosY, npcPosition.currentPosZ, x, y, z);
             if (speed > distance) {
-                revmp.setPosition(npcPosition.entityId, { x: x, y: y, z: z });
+                revmp.setPosition(npcPosition.entityId, [x, y, z]);
                 npcPosition.currentPosX = x;
                 npcPosition.currentPosY = y;
                 npcPosition.currentPosZ = z;
@@ -40,7 +40,7 @@ function gotoPosition(npcPosition, x, y, z) {
                 npcPosition.currentPosX = npcPosition.currentPosX + (dirX * speed);
                 npcPosition.currentPosY = npcPosition.currentPosY + (dirY * speed);
                 npcPosition.currentPosZ = npcPosition.currentPosZ + (dirZ * speed);
-                revmp.setPosition(npcPosition.entityId, { x: npcPosition.currentPosX, y: npcPosition.currentPosY, z: npcPosition.currentPosZ });
+                revmp.setPosition(npcPosition.entityId, [npcPosition.currentPosX, npcPosition.currentPosY, npcPosition.currentPosZ]);
                 console.log("2 set pos to " + npcPosition.currentPosX + " ," + npcPosition.currentPosY + " ," + npcPosition.currentPosZ);
             }
         }
