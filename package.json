@@ -12,6 +12,7 @@
   "dependencies": {
     "@types/jest": "^26.0.20",
     "@types/node": "^14.14.31",
+    "gl-matrix": "^3.3.0",
     "heap-js": "^2.1.4",
     "jest": "^26.6.3",
     "ts-jest": "^26.5.1",

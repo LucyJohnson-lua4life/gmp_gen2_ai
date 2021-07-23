@@ -4,6 +4,7 @@ import { IDrInfoComponent } from "../aiEntities/components/iDrInfoComponent";
 import { INpcStateComponent } from "../aiEntities/components/iNpcStateComponent";
 import { IPositionComponent } from "../aiEntities/components/iPositionComponent";
 import { IRespawnComponent } from "../aiEntities/components/iRespawnComponent";
+import { IActionDescriptionComponent } from "../aiEntities/components/iActionDescriptionComponent";
 import { IAiNpc } from "../aiEntities/iAiNpc";
 
 const worldNames: Array<string> = ["NEWWORLD\\NEWWORLD.ZEN", "OLDWORLD\\OLDWORLD.ZEN", "ADDON\\ADDONWORLD.ZEN"]
@@ -20,6 +21,7 @@ export class EntityManager {
     private allPositions: Map<string, Map<number, Array<number>>>;
     private dailyRoutineComponents:Map<number, IDrInfoComponent>;
     private actionsComponents:Map<number, IActionsComponent>;
+    private actionDescriptionComponents: Map<number, IActionDescriptionComponent>;
     private positionsComponents:Map<number, IPositionComponent>;
     private npcStateComponents:Map<number, INpcStateComponent>;
     private respawnComponents:Map<number, IRespawnComponent>;
@@ -31,6 +33,7 @@ export class EntityManager {
         this.allPlayer = new Array()
         this.dailyRoutineComponents = new Map()
         this.actionsComponents = new Map()
+        this.actionDescriptionComponents = new Map()
         this.positionsComponents = new Map()
         this.npcStateComponents = new Map()
         this.respawnComponents = new Map()
@@ -51,11 +54,13 @@ export class EntityManager {
         let respawnInfo:IRespawnComponent = {entityId: npc.id, respawnTime: npc.respawnTime}
         let actionInfo:IActionsComponent = {entityId: npc.id, nextActions: npc.nextActions}
         let positionInfo:IPositionComponent = {entityId: npc.id, currentPosX:0, currentPosY:0, currentPosZ:0, lastPosX:0, lastPosY: 0, lastPosZ: 0, lastPosUpdate: 0}
+        let actionDescription:IActionDescriptionComponent = {entityId: npc.id, descriptions: npc.actionDescriptions}
 
         this.setNpcStateComponent(npc.id, stateInfo)
         this.setRespawnComponent(npc.id, respawnInfo)
         this.setActionsComponent(npc.id, actionInfo)
         this.setPositionsComponent(npc.id, positionInfo)
+        this.setActionDescriptionComponent(npc.id, actionDescription)
     }
 
     getDailyRoutineComponent(entityId: number): IDrInfoComponent|undefined{
@@ -72,6 +77,14 @@ export class EntityManager {
 
     setActionsComponent(entityId: number, component: IActionsComponent){
         this.actionsComponents.set(entityId, component)
+    }
+
+    getActionDescriptionComponent(entityId: number): IActionDescriptionComponent | undefined {
+        return this.actionDescriptionComponents.get(entityId);
+    }
+
+    setActionDescriptionComponent(entityId: number, component: IActionDescriptionComponent) {
+        this.actionDescriptionComponents.set(entityId, component)
     }
 
     getPositionsComponents(entityId: number): IPositionComponent|undefined{

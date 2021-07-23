@@ -1,4 +1,5 @@
 import Heap from "heap-js";
+import { IActionDescription } from "../IActionDescription";
 import { IAiAction } from "../iAiAction";
 import { IAiNpc } from "../iAiNpc";
 import { getWolfInstance} from "./npcInits";
@@ -8,6 +9,7 @@ export class Wolf implements IAiNpc {
     friendIds: number[];
     respawnTime: number;
     nextActions: Heap<IAiAction>;
+    actionDescriptions: Array<IActionDescription>;
     aiFlags: Map<string, string | number>;
     id: number;
     isDead: boolean;
@@ -30,6 +32,7 @@ export class Wolf implements IAiNpc {
         this.friendIds = [];
         this.respawnTime = 240;
         this.nextActions = new Heap((a: IAiAction, b: IAiAction) => a.priority - b.priority);
+        this.actionDescriptions = []
         this.aiFlags = new Map();
 
         this.lastPosUpdate = 0

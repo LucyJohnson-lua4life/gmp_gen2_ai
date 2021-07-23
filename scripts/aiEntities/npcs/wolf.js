@@ -13,6 +13,7 @@ class Wolf {
         this.friendIds = [];
         this.respawnTime = 240;
         this.nextActions = new heap_js_1.default((a, b) => a.priority - b.priority);
+        this.actionDescriptions = [];
         this.aiFlags = new Map();
         this.lastPosUpdate = 0;
         this.lastPosX = 0;
