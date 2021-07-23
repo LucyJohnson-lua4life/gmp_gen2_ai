@@ -64,5 +64,21 @@ test('Executes for the given id the executeAction() - loopable action should NOT
     verify(nonLoopableAction.executeAction()).twice()
 })
 
+test('After executing all actions of npc. Nothing will happen. Action heap is empty.', () => {
+    let entityManager: EntityManager = new EntityManager();
+    let aiNpc = new StubAiNpc(1)
 
+    const nonLoopableAction: IAiAction = mock(StubAiAction)
+    when(nonLoopableAction.shouldLoop).thenReturn(false)
 
+    aiNpc.addAction(instance(nonLoopableAction))
+    entityManager.registerBot(aiNpc)
+
+    let updateLoop = new AiUpdateLoop(entityManager)
+    console.log(aiNpc.nextActions.size())
+    expect(aiNpc.nextActions.size()).toBe(1)
+    updateLoop.updateAi(1)
+    expect(aiNpc.nextActions.size()).toBe(0)
+    updateLoop.updateAi(1)
+    expect(aiNpc.nextActions.size()).toBe(0)
+})

@@ -5,6 +5,7 @@ const funs = require("./aiStates/aiStateFunctions");
 const entityManager = require("./aiStates/entityManager");
 const aiUpdateLoop = require("./aiStates/aiUpdateLoop");
 //const ai = require("./scripts/aiStates/aiUpdateLoop");
+const attackAction = require("./aiFunctions/attackAction");
 
 const posFuncs = require("./waynet/positionFunctions");
 let em = new entityManager.EntityManager();
@@ -91,7 +92,7 @@ function getDistance(x1, y1, z1, x2, y2, z2) {
 }
 
 //export function sendChatMessage(player: number|number[], message: string, color?: [number, number, number, number?]): void
-function debugCommands(entity, msg){
+function debugCommands(entity, msg) {
     const words = msg.toLowerCase().split(' ');
     const command = words[0];
     if (command === "/getpos") {
@@ -102,27 +103,28 @@ function debugCommands(entity, msg){
         revmp.sendChatMessage(entity, 'testo')
     }
 
-    if(command === "/walk"){
+    if (command === "/walk") {
         const param1 = words[1];
         let npcid = parseInt(param1)
         //todo : liefer aiAction den state mit, und entferne die die aktion selbst, wenn die position erreicht wurde
         let aiAction = {
-            priority:1,
-            aiId:npcid,
+            priority: 1,
+            aiId: npcid,
             shouldLoop: true,
-            executeAction: function(){
+            executeAction: function() {
                 let pos = revmp.getPosition(npcid).position
-                let positionComponent =  em.getPositionsComponents(npcid)
+                let positionComponent = em.getPositionsComponents(npcid)
                 positionComponent.currentPosX = pos[0]
                 positionComponent.currentPosY = pos[1]
                 positionComponent.currentPosZ = pos[2]
                 console.log(positionComponent.currentPosX)
                 em.setPositionsComponent(npcid, positionComponent)
                 posFuncs.gotoPosition(positionComponent, 566, -79, -964)
+
                 let position = revmp.getPosition(npcid)
                 console.log(npcid)
 
-                if(getDistance(566, -79, -964, position.x, position.y, position.z) < 50){
+                if (getDistance(566, -79, -964, position.x, position.y, position.z) < 50) {
                     this.shouldLoop = false
                 }
             }
@@ -134,6 +136,19 @@ function debugCommands(entity, msg){
 
     }
 }
+
+revmp.on("attacked", (attacker, target, userEvent) => {
+
+    //todo : liefer aiAction den state mit, und entferne die die aktion selbst, wenn die position erreicht wurde
+    let aiAction = new attackAction.AttackAction(1, target, attacker)
+
+    //todo: push die aiActions in den npc
+    //npc.addAction(aiAction)
+    if(typeof em.getActionsComponent(target) !== 'undefined'){
+        em.getActionsComponent(target).nextActions.push(aiAction) }
+
+
+})
 
 revmp.on("chatCommand", (entity, msg) => {
     const words = msg.toLowerCase().split(' ');
