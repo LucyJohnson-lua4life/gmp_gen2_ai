@@ -5,7 +5,8 @@ const funs = require("./aiStates/aiStateFunctions");
 const entityManager = require("./aiStates/entityManager");
 const aiUpdateLoop = require("./aiStates/aiUpdateLoop");
 //const ai = require("./scripts/aiStates/aiUpdateLoop");
-const attackAction = require("./aiFunctions/attackAction");
+
+const commonActions = require("./aiFunctions/commonActions");
 
 const posFuncs = require("./waynet/positionFunctions");
 let em = new entityManager.EntityManager();
@@ -140,11 +141,13 @@ function debugCommands(entity, msg) {
 revmp.on("attacked", (attacker, target, userEvent) => {
 
     //todo : liefer aiAction den state mit, und entferne die die aktion selbst, wenn die position erreicht wurde
-    let aiAction = new attackAction.AttackAction(1, target, attacker)
+    let aiAction = new commonActions.SFistAttackAction(2, target, attacker)
+    let waitAction = new commonActions.WaitAction(1, target, 3000, new Date().getMilliseconds())
 
     //todo: push die aiActions in den npc
     //npc.addAction(aiAction)
     if(typeof em.getActionsComponent(target) !== 'undefined'){
+        em.getActionsComponent(target).nextActions.push(waitAction)
         em.getActionsComponent(target).nextActions.push(aiAction) }
 
 
