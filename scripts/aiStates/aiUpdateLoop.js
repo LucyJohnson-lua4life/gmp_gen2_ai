@@ -11,6 +11,9 @@ class AiUpdateLoop {
     updateAll() {
         this._entityManager.getAllBots.forEach((aiId) => this.updateAi(aiId));
     }
+    readDescriptions() {
+        this._entityManager.getAllBots.forEach((aiId) => this.readDescription(aiId));
+    }
     updateAi(aiId) {
         let actionsComponent = this._entityManager.getActionsComponent(aiId);
         if (typeof actionsComponent !== 'undefined') {
@@ -18,6 +21,13 @@ class AiUpdateLoop {
             if (typeof nextAction !== 'undefined') {
                 nextAction.shouldLoop ? nextAction.executeAction() : actionsComponent.nextActions.pop().executeAction();
             }
+        }
+    }
+    readDescription(aiId) {
+        let descriptionComponent = this._entityManager.getActionDescriptionComponent(aiId);
+        if (typeof descriptionComponent !== 'undefined') {
+            let descriptions = descriptionComponent.descriptions;
+            descriptions.forEach(description => description.describeAction(this._entityManager));
         }
     }
 }

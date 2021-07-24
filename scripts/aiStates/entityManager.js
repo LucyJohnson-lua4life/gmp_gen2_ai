@@ -18,6 +18,7 @@ class EntityManager {
         this.positionsComponents = new Map();
         this.npcStateComponents = new Map();
         this.respawnComponents = new Map();
+        this.enemyComponents = new Map();
     }
     get positionMap() {
         return this.allPositions;
@@ -33,11 +34,13 @@ class EntityManager {
         let actionInfo = { entityId: npc.id, nextActions: npc.nextActions };
         let positionInfo = { entityId: npc.id, currentPosX: 0, currentPosY: 0, currentPosZ: 0, lastPosX: 0, lastPosY: 0, lastPosZ: 0, lastPosUpdate: 0 };
         let actionDescription = { entityId: npc.id, descriptions: npc.actionDescriptions };
+        let enemyComponent = { entityId: npc.id, enemyId: -1 };
         this.setNpcStateComponent(npc.id, stateInfo);
         this.setRespawnComponent(npc.id, respawnInfo);
         this.setActionsComponent(npc.id, actionInfo);
         this.setPositionsComponent(npc.id, positionInfo);
         this.setActionDescriptionComponent(npc.id, actionDescription);
+        this.setEnemyComponent(npc.id, enemyComponent);
     }
     getDailyRoutineComponent(entityId) {
         return this.dailyRoutineComponents.get(entityId);
@@ -74,6 +77,12 @@ class EntityManager {
     }
     setRespawnComponent(entityId, component) {
         this.respawnComponents.set(entityId, component);
+    }
+    getEnemyComponent(entityId) {
+        return this.enemyComponents.get(entityId);
+    }
+    setEnemyComponent(entityId, component) {
+        this.enemyComponents.set(entityId, component);
     }
 }
 exports.EntityManager = EntityManager;

@@ -2,11 +2,11 @@
 
 import {IActionDescription} from '../IActionDescription';
 /**
- * @interface IActionsComponent
- * Contains all the actions that the entity should execute.
+ * @interface IActionDescriptionComponent 
+ * Contains all the action descriptions of an entity.
  * 
- * @field entityId: id of the entity for which the actions should be checked
- * @field nextActions: actions to execute by the entity
+ * @field entityId: id of the entity for which the action descriptions should be read 
+ * @field descriptions: all descriptions of the entity 
  */
 export interface IActionDescriptionComponent{
     entityId: number,

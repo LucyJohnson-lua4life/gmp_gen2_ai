@@ -73,7 +73,8 @@ revmp.on("init", () => {
     revmp.setTime(world, { hour: 15, minute: 0 });
 
     let w = new wolf.Wolf()
-    setInterval(updateLoop.updateAll.bind(updateLoop), 1000);
+    setInterval(updateLoop.readDescriptions.bind(updateLoop), 500);
+    setInterval(updateLoop.updateAll.bind(updateLoop), 200);
     funs.SpawnNpc(em, w, 0, 0, 0);
     console.log(w.id)
     funs.SpawnNpc(em, w, 0, 0, 0);
@@ -144,13 +145,20 @@ revmp.on("attacked", (attacker, target, userEvent) => {
     let aiAction = new commonActions.SFistAttackAction(2, target, attacker)
     let turnAction = new commonActions.TurnToTargetAction(2,target, attacker)
     let waitAction = new commonActions.WaitAction(1, target, 3000, new Date().getMilliseconds())
+    if(typeof em.getEnemyComponent(target) !== 'undefined'){
+        em.setEnemyComponent(target, { entityId: target, enemyId: attacker })
+    }
 
+    
+//     revmp.startAnimation(target, "S_FISTRUNL")
     //todo: push die aiActions in den npc
     //npc.addAction(aiAction)
+    /*
     if(typeof em.getActionsComponent(target) !== 'undefined'){
         em.getActionsComponent(target).nextActions.push(waitAction)
         em.getActionsComponent(target).nextActions.push(turnAction)
         em.getActionsComponent(target).nextActions.push(aiAction) }
+        */
 
 
 })

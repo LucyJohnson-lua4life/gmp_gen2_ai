@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Wolf = void 0;
 const heap_js_1 = require("heap-js");
+const wolfAttackDescription_1 = require("../wolfAttackDescription");
 const npcInits_1 = require("./npcInits");
 class Wolf {
     constructor() {
@@ -13,7 +14,7 @@ class Wolf {
         this.friendIds = [];
         this.respawnTime = 240;
         this.nextActions = new heap_js_1.default((a, b) => a.priority - b.priority);
-        this.actionDescriptions = [];
+        this.actionDescriptions = [new wolfAttackDescription_1.WolfAttackDescription(this.id)];
         this.aiFlags = new Map();
         this.lastPosUpdate = 0;
         this.lastPosX = 0;

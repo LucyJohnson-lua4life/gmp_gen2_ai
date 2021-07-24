@@ -1,6 +1,7 @@
 
+
 import { IAiAction } from "../aiEntities/iAiAction";
-import { getAngle } from "../aiFunctions/aiUtils";
+import { getAngle, getDistance, isAniPlaying} from "../aiFunctions/aiUtils";
 import { quat } from "gl-matrix";
 
 export class SFistAttackAction implements IAiAction {
@@ -77,5 +78,34 @@ export class TurnToTargetAction implements IAiAction {
         const rot = quat.create();
         quat.fromEuler(rot, 0, y, 0);
         revmp.setRotation(this.aiId, rot);
+    }
+}
+
+export class RunToTargetAction implements IAiAction {
+    priority: number
+    aiId: number
+    shouldLoop: boolean
+    targetId: number
+    targetDistance: number
+
+    constructor(priority: number, aiId: number, targetId: number, targetDistance: number) {
+        this.priority = priority
+        this.aiId = aiId
+        this.shouldLoop = false
+        this.targetId = targetId
+        this.targetDistance = targetDistance
+    }
+
+    public executeAction(): void {
+        console.log("action added")
+        const position = revmp.getPosition(this.aiId).position;
+        const targetPosition = revmp.getPosition(this.targetId).position;
+        const y = getAngle(position[0], position[2], targetPosition[0], targetPosition[2]);
+        const rot = quat.create();
+        quat.fromEuler(rot, 0, y, 0);
+        revmp.setRotation(this.aiId, rot);
+        if (!isAniPlaying(this.aiId, "S_FISTRUNL")){
+            revmp.startAnimation(this.aiId, "S_FISTRUNL")
+        }
     }
 }
