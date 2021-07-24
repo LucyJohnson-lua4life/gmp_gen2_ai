@@ -4,6 +4,7 @@ const wolf = require("./aiEntities/npcs/wolf");
 const funs = require("./aiStates/aiStateFunctions");
 const entityManager = require("./aiStates/entityManager");
 const aiUpdateLoop = require("./aiStates/aiUpdateLoop");
+const {setAngle, getAngle, getAngleDistance, getPlayerAngle} = require("./aiFunctions/aiUtils");
 //const ai = require("./scripts/aiStates/aiUpdateLoop");
 
 const commonActions = require("./aiFunctions/commonActions");
@@ -149,6 +150,7 @@ revmp.on("attacked", (attacker, target, userEvent) => {
         em.setEnemyComponent(target, { entityId: target, enemyId: attacker })
     }
 
+    console.log(getAngleDistance(attacker, target))
     
 //     revmp.startAnimation(target, "S_FISTRUNL")
     //todo: push die aiActions in den npc
@@ -171,5 +173,23 @@ revmp.on("chatCommand", (entity, msg) => {
 
     if (command === "/spawn") {
         funs.SpawnNpc(em, new wolf.Wolf(), 0, 0, 0);
+    }
+    if (command === "/masochist") {
+        setInterval(revmp.attack.bind(revmp), 200, entity, entity);
+    }
+    if (command === "/e") {
+        let angle = getPlayerAngle(entity)
+        console.log("angle: " + angle)
+    }
+    if (command === "/a") {
+        let focusid = revmp.getFocus(entity).focus
+        const position = revmp.getPosition(entity).position;
+        const targetPosition = revmp.getPosition(focusid).position;
+        const y = getAngle(position[0], position[2], targetPosition[0], targetPosition[2]);
+        //const r = getAngle(targetPosition[0], targetPosition[2], position[0], position[2]);
+        console.log(y)
+    }
+    if (command === "/sa") {
+        setAngle(entity, parseInt(words[1]))
     }
 });

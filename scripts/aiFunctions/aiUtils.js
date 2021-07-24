@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isAniPlaying = exports.getAngleDistance = exports.getDistance = exports.getAngle = void 0;
+exports.setAngle = exports.isAniPlaying = exports.getPlayerAngle = exports.getAngleDistance = exports.getDistance = exports.getAngle = void 0;
 const gl_matrix_1 = require("gl-matrix");
+const THREE = require("three");
 // https://stackoverflow.com/a/9614122/10637905
 function getAngle(x1, y1, x2, y2) {
     const dy = y2 - y1;
@@ -30,8 +31,37 @@ function getAngleDistance(entity1, entity2) {
     return gl_matrix_1.quat.getAngle(rotation1, rotation2);
 }
 exports.getAngleDistance = getAngleDistance;
+function getPlayerAngle(entity1) {
+    const rotation = revmp.getRotation(entity1).rotation;
+    const quaternion = new THREE.Quaternion(rotation[0], rotation[1], rotation[2], rotation[3]);
+    const euler = new THREE.Euler().setFromQuaternion(quaternion);
+    console.log("x: " + euler.x);
+    console.log("y: " + euler.y);
+    console.log("z: " + euler.z);
+    let angle = euler.y * 180 / Math.PI;
+    if (euler.x >= 0 && euler.y < 0) {
+        angle = angle + 360;
+    }
+    else if (euler.x < 0 && euler.y < 0) {
+        angle = 180 + (-1 * angle);
+    }
+    else if (euler.x >= 0 && euler.y > 0) {
+        angle = angle;
+    }
+    else if (euler.x < 0 && euler.y > 0) {
+        angle = 180 - angle;
+    }
+    return angle;
+}
+exports.getPlayerAngle = getPlayerAngle;
 function isAniPlaying(entity, ani) {
     return revmp.getAnimations(entity)
         .activeAnis.find(a => a.ani.name === ani && !a.isFadingOut) !== undefined;
 }
 exports.isAniPlaying = isAniPlaying;
+function setAngle(entity, angle) {
+    const rot = gl_matrix_1.quat.create();
+    gl_matrix_1.quat.fromEuler(rot, 0, angle, 0);
+    revmp.setRotation(entity, rot);
+}
+exports.setAngle = setAngle;

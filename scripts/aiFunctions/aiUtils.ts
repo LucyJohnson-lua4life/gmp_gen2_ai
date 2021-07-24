@@ -1,5 +1,6 @@
 
 import { quat, vec3 } from "gl-matrix";
+import * as THREE from 'three';
  // https://stackoverflow.com/a/9614122/10637905
 export function getAngle(x1: number, y1: number, x2: number, y2: number): number {
     const dy = y2 - y1;
@@ -29,7 +30,38 @@ export function getAngleDistance(entity1: number, entity2: number) {
     return quat.getAngle(rotation1, rotation2);
 }
 
+export function getPlayerAngle(entity1: number) {
+    const rotation = revmp.getRotation(entity1).rotation;
+    const quaternion = new THREE.Quaternion(rotation[0], rotation[1], rotation[2], rotation[3]);
+    const euler =  new THREE.Euler().setFromQuaternion(quaternion);
+    console.log("x: " + euler.x)
+    console.log("y: " + euler.y)
+    console.log("z: " + euler.z)
+
+    let angle = euler.y * 180 / Math.PI
+    if(euler.x >= 0 && euler.y <0){
+        angle = angle + 360
+    }
+    else if(euler.x < 0 && euler.y < 0){
+        angle = 180 + (-1*angle)
+    }
+    else if(euler.x >= 0 && euler.y > 0){
+        angle = angle
+    }
+    else if (euler.x < 0 && euler.y > 0) {
+        angle = 180 - angle
+    }
+
+
+    return angle
+}
+
 export function isAniPlaying(entity: revmp.Entity, ani: string) {
     return revmp.getAnimations(entity)
         .activeAnis.find(a => a.ani.name === ani && !a.isFadingOut) !== undefined;
+}
+export function setAngle(entity: number, angle: number) {
+    const rot = quat.create();
+    quat.fromEuler(rot, 0, angle, 0);
+    revmp.setRotation(entity, rot);
 }
