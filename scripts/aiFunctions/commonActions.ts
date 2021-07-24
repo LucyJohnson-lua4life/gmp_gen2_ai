@@ -9,18 +9,18 @@ export class SFistAttackAction implements IAiAction {
     aiId: number
     shouldLoop: boolean
     victimId: number
+    necessaryDistance: number
 
-    constructor(priority: number, aiId: number, victimId: number) {
+    constructor(priority: number, aiId: number, victimId: number, necessaryDistance: number) {
         this.priority = priority
         this.aiId = aiId
         this.shouldLoop = false
         this.victimId = victimId
-
+        this.necessaryDistance = necessaryDistance
     }
 
 
     public executeAction(): void {
-        revmp.attack(this.aiId, this.victimId);
         revmp.startAnimation(this.aiId, "S_FISTATTACK")
         setTimeout(() => {
             // Attacker could be invalid in the meanwhile, so better check.
@@ -28,6 +28,10 @@ export class SFistAttackAction implements IAiAction {
                 revmp.fadeOutAnimation(this.aiId, "S_FISTATTACK");
             }
         }, 900);
+
+        if(getDistance(this.aiId, this.victimId) < this.necessaryDistance){
+            revmp.attack(this.aiId, this.victimId);
+        }
     }
 
 }
@@ -97,7 +101,6 @@ export class RunToTargetAction implements IAiAction {
     }
 
     public executeAction(): void {
-        console.log("action added")
         const position = revmp.getPosition(this.aiId).position;
         const targetPosition = revmp.getPosition(this.targetId).position;
         const y = getAngle(position[0], position[2], targetPosition[0], targetPosition[2]);
@@ -106,6 +109,60 @@ export class RunToTargetAction implements IAiAction {
         revmp.setRotation(this.aiId, rot);
         if (!isAniPlaying(this.aiId, "S_FISTRUNL")){
             revmp.startAnimation(this.aiId, "S_FISTRUNL")
+        }
+    }
+}
+
+export class SRunStrafeLeft implements IAiAction {
+    priority: number
+    aiId: number
+    shouldLoop: boolean
+
+    constructor(priority: number, aiId: number) {
+        this.priority = priority
+        this.aiId = aiId
+        this.shouldLoop = false
+    }
+
+    public executeAction(): void {
+        if (!isAniPlaying(this.aiId, "T_FISTRUNSTRAFEL")) {
+            revmp.startAnimation(this.aiId, "T_FISTRUNSTRAFEL")
+        }
+    }
+}
+
+export class SRunStrafeRight implements IAiAction {
+    priority: number
+    aiId: number
+    shouldLoop: boolean
+
+    constructor(priority: number, aiId: number) {
+        this.priority = priority
+        this.aiId = aiId
+        this.shouldLoop = false
+    }
+
+    public executeAction(): void {
+        if (!isAniPlaying(this.aiId, "T_FISTRUNSTRAFER")) {
+            revmp.startAnimation(this.aiId, "T_FISTRUNSTRAFER")
+        }
+    }
+}
+
+export class SRunParadeJump implements IAiAction {
+    priority: number
+    aiId: number
+    shouldLoop: boolean
+
+    constructor(priority: number, aiId: number) {
+        this.priority = priority
+        this.aiId = aiId
+        this.shouldLoop = false
+    }
+
+    public executeAction(): void {
+        if (!isAniPlaying(this.aiId, "T_FISTPARADEJUMPB")) {
+            revmp.startAnimation(this.aiId, "T_FISTRUNSTRAFER")
         }
     }
 }

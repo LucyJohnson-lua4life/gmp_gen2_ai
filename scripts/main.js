@@ -73,7 +73,7 @@ revmp.on("init", () => {
     revmp.setTime(world, { hour: 15, minute: 0 });
 
     let w = new wolf.Wolf()
-    setInterval(updateLoop.readDescriptions.bind(updateLoop), 500);
+    setInterval(updateLoop.readDescriptions.bind(updateLoop), 1000);
     setInterval(updateLoop.updateAll.bind(updateLoop), 200);
     funs.SpawnNpc(em, w, 0, 0, 0);
     console.log(w.id)

@@ -1,17 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RunToTargetAction = exports.TurnToTargetAction = exports.WaitAction = exports.SFistAttackAction = void 0;
+exports.SRunParadeJump = exports.SRunStrafeRight = exports.SRunStrafeLeft = exports.RunToTargetAction = exports.TurnToTargetAction = exports.WaitAction = exports.SFistAttackAction = void 0;
 const aiUtils_1 = require("../aiFunctions/aiUtils");
 const gl_matrix_1 = require("gl-matrix");
 class SFistAttackAction {
-    constructor(priority, aiId, victimId) {
+    constructor(priority, aiId, victimId, necessaryDistance) {
         this.priority = priority;
         this.aiId = aiId;
         this.shouldLoop = false;
         this.victimId = victimId;
+        this.necessaryDistance = necessaryDistance;
     }
     executeAction() {
-        revmp.attack(this.aiId, this.victimId);
         revmp.startAnimation(this.aiId, "S_FISTATTACK");
         setTimeout(() => {
             // Attacker could be invalid in the meanwhile, so better check.
@@ -19,6 +19,9 @@ class SFistAttackAction {
                 revmp.fadeOutAnimation(this.aiId, "S_FISTATTACK");
             }
         }, 900);
+        if (aiUtils_1.getDistance(this.aiId, this.victimId) < this.necessaryDistance) {
+            revmp.attack(this.aiId, this.victimId);
+        }
     }
 }
 exports.SFistAttackAction = SFistAttackAction;
@@ -63,7 +66,6 @@ class RunToTargetAction {
         this.targetDistance = targetDistance;
     }
     executeAction() {
-        console.log("action added");
         const position = revmp.getPosition(this.aiId).position;
         const targetPosition = revmp.getPosition(this.targetId).position;
         const y = aiUtils_1.getAngle(position[0], position[2], targetPosition[0], targetPosition[2]);
@@ -76,3 +78,42 @@ class RunToTargetAction {
     }
 }
 exports.RunToTargetAction = RunToTargetAction;
+class SRunStrafeLeft {
+    constructor(priority, aiId) {
+        this.priority = priority;
+        this.aiId = aiId;
+        this.shouldLoop = false;
+    }
+    executeAction() {
+        if (!aiUtils_1.isAniPlaying(this.aiId, "T_FISTRUNSTRAFEL")) {
+            revmp.startAnimation(this.aiId, "T_FISTRUNSTRAFEL");
+        }
+    }
+}
+exports.SRunStrafeLeft = SRunStrafeLeft;
+class SRunStrafeRight {
+    constructor(priority, aiId) {
+        this.priority = priority;
+        this.aiId = aiId;
+        this.shouldLoop = false;
+    }
+    executeAction() {
+        if (!aiUtils_1.isAniPlaying(this.aiId, "T_FISTRUNSTRAFER")) {
+            revmp.startAnimation(this.aiId, "T_FISTRUNSTRAFER");
+        }
+    }
+}
+exports.SRunStrafeRight = SRunStrafeRight;
+class SRunParadeJump {
+    constructor(priority, aiId) {
+        this.priority = priority;
+        this.aiId = aiId;
+        this.shouldLoop = false;
+    }
+    executeAction() {
+        if (!aiUtils_1.isAniPlaying(this.aiId, "T_FISTPARADEJUMPB")) {
+            revmp.startAnimation(this.aiId, "T_FISTRUNSTRAFER");
+        }
+    }
+}
+exports.SRunParadeJump = SRunParadeJump;
