@@ -18,29 +18,29 @@ class WolfAttackDescription {
     }
     describeFightAction(entityManager, enemyId, range) {
         if (range > 300) {
-            entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.RunToTargetAction(5, this.entityId, enemyId, 300));
+            entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.RunToTargetAction(this.entityId, enemyId, 300));
         }
         else {
             let random = Math.floor(Math.random() * 4);
             if (random == 0) {
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.TurnToTargetAction(2, this.entityId, enemyId));
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SFistAttackAction(2, this.entityId, enemyId, 400));
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(2, this.entityId, 800, new Date().getMilliseconds()));
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.TurnToTargetAction(this.entityId, enemyId));
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SFistAttackAction(this.entityId, enemyId, 400));
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 800, new Date().getMilliseconds()));
             }
             else if (random == 1) {
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SRunParadeJump(2, this.entityId));
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.TurnToTargetAction(2, this.entityId, enemyId));
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(2, this.entityId, 400, new Date().getMilliseconds()));
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SRunParadeJump(this.entityId));
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.TurnToTargetAction(this.entityId, enemyId));
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 400, new Date().getMilliseconds()));
             }
             else if (random == 2) {
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SRunStrafeLeft(2, this.entityId));
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.TurnToTargetAction(2, this.entityId, enemyId));
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(2, this.entityId, 400, new Date().getMilliseconds()));
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SRunStrafeLeft(this.entityId));
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.TurnToTargetAction(this.entityId, enemyId));
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 400, new Date().getMilliseconds()));
             }
             else if (random == 3) {
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SRunStrafeRight(2, this.entityId));
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.TurnToTargetAction(2, this.entityId, enemyId));
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(2, this.entityId, 400, new Date().getMilliseconds()));
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SRunStrafeRight(this.entityId));
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.TurnToTargetAction(this.entityId, enemyId));
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 400, new Date().getMilliseconds()));
             }
         }
     }

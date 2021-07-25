@@ -4,8 +4,7 @@ exports.SRunParadeJump = exports.SRunStrafeRight = exports.SRunStrafeLeft = expo
 const aiUtils_1 = require("../aiFunctions/aiUtils");
 const gl_matrix_1 = require("gl-matrix");
 class SFistAttackAction {
-    constructor(priority, aiId, victimId, necessaryDistance) {
-        this.priority = priority;
+    constructor(aiId, victimId, necessaryDistance) {
         this.aiId = aiId;
         this.shouldLoop = false;
         this.victimId = victimId;
@@ -26,8 +25,7 @@ class SFistAttackAction {
 }
 exports.SFistAttackAction = SFistAttackAction;
 class WaitAction {
-    constructor(priority, aiId, waitTime, startTime) {
-        this.priority = priority;
+    constructor(aiId, waitTime, startTime) {
         this.aiId = aiId;
         this.shouldLoop = true;
         this.waitTime = waitTime;
@@ -41,8 +39,7 @@ class WaitAction {
 }
 exports.WaitAction = WaitAction;
 class TurnToTargetAction {
-    constructor(priority, aiId, targetId) {
-        this.priority = priority;
+    constructor(aiId, targetId) {
         this.aiId = aiId;
         this.shouldLoop = false;
         this.targetId = targetId;
@@ -58,8 +55,7 @@ class TurnToTargetAction {
 }
 exports.TurnToTargetAction = TurnToTargetAction;
 class RunToTargetAction {
-    constructor(priority, aiId, targetId, targetDistance) {
-        this.priority = priority;
+    constructor(aiId, targetId, targetDistance) {
         this.aiId = aiId;
         this.shouldLoop = false;
         this.targetId = targetId;
@@ -79,8 +75,7 @@ class RunToTargetAction {
 }
 exports.RunToTargetAction = RunToTargetAction;
 class SRunStrafeLeft {
-    constructor(priority, aiId) {
-        this.priority = priority;
+    constructor(aiId) {
         this.aiId = aiId;
         this.shouldLoop = false;
     }
@@ -92,8 +87,7 @@ class SRunStrafeLeft {
 }
 exports.SRunStrafeLeft = SRunStrafeLeft;
 class SRunStrafeRight {
-    constructor(priority, aiId) {
-        this.priority = priority;
+    constructor(aiId) {
         this.aiId = aiId;
         this.shouldLoop = false;
     }
@@ -105,8 +99,7 @@ class SRunStrafeRight {
 }
 exports.SRunStrafeRight = SRunStrafeRight;
 class SRunParadeJump {
-    constructor(priority, aiId) {
-        this.priority = priority;
+    constructor(aiId) {
         this.aiId = aiId;
         this.shouldLoop = false;
     }

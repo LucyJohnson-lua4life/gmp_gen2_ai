@@ -5,14 +5,12 @@ import { getAngle, getDistance, isAniPlaying} from "../aiFunctions/aiUtils";
 import { quat } from "gl-matrix";
 
 export class SFistAttackAction implements IAiAction {
-    priority: number
     aiId: number
     shouldLoop: boolean
     victimId: number
     necessaryDistance: number
 
-    constructor(priority: number, aiId: number, victimId: number, necessaryDistance: number) {
-        this.priority = priority
+    constructor(aiId: number, victimId: number, necessaryDistance: number) {
         this.aiId = aiId
         this.shouldLoop = false
         this.victimId = victimId
@@ -38,14 +36,12 @@ export class SFistAttackAction implements IAiAction {
 
 export class WaitAction implements IAiAction {
 
-    priority: number
     aiId: number
     shouldLoop: boolean
     waitTime: number
     startTime: number
 
-    constructor(priority: number, aiId: number, waitTime: number, startTime: number) {
-        this.priority = priority
+    constructor(aiId: number, waitTime: number, startTime: number) {
         this.aiId = aiId
         this.shouldLoop = true
         this.waitTime = waitTime
@@ -62,13 +58,11 @@ export class WaitAction implements IAiAction {
 }
 
 export class TurnToTargetAction implements IAiAction {
-    priority: number
     aiId: number
     shouldLoop: boolean
     targetId: number
 
-    constructor(priority: number, aiId: number, targetId: number) {
-        this.priority = priority
+    constructor(aiId: number, targetId: number) {
         this.aiId = aiId
         this.shouldLoop = false
         this.targetId = targetId
@@ -86,14 +80,12 @@ export class TurnToTargetAction implements IAiAction {
 }
 
 export class RunToTargetAction implements IAiAction {
-    priority: number
     aiId: number
     shouldLoop: boolean
     targetId: number
     targetDistance: number
 
-    constructor(priority: number, aiId: number, targetId: number, targetDistance: number) {
-        this.priority = priority
+    constructor(aiId: number, targetId: number, targetDistance: number) {
         this.aiId = aiId
         this.shouldLoop = false
         this.targetId = targetId
@@ -114,12 +106,10 @@ export class RunToTargetAction implements IAiAction {
 }
 
 export class SRunStrafeLeft implements IAiAction {
-    priority: number
     aiId: number
     shouldLoop: boolean
 
-    constructor(priority: number, aiId: number) {
-        this.priority = priority
+    constructor(aiId: number) {
         this.aiId = aiId
         this.shouldLoop = false
     }
@@ -132,12 +122,10 @@ export class SRunStrafeLeft implements IAiAction {
 }
 
 export class SRunStrafeRight implements IAiAction {
-    priority: number
     aiId: number
     shouldLoop: boolean
 
-    constructor(priority: number, aiId: number) {
-        this.priority = priority
+    constructor(aiId: number) {
         this.aiId = aiId
         this.shouldLoop = false
     }
@@ -150,12 +138,10 @@ export class SRunStrafeRight implements IAiAction {
 }
 
 export class SRunParadeJump implements IAiAction {
-    priority: number
     aiId: number
     shouldLoop: boolean
 
-    constructor(priority: number, aiId: number) {
-        this.priority = priority
+    constructor(aiId: number) {
         this.aiId = aiId
         this.shouldLoop = false
     }

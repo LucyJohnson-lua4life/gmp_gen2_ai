@@ -1,4 +1,3 @@
-import {Heap} from 'heap-js';
 import {IAiAction} from '../iAiAction';
 /**
  * @interface IActionsComponent
@@ -9,5 +8,5 @@ import {IAiAction} from '../iAiAction';
  */
 export interface IActionsComponent{
     entityId: number,
-    nextActions: Heap<IAiAction>,
+    nextActions: Array<IAiAction>,
 }

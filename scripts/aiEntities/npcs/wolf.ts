@@ -1,4 +1,3 @@
-import Heap from "heap-js";
 import { IActionDescription } from "../iActionDescription";
 import { WolfAttackDescription } from "../wolfAttackDescription";
 import { IAiAction } from "../iAiAction";
@@ -9,7 +8,7 @@ export class Wolf implements IAiNpc {
     enemyIds: number[];
     friendIds: number[];
     respawnTime: number;
-    nextActions: Heap<IAiAction>;
+    nextActions: Array<IAiAction>;
     actionDescriptions: Array<IActionDescription>;
     aiFlags: Map<string, string | number>;
     id: number;
@@ -32,7 +31,7 @@ export class Wolf implements IAiNpc {
         this.enemyIds = [];
         this.friendIds = [];
         this.respawnTime = 240;
-        this.nextActions = new Heap((a: IAiAction, b: IAiAction) => a.priority - b.priority);
+        this.nextActions =  new Array<IAiAction>()
         this.actionDescriptions = [new WolfAttackDescription(this.id)]
         this.aiFlags = new Map();
 

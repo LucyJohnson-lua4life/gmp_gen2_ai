@@ -26,7 +26,8 @@ export class AiUpdateLoop {
         let actionsComponent:IActionsComponent | undefined = this._entityManager.getActionsComponent(aiId);
 
         if (typeof actionsComponent !== 'undefined') {
-            let nextAction:IAiAction|undefined = actionsComponent.nextActions.peek();
+            let nextAction:IAiAction|undefined = actionsComponent.nextActions[actionsComponent.nextActions.length -1]
+
             if(typeof nextAction !== 'undefined'){
                 nextAction.shouldLoop ? nextAction.executeAction() : actionsComponent.nextActions.pop().executeAction();
             }

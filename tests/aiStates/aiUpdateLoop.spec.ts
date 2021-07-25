@@ -1,5 +1,4 @@
 import {AiUpdateLoop} from "../../scripts/aiStates/aiUpdateLoop";
-import {IAiNpc} from "../../scripts/aiEntities/iAiNpc";
 import { EntityManager } from "../../scripts/aiStates/entityManager";
 import { mock,verify, instance, when } from "ts-mockito";
 import { StubAiNpc } from '../stubAiNpc';
@@ -75,10 +74,9 @@ test('After executing all actions of npc. Nothing will happen. Action heap is em
     entityManager.registerBot(aiNpc)
 
     let updateLoop = new AiUpdateLoop(entityManager)
-    console.log(aiNpc.nextActions.size())
-    expect(aiNpc.nextActions.size()).toBe(1)
+    expect(aiNpc.nextActions.length).toBe(1)
     updateLoop.updateAi(1)
-    expect(aiNpc.nextActions.size()).toBe(0)
+    expect(aiNpc.nextActions.length).toBe(0)
     updateLoop.updateAi(1)
-    expect(aiNpc.nextActions.size()).toBe(0)
+    expect(aiNpc.nextActions.length).toBe(0)
 })
