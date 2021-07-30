@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SRunParadeJump = exports.SRunStrafeRight = exports.SRunStrafeLeft = exports.RunToTargetAction = exports.TurnToTargetAction = exports.WaitAction = exports.SFistAttackAction = void 0;
+exports.SRunParadeJump = exports.SRunStrafeRight = exports.SRunStrafeLeft = exports.RunForward = exports.RunToTargetAction = exports.TurnToTargetAction = exports.WaitAction = exports.SFistAttackAction = void 0;
 const aiUtils_1 = require("../aiFunctions/aiUtils");
 const gl_matrix_1 = require("gl-matrix");
 class SFistAttackAction {
@@ -18,7 +18,16 @@ class SFistAttackAction {
                 revmp.fadeOutAnimation(this.aiId, "S_FISTATTACK");
             }
         }, 900);
-        if (aiUtils_1.getDistance(this.aiId, this.victimId) < this.necessaryDistance) {
+        /*
+        let dangle = Math.abs(getPlayerAngle(this.aiId) - getAngleToTarget(this.aiId, this.victimId))
+
+        if (dangle > 180) {
+            dangle = Math.min(this.aiId, this.victimId)
+        }
+        console.log("dangle: " + dangle)
+        */
+        let dangle = aiUtils_1.getPlayerAngle(this.aiId) - aiUtils_1.getAngleToTarget(this.aiId, this.victimId);
+        if (aiUtils_1.getDistance(this.aiId, this.victimId) < this.necessaryDistance && dangle > -20 && dangle < 20) {
             revmp.attack(this.aiId, this.victimId);
         }
     }
@@ -47,7 +56,7 @@ class TurnToTargetAction {
     executeAction() {
         const position = revmp.getPosition(this.aiId).position;
         const targetPosition = revmp.getPosition(this.targetId).position;
-        const y = aiUtils_1.getAngle(position[0], position[2], targetPosition[0], targetPosition[2]);
+        const y = aiUtils_1.getAngleToTarget(this.aiId, this.targetId);
         const rot = gl_matrix_1.quat.create();
         gl_matrix_1.quat.fromEuler(rot, 0, y, 0);
         revmp.setRotation(this.aiId, rot);
@@ -64,7 +73,7 @@ class RunToTargetAction {
     executeAction() {
         const position = revmp.getPosition(this.aiId).position;
         const targetPosition = revmp.getPosition(this.targetId).position;
-        const y = aiUtils_1.getAngle(position[0], position[2], targetPosition[0], targetPosition[2]);
+        const y = aiUtils_1.getAngleToTarget(this.aiId, this.targetId);
         const rot = gl_matrix_1.quat.create();
         gl_matrix_1.quat.fromEuler(rot, 0, y, 0);
         revmp.setRotation(this.aiId, rot);
@@ -74,6 +83,18 @@ class RunToTargetAction {
     }
 }
 exports.RunToTargetAction = RunToTargetAction;
+class RunForward {
+    constructor(aiId) {
+        this.aiId = aiId;
+        this.shouldLoop = false;
+    }
+    executeAction() {
+        if (!aiUtils_1.isAniPlaying(this.aiId, "S_FISTRUNL")) {
+            revmp.startAnimation(this.aiId, "S_FISTRUNL");
+        }
+    }
+}
+exports.RunForward = RunForward;
 class SRunStrafeLeft {
     constructor(aiId) {
         this.aiId = aiId;
@@ -105,7 +126,8 @@ class SRunParadeJump {
     }
     executeAction() {
         if (!aiUtils_1.isAniPlaying(this.aiId, "T_FISTPARADEJUMPB")) {
-            revmp.startAnimation(this.aiId, "T_FISTRUNSTRAFER");
+            revmp.startAnimation(this.aiId, "T_FISTPARADEJUMPB");
+            console.log("should i be doing this?");
         }
     }
 }

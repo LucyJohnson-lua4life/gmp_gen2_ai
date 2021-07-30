@@ -4,6 +4,8 @@ const wolf = require("./aiEntities/npcs/wolf");
 const funs = require("./aiStates/aiStateFunctions");
 const entityManager = require("./aiStates/entityManager");
 const aiUpdateLoop = require("./aiStates/aiUpdateLoop");
+const {Instances} = require("./serverComponents/weapons");
+const damageCalculation = require("./serverComponents/damageCalculation");
 const {setAngle, getAngle, getAngleDistance, getPlayerAngle} = require("./aiFunctions/aiUtils");
 //const ai = require("./scripts/aiStates/aiUpdateLoop");
 
@@ -16,14 +18,14 @@ let updateLoop = new aiUpdateLoop.AiUpdateLoop(em);
 function createWolf() {
     return revmp.createBot({
         name: "Wolf",
-        maxHealth: 60,
+        maxHealth: 1000,
+
         visual: "Wolf.mds",
         visualBody: {
             bodyMesh: "Wol_Body"
         },
         meleeAttack: {
-            edge: 30,
-            range: 80
+            edge: 30
         },
         protection: {
             blunt: 30,
@@ -35,32 +37,6 @@ function createWolf() {
     });
 }
 
-function createHuman() {
-    return revmp.createBot({
-        name: "Dar",
-        maxHealth: 100,
-        visual: "humans.mds",
-        visualBody: {
-            bodyMesh: "hum_body_Naked0",
-            bodyTexture: 1,
-            headMesh: "Hum_Head_Bald",
-            headTexture: 69
-        },
-        attributes: {
-            strength: 80,
-            dexterity: 80,
-            magicCircle: 4,
-            oneHanded: 50,
-            twoHanded: 50,
-            bow: 50,
-            crossbow: 50
-        },
-        meleeAttack: {
-            blunt: 5,
-            range: 80
-        }
-    });
-}
 
 revmp.on("init", () => {
 
@@ -74,8 +50,9 @@ revmp.on("init", () => {
     revmp.setTime(world, { hour: 15, minute: 0 });
 
     let w = new wolf.Wolf()
-    setInterval(updateLoop.readDescriptions.bind(updateLoop), 1000);
-    setInterval(updateLoop.updateAll.bind(updateLoop), 200);
+    revmp.setHealth(w.id, {current: 1000, max: 1000})
+    setInterval(updateLoop.readDescriptions.bind(updateLoop), 200);
+    setInterval(updateLoop.updateAll.bind(updateLoop), 100);
     funs.SpawnNpc(em, w, 0, 0, 0);
     console.log(w.id)
     funs.SpawnNpc(em, w, 0, 0, 0);
@@ -150,8 +127,6 @@ revmp.on("attacked", (attacker, target, userEvent) => {
         em.setEnemyComponent(target, { entityId: target, enemyId: attacker })
     }
 
-    console.log(getAngleDistance(attacker, target))
-    
 //     revmp.startAnimation(target, "S_FISTRUNL")
     //todo: push die aiActions in den npc
     //npc.addAction(aiAction)
@@ -191,5 +166,20 @@ revmp.on("chatCommand", (entity, msg) => {
     }
     if (command === "/sa") {
         setAngle(entity, parseInt(words[1]))
+    }
+    if (command === "/eq") {
+        let instance = Instances.warsword
+        revmp.addItem(entity, instance, 1);
+        revmp.setAttributes(entity, {strength: 100, oneHanded: 100})
+        revmp.setHealth(entity, {current: 1100, max: 1100})
+        revmp.addOverlay(entity, "Humans_1hST2.MDS")
+        let attribute = revmp.getAttributes(entity)
+        console.log("one handed"+ attribute.oneHanded)
+    }
+    if (command === "/health") {
+        revmp.setHealth(entity, { current: 700, max: 1100 })
+        let h = revmp.getHealth(entity)
+        console.log(h.current)
+        console.log(h.max)
     }
 });

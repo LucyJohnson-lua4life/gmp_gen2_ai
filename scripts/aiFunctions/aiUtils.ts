@@ -17,6 +17,11 @@ export function getAngle(x1: number, y1: number, x2: number, y2: number): number
     return theta - 90; // Idk why Gothic needs -90
 }
 
+export function getAngleToTarget(entityId1: number, entityId2: number): number {
+    const position1 = revmp.getPosition(entityId1).position;
+    const position2 = revmp.getPosition(entityId2).position;
+    return getAngle(position1[0],position1[2],position2[0],position2[2])
+}
 
 export function getDistance(entity1:number, entity2: number){
     const position1 = revmp.getPosition(entity1).position;
@@ -34,9 +39,6 @@ export function getPlayerAngle(entity1: number) {
     const rotation = revmp.getRotation(entity1).rotation;
     const quaternion = new THREE.Quaternion(rotation[0], rotation[1], rotation[2], rotation[3]);
     const euler =  new THREE.Euler().setFromQuaternion(quaternion);
-    console.log("x: " + euler.x)
-    console.log("y: " + euler.y)
-    console.log("z: " + euler.z)
 
     let angle = euler.y * 180 / Math.PI
     if(euler.x >= 0 && euler.y <0){
