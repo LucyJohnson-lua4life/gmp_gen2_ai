@@ -9,12 +9,14 @@ export class SFistAttackAction implements IAiAction {
     shouldLoop: boolean
     victimId: number
     necessaryDistance: number
+    actionName: string
 
     constructor(aiId: number, victimId: number, necessaryDistance: number) {
         this.aiId = aiId
         this.shouldLoop = false
         this.victimId = victimId
         this.necessaryDistance = necessaryDistance
+        this.actionName= "fist-attack"
     }
 
 
@@ -49,12 +51,14 @@ export class WaitAction implements IAiAction {
     shouldLoop: boolean
     waitTime: number
     startTime: number
+    actionName: string
 
     constructor(aiId: number, waitTime: number, startTime: number) {
         this.aiId = aiId
         this.shouldLoop = true
         this.waitTime = waitTime
         this.startTime = startTime
+        this.actionName = "wait"
 
     }
 
@@ -70,11 +74,13 @@ export class TurnToTargetAction implements IAiAction {
     aiId: number
     shouldLoop: boolean
     targetId: number
+    actionName: string
 
     constructor(aiId: number, targetId: number) {
         this.aiId = aiId
         this.shouldLoop = false
         this.targetId = targetId
+        this.actionName = "turn-to-target"
 
     }
 
@@ -93,12 +99,14 @@ export class RunToTargetAction implements IAiAction {
     shouldLoop: boolean
     targetId: number
     targetDistance: number
+    actionName: string
 
     constructor(aiId: number, targetId: number, targetDistance: number) {
         this.aiId = aiId
         this.shouldLoop = false
         this.targetId = targetId
         this.targetDistance = targetDistance
+        this.actionName = "run-to-target"
     }
 
     public executeAction(): void {
@@ -117,10 +125,12 @@ export class RunToTargetAction implements IAiAction {
 export class RunForward implements IAiAction {
     aiId: number
     shouldLoop: boolean
+    actionName: string
 
     constructor(aiId: number) {
         this.aiId = aiId
         this.shouldLoop = false
+        this.actionName = "run-forward"
     }
 
     public executeAction(): void {
@@ -133,10 +143,12 @@ export class RunForward implements IAiAction {
 export class SRunStrafeLeft implements IAiAction {
     aiId: number
     shouldLoop: boolean
+    actionName: string
 
     constructor(aiId: number) {
         this.aiId = aiId
         this.shouldLoop = false
+        this.actionName = "strafe-left"
     }
 
     public executeAction(): void {
@@ -149,10 +161,12 @@ export class SRunStrafeLeft implements IAiAction {
 export class SRunStrafeRight implements IAiAction {
     aiId: number
     shouldLoop: boolean
+    actionName: string
 
     constructor(aiId: number) {
         this.aiId = aiId
         this.shouldLoop = false
+        this.actionName = "strafe-right"
     }
 
     public executeAction(): void {
@@ -165,16 +179,17 @@ export class SRunStrafeRight implements IAiAction {
 export class SRunParadeJump implements IAiAction {
     aiId: number
     shouldLoop: boolean
+    actionName: string
 
     constructor(aiId: number) {
         this.aiId = aiId
         this.shouldLoop = false
+        this.actionName = "parade-jump"
     }
 
     public executeAction(): void {
         if (!isAniPlaying(this.aiId, "T_FISTPARADEJUMPB")) {
             revmp.startAnimation(this.aiId, "T_FISTPARADEJUMPB")
-            console.log("should i be doing this?")
         }
     }
 }

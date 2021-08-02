@@ -24,6 +24,7 @@ export class AiUpdateLoop {
 
     public updateAi(aiId: number) {
         let actionsComponent:IActionsComponent | undefined = this._entityManager.getActionsComponent(aiId);
+        console.log(actionsComponent.nextActions)
 
         if (typeof actionsComponent !== 'undefined') {
             let nextAction:IAiAction|undefined = actionsComponent.nextActions[actionsComponent.nextActions.length -1]

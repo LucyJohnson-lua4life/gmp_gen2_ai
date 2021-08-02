@@ -9,6 +9,7 @@ class SFistAttackAction {
         this.shouldLoop = false;
         this.victimId = victimId;
         this.necessaryDistance = necessaryDistance;
+        this.actionName = "fist-attack";
     }
     executeAction() {
         revmp.startAnimation(this.aiId, "S_FISTATTACK");
@@ -39,6 +40,7 @@ class WaitAction {
         this.shouldLoop = true;
         this.waitTime = waitTime;
         this.startTime = startTime;
+        this.actionName = "wait";
     }
     executeAction() {
         if (this.startTime + this.waitTime > new Date().getMilliseconds()) {
@@ -52,6 +54,7 @@ class TurnToTargetAction {
         this.aiId = aiId;
         this.shouldLoop = false;
         this.targetId = targetId;
+        this.actionName = "turn-to-target";
     }
     executeAction() {
         const position = revmp.getPosition(this.aiId).position;
@@ -69,6 +72,7 @@ class RunToTargetAction {
         this.shouldLoop = false;
         this.targetId = targetId;
         this.targetDistance = targetDistance;
+        this.actionName = "run-to-target";
     }
     executeAction() {
         const position = revmp.getPosition(this.aiId).position;
@@ -87,6 +91,7 @@ class RunForward {
     constructor(aiId) {
         this.aiId = aiId;
         this.shouldLoop = false;
+        this.actionName = "run-forward";
     }
     executeAction() {
         if (!aiUtils_1.isAniPlaying(this.aiId, "S_FISTRUNL")) {
@@ -99,6 +104,7 @@ class SRunStrafeLeft {
     constructor(aiId) {
         this.aiId = aiId;
         this.shouldLoop = false;
+        this.actionName = "strafe-left";
     }
     executeAction() {
         if (!aiUtils_1.isAniPlaying(this.aiId, "T_FISTRUNSTRAFEL")) {
@@ -111,6 +117,7 @@ class SRunStrafeRight {
     constructor(aiId) {
         this.aiId = aiId;
         this.shouldLoop = false;
+        this.actionName = "strafe-right";
     }
     executeAction() {
         if (!aiUtils_1.isAniPlaying(this.aiId, "T_FISTRUNSTRAFER")) {
@@ -123,11 +130,11 @@ class SRunParadeJump {
     constructor(aiId) {
         this.aiId = aiId;
         this.shouldLoop = false;
+        this.actionName = "parade-jump";
     }
     executeAction() {
         if (!aiUtils_1.isAniPlaying(this.aiId, "T_FISTPARADEJUMPB")) {
             revmp.startAnimation(this.aiId, "T_FISTPARADEJUMPB");
-            console.log("should i be doing this?");
         }
     }
 }

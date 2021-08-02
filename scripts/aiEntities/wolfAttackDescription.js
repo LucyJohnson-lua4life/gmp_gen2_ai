@@ -12,7 +12,8 @@ class WolfAttackDescription {
         let enemyId = entityManager.getEnemyComponent(this.entityId).enemyId;
         if (this.enemyExists(enemyId)) {
             let range = aiUtils_1.getDistance(this.entityId, enemyId);
-            if (range < 800) {
+            let actionListSize = entityManager.getActionsComponent(this.entityId).nextActions.length;
+            if (range < 800 && actionListSize < 5) {
                 this.describeFightAction(entityManager, enemyId, range);
             }
         }
@@ -21,12 +22,10 @@ class WolfAttackDescription {
         if (range > 300) {
             entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.RunToTargetAction(this.entityId, enemyId, 300));
         }
-        else if (range < 100) {
-            entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SRunParadeJump(this.entityId));
-        }
         else {
             this.describeWhenInRange(entityManager, enemyId, range);
         }
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.TurnToTargetAction(this.entityId, enemyId));
     }
     describeWhenInRange(entityManager, enemyId, range) {
         /*
@@ -43,10 +42,15 @@ class WolfAttackDescription {
         console.log("lastTime: " + this.lastAttackTime)
         */
         const currentTime = Date.now();
+        console.log(dangle);
         if (dangle > -20 && dangle < 20 && currentTime - this.lastAttackTime > 3000) {
             //entityManager.getActionsComponent(this.entityId).nextActions.push(new TurnToTargetAction(this.entityId, enemyId))
             entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SFistAttackAction(this.entityId, enemyId, 150));
             this.lastAttackTime = currentTime;
+            console.log("i got here");
+        }
+        else if (range < 100) {
+            entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SRunParadeJump(this.entityId));
         }
         else {
             let random = Math.floor(Math.random() * 10);
@@ -76,9 +80,9 @@ class WolfAttackDescription {
                 else {
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SRunStrafeLeft(this.entityId));
                 }
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 200, Date.now()));
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 400, Date.now()));
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.RunForward(this.entityId));
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 100, Date.now()));
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 200, Date.now()));
             }
             else {
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 500, Date.now()));
