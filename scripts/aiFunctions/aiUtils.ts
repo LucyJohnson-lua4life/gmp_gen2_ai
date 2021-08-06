@@ -2,7 +2,7 @@
 import { quat, vec3 } from "gl-matrix";
 import * as THREE from 'three';
  // https://stackoverflow.com/a/9614122/10637905
-export function getAngle(x1: number, y1: number, x2: number, y2: number): number {
+export function getAngleToPoint(x1: number, y1: number, x2: number, y2: number): number {
     const dy = y2 - y1;
     const dx = x2 - x1;
     let theta = Math.atan2(dy, dx); // range (-PI, PI]
@@ -20,7 +20,7 @@ export function getAngle(x1: number, y1: number, x2: number, y2: number): number
 export function getAngleToTarget(entityId1: number, entityId2: number): number {
     const position1 = revmp.getPosition(entityId1).position;
     const position2 = revmp.getPosition(entityId2).position;
-    return getAngle(position1[0],position1[2],position2[0],position2[2])
+    return getAngleToPoint(position1[0],position1[2],position2[0],position2[2])
 }
 
 export function getDistance(entity1:number, entity2: number){

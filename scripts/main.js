@@ -54,9 +54,8 @@ revmp.on("init", () => {
     setInterval(updateLoop.readDescriptions.bind(updateLoop), 200);
     setInterval(updateLoop.updateAll.bind(updateLoop), 200);
     funs.SpawnNpc(em, w, 0, 0, 0);
-    console.log(w.id)
+    console.log("wolf id: " + w.id)
     funs.SpawnNpc(em, w, 0, 0, 0);
-    console.log(w.id)
 
 });
 
@@ -87,6 +86,7 @@ function debugCommands(entity, msg) {
         const param1 = words[1];
         let npcid = parseInt(param1)
         //todo : liefer aiAction den state mit, und entferne die die aktion selbst, wenn die position erreicht wurde
+        /*
         let aiAction = {
             priority: 1,
             aiId: npcid,
@@ -110,8 +110,16 @@ function debugCommands(entity, msg) {
             }
         }
 
+        */
         //todo: push die aiActions in den npc
         //npc.addAction(aiAction)
+        let positionComponent = em.getPositionsComponents(npcid)
+        let pos = revmp.getPosition(npcid).position
+        positionComponent.currentPosX = pos[0]
+        positionComponent.currentPosY = pos[1]
+        positionComponent.currentPosZ = pos[2]
+        em.setPositionsComponent(npcid, positionComponent)
+        let aiAction = new commonActions.GotoPosition(positionComponent, 566,-79,-964)
         em.getActionsComponent(npcid).nextActions.push(aiAction)
 
     }

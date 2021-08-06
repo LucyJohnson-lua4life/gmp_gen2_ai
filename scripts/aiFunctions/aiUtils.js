@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setAngle = exports.isAniPlaying = exports.getPlayerAngle = exports.getAngleDistance = exports.getDistance = exports.getAngleToTarget = exports.getAngle = void 0;
+exports.setAngle = exports.isAniPlaying = exports.getPlayerAngle = exports.getAngleDistance = exports.getDistance = exports.getAngleToTarget = exports.getAngleToPoint = void 0;
 const gl_matrix_1 = require("gl-matrix");
 const THREE = require("three");
 // https://stackoverflow.com/a/9614122/10637905
-function getAngle(x1, y1, x2, y2) {
+function getAngleToPoint(x1, y1, x2, y2) {
     const dy = y2 - y1;
     const dx = x2 - x1;
     let theta = Math.atan2(dy, dx); // range (-PI, PI]
@@ -18,11 +18,11 @@ function getAngle(x1, y1, x2, y2) {
     }
     return theta - 90; // Idk why Gothic needs -90
 }
-exports.getAngle = getAngle;
+exports.getAngleToPoint = getAngleToPoint;
 function getAngleToTarget(entityId1, entityId2) {
     const position1 = revmp.getPosition(entityId1).position;
     const position2 = revmp.getPosition(entityId2).position;
-    return getAngle(position1[0], position1[2], position2[0], position2[2]);
+    return getAngleToPoint(position1[0], position1[2], position2[0], position2[2]);
 }
 exports.getAngleToTarget = getAngleToTarget;
 function getDistance(entity1, entity2) {

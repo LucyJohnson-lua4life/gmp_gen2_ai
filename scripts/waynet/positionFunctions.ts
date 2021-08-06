@@ -1,6 +1,6 @@
 import { IPositionComponent } from "../aiEntities/components/iPositionComponent";
 
-function getDistance(x1: number, y1: number, z1: number, x2: number, y2: number, z2: number) {
+ export function getDistance(x1: number, y1: number, z1: number, x2: number, y2: number, z2: number) {
     if ([x1, y1, z1, , x2, y2, z2].some((val) => (typeof val === 'undefined'))) {
         return 99999
     }
@@ -38,13 +38,11 @@ export function gotoPosition(npcPosition:IPositionComponent, x: number, y: numbe
                 npcPosition.currentPosX = x
                 npcPosition.currentPosY = y
                 npcPosition.currentPosZ = z
-                console.log("1 set pos to "+ x + " ," + y + " ," + z)
             }else{
                 npcPosition.currentPosX = npcPosition.currentPosX + (dirX*speed)
                 npcPosition.currentPosY = npcPosition.currentPosY + (dirY*speed)
                 npcPosition.currentPosZ = npcPosition.currentPosZ + (dirZ*speed)
                 revmp.setPosition(npcPosition.entityId,  [npcPosition.currentPosX, npcPosition.currentPosY, npcPosition.currentPosZ ])
-                console.log("2 set pos to "+ npcPosition.currentPosX + " ," + npcPosition.currentPosY + " ," + npcPosition.currentPosZ)
             }
         }
 

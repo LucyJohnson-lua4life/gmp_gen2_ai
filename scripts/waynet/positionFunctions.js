@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.gotoPosition = void 0;
+exports.gotoPosition = exports.getDistance = void 0;
 function getDistance(x1, y1, z1, x2, y2, z2) {
     if ([x1, y1, z1, , x2, y2, z2].some((val) => (typeof val === 'undefined'))) {
         return 99999;
@@ -10,6 +10,7 @@ function getDistance(x1, y1, z1, x2, y2, z2) {
     let z = z1 - z2;
     return Math.sqrt(x * x + y * y + z * z);
 }
+exports.getDistance = getDistance;
 function gotoPosition(npcPosition, x, y, z) {
     if ((typeof npcPosition.lastPosUpdate == 'undefined') || npcPosition.lastPosUpdate == 0) {
         npcPosition.lastPosUpdate = Date.now();
@@ -34,14 +35,12 @@ function gotoPosition(npcPosition, x, y, z) {
                 npcPosition.currentPosX = x;
                 npcPosition.currentPosY = y;
                 npcPosition.currentPosZ = z;
-                console.log("1 set pos to " + x + " ," + y + " ," + z);
             }
             else {
                 npcPosition.currentPosX = npcPosition.currentPosX + (dirX * speed);
                 npcPosition.currentPosY = npcPosition.currentPosY + (dirY * speed);
                 npcPosition.currentPosZ = npcPosition.currentPosZ + (dirZ * speed);
                 revmp.setPosition(npcPosition.entityId, [npcPosition.currentPosX, npcPosition.currentPosY, npcPosition.currentPosZ]);
-                console.log("2 set pos to " + npcPosition.currentPosX + " ," + npcPosition.currentPosY + " ," + npcPosition.currentPosZ);
             }
         }
         npcPosition.lastPosUpdate = Date.now();

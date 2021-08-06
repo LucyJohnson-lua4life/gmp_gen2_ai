@@ -1,22 +1,22 @@
 
 
 import { IAiAction } from "../aiEntities/iAiAction";
-import { getPlayerAngle, getAngleToTarget, getDistance, isAniPlaying } from "../aiFunctions/aiUtils";
+import { getAngleToPoint, getPlayerAngle, getAngleToTarget, getDistance, isAniPlaying } from "../aiFunctions/aiUtils";
+import { gotoPosition, getDistance as getPointDistance} from "../waynet/positionFunctions";
 import { quat } from "gl-matrix";
+import { IPositionComponent } from "../aiEntities/components/iPositionComponent";
 
 export class SFistAttackAction implements IAiAction {
     aiId: number
     shouldLoop: boolean
     victimId: number
     necessaryDistance: number
-    actionName: string
 
     constructor(aiId: number, victimId: number, necessaryDistance: number) {
         this.aiId = aiId
         this.shouldLoop = false
         this.victimId = victimId
         this.necessaryDistance = necessaryDistance
-        this.actionName= "fist-attack"
     }
 
 
@@ -51,14 +51,12 @@ export class WaitAction implements IAiAction {
     shouldLoop: boolean
     waitTime: number
     startTime: number
-    actionName: string
 
     constructor(aiId: number, waitTime: number, startTime: number) {
         this.aiId = aiId
         this.shouldLoop = true
         this.waitTime = waitTime
         this.startTime = startTime
-        this.actionName = "wait"
 
     }
 
@@ -99,14 +97,12 @@ export class RunToTargetAction implements IAiAction {
     shouldLoop: boolean
     targetId: number
     targetDistance: number
-    actionName: string
 
     constructor(aiId: number, targetId: number, targetDistance: number) {
         this.aiId = aiId
         this.shouldLoop = false
         this.targetId = targetId
         this.targetDistance = targetDistance
-        this.actionName = "run-to-target"
     }
 
     public executeAction(): void {
@@ -143,12 +139,10 @@ export class RunForward implements IAiAction {
 export class SRunStrafeLeft implements IAiAction {
     aiId: number
     shouldLoop: boolean
-    actionName: string
 
     constructor(aiId: number) {
         this.aiId = aiId
         this.shouldLoop = false
-        this.actionName = "strafe-left"
     }
 
     public executeAction(): void {
@@ -161,12 +155,10 @@ export class SRunStrafeLeft implements IAiAction {
 export class SRunStrafeRight implements IAiAction {
     aiId: number
     shouldLoop: boolean
-    actionName: string
 
     constructor(aiId: number) {
         this.aiId = aiId
         this.shouldLoop = false
-        this.actionName = "strafe-right"
     }
 
     public executeAction(): void {
@@ -179,17 +171,52 @@ export class SRunStrafeRight implements IAiAction {
 export class SRunParadeJump implements IAiAction {
     aiId: number
     shouldLoop: boolean
-    actionName: string
 
     constructor(aiId: number) {
         this.aiId = aiId
         this.shouldLoop = false
-        this.actionName = "parade-jump"
     }
 
     public executeAction(): void {
         if (!isAniPlaying(this.aiId, "T_FISTPARADEJUMPB")) {
             revmp.startAnimation(this.aiId, "T_FISTPARADEJUMPB")
         }
+    }
+}
+
+export class GotoPosition implements IAiAction {
+    aiId: number
+    shouldLoop: boolean
+    npcPosition:IPositionComponent
+    targetX:number
+    targetY:number
+    targetZ:number
+
+    constructor(npcPosition:IPositionComponent, x:number, y:number, z:number) {
+        this.aiId = npcPosition.entityId
+        this.npcPosition = npcPosition
+        this.shouldLoop = true
+        this.targetX = x
+        this.targetY = y
+        this.targetZ = z
+    }
+
+    public executeAction(): void {
+        gotoPosition(this.npcPosition, this.targetX, this.targetY, this.targetZ)
+        let pos:revmp.Vec3 = revmp.getPosition(this.aiId).position
+        if(getPointDistance(pos[0], pos[1], pos[2], this.targetX, this.targetY, this.targetZ) < 100){
+            if (isAniPlaying(this.aiId, "S_FISTRUNL")) {
+               revmp.stopAnimation(this.aiId, "S_FISTRUNL")
+            }
+            this.shouldLoop = false
+        }
+        else{
+            const y = getAngleToPoint(pos[0], pos[2], this.targetX, this.targetZ)
+            const rot = quat.create();
+            quat.fromEuler(rot, 0, y, 0);
+            revmp.setRotation(this.aiId, rot);
+            revmp.startAnimation(this.aiId, "S_FISTRUNL")
+        }
+
     }
 }

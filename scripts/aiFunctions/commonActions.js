@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SRunParadeJump = exports.SRunStrafeRight = exports.SRunStrafeLeft = exports.RunForward = exports.RunToTargetAction = exports.TurnToTargetAction = exports.WaitAction = exports.SFistAttackAction = void 0;
+exports.GotoPosition = exports.SRunParadeJump = exports.SRunStrafeRight = exports.SRunStrafeLeft = exports.RunForward = exports.RunToTargetAction = exports.TurnToTargetAction = exports.WaitAction = exports.SFistAttackAction = void 0;
 const aiUtils_1 = require("../aiFunctions/aiUtils");
+const positionFunctions_1 = require("../waynet/positionFunctions");
 const gl_matrix_1 = require("gl-matrix");
 class SFistAttackAction {
     constructor(aiId, victimId, necessaryDistance) {
@@ -9,7 +10,6 @@ class SFistAttackAction {
         this.shouldLoop = false;
         this.victimId = victimId;
         this.necessaryDistance = necessaryDistance;
-        this.actionName = "fist-attack";
     }
     executeAction() {
         revmp.startAnimation(this.aiId, "S_FISTATTACK");
@@ -40,7 +40,6 @@ class WaitAction {
         this.shouldLoop = true;
         this.waitTime = waitTime;
         this.startTime = startTime;
-        this.actionName = "wait";
     }
     executeAction() {
         if (this.startTime + this.waitTime > new Date().getMilliseconds()) {
@@ -72,7 +71,6 @@ class RunToTargetAction {
         this.shouldLoop = false;
         this.targetId = targetId;
         this.targetDistance = targetDistance;
-        this.actionName = "run-to-target";
     }
     executeAction() {
         const position = revmp.getPosition(this.aiId).position;
@@ -104,7 +102,6 @@ class SRunStrafeLeft {
     constructor(aiId) {
         this.aiId = aiId;
         this.shouldLoop = false;
-        this.actionName = "strafe-left";
     }
     executeAction() {
         if (!aiUtils_1.isAniPlaying(this.aiId, "T_FISTRUNSTRAFEL")) {
@@ -117,7 +114,6 @@ class SRunStrafeRight {
     constructor(aiId) {
         this.aiId = aiId;
         this.shouldLoop = false;
-        this.actionName = "strafe-right";
     }
     executeAction() {
         if (!aiUtils_1.isAniPlaying(this.aiId, "T_FISTRUNSTRAFER")) {
@@ -130,7 +126,6 @@ class SRunParadeJump {
     constructor(aiId) {
         this.aiId = aiId;
         this.shouldLoop = false;
-        this.actionName = "parade-jump";
     }
     executeAction() {
         if (!aiUtils_1.isAniPlaying(this.aiId, "T_FISTPARADEJUMPB")) {
@@ -139,3 +134,31 @@ class SRunParadeJump {
     }
 }
 exports.SRunParadeJump = SRunParadeJump;
+class GotoPosition {
+    constructor(npcPosition, x, y, z) {
+        this.aiId = npcPosition.entityId;
+        this.npcPosition = npcPosition;
+        this.shouldLoop = true;
+        this.targetX = x;
+        this.targetY = y;
+        this.targetZ = z;
+    }
+    executeAction() {
+        positionFunctions_1.gotoPosition(this.npcPosition, this.targetX, this.targetY, this.targetZ);
+        let pos = revmp.getPosition(this.aiId).position;
+        if (positionFunctions_1.getDistance(pos[0], pos[1], pos[2], this.targetX, this.targetY, this.targetZ) < 100) {
+            if (aiUtils_1.isAniPlaying(this.aiId, "S_FISTRUNL")) {
+                revmp.stopAnimation(this.aiId, "S_FISTRUNL");
+            }
+            this.shouldLoop = false;
+        }
+        else {
+            const y = aiUtils_1.getAngleToPoint(pos[0], pos[2], this.targetX, this.targetZ);
+            const rot = gl_matrix_1.quat.create();
+            gl_matrix_1.quat.fromEuler(rot, 0, y, 0);
+            revmp.setRotation(this.aiId, rot);
+            revmp.startAnimation(this.aiId, "S_FISTRUNL");
+        }
+    }
+}
+exports.GotoPosition = GotoPosition;
