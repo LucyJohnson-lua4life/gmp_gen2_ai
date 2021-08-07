@@ -85,34 +85,6 @@ function debugCommands(entity, msg) {
     if (command === "/walk") {
         const param1 = words[1];
         let npcid = parseInt(param1)
-        //todo : liefer aiAction den state mit, und entferne die die aktion selbst, wenn die position erreicht wurde
-        /*
-        let aiAction = {
-            priority: 1,
-            aiId: npcid,
-            shouldLoop: true,
-            executeAction: function() {
-                let pos = revmp.getPosition(npcid).position
-                let positionComponent = em.getPositionsComponents(npcid)
-                positionComponent.currentPosX = pos[0]
-                positionComponent.currentPosY = pos[1]
-                positionComponent.currentPosZ = pos[2]
-                console.log(positionComponent.currentPosX)
-                em.setPositionsComponent(npcid, positionComponent)
-                posFuncs.gotoPosition(positionComponent, 566, -79, -964)
-
-                let position = revmp.getPosition(npcid)
-                console.log(npcid)
-
-                if (getDistance(566, -79, -964, position.x, position.y, position.z) < 50) {
-                    this.shouldLoop = false
-                }
-            }
-        }
-
-        */
-        //todo: push die aiActions in den npc
-        //npc.addAction(aiAction)
         let positionComponent = em.getPositionsComponents(npcid)
         let pos = revmp.getPosition(npcid).position
         positionComponent.currentPosX = pos[0]
@@ -133,18 +105,8 @@ revmp.on("attacked", (attacker, target, userEvent) => {
     let waitAction = new commonActions.WaitAction(1, target, 3000, new Date().getMilliseconds())
     if(typeof em.getEnemyComponent(target) !== 'undefined'){
         em.setEnemyComponent(target, { entityId: target, enemyId: attacker })
+        revmp.setCombatState(target, {weaponMode: revmp.WeaponMode.Fist})
     }
-
-//     revmp.startAnimation(target, "S_FISTRUNL")
-    //todo: push die aiActions in den npc
-    //npc.addAction(aiAction)
-    /*
-    if(typeof em.getActionsComponent(target) !== 'undefined'){
-        em.getActionsComponent(target).nextActions.push(waitAction)
-        em.getActionsComponent(target).nextActions.push(turnAction)
-        em.getActionsComponent(target).nextActions.push(aiAction) }
-        */
-
 
 })
 
@@ -189,5 +151,8 @@ revmp.on("chatCommand", (entity, msg) => {
         let h = revmp.getHealth(entity)
         console.log(h.current)
         console.log(h.max)
+    }
+    if (command === "/jump") {
+        revmp.startAnimation(entity, "S_JUMP");
     }
 });

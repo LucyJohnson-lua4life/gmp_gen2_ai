@@ -12,11 +12,11 @@ class SFistAttackAction {
         this.necessaryDistance = necessaryDistance;
     }
     executeAction() {
-        revmp.startAnimation(this.aiId, "S_FISTATTACK");
+        revmp.startAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_ATTACK"));
         setTimeout(() => {
             // Attacker could be invalid in the meanwhile, so better check.
             if (revmp.valid(this.aiId)) {
-                revmp.fadeOutAnimation(this.aiId, "S_FISTATTACK");
+                revmp.fadeOutAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_ATTACK"));
             }
         }, 900);
         /*
@@ -27,8 +27,16 @@ class SFistAttackAction {
         }
         console.log("dangle: " + dangle)
         */
+        /*
+        let pAngle = getPlayerAngle(this.aiId);
+        let angleToTarget = getAngleToTarget(this.aiId, this.victimId)
+        console.log("pAngle: " + pAngle)
+        console.log("att: " + angleToTarget)
+        console.log("distance: " + getDistance(this.aiId, this.victimId))
+        */
         let dangle = aiUtils_1.getPlayerAngle(this.aiId) - aiUtils_1.getAngleToTarget(this.aiId, this.victimId);
         if (aiUtils_1.getDistance(this.aiId, this.victimId) < this.necessaryDistance && dangle > -20 && dangle < 20) {
+            console.log("i hit");
             revmp.attack(this.aiId, this.victimId);
         }
     }
@@ -53,7 +61,6 @@ class TurnToTargetAction {
         this.aiId = aiId;
         this.shouldLoop = false;
         this.targetId = targetId;
-        this.actionName = "turn-to-target";
     }
     executeAction() {
         const position = revmp.getPosition(this.aiId).position;
@@ -79,8 +86,8 @@ class RunToTargetAction {
         const rot = gl_matrix_1.quat.create();
         gl_matrix_1.quat.fromEuler(rot, 0, y, 0);
         revmp.setRotation(this.aiId, rot);
-        if (!aiUtils_1.isAniPlaying(this.aiId, "S_FISTRUNL")) {
-            revmp.startAnimation(this.aiId, "S_FISTRUNL");
+        if (!aiUtils_1.isAniPlaying(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_RUNL"))) {
+            revmp.startAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_RUNL"));
         }
     }
 }
@@ -92,8 +99,8 @@ class RunForward {
         this.actionName = "run-forward";
     }
     executeAction() {
-        if (!aiUtils_1.isAniPlaying(this.aiId, "S_FISTRUNL")) {
-            revmp.startAnimation(this.aiId, "S_FISTRUNL");
+        if (!aiUtils_1.isAniPlaying(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_RUNL"))) {
+            revmp.startAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_RUNL"));
         }
     }
 }
@@ -104,8 +111,8 @@ class SRunStrafeLeft {
         this.shouldLoop = false;
     }
     executeAction() {
-        if (!aiUtils_1.isAniPlaying(this.aiId, "T_FISTRUNSTRAFEL")) {
-            revmp.startAnimation(this.aiId, "T_FISTRUNSTRAFEL");
+        if (!aiUtils_1.isAniPlaying(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "T_RUNSTRAFEL"))) {
+            revmp.startAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "T_RUNSTRAFEL"));
         }
     }
 }
@@ -116,8 +123,8 @@ class SRunStrafeRight {
         this.shouldLoop = false;
     }
     executeAction() {
-        if (!aiUtils_1.isAniPlaying(this.aiId, "T_FISTRUNSTRAFER")) {
-            revmp.startAnimation(this.aiId, "T_FISTRUNSTRAFER");
+        if (!aiUtils_1.isAniPlaying(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "T_RUNSTRAFEL"))) {
+            revmp.startAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "T_RUNSTRAFEL"));
         }
     }
 }
@@ -128,8 +135,8 @@ class SRunParadeJump {
         this.shouldLoop = false;
     }
     executeAction() {
-        if (!aiUtils_1.isAniPlaying(this.aiId, "T_FISTPARADEJUMPB")) {
-            revmp.startAnimation(this.aiId, "T_FISTPARADEJUMPB");
+        if (!aiUtils_1.isAniPlaying(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "T_PARADEJUMPB"))) {
+            revmp.startAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "T_PARADEJUMPB"));
         }
     }
 }
@@ -147,8 +154,8 @@ class GotoPosition {
         positionFunctions_1.gotoPosition(this.npcPosition, this.targetX, this.targetY, this.targetZ);
         let pos = revmp.getPosition(this.aiId).position;
         if (positionFunctions_1.getDistance(pos[0], pos[1], pos[2], this.targetX, this.targetY, this.targetZ) < 100) {
-            if (aiUtils_1.isAniPlaying(this.aiId, "S_FISTRUNL")) {
-                revmp.stopAnimation(this.aiId, "S_FISTRUNL");
+            if (aiUtils_1.isAniPlaying(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_RUNL"))) {
+                revmp.stopAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_RUNL"));
             }
             this.shouldLoop = false;
         }
@@ -157,7 +164,7 @@ class GotoPosition {
             const rot = gl_matrix_1.quat.create();
             gl_matrix_1.quat.fromEuler(rot, 0, y, 0);
             revmp.setRotation(this.aiId, rot);
-            revmp.startAnimation(this.aiId, "S_FISTRUNL");
+            revmp.startAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_RUNL"));
         }
     }
 }

@@ -28,26 +28,11 @@ class WolfAttackDescription {
         entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.TurnToTargetAction(this.entityId, enemyId));
     }
     describeWhenInRange(entityManager, enemyId, range) {
-        /*
-        let dangle = Math.abs(getPlayerAngle(this.entityId) - getAngleToTarget(this.entityId, enemyId))
-
-        if(dangle > 180){
-            dangle = Math.min(this.entityId, enemyId)
-        }
-        */
         let dangle = aiUtils_1.getPlayerAngle(this.entityId) - aiUtils_1.getAngleToTarget(this.entityId, enemyId);
-        /*
-        const currentTime = Date.now()
-        console.log("current: " + currentTime)
-        console.log("lastTime: " + this.lastAttackTime)
-        */
         const currentTime = Date.now();
-        console.log(dangle);
         if (dangle > -20 && dangle < 20 && currentTime - this.lastAttackTime > 3000) {
-            //entityManager.getActionsComponent(this.entityId).nextActions.push(new TurnToTargetAction(this.entityId, enemyId))
-            entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SFistAttackAction(this.entityId, enemyId, 150));
+            entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SFistAttackAction(this.entityId, enemyId, 250));
             this.lastAttackTime = currentTime;
-            console.log("i got here");
         }
         else if (range < 100) {
             entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SRunParadeJump(this.entityId));

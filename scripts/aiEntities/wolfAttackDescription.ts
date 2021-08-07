@@ -35,26 +35,11 @@ export class WolfAttackDescription implements IActionDescription {
     }
 
     private describeWhenInRange(entityManager: EntityManager, enemyId: number, range: number): void {
-        /*
-        let dangle = Math.abs(getPlayerAngle(this.entityId) - getAngleToTarget(this.entityId, enemyId))
-
-        if(dangle > 180){
-            dangle = Math.min(this.entityId, enemyId)
-        }
-        */
         let dangle = getPlayerAngle(this.entityId) - getAngleToTarget(this.entityId, enemyId)
-        /*
         const currentTime = Date.now()
-        console.log("current: " + currentTime)
-        console.log("lastTime: " + this.lastAttackTime)
-        */
-        const currentTime = Date.now()
-        console.log(dangle)
         if (dangle > -20 && dangle < 20 && currentTime - this.lastAttackTime > 3000) {
-            //entityManager.getActionsComponent(this.entityId).nextActions.push(new TurnToTargetAction(this.entityId, enemyId))
-            entityManager.getActionsComponent(this.entityId).nextActions.push(new SFistAttackAction(this.entityId, enemyId, 150))
+            entityManager.getActionsComponent(this.entityId).nextActions.push(new SFistAttackAction(this.entityId, enemyId, 250))
             this.lastAttackTime = currentTime
-            console.log("i got here")
         }
         else if (range < 100) {
             entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunParadeJump(this.entityId))

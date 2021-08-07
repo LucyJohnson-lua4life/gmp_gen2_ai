@@ -114,5 +114,6 @@ revmp.on("attacked", (attacker, target, userEvent) => {
         health.current = 1;
         revmp.setCombatState(target, { unconscious: true });
     }
+    revmp.startAnimation(target, "S_FALLDN");
     revmp.setHealth(target, { current: newHealth, max: health.max });
 });

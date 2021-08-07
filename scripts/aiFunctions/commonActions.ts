@@ -1,7 +1,7 @@
 
 
 import { IAiAction } from "../aiEntities/iAiAction";
-import { getAngleToPoint, getPlayerAngle, getAngleToTarget, getDistance, isAniPlaying } from "../aiFunctions/aiUtils";
+import { getCombatStateBasedAni, getAngleToPoint, getPlayerAngle, getAngleToTarget, getDistance, isAniPlaying } from "../aiFunctions/aiUtils";
 import { gotoPosition, getDistance as getPointDistance} from "../waynet/positionFunctions";
 import { quat } from "gl-matrix";
 import { IPositionComponent } from "../aiEntities/components/iPositionComponent";
@@ -21,11 +21,11 @@ export class SFistAttackAction implements IAiAction {
 
 
     public executeAction(): void {
-        revmp.startAnimation(this.aiId, "S_FISTATTACK")
+        revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_ATTACK"))
         setTimeout(() => {
             // Attacker could be invalid in the meanwhile, so better check.
             if (revmp.valid(this.aiId)) {
-                revmp.fadeOutAnimation(this.aiId, "S_FISTATTACK");
+                revmp.fadeOutAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_ATTACK"));
             }
         }, 900);
 
@@ -37,8 +37,16 @@ export class SFistAttackAction implements IAiAction {
         }
         console.log("dangle: " + dangle)
         */
+        /*
+        let pAngle = getPlayerAngle(this.aiId);
+        let angleToTarget = getAngleToTarget(this.aiId, this.victimId)
+        console.log("pAngle: " + pAngle)
+        console.log("att: " + angleToTarget)
+        console.log("distance: " + getDistance(this.aiId, this.victimId))
+        */
         let dangle = getPlayerAngle(this.aiId) - getAngleToTarget(this.aiId, this.victimId)
         if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && dangle > -20 && dangle < 20) {
+            console.log("i hit")
             revmp.attack(this.aiId, this.victimId);
         }
     }
@@ -72,13 +80,11 @@ export class TurnToTargetAction implements IAiAction {
     aiId: number
     shouldLoop: boolean
     targetId: number
-    actionName: string
 
     constructor(aiId: number, targetId: number) {
         this.aiId = aiId
         this.shouldLoop = false
         this.targetId = targetId
-        this.actionName = "turn-to-target"
 
     }
 
@@ -112,8 +118,8 @@ export class RunToTargetAction implements IAiAction {
         const rot = quat.create();
         quat.fromEuler(rot, 0, y, 0);
         revmp.setRotation(this.aiId, rot);
-        if (!isAniPlaying(this.aiId, "S_FISTRUNL")) {
-            revmp.startAnimation(this.aiId, "S_FISTRUNL")
+        if (!isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL") )) {
+            revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
         }
     }
 }
@@ -130,8 +136,8 @@ export class RunForward implements IAiAction {
     }
 
     public executeAction(): void {
-        if (!isAniPlaying(this.aiId, "S_FISTRUNL")) {
-            revmp.startAnimation(this.aiId, "S_FISTRUNL")
+        if (!isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))) {
+            revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
         }
     }
 }
@@ -146,8 +152,8 @@ export class SRunStrafeLeft implements IAiAction {
     }
 
     public executeAction(): void {
-        if (!isAniPlaying(this.aiId, "T_FISTRUNSTRAFEL")) {
-            revmp.startAnimation(this.aiId, "T_FISTRUNSTRAFEL")
+        if (!isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "T_RUNSTRAFEL"))) {
+            revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "T_RUNSTRAFEL"))
         }
     }
 }
@@ -162,8 +168,8 @@ export class SRunStrafeRight implements IAiAction {
     }
 
     public executeAction(): void {
-        if (!isAniPlaying(this.aiId, "T_FISTRUNSTRAFER")) {
-            revmp.startAnimation(this.aiId, "T_FISTRUNSTRAFER")
+        if (!isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "T_RUNSTRAFEL"))) {
+            revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "T_RUNSTRAFEL"))
         }
     }
 }
@@ -178,8 +184,8 @@ export class SRunParadeJump implements IAiAction {
     }
 
     public executeAction(): void {
-        if (!isAniPlaying(this.aiId, "T_FISTPARADEJUMPB")) {
-            revmp.startAnimation(this.aiId, "T_FISTPARADEJUMPB")
+        if (!isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "T_PARADEJUMPB"))) {
+            revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "T_PARADEJUMPB"))
         }
     }
 }
@@ -201,12 +207,13 @@ export class GotoPosition implements IAiAction {
         this.targetZ = z
     }
 
+
     public executeAction(): void {
         gotoPosition(this.npcPosition, this.targetX, this.targetY, this.targetZ)
         let pos:revmp.Vec3 = revmp.getPosition(this.aiId).position
         if(getPointDistance(pos[0], pos[1], pos[2], this.targetX, this.targetY, this.targetZ) < 100){
-            if (isAniPlaying(this.aiId, "S_FISTRUNL")) {
-               revmp.stopAnimation(this.aiId, "S_FISTRUNL")
+            if (isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))) {
+                revmp.stopAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
             }
             this.shouldLoop = false
         }
@@ -215,7 +222,7 @@ export class GotoPosition implements IAiAction {
             const rot = quat.create();
             quat.fromEuler(rot, 0, y, 0);
             revmp.setRotation(this.aiId, rot);
-            revmp.startAnimation(this.aiId, "S_FISTRUNL")
+            revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
         }
 
     }
