@@ -3,6 +3,11 @@ import { IActionDescriptionComponent } from '../aiEntities/components/iActionDes
 import { IAiAction } from '../aiEntities/iAiAction';
 import { IActionDescription } from '../aiEntities/iActionDescription';
 import { EntityManager } from './entityManager';
+
+/**
+ * Represents the loop that iterates through each npc state and executes the next actions for each npc.
+ * The loops also executes descriptions, that decide which actions to put into the action collection of each npc's based on the npc state and environment.
+ */
 export class AiUpdateLoop {
     private _entityManager: EntityManager;
 
