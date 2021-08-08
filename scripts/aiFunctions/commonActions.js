@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GotoPosition = exports.SRunParadeJump = exports.SRunStrafeRight = exports.SRunStrafeLeft = exports.RunForward = exports.RunToTargetAction = exports.TurnToTargetAction = exports.WaitAction = exports.SFistAttackAction = void 0;
 const aiUtils_1 = require("../aiFunctions/aiUtils");
 const positionFunctions_1 = require("../waynet/positionFunctions");
-const gl_matrix_1 = require("gl-matrix");
 class SFistAttackAction {
     constructor(aiId, victimId, necessaryDistance) {
         this.aiId = aiId;
@@ -66,9 +65,7 @@ class TurnToTargetAction {
         const position = revmp.getPosition(this.aiId).position;
         const targetPosition = revmp.getPosition(this.targetId).position;
         const y = aiUtils_1.getAngleToTarget(this.aiId, this.targetId);
-        const rot = gl_matrix_1.quat.create();
-        gl_matrix_1.quat.fromEuler(rot, 0, y, 0);
-        revmp.setRotation(this.aiId, rot);
+        aiUtils_1.setPlayerAngle(this.aiId, y);
     }
 }
 exports.TurnToTargetAction = TurnToTargetAction;
@@ -83,9 +80,7 @@ class RunToTargetAction {
         const position = revmp.getPosition(this.aiId).position;
         const targetPosition = revmp.getPosition(this.targetId).position;
         const y = aiUtils_1.getAngleToTarget(this.aiId, this.targetId);
-        const rot = gl_matrix_1.quat.create();
-        gl_matrix_1.quat.fromEuler(rot, 0, y, 0);
-        revmp.setRotation(this.aiId, rot);
+        aiUtils_1.setPlayerAngle(this.aiId, y);
         if (!aiUtils_1.isAniPlaying(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_RUNL"))) {
             revmp.startAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_RUNL"));
         }
@@ -161,9 +156,7 @@ class GotoPosition {
         }
         else {
             const y = aiUtils_1.getAngleToPoint(pos[0], pos[2], this.targetX, this.targetZ);
-            const rot = gl_matrix_1.quat.create();
-            gl_matrix_1.quat.fromEuler(rot, 0, y, 0);
-            revmp.setRotation(this.aiId, rot);
+            aiUtils_1.setPlayerAngle(this.aiId, y);
             revmp.startAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_RUNL"));
         }
     }

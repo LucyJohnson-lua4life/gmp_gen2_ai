@@ -1,9 +1,8 @@
 
 
 import { IAiAction } from "../aiEntities/iAiAction";
-import { getCombatStateBasedAni, getAngleToPoint, getPlayerAngle, getAngleToTarget, getDistance, isAniPlaying } from "../aiFunctions/aiUtils";
+import { setPlayerAngle, getCombatStateBasedAni, getAngleToPoint, getPlayerAngle, getAngleToTarget, getDistance, isAniPlaying } from "../aiFunctions/aiUtils";
 import { gotoPosition, getDistance as getPointDistance} from "../waynet/positionFunctions";
-import { quat } from "gl-matrix";
 import { IPositionComponent } from "../aiEntities/components/iPositionComponent";
 
 export class SFistAttackAction implements IAiAction {
@@ -92,9 +91,7 @@ export class TurnToTargetAction implements IAiAction {
         const position = revmp.getPosition(this.aiId).position;
         const targetPosition = revmp.getPosition(this.targetId).position;
         const y = getAngleToTarget(this.aiId, this.targetId)
-        const rot = quat.create();
-        quat.fromEuler(rot, 0, y, 0);
-        revmp.setRotation(this.aiId, rot);
+        setPlayerAngle(this.aiId, y)
     }
 }
 
@@ -115,9 +112,7 @@ export class RunToTargetAction implements IAiAction {
         const position = revmp.getPosition(this.aiId).position;
         const targetPosition = revmp.getPosition(this.targetId).position;
         const y = getAngleToTarget(this.aiId, this.targetId)
-        const rot = quat.create();
-        quat.fromEuler(rot, 0, y, 0);
-        revmp.setRotation(this.aiId, rot);
+        setPlayerAngle(this.aiId, y)
         if (!isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL") )) {
             revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
         }
@@ -219,9 +214,7 @@ export class GotoPosition implements IAiAction {
         }
         else{
             const y = getAngleToPoint(pos[0], pos[2], this.targetX, this.targetZ)
-            const rot = quat.create();
-            quat.fromEuler(rot, 0, y, 0);
-            revmp.setRotation(this.aiId, rot);
+            setPlayerAngle(this.aiId, y)
             revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
         }
 

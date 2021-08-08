@@ -2,6 +2,13 @@
 import { quat, vec3 } from "gl-matrix";
 import * as THREE from 'three';
 // https://stackoverflow.com/a/9614122/10637905
+/**
+ * Returns the angle from two points. Or in relationship with npc's it describes the angle the npc1 needs to look to npc2.
+ * @param x1 x-value of the first 2D point
+ * @param y1 y-value of the first 2D point
+ * @param x2 x-value of the second 2D point
+ * @param y2 y-value of the second 2D point
+ */
 export function getAngleToPoint(x1: number, y1: number, x2: number, y2: number): number {
     const dy = y2 - y1;
     const dx = x2 - x1;
@@ -17,24 +24,33 @@ export function getAngleToPoint(x1: number, y1: number, x2: number, y2: number):
     return theta - 90; // Idk why Gothic needs -90
 }
 
+
+/**
+ * Returns the the angle that is necessary so that npc1 looks to npc2
+ * @param entityId1 id of the first npc
+ * @param entityId2 id of the second npc
+ */
 export function getAngleToTarget(entityId1: number, entityId2: number): number {
     const position1 = revmp.getPosition(entityId1).position;
     const position2 = revmp.getPosition(entityId2).position;
     return getAngleToPoint(position1[0], position1[2], position2[0], position2[2])
 }
 
+/**
+ * Returns the the distance between 2 npcs.
+ * @param entityId1 id of the first npc
+ * @param entityId2 id of the second npc
+ */
 export function getDistance(entityId1: number, entityId2: number) {
     const position1 = revmp.getPosition(entityId1).position;
     const position2 = revmp.getPosition(entityId2).position;
     return vec3.distance(position1, position2);
 }
 
-export function getAngleDistance(entityId1: number, entityId2: number) {
-    const rotation1 = revmp.getRotation(entityId1).rotation;
-    const rotation2 = revmp.getRotation(entityId2).rotation;
-    return quat.getAngle(rotation1, rotation2);
-}
-
+/**
+ * Get angle of the given entityId
+ * @param entityId id of the entity for which the angle should be calculated.
+ */
 export function getPlayerAngle(entityId: number) {
     const rotation = revmp.getRotation(entityId).rotation;
     const quaternion = new THREE.Quaternion(rotation[0], rotation[1], rotation[2], rotation[3]);
@@ -58,16 +74,31 @@ export function getPlayerAngle(entityId: number) {
     return angle
 }
 
+/**
+ * Returns true if the given entity plays the given animation, otherwise false.
+ * @param entity entity for which the animation should be checked.
+ * @param ani name of the animation.
+ */
 export function isAniPlaying(entity: revmp.Entity, ani: string) {
     return revmp.getAnimations(entity)
         .activeAnis.find(a => a.ani.name === ani && !a.isFadingOut) !== undefined;
 }
-export function setAngle(entity: number, angle: number) {
+/**
+ * Sets the angle of the entity.
+ * @param entityId id of the entity for which the angle should be set.
+ * @param angle the angle to which the entity should be set.
+ */
+export function setPlayerAngle(entityId: number, angle: number) {
     const rot = quat.create();
     quat.fromEuler(rot, 0, angle, 0);
-    revmp.setRotation(entity, rot);
+    revmp.setRotation(entityId, rot);
 }
 
+/**
+ * Returns the animation name.
+ * @param entityId id of the entity for which the angle should be set.
+ * @param angle the angle to which the entity should be set.
+ */
 export function getCombatStateBasedAni(entity: revmp.Entity, ani: string) {
     const index = ani.indexOf('_');
     if (index == -1) {

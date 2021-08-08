@@ -1,9 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCombatStateBasedAni = exports.setAngle = exports.isAniPlaying = exports.getPlayerAngle = exports.getAngleDistance = exports.getDistance = exports.getAngleToTarget = exports.getAngleToPoint = void 0;
+exports.getCombatStateBasedAni = exports.setPlayerAngle = exports.isAniPlaying = exports.getPlayerAngle = exports.getDistance = exports.getAngleToTarget = exports.getAngleToPoint = void 0;
 const gl_matrix_1 = require("gl-matrix");
 const THREE = require("three");
 // https://stackoverflow.com/a/9614122/10637905
+/**
+ * Returns the angle from two points. Or in relationship with npc's it describes the angle the npc1 needs to look to npc2.
+ * @param x1 x-value of the first 2D point
+ * @param y1 y-value of the first 2D point
+ * @param x2 x-value of the second 2D point
+ * @param y2 y-value of the second 2D point
+ */
 function getAngleToPoint(x1, y1, x2, y2) {
     const dy = y2 - y1;
     const dx = x2 - x1;
@@ -19,24 +26,32 @@ function getAngleToPoint(x1, y1, x2, y2) {
     return theta - 90; // Idk why Gothic needs -90
 }
 exports.getAngleToPoint = getAngleToPoint;
+/**
+ * Returns the the angle that is necessary so that npc1 looks to npc2
+ * @param entityId1 id of the first npc
+ * @param entityId2 id of the second npc
+ */
 function getAngleToTarget(entityId1, entityId2) {
     const position1 = revmp.getPosition(entityId1).position;
     const position2 = revmp.getPosition(entityId2).position;
     return getAngleToPoint(position1[0], position1[2], position2[0], position2[2]);
 }
 exports.getAngleToTarget = getAngleToTarget;
+/**
+ * Returns the the distance between 2 npcs.
+ * @param entityId1 id of the first npc
+ * @param entityId2 id of the second npc
+ */
 function getDistance(entityId1, entityId2) {
     const position1 = revmp.getPosition(entityId1).position;
     const position2 = revmp.getPosition(entityId2).position;
     return gl_matrix_1.vec3.distance(position1, position2);
 }
 exports.getDistance = getDistance;
-function getAngleDistance(entityId1, entityId2) {
-    const rotation1 = revmp.getRotation(entityId1).rotation;
-    const rotation2 = revmp.getRotation(entityId2).rotation;
-    return gl_matrix_1.quat.getAngle(rotation1, rotation2);
-}
-exports.getAngleDistance = getAngleDistance;
+/**
+ * Get angle of the given entityId
+ * @param entityId id of the entity for which the angle should be calculated.
+ */
 function getPlayerAngle(entityId) {
     const rotation = revmp.getRotation(entityId).rotation;
     const quaternion = new THREE.Quaternion(rotation[0], rotation[1], rotation[2], rotation[3]);
@@ -57,17 +72,32 @@ function getPlayerAngle(entityId) {
     return angle;
 }
 exports.getPlayerAngle = getPlayerAngle;
+/**
+ * Returns true if the given entity plays the given animation, otherwise false.
+ * @param entity entity for which the animation should be checked.
+ * @param ani name of the animation.
+ */
 function isAniPlaying(entity, ani) {
     return revmp.getAnimations(entity)
         .activeAnis.find(a => a.ani.name === ani && !a.isFadingOut) !== undefined;
 }
 exports.isAniPlaying = isAniPlaying;
-function setAngle(entity, angle) {
+/**
+ * Sets the angle of the entity.
+ * @param entityId id of the entity for which the angle should be set.
+ * @param angle the angle to which the entity should be set.
+ */
+function setPlayerAngle(entityId, angle) {
     const rot = gl_matrix_1.quat.create();
     gl_matrix_1.quat.fromEuler(rot, 0, angle, 0);
-    revmp.setRotation(entity, rot);
+    revmp.setRotation(entityId, rot);
 }
-exports.setAngle = setAngle;
+exports.setPlayerAngle = setPlayerAngle;
+/**
+ * Returns the animation name.
+ * @param entityId id of the entity for which the angle should be set.
+ * @param angle the angle to which the entity should be set.
+ */
 function getCombatStateBasedAni(entity, ani) {
     const index = ani.indexOf('_');
     if (index == -1) {
