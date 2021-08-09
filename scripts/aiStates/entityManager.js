@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EntityManager = void 0;
 const worldNames = ["NEWWORLD\\NEWWORLD.ZEN", "OLDWORLD\\OLDWORLD.ZEN", "ADDON\\ADDONWORLD.ZEN"];
 /**
- * Central class that contains all lookups between the entity id and it's components.
+ * Class that contains all lookups between the entity id and it's components.
  * TODO: document the different components and the interface.
  */
 class EntityManager {

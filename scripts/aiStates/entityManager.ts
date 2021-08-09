@@ -10,12 +10,10 @@ import { IAiNpc } from "../aiEntities/iAiNpc";
 
 const worldNames: Array<string> = ["NEWWORLD\\NEWWORLD.ZEN", "OLDWORLD\\OLDWORLD.ZEN", "ADDON\\ADDONWORLD.ZEN"]
 /**
- * Central class that contains all lookups between the entity id and it's components.
+ * Class that contains all lookups between the entity id and it's components.
  * TODO: document the different components and the interface.
  */
 export class EntityManager {
-
-
 
     private allBots:Array<number>;
     private allPlayer:Array<number>;

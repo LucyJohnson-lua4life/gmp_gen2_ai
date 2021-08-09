@@ -1,9 +1,7 @@
 import * as waynet from "../../scripts/waynet/waynet";
 test('Waynet should load freepoints correctly.', () => {
-    
     var wn = new waynet.Waynet("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
     var fplist = wn.freepoints;
-    
     var testfp = fplist[0]
     expect(fplist.length).toBe(4)
     expect(testfp.fpName).toBe("FP_TEST1")

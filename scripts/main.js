@@ -2,17 +2,16 @@
 
 const wolf = require("./aiEntities/npcs/wolf");
 const funs = require("./aiStates/aiStateFunctions");
-const entityManager = require("./aiStates/entityManager");
+const aiState = require("./aiStates/aiState");
 const aiUpdateLoop = require("./aiStates/aiUpdateLoop");
 const {Instances} = require("./serverComponents/weapons");
 const damageCalculation = require("./serverComponents/damageCalculation");
 const {setAngle, getAngle, getAngleDistance, getPlayerAngle} = require("./aiFunctions/aiUtils");
 //const ai = require("./scripts/aiStates/aiUpdateLoop");
-
 const commonActions = require("./aiFunctions/commonActions");
-
 const posFuncs = require("./waynet/positionFunctions");
-let em = new entityManager.EntityManager();
+let state = new aiState.AiState()
+let em = state.getEntityManager();
 let updateLoop = new aiUpdateLoop.AiUpdateLoop(em);
 
 function createWolf() {
@@ -154,5 +153,8 @@ revmp.on("chatCommand", (entity, msg) => {
     }
     if (command === "/jump") {
         revmp.startAnimation(entity, "S_JUMP");
+    }
+    if (command === "/wptest") {
+        console.log(state.getWaynet().freepoints[0].fpName)
     }
 });
