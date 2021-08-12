@@ -154,6 +154,16 @@ revmp.on("chatCommand", (entity, msg) => {
     if (command === "/jump") {
         revmp.startAnimation(entity, "S_JUMP");
     }
+    if (command === "/stumble") {
+        revmp.startAnimation(entity, "T_STUMBLE");
+    }
+    if (command === "/stu2") {
+        revmp.startAnimation(entity, "T_STUMBLEB");
+    }
+    if (command === "/stumble2") {
+        revmp.startAnimation(entity, "T_STAND_2_STUMBLE");
+    }
+
     if (command === "/wptest") {
         console.log(state.getWaynet().freepoints[0].fpName)
     }
