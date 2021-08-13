@@ -1,3 +1,4 @@
+import { Waypoint } from "../../scripts/waynet/iwaynet";
 import * as waynet from "../../scripts/waynet/waynet";
 test('Waynet should load freepoints correctly.', () => {
     var wn = new waynet.Waynet("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
@@ -47,6 +48,11 @@ test('Returns the right route from WP_TEST1 to WP_TEST5', () => {
 })
 
 
+test('Returns correctly the nearest waypoint', () => {
+    var wn = new waynet.Waynet("./tests/waynet/test_with_whitespaces.wp", "./tests/waynet/test_with_whitespaces.fp")
+    var nearestWp: Waypoint = wn.getNearestWaypoint(2000,3100,-4100)
+    expect(nearestWp.wpName).toStrictEqual("WP_TEST5");
+})
 
 
 

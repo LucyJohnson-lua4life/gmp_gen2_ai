@@ -22,6 +22,21 @@ class Waynet {
         }
         return this.getNodeRoutesOrderedByMinNetDistance(unorderedRouteNodes, start, end);
     }
+    /**
+     * Returns the nearest waypoint for the given x,y,z coordinates
+     */
+    getNearestWaypoint(x, y, z) {
+        let shortestDistance = 999999999;
+        let nearestWaypoint = this.waypoints[0];
+        this.waypoints.forEach(wp => {
+            let tmpDist = this.getDistance(x, y, z, wp.x, wp.y, wp.z);
+            if (tmpDist < shortestDistance) {
+                shortestDistance = tmpDist;
+                nearestWaypoint = wp;
+            }
+        });
+        return nearestWaypoint;
+    }
     getNodeRoutesOrderedByMinNetDistance(routeNodes, start, end) {
         let currentWp = this.waypoints.get(end);
         let wayroute = [];

@@ -52,6 +52,4 @@ export function gotoPosition(npcPosition:IPositionComponent, x: number, y: numbe
         npcPosition.lastPosZ = npcPosition.currentPosZ;
     }
 
-    //todo: play walk animation here, once revmp functions are available
-
 }

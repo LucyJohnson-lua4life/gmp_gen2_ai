@@ -41,6 +41,22 @@ export class Waynet implements IWaynet {
         return this.getNodeRoutesOrderedByMinNetDistance(unorderedRouteNodes, start, end)
     }
 
+    /**
+     * Returns the nearest waypoint for the given x,y,z coordinates
+     */
+    public getNearestWaypoint(x:number, y:number, z:number): Waypoint {
+        let shortestDistance = 999999999
+        let nearestWaypoint = this.waypoints[0]
+        this.waypoints.forEach(wp => {
+            let tmpDist = this.getDistance(x,y,z, wp.x, wp.y, wp.z)
+            if(tmpDist < shortestDistance){
+                shortestDistance = tmpDist
+                nearestWaypoint = wp
+            }
+        })
+        return nearestWaypoint
+    }
+
     private getNodeRoutesOrderedByMinNetDistance(routeNodes: Map<string, NodeInfo>, start: string, end: string) {
         let currentWp: Waypoint | undefined = this.waypoints.get(end);
         let wayroute = []

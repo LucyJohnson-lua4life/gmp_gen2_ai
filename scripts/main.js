@@ -90,7 +90,7 @@ function debugCommands(entity, msg) {
         positionComponent.currentPosY = pos[1]
         positionComponent.currentPosZ = pos[2]
         em.setPositionsComponent(npcid, positionComponent)
-        let aiAction = new commonActions.GotoPosition(positionComponent, 566,-79,-964)
+        let aiAction = new commonActions.GotoWaypoint(npcid, state, "NW_CITY_HABOUR_PUFF_ENTRANCE")
         em.getActionsComponent(npcid).nextActions.push(aiAction)
 
     }

@@ -4,6 +4,8 @@ import { IAiAction } from "../aiEntities/iAiAction";
 import { setPlayerAngle, getCombatStateBasedAni, getAngleToPoint, getPlayerAngle, getAngleToTarget, getDistance, isAniPlaying } from "../aiFunctions/aiUtils";
 import { gotoPosition, getDistance as getPointDistance} from "../waynet/positionFunctions";
 import { IPositionComponent } from "../aiEntities/components/iPositionComponent";
+import { AiState } from "../aiStates/aiState";
+import { IWaynet, Waypoint } from "../waynet/iwaynet";
 
 export class SFistAttackAction implements IAiAction {
     aiId: number
@@ -218,5 +220,58 @@ export class GotoPosition implements IAiAction {
             revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
         }
 
+    }
+}
+
+export class GotoWaypoint implements IAiAction{
+
+    aiId: number
+    shouldLoop: boolean
+    aiState: AiState
+    targetWaypoint: string
+    startWaypoint: string
+    routeIndex: number
+    wayroute: Array<Waypoint>
+    aiPos:IPositionComponent
+
+    constructor(aiId:number, aiState: AiState, targetWaypoint:string) {
+        this.aiId = aiId
+        this.shouldLoop = true
+        this.aiState = aiState
+        this.targetWaypoint = targetWaypoint
+
+        let waynet: IWaynet = this.aiState.getWaynet()
+        let newestPos: revmp.Vec3 = revmp.getPosition(this.aiId).position
+        this.aiPos = this.aiState.getEntityManager().getPositionsComponents(this.aiId)
+        this.aiPos.currentPosX = newestPos[0]
+        this.aiPos.currentPosY = newestPos[1]
+        this.aiPos.currentPosZ = newestPos[2]
+
+        this.startWaypoint = waynet.getNearestWaypoint(this.aiPos.currentPosX, this.aiPos.currentPosY, this.aiPos.currentPosZ).wpName
+        this.wayroute = waynet.getWayroute(this.startWaypoint, this.targetWaypoint)
+        this.routeIndex = 0
+    }
+
+    public executeAction(): void {
+        if(this.routeIndex < this.wayroute.length){
+            let wpToVisit: Waypoint = this.wayroute[this.routeIndex]
+            gotoPosition(this.aiPos, wpToVisit.x, wpToVisit.y, wpToVisit.z)
+
+            let newPos: revmp.Vec3 = revmp.getPosition(this.aiId).position
+            if (getPointDistance(newPos[0], newPos[1], newPos[2], wpToVisit.x, wpToVisit.y, wpToVisit.z) < 100) {
+                this.routeIndex++
+            }
+            else {
+                const y = getAngleToPoint(newPos[0], newPos[2], wpToVisit.x, wpToVisit.z)
+                setPlayerAngle(this.aiId, y)
+                revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
+            }
+        }
+        else{
+            if (isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))) {
+                revmp.stopAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
+            }
+            this.shouldLoop = false
+        }
     }
 }

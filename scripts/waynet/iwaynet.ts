@@ -6,6 +6,7 @@ export interface IWaynet {
     waypoints: Map<String, Waypoint>,
     freepoints: Array<Freepoint>
     getWayroute(start: string, end: string): Array<Waypoint>
+    getNearestWaypoint(x: number, y: number, z: number): Waypoint
 }
 
 /**

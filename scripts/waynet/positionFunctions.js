@@ -48,6 +48,5 @@ function gotoPosition(npcPosition, x, y, z) {
         npcPosition.lastPosY = npcPosition.currentPosY;
         npcPosition.lastPosZ = npcPosition.currentPosZ;
     }
-    //todo: play walk animation here, once revmp functions are available
 }
 exports.gotoPosition = gotoPosition;

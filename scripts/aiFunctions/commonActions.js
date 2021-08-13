@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GotoPosition = exports.SRunParadeJump = exports.SRunStrafeRight = exports.SRunStrafeLeft = exports.RunForward = exports.RunToTargetAction = exports.TurnToTargetAction = exports.WaitAction = exports.SFistAttackAction = void 0;
+exports.GotoWaypoint = exports.GotoPosition = exports.SRunParadeJump = exports.SRunStrafeRight = exports.SRunStrafeLeft = exports.RunForward = exports.RunToTargetAction = exports.TurnToTargetAction = exports.WaitAction = exports.SFistAttackAction = void 0;
 const aiUtils_1 = require("../aiFunctions/aiUtils");
 const positionFunctions_1 = require("../waynet/positionFunctions");
 class SFistAttackAction {
@@ -162,3 +162,42 @@ class GotoPosition {
     }
 }
 exports.GotoPosition = GotoPosition;
+class GotoWaypoint {
+    constructor(aiId, aiState, targetWaypoint) {
+        this.aiId = aiId;
+        this.shouldLoop = true;
+        this.aiState = aiState;
+        this.targetWaypoint = targetWaypoint;
+        let waynet = this.aiState.getWaynet();
+        let newestPos = revmp.getPosition(this.aiId).position;
+        this.aiPos = this.aiState.getEntityManager().getPositionsComponents(this.aiId);
+        this.aiPos.currentPosX = newestPos[0];
+        this.aiPos.currentPosY = newestPos[1];
+        this.aiPos.currentPosZ = newestPos[2];
+        this.startWaypoint = waynet.getNearestWaypoint(this.aiPos.currentPosX, this.aiPos.currentPosY, this.aiPos.currentPosZ).wpName;
+        this.wayroute = waynet.getWayroute(this.startWaypoint, this.targetWaypoint);
+        this.routeIndex = 0;
+    }
+    executeAction() {
+        if (this.routeIndex < this.wayroute.length) {
+            let wpToVisit = this.wayroute[this.routeIndex];
+            positionFunctions_1.gotoPosition(this.aiPos, wpToVisit.x, wpToVisit.y, wpToVisit.z);
+            let newPos = revmp.getPosition(this.aiId).position;
+            if (positionFunctions_1.getDistance(newPos[0], newPos[1], newPos[2], wpToVisit.x, wpToVisit.y, wpToVisit.z) < 100) {
+                this.routeIndex++;
+            }
+            else {
+                const y = aiUtils_1.getAngleToPoint(newPos[0], newPos[2], wpToVisit.x, wpToVisit.z);
+                aiUtils_1.setPlayerAngle(this.aiId, y);
+                revmp.startAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_RUNL"));
+            }
+        }
+        else {
+            if (aiUtils_1.isAniPlaying(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_RUNL"))) {
+                revmp.stopAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_RUNL"));
+            }
+            this.shouldLoop = false;
+        }
+    }
+}
+exports.GotoWaypoint = GotoWaypoint;
