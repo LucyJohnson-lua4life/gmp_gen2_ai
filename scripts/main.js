@@ -90,7 +90,7 @@ function debugCommands(entity, msg) {
         positionComponent.currentPosY = pos[1]
         positionComponent.currentPosZ = pos[2]
         em.setPositionsComponent(npcid, positionComponent)
-        let aiAction = new commonActions.GotoWaypoint(npcid, state, "NW_CITY_HABOUR_PUFF_ENTRANCE")
+        let aiAction = new commonActions.GotoPoint(npcid, state, "FP_STAND_CITY_ANDRE")
         em.getActionsComponent(npcid).nextActions.push(aiAction)
 
     }
@@ -165,6 +165,9 @@ revmp.on("chatCommand", (entity, msg) => {
     }
 
     if (command === "/wptest") {
-        console.log(state.getWaynet().freepoints[0].fpName)
+        //console.log(state.getWaynet().freepoints[0].fpName)
+        
+        revmp.setPosition(entity, [14671.2051, 1150.05042, 517.412537])
+
     }
 });

@@ -153,7 +153,7 @@ class Waynet {
         let x = x1 - x2;
         let y = y1 - y2;
         let z = z1 - z2;
-        return Math.sqrt(x * x + y * y + z * z);
+        return Math.sqrt((x * x) + (y * y) + (z * z));
     }
 }
 exports.Waynet = Waynet;

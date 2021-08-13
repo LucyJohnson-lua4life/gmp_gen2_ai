@@ -46,9 +46,10 @@ export class Waynet implements IWaynet {
      */
     public getNearestWaypoint(x:number, y:number, z:number): Waypoint {
         let shortestDistance = 999999999
-        let nearestWaypoint = this.waypoints[0]
+        let nearestWaypoint:Waypoint = this.waypoints[0]
         this.waypoints.forEach(wp => {
             let tmpDist = this.getDistance(x,y,z, wp.x, wp.y, wp.z)
+
             if(tmpDist < shortestDistance){
                 shortestDistance = tmpDist
                 nearestWaypoint = wp
@@ -190,7 +191,7 @@ export class Waynet implements IWaynet {
         let x = x1 - x2;
         let y = y1 - y2;
         let z = z1 - z2;
-        return Math.sqrt(x * x + y * y + z * z);
+        return Math.sqrt((x*x) + (y*y) + (z*z));
     }
 
 }

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GotoWaypoint = exports.GotoPosition = exports.SRunParadeJump = exports.SRunStrafeRight = exports.SRunStrafeLeft = exports.RunForward = exports.RunToTargetAction = exports.TurnToTargetAction = exports.WaitAction = exports.SFistAttackAction = void 0;
+exports.GotoPoint = exports.GotoPosition = exports.SRunParadeJump = exports.SRunStrafeRight = exports.SRunStrafeLeft = exports.RunForward = exports.RunToTargetAction = exports.TurnToTargetAction = exports.WaitAction = exports.SFistAttackAction = void 0;
 const aiUtils_1 = require("../aiFunctions/aiUtils");
 const positionFunctions_1 = require("../waynet/positionFunctions");
 class SFistAttackAction {
@@ -162,20 +162,36 @@ class GotoPosition {
     }
 }
 exports.GotoPosition = GotoPosition;
-class GotoWaypoint {
+class GotoPoint {
     constructor(aiId, aiState, targetWaypoint) {
         this.aiId = aiId;
         this.shouldLoop = true;
         this.aiState = aiState;
-        this.targetWaypoint = targetWaypoint;
         let waynet = this.aiState.getWaynet();
         let newestPos = revmp.getPosition(this.aiId).position;
         this.aiPos = this.aiState.getEntityManager().getPositionsComponents(this.aiId);
         this.aiPos.currentPosX = newestPos[0];
         this.aiPos.currentPosY = newestPos[1];
         this.aiPos.currentPosZ = newestPos[2];
-        this.startWaypoint = waynet.getNearestWaypoint(this.aiPos.currentPosX, this.aiPos.currentPosY, this.aiPos.currentPosZ).wpName;
-        this.wayroute = waynet.getWayroute(this.startWaypoint, this.targetWaypoint);
+        this.startPoint = waynet.getNearestWaypoint(this.aiPos.currentPosX, this.aiPos.currentPosY, this.aiPos.currentPosZ).wpName;
+        // if a freepoint is given, find nearest wp and calculate the route to the nearest wp
+        // put freepoint to the wayroute as last destination
+        if (Array.from(waynet.waypoints.keys()).includes(targetWaypoint)) {
+            this.targetPoint = targetWaypoint;
+            this.wayroute = waynet.getWayroute(this.startPoint, this.targetPoint);
+        }
+        else {
+            let targetFp = waynet.freepoints.find(fp => fp.fpName === targetWaypoint);
+            if (typeof targetFp !== 'undefined') {
+                let nearestEndWp = waynet.getNearestWaypoint(targetFp.x, targetFp.y, targetFp.z);
+                this.wayroute = waynet.getWayroute(this.startPoint, nearestEndWp.wpName);
+                let fpToWp = { wpName: "TMP_WAYPOINT", x: targetFp.x, y: targetFp.y, z: targetFp.z, rotX: targetFp.rotX, rotY: targetFp.rotY, otherWps: [nearestEndWp.wpName] };
+                this.wayroute.push(fpToWp);
+            }
+            else {
+                this.shouldLoop = false;
+            }
+        }
         this.routeIndex = 0;
     }
     executeAction() {
@@ -200,4 +216,4 @@ class GotoWaypoint {
         }
     }
 }
-exports.GotoWaypoint = GotoWaypoint;
+exports.GotoPoint = GotoPoint;
