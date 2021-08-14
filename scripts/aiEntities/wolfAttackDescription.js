@@ -3,18 +3,32 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.WolfAttackDescription = void 0;
 const aiUtils_1 = require("../aiFunctions/aiUtils");
 const commonActions_1 = require("../aiFunctions/commonActions");
+const npcActionUtils_1 = require("../aiFunctions/npcActionUtils");
 class WolfAttackDescription {
     constructor(id) {
         this.entityId = id;
         this.lastAttackTime = 0;
     }
     describeAction(entityManager) {
+        let npcActionUtils = new npcActionUtils_1.NpcActionUtils(entityManager);
         let enemyId = entityManager.getEnemyComponent(this.entityId).enemyId;
+        let actionListSize = entityManager.getActionsComponent(this.entityId).nextActions.length;
         if (this.enemyExists(enemyId)) {
             let range = aiUtils_1.getDistance(this.entityId, enemyId);
-            let actionListSize = entityManager.getActionsComponent(this.entityId).nextActions.length;
             if (range < 800 && actionListSize < 5) {
                 this.describeFightAction(entityManager, enemyId, range);
+            }
+        }
+        else if (actionListSize < 1) {
+            //TODO: the world constant should only be fixed in later versions!
+            let charId = npcActionUtils.getNearestCharacter(this.entityId, "NEWWORLD\\NEWWORLD.ZEN");
+            let range = 99999999;
+            if (charId !== this.entityId && charId !== -1) {
+                range = aiUtils_1.getDistance(this.entityId, charId);
+            }
+            if (range < 400) {
+                let warnInput = { aiId: this.entityId, enemyId: charId, waitTime: 10000, startTime: Date.now(), warnDistance: 400, attackDistance: 0, entityManager: entityManager };
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WarnEnemy(warnInput));
             }
         }
     }

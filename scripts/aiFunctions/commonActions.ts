@@ -6,6 +6,8 @@ import { gotoPosition, getDistance as getPointDistance} from "../waynet/position
 import { IPositionComponent } from "../aiEntities/components/iPositionComponent";
 import { AiState } from "../aiStates/aiState";
 import { IWaynet, Waypoint } from "../waynet/iwaynet";
+import { IEnemyComponent } from "../aiEntities/components/iEnemyComponent";
+import { EntityManager } from "../aiStates/entityManager";
 
 export class SFistAttackAction implements IAiAction {
     aiId: number
@@ -47,7 +49,6 @@ export class SFistAttackAction implements IAiAction {
         */
         let dangle = getPlayerAngle(this.aiId) - getAngleToTarget(this.aiId, this.victimId)
         if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && dangle > -20 && dangle < 20) {
-            console.log("i hit")
             revmp.attack(this.aiId, this.victimId);
         }
     }
@@ -70,7 +71,7 @@ export class WaitAction implements IAiAction {
     }
 
     public executeAction(): void {
-        if (this.startTime + this.waitTime > new Date().getMilliseconds()) {
+        if (Date.now() > this.startTime + this.waitTime) {
             this.shouldLoop = false
         }
 
@@ -289,5 +290,66 @@ export class GotoPoint implements IAiAction{
             }
             this.shouldLoop = false
         }
+    }
+}
+
+
+export interface WarnEnemyActionInput{
+
+    aiId: number,
+    enemyId: number,
+    waitTime: number,
+    startTime: number,
+    warnDistance: number,
+    attackDistance: number,
+    entityManager: EntityManager
+
+}
+
+export class WarnEnemy implements IAiAction {
+
+    aiId: number
+    shouldLoop: boolean
+    enemyId: number
+    waitTime: number
+    startTime: number
+    warnDistance: number
+    attackDistance: number
+    entityManager: EntityManager
+
+    constructor(input: WarnEnemyActionInput) {
+        this.aiId = input.aiId
+        this.enemyId = input.enemyId
+        this.shouldLoop = true
+        this.waitTime = input.waitTime
+        this.startTime = input.startTime
+        this.warnDistance = input.warnDistance
+        this.attackDistance = input.attackDistance
+        this.entityManager = input.entityManager
+    }
+
+    public executeAction(): void {
+        const position = revmp.getPosition(this.aiId).position;
+        const targetPosition = revmp.getPosition(this.enemyId).position;
+        const y = getAngleToTarget(this.aiId, this.enemyId)
+        setPlayerAngle(this.aiId, y)
+
+        if (Date.now() > this.startTime + this.waitTime) {
+            this.setEnemy()
+        }
+        let distance = getDistance(this.aiId, this.enemyId)
+        if (distance < this.warnDistance){
+            //revmp.stopAnimation(this.aiId, "T_WARN")
+           revmp.startAnimation(this.aiId, "T_WARN")
+        }
+        else if (distance < this.attackDistance){
+            this.setEnemy()
+        }
+    }
+
+    private setEnemy(): void{
+        this.shouldLoop = false
+        let enemyComponent: IEnemyComponent = { entityId: this.aiId, enemyId: this.enemyId }
+        this.entityManager.setEnemyComponent(this.aiId, enemyComponent)
     }
 }

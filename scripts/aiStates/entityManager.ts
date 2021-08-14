@@ -15,6 +15,7 @@ const worldNames: Array<string> = ["NEWWORLD\\NEWWORLD.ZEN", "OLDWORLD\\OLDWORLD
  */
 export class EntityManager {
 
+    // TODO: allBots, allPlayer, allPosition might be moved to aiState
     private allBots:Array<number>;
     private allPlayer:Array<number>;
     private allPositions: Map<string, Map<number, Array<number>>>;

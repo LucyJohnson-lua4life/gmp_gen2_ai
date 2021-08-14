@@ -2,7 +2,8 @@
 import { IActionDescription } from './IActionDescription';
 import { EntityManager } from '../aiStates/entityManager';
 import { getAngleToTarget, getDistance, getPlayerAngle } from "../aiFunctions/aiUtils";
-import { RunForward, SFistAttackAction, SRunParadeJump, SRunStrafeLeft, SRunStrafeRight, RunToTargetAction, WaitAction, TurnToTargetAction } from "../aiFunctions/commonActions";
+import { RunForward, SFistAttackAction, SRunParadeJump, SRunStrafeLeft, SRunStrafeRight, RunToTargetAction, WaitAction, TurnToTargetAction, WarnEnemy, WarnEnemyActionInput} from "../aiFunctions/commonActions";
+import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
 
 export class WolfAttackDescription implements IActionDescription {
     entityId: number
@@ -14,12 +15,28 @@ export class WolfAttackDescription implements IActionDescription {
     }
 
     describeAction(entityManager: EntityManager): void {
+        let npcActionUtils = new NpcActionUtils(entityManager)
+
         let enemyId = entityManager.getEnemyComponent(this.entityId).enemyId
+
+        let actionListSize = entityManager.getActionsComponent(this.entityId).nextActions.length
+
         if (this.enemyExists(enemyId)) {
             let range = getDistance(this.entityId, enemyId)
-            let actionListSize = entityManager.getActionsComponent(this.entityId).nextActions.length
             if (range < 800 && actionListSize < 5) {
                 this.describeFightAction(entityManager, enemyId, range)
+            }
+        }
+        else if(actionListSize < 1){
+            //TODO: the world constant should only be fixed in later versions!
+            let charId = npcActionUtils.getNearestCharacter(this.entityId, "NEWWORLD\\NEWWORLD.ZEN")
+            let range = 99999999
+            if (charId !== this.entityId && charId !== -1){
+                range = getDistance(this.entityId, charId)
+            }
+            if (range < 400){
+                let warnInput:WarnEnemyActionInput = {aiId: this.entityId, enemyId: charId, waitTime: 10000, startTime: Date.now(), warnDistance: 400, attackDistance: 0, entityManager: entityManager}
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new WarnEnemy(warnInput))
             }
         }
     }

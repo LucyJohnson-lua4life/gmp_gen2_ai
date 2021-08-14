@@ -52,9 +52,8 @@ revmp.on("init", () => {
     revmp.setHealth(w.id, {current: 1000, max: 1000})
     setInterval(updateLoop.readDescriptions.bind(updateLoop), 200);
     setInterval(updateLoop.updateAll.bind(updateLoop), 200);
-    funs.SpawnNpc(em, w, 0, 0, 0);
     console.log("wolf id: " + w.id)
-    funs.SpawnNpc(em, w, 0, 0, 0);
+    funs.SpawnNpc(em, w, 0, 0, 1000);
 
 });
 

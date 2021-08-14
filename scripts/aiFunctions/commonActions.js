@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GotoPoint = exports.GotoPosition = exports.SRunParadeJump = exports.SRunStrafeRight = exports.SRunStrafeLeft = exports.RunForward = exports.RunToTargetAction = exports.TurnToTargetAction = exports.WaitAction = exports.SFistAttackAction = void 0;
+exports.WarnEnemy = exports.GotoPoint = exports.GotoPosition = exports.SRunParadeJump = exports.SRunStrafeRight = exports.SRunStrafeLeft = exports.RunForward = exports.RunToTargetAction = exports.TurnToTargetAction = exports.WaitAction = exports.SFistAttackAction = void 0;
 const aiUtils_1 = require("../aiFunctions/aiUtils");
 const positionFunctions_1 = require("../waynet/positionFunctions");
 class SFistAttackAction {
@@ -35,7 +35,6 @@ class SFistAttackAction {
         */
         let dangle = aiUtils_1.getPlayerAngle(this.aiId) - aiUtils_1.getAngleToTarget(this.aiId, this.victimId);
         if (aiUtils_1.getDistance(this.aiId, this.victimId) < this.necessaryDistance && dangle > -20 && dangle < 20) {
-            console.log("i hit");
             revmp.attack(this.aiId, this.victimId);
         }
     }
@@ -49,7 +48,7 @@ class WaitAction {
         this.startTime = startTime;
     }
     executeAction() {
-        if (this.startTime + this.waitTime > new Date().getMilliseconds()) {
+        if (Date.now() > this.startTime + this.waitTime) {
             this.shouldLoop = false;
         }
     }
@@ -217,3 +216,38 @@ class GotoPoint {
     }
 }
 exports.GotoPoint = GotoPoint;
+class WarnEnemy {
+    constructor(input) {
+        this.aiId = input.aiId;
+        this.enemyId = input.enemyId;
+        this.shouldLoop = true;
+        this.waitTime = input.waitTime;
+        this.startTime = input.startTime;
+        this.warnDistance = input.warnDistance;
+        this.attackDistance = input.attackDistance;
+        this.entityManager = input.entityManager;
+    }
+    executeAction() {
+        const position = revmp.getPosition(this.aiId).position;
+        const targetPosition = revmp.getPosition(this.enemyId).position;
+        const y = aiUtils_1.getAngleToTarget(this.aiId, this.enemyId);
+        aiUtils_1.setPlayerAngle(this.aiId, y);
+        if (Date.now() > this.startTime + this.waitTime) {
+            this.setEnemy();
+        }
+        let distance = aiUtils_1.getDistance(this.aiId, this.enemyId);
+        if (distance < this.warnDistance) {
+            //revmp.stopAnimation(this.aiId, "T_WARN")
+            revmp.startAnimation(this.aiId, "T_WARN");
+        }
+        else if (distance < this.attackDistance) {
+            this.setEnemy();
+        }
+    }
+    setEnemy() {
+        this.shouldLoop = false;
+        let enemyComponent = { entityId: this.aiId, enemyId: this.enemyId };
+        this.entityManager.setEnemyComponent(this.aiId, enemyComponent);
+    }
+}
+exports.WarnEnemy = WarnEnemy;
