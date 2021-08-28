@@ -10,9 +10,10 @@ const {setAngle, getAngle, getAngleDistance, getPlayerAngle} = require("./aiFunc
 //const ai = require("./scripts/aiStates/aiUpdateLoop");
 const commonActions = require("./aiFunctions/commonActions");
 const posFuncs = require("./waynet/positionFunctions");
-let state = new aiState.AiState()
+let state = new aiState.AiState('./newworld.wp', './newworld.fp')
 let em = state.getEntityManager();
-let updateLoop = new aiUpdateLoop.AiUpdateLoop(em);
+let updateLoop = new aiUpdateLoop.AiUpdateLoop(state);
+let aiStateFunctions = new funs.AiStateFunctions(state)
 
 function createWolf() {
     return revmp.createBot({
@@ -53,7 +54,7 @@ revmp.on("init", () => {
     setInterval(updateLoop.readDescriptions.bind(updateLoop), 200);
     setInterval(updateLoop.updateAll.bind(updateLoop), 200);
     console.log("wolf id: " + w.id)
-    funs.SpawnNpc(em, w, 0, 0, 500);
+    aiStateFunctions.spawnNpc(w,0,0,500,"NEWWORLD\\NEWWORLD.ZEN")
 
 });
 
@@ -115,7 +116,7 @@ revmp.on("chatCommand", (entity, msg) => {
     debugCommands(entity, msg)
 
     if (command === "/spawn") {
-        funs.SpawnNpc(em, new wolf.Wolf(), 0, 0, 0);
+        aiStateFunctions.spawnNpc(new wolf.Wolf(), 0, 0, 0,"NEWWORLD\\NEWWORLD");
     }
     if (command === "/masochist") {
         setInterval(revmp.attack.bind(revmp), 200, entity, entity);

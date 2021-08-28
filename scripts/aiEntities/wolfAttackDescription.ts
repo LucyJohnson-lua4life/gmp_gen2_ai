@@ -4,6 +4,7 @@ import { EntityManager } from '../aiStates/entityManager';
 import { getAngleToTarget, getDistance, getPlayerAngle } from "../aiFunctions/aiUtils";
 import { RunForward, SFistAttackAction, SRunParadeJump, SRunStrafeLeft, SRunStrafeRight, RunToTargetAction, WaitAction, TurnToTargetAction, WarnEnemy, WarnEnemyActionInput} from "../aiFunctions/commonActions";
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
+import { AiState } from '../aiStates/aiState';
 
 export class WolfAttackDescription implements IActionDescription {
     entityId: number
@@ -14,8 +15,9 @@ export class WolfAttackDescription implements IActionDescription {
         this.lastAttackTime = 0
     }
 
-    describeAction(entityManager: EntityManager): void {
-        let npcActionUtils = new NpcActionUtils(entityManager)
+    describeAction(aiState: AiState): void {
+        let npcActionUtils = new NpcActionUtils(aiState)
+        let entityManager = aiState.getEntityManager()
 
         let enemyId = entityManager.getEnemyComponent(this.entityId).enemyId
 

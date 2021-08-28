@@ -15,10 +15,6 @@ const worldNames: Array<string> = ["NEWWORLD\\NEWWORLD.ZEN", "OLDWORLD\\OLDWORLD
  */
 export class EntityManager {
 
-    // TODO: allBots, allPlayer, allPosition might be moved to aiState
-    private allBots:Array<number>;
-    private allPlayer:Array<number>;
-    private allPositions: Map<string, Map<number, Array<number>>>;
     private dailyRoutineComponents:Map<number, IDrInfoComponent>;
     private actionsComponents:Map<number, IActionsComponent>;
     private actionDescriptionComponents: Map<number, IActionDescriptionComponent>;
@@ -28,10 +24,6 @@ export class EntityManager {
     private enemyComponents: Map<number, IEnemyComponent>;
 
     constructor() {
-        this.allPositions = new Map()
-        worldNames.forEach(name =>this.allPositions.set(name, new Map()))
-        this.allBots = new Array()
-        this.allPlayer = new Array()
         this.dailyRoutineComponents = new Map()
         this.actionsComponents = new Map()
         this.actionDescriptionComponents = new Map()
@@ -41,17 +33,8 @@ export class EntityManager {
         this.enemyComponents = new Map()
     }
 
-    get positionMap(): Map<string, Map<number, Array<number>>> {
-        return this.allPositions
-    }
-
-    get getAllBots(): Array<number>{
-        return this.allBots
-    }
-
     //todo: add more functionality once revmp functions are available
     registerBot(npc: IAiNpc): void{
-        this.allBots.push(npc.id)
         let stateInfo:INpcStateComponent = {entityId: npc.id, isDead:false, isUnconscious: false}
         let respawnInfo:IRespawnComponent = {entityId: npc.id, respawnTime: npc.respawnTime}
         let actionInfo:IActionsComponent = {entityId: npc.id, nextActions: npc.nextActions}

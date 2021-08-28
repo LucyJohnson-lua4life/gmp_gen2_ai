@@ -1,9 +1,9 @@
 import Heap from "heap-js";
-import { instance, mock, verify, when } from "ts-mockito";
+import { instance, mock, when } from "ts-mockito";
 import { StubAiNpc } from '../stubAiNpc';
 import { IAiNpc } from "../../scripts/aiEntities/iAiNpc";
-import { EntityManager } from "../../scripts/aiStates/entityManager";
-import { SpawnNpc } from "../../scripts/aiStates/aiStateFunctions";
+import { AiStateFunctions} from "../../scripts/aiStates/aiStateFunctions";
+import { AiState } from "../../scripts/aiStates/aiState";
 
 
 // all revmp API calls made in this unit test are mocked globally
@@ -14,11 +14,14 @@ Object.defineProperty(global, "revmp", {
 });
 
 test('SpawnNpc should register the created npc into the AIState.', () => {
-    let entityManager:EntityManager = new EntityManager();
+    let aiState: AiState = new AiState("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
+    let aiStateFunctions = new AiStateFunctions(aiState)
     const npcMock:IAiNpc = mock(StubAiNpc);
     let npcId = 1;
     when(npcMock.id).thenReturn(npcId)
-    expect(entityManager.getAllBots.indexOf(npcId)).toEqual(-1)
-    SpawnNpc(entityManager, instance(npcMock),0,0,0);
-    expect(entityManager.getAllBots.indexOf(npcId)).toBeGreaterThan(-1)
+
+    let npc = instance(npcMock)
+    expect(aiState.getAllBots().indexOf(npcId)).toEqual(-1)
+    aiStateFunctions.spawnNpc(npc,0,0,0,"Newworld")
+    expect(aiState.getAllBots().indexOf(npcId)).toBeGreaterThan(-1)
 })

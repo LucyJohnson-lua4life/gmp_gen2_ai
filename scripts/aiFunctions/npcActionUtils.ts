@@ -1,4 +1,4 @@
-import { EntityManager } from "../aiStates/entityManager";
+import { AiState } from "../aiStates/aiState";
 
 
 /**
@@ -7,10 +7,10 @@ import { EntityManager } from "../aiStates/entityManager";
 const AI_TARGET_DISTANCE: number = 2500;
 export class NpcActionUtils {
 
-    private entityManager: EntityManager;
+    private aiState: AiState;
 
-    constructor(em: EntityManager) {
-        this.entityManager = em;
+    constructor(aiState: AiState) {
+        this.aiState = aiState;
     }
 
     /**
@@ -26,7 +26,7 @@ export class NpcActionUtils {
      * @param z the z value of the point, for which nearby npc ids should be found
      */
     public getNearbyNpcs(world: string, x: number, y: number, z: number): Array<number> {
-        let worldPositionMap = this.entityManager.positionMap.get(world);
+        let worldPositionMap = this.aiState.getPlayerInPositionAreas().get(world);
         let deepCopyOfNearbyNpcs: Array<number> = []
         if (typeof worldPositionMap !== 'undefined') {
             let nearbyNpcs = worldPositionMap.get(this.calculatePositionCheckSum(x, y, z));
@@ -42,7 +42,7 @@ export class NpcActionUtils {
      * @param npcId get id of character that is closest to the given character id
      */
     public getNearestCharacter(characterId: number, world: string): number {
-        let worldPositionMap = this.entityManager.positionMap.get(world);
+        let worldPositionMap = this.aiState.getPlayerInPositionAreas().get(world);
         let nearestDist = 9999999
         let nearestChar = -1
         if (typeof worldPositionMap !== 'undefined') {

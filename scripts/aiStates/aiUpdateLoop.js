@@ -7,18 +7,15 @@ const npcActionUtils_1 = require("../aiFunctions/npcActionUtils");
  * The loops also executes descriptions, that decide which actions to put into the action collection of each npc's based on the npc state and environment.
  */
 class AiUpdateLoop {
-    constructor(em) {
+    constructor(aiState) {
         //todo: this constant world should only be temporary!
         this.world = "NEWWORLD\\NEWWORLD.ZEN";
-        this._entityManager = em;
-        this.npcActionUtils = new npcActionUtils_1.NpcActionUtils(em);
-    }
-    get state() {
-        return this._entityManager;
+        this.aiState = aiState;
+        this.npcActionUtils = new npcActionUtils_1.NpcActionUtils(aiState);
     }
     updateAll() {
-        this._entityManager.positionMap.set(this.world, new Map());
-        let allPositions = this._entityManager.positionMap.get(this.world);
+        this.aiState.getPlayerInPositionAreas().set(this.world, new Map());
+        let allPositions = this.aiState.getPlayerInPositionAreas().get(this.world);
         revmp.characters.forEach(charId => {
             let pos = revmp.getPosition(charId).position;
             let checksum = this.npcActionUtils.calculatePositionCheckSum(pos[0], pos[1], pos[2]);
@@ -29,13 +26,13 @@ class AiUpdateLoop {
                 allPositions.set(checksum, [charId]);
             }
         });
-        this._entityManager.getAllBots.forEach((aiId) => this.updateAi(aiId));
+        this.aiState.getAllBots().forEach((aiId) => this.updateAi(aiId));
     }
     readDescriptions() {
-        this._entityManager.getAllBots.forEach((aiId) => this.readDescription(aiId));
+        this.aiState.getAllBots().forEach((aiId) => this.readDescription(aiId));
     }
     updateAi(aiId) {
-        let actionsComponent = this._entityManager.getActionsComponent(aiId);
+        let actionsComponent = this.aiState.getEntityManager().getActionsComponent(aiId);
         if (typeof actionsComponent !== 'undefined') {
             let nextAction = actionsComponent.nextActions[actionsComponent.nextActions.length - 1];
             if (typeof nextAction !== 'undefined') {
@@ -44,10 +41,10 @@ class AiUpdateLoop {
         }
     }
     readDescription(aiId) {
-        let descriptionComponent = this._entityManager.getActionDescriptionComponent(aiId);
+        let descriptionComponent = this.aiState.getEntityManager().getActionDescriptionComponent(aiId);
         if (typeof descriptionComponent !== 'undefined') {
             let descriptions = descriptionComponent.descriptions;
-            descriptions.forEach(description => description.describeAction(this._entityManager));
+            descriptions.forEach(description => description.describeAction(this.aiState));
         }
     }
 }

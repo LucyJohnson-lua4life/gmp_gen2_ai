@@ -8,10 +8,6 @@ const worldNames = ["NEWWORLD\\NEWWORLD.ZEN", "OLDWORLD\\OLDWORLD.ZEN", "ADDON\\
  */
 class EntityManager {
     constructor() {
-        this.allPositions = new Map();
-        worldNames.forEach(name => this.allPositions.set(name, new Map()));
-        this.allBots = new Array();
-        this.allPlayer = new Array();
         this.dailyRoutineComponents = new Map();
         this.actionsComponents = new Map();
         this.actionDescriptionComponents = new Map();
@@ -20,15 +16,8 @@ class EntityManager {
         this.respawnComponents = new Map();
         this.enemyComponents = new Map();
     }
-    get positionMap() {
-        return this.allPositions;
-    }
-    get getAllBots() {
-        return this.allBots;
-    }
     //todo: add more functionality once revmp functions are available
     registerBot(npc) {
-        this.allBots.push(npc.id);
         let stateInfo = { entityId: npc.id, isDead: false, isUnconscious: false };
         let respawnInfo = { entityId: npc.id, respawnTime: npc.respawnTime };
         let actionInfo = { entityId: npc.id, nextActions: npc.nextActions };

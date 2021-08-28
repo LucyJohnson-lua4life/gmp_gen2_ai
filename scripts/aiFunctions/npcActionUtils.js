@@ -6,8 +6,8 @@ exports.NpcActionUtils = void 0;
  */
 const AI_TARGET_DISTANCE = 2500;
 class NpcActionUtils {
-    constructor(em) {
-        this.entityManager = em;
+    constructor(aiState) {
+        this.aiState = aiState;
     }
     /**
      * Returns all npc id's that are in the same 2500x2500x2500 distance sector of the given point.
@@ -22,7 +22,7 @@ class NpcActionUtils {
      * @param z the z value of the point, for which nearby npc ids should be found
      */
     getNearbyNpcs(world, x, y, z) {
-        let worldPositionMap = this.entityManager.positionMap.get(world);
+        let worldPositionMap = this.aiState.getPlayerInPositionAreas().get(world);
         let deepCopyOfNearbyNpcs = [];
         if (typeof worldPositionMap !== 'undefined') {
             let nearbyNpcs = worldPositionMap.get(this.calculatePositionCheckSum(x, y, z));
@@ -37,7 +37,7 @@ class NpcActionUtils {
      * @param npcId get id of character that is closest to the given character id
      */
     getNearestCharacter(characterId, world) {
-        let worldPositionMap = this.entityManager.positionMap.get(world);
+        let worldPositionMap = this.aiState.getPlayerInPositionAreas().get(world);
         let nearestDist = 9999999;
         let nearestChar = -1;
         if (typeof worldPositionMap !== 'undefined') {
