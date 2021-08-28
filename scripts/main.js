@@ -53,7 +53,7 @@ revmp.on("init", () => {
     setInterval(updateLoop.readDescriptions.bind(updateLoop), 200);
     setInterval(updateLoop.updateAll.bind(updateLoop), 200);
     console.log("wolf id: " + w.id)
-    funs.SpawnNpc(em, w, 0, 0, 1000);
+    funs.SpawnNpc(em, w, 0, 0, 500);
 
 });
 
@@ -164,9 +164,13 @@ revmp.on("chatCommand", (entity, msg) => {
     }
 
     if (command === "/wptest") {
-        //console.log(state.getWaynet().freepoints[0].fpName)
-        
         revmp.setPosition(entity, [14671.2051, 1150.05042, 517.412537])
+    }
+
+    if(command === "/loopani"){
+        let focusid = revmp.getFocus(entity).focus
+        setInterval(()=>{
+            revmp.startAnimation(focusid, "T_WARN")}, 200);
 
     }
 });

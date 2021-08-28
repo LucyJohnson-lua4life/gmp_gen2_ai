@@ -9,6 +9,7 @@ class WolfAttackDescription {
         this.entityId = id;
         this.lastAttackTime = 0;
     }
+    //TODO: update position
     describeAction(entityManager) {
         let npcActionUtils = new npcActionUtils_1.NpcActionUtils(entityManager);
         let enemyId = entityManager.getEnemyComponent(this.entityId).enemyId;

@@ -20,4 +20,5 @@ export class AiState {
     public getWaynet(): IWaynet {
         return this.waynet
     }
+
 }
