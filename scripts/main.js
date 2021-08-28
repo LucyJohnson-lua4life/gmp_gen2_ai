@@ -54,7 +54,8 @@ revmp.on("init", () => {
     setInterval(updateLoop.readDescriptions.bind(updateLoop), 200);
     setInterval(updateLoop.updateAll.bind(updateLoop), 200);
     console.log("wolf id: " + w.id)
-    aiStateFunctions.spawnNpc(w,0,0,500,"NEWWORLD\\NEWWORLD.ZEN")
+    //aiStateFunctions.spawnNpcByCoordinates(w,0,0,500,"NEWWORLD\\NEWWORLD.ZEN")
+    aiStateFunctions.spawnNpc(w,"HAFEN","NEWWORLD\\NEWWORLD.ZEN")
 
 });
 
@@ -116,7 +117,7 @@ revmp.on("chatCommand", (entity, msg) => {
     debugCommands(entity, msg)
 
     if (command === "/spawn") {
-        aiStateFunctions.spawnNpc(new wolf.Wolf(), 0, 0, 0,"NEWWORLD\\NEWWORLD");
+        aiStateFunctions.spawnNpcByCoordinates(new wolf.Wolf(), 0, 0, 0,"NEWWORLD\\NEWWORLD");
     }
     if (command === "/masochist") {
         setInterval(revmp.attack.bind(revmp), 200, entity, entity);

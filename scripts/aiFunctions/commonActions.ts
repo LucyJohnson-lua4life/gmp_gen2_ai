@@ -125,12 +125,10 @@ export class RunToTargetAction implements IAiAction {
 export class RunForward implements IAiAction {
     aiId: number
     shouldLoop: boolean
-    actionName: string
 
     constructor(aiId: number) {
         this.aiId = aiId
         this.shouldLoop = false
-        this.actionName = "run-forward"
     }
 
     public executeAction(): void {
@@ -339,7 +337,6 @@ export class WarnEnemy implements IAiAction {
         }
         let distance = getDistance(this.aiId, this.enemyId)
         if (distance < this.warnDistance){
-            //revmp.stopAnimation(this.aiId, "T_WARN")
            revmp.startAnimation(this.aiId, "T_WARN")
         }
         else if (distance < this.attackDistance){

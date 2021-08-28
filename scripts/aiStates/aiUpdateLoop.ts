@@ -47,7 +47,7 @@ export class AiUpdateLoop {
         if (typeof actionsComponent !== 'undefined') {
             let nextAction:IAiAction|undefined = actionsComponent.nextActions[actionsComponent.nextActions.length -1]
 
-            if(typeof nextAction !== 'undefined'){
+            if (typeof nextAction !== 'undefined' && this.isEntityUpdateable(aiId)){
                 nextAction.shouldLoop ? nextAction.executeAction() : actionsComponent.nextActions.pop().executeAction();
             }
         }
@@ -57,10 +57,14 @@ export class AiUpdateLoop {
     public readDescription(aiId: number) {
         let descriptionComponent: IActionDescriptionComponent | undefined = this.aiState.getEntityManager().getActionDescriptionComponent(aiId);
 
-        if (typeof descriptionComponent !== 'undefined') {
+        if (typeof descriptionComponent !== 'undefined' && this.isEntityUpdateable(aiId)) {
             let descriptions: Array<IActionDescription> | undefined = descriptionComponent.descriptions
             descriptions.forEach(description => description.describeAction(this.aiState))
         }
+    }
+
+    private isEntityUpdateable(entityId: number){
+        return revmp.getHealth(entityId).current > 0 && revmp.isCharacter(entityId)
     }
 
 }

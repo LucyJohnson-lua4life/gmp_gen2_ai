@@ -14,7 +14,6 @@ export class Wolf implements IAiNpc {
     id: number;
     isDead: boolean;
     isUnconscious: boolean;
-    //todo: set values for pos
     lastPosUpdate: number;
     lastPosX: number;
     lastPosY: number;

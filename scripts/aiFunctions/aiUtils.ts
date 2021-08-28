@@ -126,3 +126,8 @@ export function getCombatStateBasedAni(entity: revmp.Entity, ani: string) {
         return ani
     }
 }
+
+
+export function isAttackable(entityId: number){
+    return revmp.isCharacter(entityId) && revmp.getHealth(entityId).current > 0 && revmp.getCombatState(entityId).unconscious ===false
+}

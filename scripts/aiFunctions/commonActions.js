@@ -90,7 +90,6 @@ class RunForward {
     constructor(aiId) {
         this.aiId = aiId;
         this.shouldLoop = false;
-        this.actionName = "run-forward";
     }
     executeAction() {
         if (!aiUtils_1.isAniPlaying(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_RUNL"))) {
@@ -237,7 +236,6 @@ class WarnEnemy {
         }
         let distance = aiUtils_1.getDistance(this.aiId, this.enemyId);
         if (distance < this.warnDistance) {
-            //revmp.stopAnimation(this.aiId, "T_WARN")
             revmp.startAnimation(this.aiId, "T_WARN");
         }
         else if (distance < this.attackDistance) {

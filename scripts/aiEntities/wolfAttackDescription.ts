@@ -33,7 +33,8 @@ export class WolfAttackDescription implements IActionDescription {
             //TODO: the world constant should only be fixed in later versions!
             let charId = npcActionUtils.getNearestCharacter(this.entityId, "NEWWORLD\\NEWWORLD.ZEN")
             let range = 99999999
-            if (charId !== this.entityId && charId !== -1){
+            //TODO: currently only player will get attacked/warned, should implement a proper enemy/friend mapping
+            if (charId !== this.entityId && charId !== -1 && revmp.isPlayer(charId)){
                 range = getDistance(this.entityId, charId)
             }
             if (range < 400){

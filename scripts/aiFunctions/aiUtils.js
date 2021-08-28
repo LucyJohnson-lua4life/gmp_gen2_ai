@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCombatStateBasedAni = exports.setPlayerAngle = exports.isAniPlaying = exports.getPlayerAngle = exports.getDistance = exports.getAngleToTarget = exports.getAngleToPoint = void 0;
+exports.isAttackable = exports.getCombatStateBasedAni = exports.setPlayerAngle = exports.isAniPlaying = exports.getPlayerAngle = exports.getDistance = exports.getAngleToTarget = exports.getAngleToPoint = void 0;
 const gl_matrix_1 = require("gl-matrix");
 const THREE = require("three");
 // https://stackoverflow.com/a/9614122/10637905
@@ -124,3 +124,7 @@ function getCombatStateBasedAni(entity, ani) {
     }
 }
 exports.getCombatStateBasedAni = getCombatStateBasedAni;
+function isAttackable(entityId) {
+    return revmp.isCharacter(entityId) && revmp.getHealth(entityId).current > 0 && revmp.getCombatState(entityId).unconscious === false;
+}
+exports.isAttackable = isAttackable;
