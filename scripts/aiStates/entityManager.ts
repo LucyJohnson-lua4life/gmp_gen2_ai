@@ -36,7 +36,7 @@ export class EntityManager {
     //todo: add more functionality once revmp functions are available
     registerBot(npc: IAiNpc): void{
         let stateInfo:INpcStateComponent = {entityId: npc.id, isDead:false, isUnconscious: false}
-        let respawnInfo:IRespawnComponent = {entityId: npc.id, respawnTime: npc.respawnTime}
+        let respawnInfo:IRespawnComponent = {entityId: npc.id, respawnTime: npc.respawnTime, deathTime: undefined}
         let actionInfo:IActionsComponent = {entityId: npc.id, nextActions: npc.nextActions}
         let positionInfo:IPositionComponent = {entityId: npc.id, currentPosX:0, currentPosY:0, currentPosZ:0, lastPosX:0, lastPosY: 0, lastPosZ: 0, lastPosUpdate: 0}
         let actionDescription:IActionDescriptionComponent = {entityId: npc.id, descriptions: npc.actionDescriptions}
@@ -48,6 +48,15 @@ export class EntityManager {
         this.setPositionsComponent(npc.id, positionInfo)
         this.setActionDescriptionComponent(npc.id, actionDescription)
         this.setEnemyComponent(npc.id, enemyComponent)
+    }
+
+    unregisterBot(npcId: number): void{
+        this.setNpcStateComponent(npcId, undefined)
+        this.setRespawnComponent(npcId, undefined)
+        this.setActionsComponent(npcId, undefined)
+        this.setPositionsComponent(npcId, undefined)
+        this.setActionDescriptionComponent(npcId, undefined)
+        this.setEnemyComponent(npcId, undefined)
     }
 
     getDailyRoutineComponent(entityId: number): IDrInfoComponent|undefined{

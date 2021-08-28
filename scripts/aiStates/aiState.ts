@@ -44,7 +44,11 @@ export class AiState {
     registerBot(npc: IAiNpc): void{
         this.allBots.push(npc.id)
         this.entityManager.registerBot(npc)
+    }
 
+    unregisterBot(npcId: number){
+        this.allBots = this.allBots.filter(id => id !== npcId)
+        this.entityManager.unregisterBot(npcId)
     }
 
 }

@@ -4,6 +4,7 @@ import { IAiAction } from '../aiEntities/iAiAction';
 import { IActionDescription } from '../aiEntities/iActionDescription';
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
 import { AiState } from './aiState';
+import { IRespawnComponent } from '../aiEntities/components/iRespawnComponent';
 
 /**
  * Represents the loop that iterates through each npc state and executes the next actions for each npc.
@@ -23,6 +24,7 @@ export class AiUpdateLoop {
     public updateAll() {
         this.aiState.getPlayerInPositionAreas().set(this.world, new Map<number, Array<number>>())
         let allPositions: Map<number, Array<number>> = this.aiState.getPlayerInPositionAreas().get(this.world)
+        // update positions for each character
         revmp.characters.forEach(charId =>{
             let pos = revmp.getPosition(charId).position
             let checksum = this.npcActionUtils.calculatePositionCheckSum(pos[0], pos[1], pos[2])
@@ -63,8 +65,31 @@ export class AiUpdateLoop {
         }
     }
 
+
+    public respawnDeadNpcs(){
+        revmp.characters.forEach(charId =>{
+            let respawnComponent = this.aiState.getEntityManager().getRespawnComponent(charId)
+            if(typeof respawnComponent.deathTime !== 'undefined' && Date.now() > respawnComponent.deathTime + (respawnComponent.respawnTime/1000)){
+
+                
+                // respawn npc and set state
+            }
+
+
+        })
+
+    }
+
+
+    private respawnNpc(aiId: number){
+        this.aiState.unregisterBot(aiId)
+        revmp.destroyCharacter(aiId)
+        //TODO: spawn npc based on previous info
+    }
+
     private isEntityUpdateable(entityId: number){
         return revmp.getHealth(entityId).current > 0 && revmp.isCharacter(entityId)
     }
+
 
 }

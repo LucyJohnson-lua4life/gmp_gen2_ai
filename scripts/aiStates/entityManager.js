@@ -19,7 +19,7 @@ class EntityManager {
     //todo: add more functionality once revmp functions are available
     registerBot(npc) {
         let stateInfo = { entityId: npc.id, isDead: false, isUnconscious: false };
-        let respawnInfo = { entityId: npc.id, respawnTime: npc.respawnTime };
+        let respawnInfo = { entityId: npc.id, respawnTime: npc.respawnTime, deathTime: undefined };
         let actionInfo = { entityId: npc.id, nextActions: npc.nextActions };
         let positionInfo = { entityId: npc.id, currentPosX: 0, currentPosY: 0, currentPosZ: 0, lastPosX: 0, lastPosY: 0, lastPosZ: 0, lastPosUpdate: 0 };
         let actionDescription = { entityId: npc.id, descriptions: npc.actionDescriptions };
@@ -30,6 +30,14 @@ class EntityManager {
         this.setPositionsComponent(npc.id, positionInfo);
         this.setActionDescriptionComponent(npc.id, actionDescription);
         this.setEnemyComponent(npc.id, enemyComponent);
+    }
+    unregisterBot(npcId) {
+        this.setNpcStateComponent(npcId, undefined);
+        this.setRespawnComponent(npcId, undefined);
+        this.setActionsComponent(npcId, undefined);
+        this.setPositionsComponent(npcId, undefined);
+        this.setActionDescriptionComponent(npcId, undefined);
+        this.setEnemyComponent(npcId, undefined);
     }
     getDailyRoutineComponent(entityId) {
         return this.dailyRoutineComponents.get(entityId);

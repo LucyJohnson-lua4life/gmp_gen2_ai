@@ -16,6 +16,7 @@ class AiUpdateLoop {
     updateAll() {
         this.aiState.getPlayerInPositionAreas().set(this.world, new Map());
         let allPositions = this.aiState.getPlayerInPositionAreas().get(this.world);
+        // update positions for each character
         revmp.characters.forEach(charId => {
             let pos = revmp.getPosition(charId).position;
             let checksum = this.npcActionUtils.calculatePositionCheckSum(pos[0], pos[1], pos[2]);
@@ -46,6 +47,19 @@ class AiUpdateLoop {
             let descriptions = descriptionComponent.descriptions;
             descriptions.forEach(description => description.describeAction(this.aiState));
         }
+    }
+    respawnDeadNpcs() {
+        revmp.characters.forEach(charId => {
+            let respawnComponent = this.aiState.getEntityManager().getRespawnComponent(charId);
+            if (typeof respawnComponent.deathTime !== 'undefined' && Date.now() > respawnComponent.deathTime + (respawnComponent.respawnTime / 1000)) {
+                // respawn npc and set state
+            }
+        });
+    }
+    respawnNpc(aiId) {
+        this.aiState.unregisterBot(aiId);
+        revmp.destroyCharacter(aiId);
+        //TODO: spawn npc based on previous info
     }
     isEntityUpdateable(entityId) {
         return revmp.getHealth(entityId).current > 0 && revmp.isCharacter(entityId);

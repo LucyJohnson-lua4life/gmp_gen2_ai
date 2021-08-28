@@ -30,5 +30,9 @@ class AiState {
         this.allBots.push(npc.id);
         this.entityManager.registerBot(npc);
     }
+    unregisterBot(npcId) {
+        this.allBots = this.allBots.filter(id => id !== npcId);
+        this.entityManager.unregisterBot(npcId);
+    }
 }
 exports.AiState = AiState;
