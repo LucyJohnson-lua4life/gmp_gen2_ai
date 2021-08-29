@@ -10,6 +10,8 @@
  * @field currentPosX current x position
  * @field currentPosY current y position
  * @field currentPosZ current z position
+ * @field startPoint start waypoint/freepoint
+ * @field startWorld start world
  * */
 export interface IPositionComponent {
     entityId:number,
@@ -19,5 +21,8 @@ export interface IPositionComponent {
     lastPosZ:number,
     currentPosX:number,
     currentPosY:number,
-    currentPosZ:number
+    currentPosZ:number,
+    // start waypoint/freepoint
+    startPoint:string,
+    startWorld:string
 }

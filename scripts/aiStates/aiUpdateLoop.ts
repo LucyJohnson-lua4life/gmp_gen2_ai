@@ -2,9 +2,12 @@ import { IActionsComponent } from '../aiEntities/components/iActionsComponent';
 import { IActionDescriptionComponent } from '../aiEntities/components/iActionDescriptionComponent';
 import { IAiAction } from '../aiEntities/iAiAction';
 import { IActionDescription } from '../aiEntities/iActionDescription';
+import { getNpcForInstance } from '../aiEntities/npcs/npcEntityUtils';
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
+import { AiStateFunctions } from '../aiStates/aiStateFunctions';
 import { AiState } from './aiState';
 import { IRespawnComponent } from '../aiEntities/components/iRespawnComponent';
+import { Wolf } from '../aiEntities/npcs/wolf';
 
 /**
  * Represents the loop that iterates through each npc state and executes the next actions for each npc.
@@ -15,10 +18,12 @@ export class AiUpdateLoop {
     private world:string = "NEWWORLD\\NEWWORLD.ZEN"
     private aiState: AiState;
     private npcActionUtils: NpcActionUtils
+    private aiStateFunctions: AiStateFunctions
 
     constructor(aiState: AiState) {
         this.aiState = aiState;
         this.npcActionUtils = new NpcActionUtils(aiState)
+        this.aiStateFunctions = new AiStateFunctions(aiState)
     }
 
     public updateAll() {
@@ -36,6 +41,7 @@ export class AiUpdateLoop {
                 allPositions.set(checksum, [charId])
             }})
 
+        revmp.characters.forEach(id => console.log(id))
         this.aiState.getAllBots().forEach((aiId) => this.updateAi(aiId))
     }
 
@@ -54,6 +60,15 @@ export class AiUpdateLoop {
             }
         }
 
+        //register if dead
+        if(revmp.getHealth(aiId).current <= 0 && revmp.isBot(aiId) ){
+            console.log("npc died")
+            let respawnInfo = this.aiState.getEntityManager().getRespawnComponent(aiId)
+            if(typeof respawnInfo !== 'undefined' && typeof respawnInfo.deathTime === 'undefined'){
+                respawnInfo.deathTime = Date.now()
+                this.aiState.getEntityManager().setRespawnComponent(aiId, respawnInfo)
+            }
+        }
     }
 
     public readDescription(aiId: number) {
@@ -69,10 +84,12 @@ export class AiUpdateLoop {
     public respawnDeadNpcs(){
         revmp.characters.forEach(charId =>{
             let respawnComponent = this.aiState.getEntityManager().getRespawnComponent(charId)
-            if(typeof respawnComponent.deathTime !== 'undefined' && Date.now() > respawnComponent.deathTime + (respawnComponent.respawnTime/1000)){
+            if(typeof respawnComponent !== 'undefined' && typeof respawnComponent.deathTime !== 'undefined' && Date.now() > respawnComponent.deathTime + (respawnComponent.respawnTime/1000) && revmp.isBot(charId)){
 
-                
+                console.log("death time: " + respawnComponent.deathTime)
+                console.log("current time: " + Date.now())
                 // respawn npc and set state
+                this.respawnNpc(charId)
             }
 
 
@@ -80,16 +97,15 @@ export class AiUpdateLoop {
 
     }
 
-
     private respawnNpc(aiId: number){
+        let lastPosition = this.aiState.getEntityManager().getPositionsComponents(aiId)
+        let lastNpcInstance = this.aiState.getEntityManager().getNpcStateComponent(aiId).npcInstance
         this.aiState.unregisterBot(aiId)
         revmp.destroyCharacter(aiId)
-        //TODO: spawn npc based on previous info
+        this.aiStateFunctions.spawnNpc(getNpcForInstance(lastNpcInstance),lastPosition.startPoint, lastPosition.startWorld)
     }
 
     private isEntityUpdateable(entityId: number){
         return revmp.getHealth(entityId).current > 0 && revmp.isCharacter(entityId)
     }
-
-
 }

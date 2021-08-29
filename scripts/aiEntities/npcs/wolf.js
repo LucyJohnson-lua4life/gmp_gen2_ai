@@ -11,7 +11,7 @@ class Wolf {
         this.isUnconscious = false;
         this.enemyIds = [];
         this.friendIds = [];
-        this.respawnTime = 240;
+        this.respawnTime = 5;
         this.nextActions = new Array();
         this.actionDescriptions = [new wolfAttackDescription_1.WolfAttackDescription(this.id)];
         this.aiFlags = new Map();
@@ -22,6 +22,7 @@ class Wolf {
         this.currentPosX = 0;
         this.currentPosY = 0;
         this.currentPosZ = 0;
+        this.npcInstance = npcInits_1.INSTANCE_WOLF;
     }
     addAction(action) {
         this.nextActions.push(action);

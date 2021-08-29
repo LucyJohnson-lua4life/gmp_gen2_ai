@@ -2,7 +2,7 @@ import { IActionDescription } from "../iActionDescription";
 import { WolfAttackDescription } from "../wolfAttackDescription";
 import { IAiAction } from "../iAiAction";
 import { IAiNpc } from "../iAiNpc";
-import { getWolfInstance} from "./npcInits";
+import { getWolfInstance, INSTANCE_WOLF} from "./npcInits";
 
 export class Wolf implements IAiNpc {
     enemyIds: number[];
@@ -21,6 +21,9 @@ export class Wolf implements IAiNpc {
     currentPosX: number;
     currentPosY: number;
     currentPosZ: number;
+    startPoint:string;
+    startWorld:string;
+    npcInstance:string;
 
 
     constructor() {
@@ -29,7 +32,7 @@ export class Wolf implements IAiNpc {
         this.isUnconscious = false;
         this.enemyIds = [];
         this.friendIds = [];
-        this.respawnTime = 240;
+        this.respawnTime = 5;
         this.nextActions =  new Array<IAiAction>()
         this.actionDescriptions = [new WolfAttackDescription(this.id)]
         this.aiFlags = new Map();
@@ -41,6 +44,7 @@ export class Wolf implements IAiNpc {
         this.currentPosX = 0
         this.currentPosY = 0
         this.currentPosZ = 0
+        this.npcInstance = INSTANCE_WOLF
     }
     addAction(action: IAiAction) {
         this.nextActions.push(action)

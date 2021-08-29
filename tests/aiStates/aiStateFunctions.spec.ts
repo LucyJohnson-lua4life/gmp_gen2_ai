@@ -22,6 +22,6 @@ test('SpawnNpc should register the created npc into the AIState.', () => {
 
     let npc = instance(npcMock)
     expect(aiState.getAllBots().indexOf(npcId)).toEqual(-1)
-    aiStateFunctions.spawnNpc(npc,0,0,0,"Newworld")
+    aiStateFunctions.spawnNpc(npc,"WP_TEST","WORLD_TEST")
     expect(aiState.getAllBots().indexOf(npcId)).toBeGreaterThan(-1)
 })

@@ -24,6 +24,8 @@ export class AiStateFunctions{
     public spawnNpc(npc: IAiNpc, pointName:string, world: string): void {
         let entityManager = this.aiState.getEntityManager()
         let npcPosition = this.getCoordinatesForPointName(pointName)
+        npc.startPoint = pointName
+        npc.startWorld = world
         this.aiState.registerBot(npc)
         revmp.setPosition(npc.id, [npcPosition[0], npcPosition[1], npcPosition[2]]);
         let position: IPositionComponent = entityManager.getPositionsComponents(npc.id)

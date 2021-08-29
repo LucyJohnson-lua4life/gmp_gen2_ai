@@ -20,6 +20,9 @@ export class StubAiNpc implements IAiNpc{
     currentPosX: number;
     currentPosY: number;
     currentPosZ: number;
+    startPoint: string;
+    startWorld: string;
+    npcInstance:string;
     constructor(id:number){
         this.id = id;
         this.isDead = false;
@@ -30,6 +33,9 @@ export class StubAiNpc implements IAiNpc{
         this.nextActions = new Array<IAiAction>()
         this.aiFlags = new Map();
         this.actionDescriptions = []
+        this.startPoint = ""
+        this.startWorld = ""
+        this.npcInstance = ""
     }
     addAction(action: IAiAction) {
         this.nextActions.push(action)

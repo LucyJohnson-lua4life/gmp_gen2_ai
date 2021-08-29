@@ -45,7 +45,7 @@ export class NpcActionUtils {
         let worldPositionMap = this.aiState.getPlayerInPositionAreas().get(world);
         let nearestDist = 9999999
         let nearestChar = -1
-        if (typeof worldPositionMap !== 'undefined') {
+        if (typeof worldPositionMap !== 'undefined' && revmp.valid(characterId)) {
             let pos = revmp.getPosition(characterId).position
             let nearbyCharacter = worldPositionMap.get(this.calculatePositionCheckSum(pos[0], pos[1], pos[2]));
             if (typeof nearbyCharacter !== 'undefined') {

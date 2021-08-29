@@ -10,6 +10,11 @@ class WolfAttackDescription {
         this.lastAttackTime = 0;
     }
     describeAction(aiState) {
+        if (revmp.valid(this.entityId)) {
+            this.describeGeneralRoutine(aiState);
+        }
+    }
+    describeGeneralRoutine(aiState) {
         let npcActionUtils = new npcActionUtils_1.NpcActionUtils(aiState);
         let entityManager = aiState.getEntityManager();
         let enemyId = entityManager.getEnemyComponent(this.entityId).enemyId;

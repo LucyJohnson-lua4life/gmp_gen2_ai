@@ -16,13 +16,18 @@ export class WolfAttackDescription implements IActionDescription {
     }
 
     describeAction(aiState: AiState): void {
+        if(revmp.valid(this.entityId)){
+            this.describeGeneralRoutine(aiState)
+        }
+    }
+
+    private describeGeneralRoutine(aiState: AiState): void{
         let npcActionUtils = new NpcActionUtils(aiState)
         let entityManager = aiState.getEntityManager()
 
         let enemyId = entityManager.getEnemyComponent(this.entityId).enemyId
 
         let actionListSize = entityManager.getActionsComponent(this.entityId).nextActions.length
-
         if (this.enemyExists(enemyId)) {
             let range = getDistance(this.entityId, enemyId)
             if (range < 800 && actionListSize < 5) {

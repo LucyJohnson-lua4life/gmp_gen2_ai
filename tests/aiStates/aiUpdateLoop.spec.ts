@@ -14,6 +14,15 @@ class StubAiAction implements IAiAction{
     }
 }
 
+Object.defineProperty(global, "revmp", {
+    value: {
+        getHealth: (entity) => { return {current: 100, max: 100} },
+        isCharacter: (entity) => { return true }
+    },
+});
+
+
+
 test('Executes for the given id the executeAction() - method of the correct npc.', () => {
     let aiState: AiState = new AiState("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
     let aiNpc = new StubAiNpc(1)
