@@ -32,7 +32,7 @@ export class Wolf implements IAiNpc {
         this.isUnconscious = false;
         this.enemyIds = [];
         this.friendIds = [];
-        this.respawnTime = 5;
+        this.respawnTime = 30;
         this.nextActions =  new Array<IAiAction>()
         this.actionDescriptions = [new WolfAttackDescription(this.id)]
         this.aiFlags = new Map();

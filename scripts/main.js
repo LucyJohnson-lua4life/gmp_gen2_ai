@@ -51,9 +51,9 @@ revmp.on("init", () => {
 
     let w = new wolf.Wolf()
     revmp.setHealth(w.id, {current: 1000, max: 1000})
-    setInterval(updateLoop.readDescriptions.bind(updateLoop), 200);
+    //setInterval(updateLoop.readDescriptions.bind(updateLoop), 200);
     setInterval(updateLoop.updateAll.bind(updateLoop), 200);
-    setInterval(updateLoop.respawnDeadNpcs.bind(updateLoop),10000);
+    //setInterval(updateLoop.respawnDeadNpcs.bind(updateLoop),10000);
     console.log("wolf id: " + w.id)
     //aiStateFunctions.spawnNpcByCoordinates(w,0,0,500,"NEWWORLD\\NEWWORLD.ZEN")
     aiStateFunctions.spawnNpc(w,"HAFEN","NEWWORLD\\NEWWORLD.ZEN")

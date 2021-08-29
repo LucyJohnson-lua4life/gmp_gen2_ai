@@ -30,7 +30,8 @@ class AiUpdateLoop {
                 allPositions.set(checksum, [charId]);
             }
         });
-        revmp.characters.forEach(id => console.log(id));
+        this.readDescriptions();
+        this.respawnDeadNpcs();
         this.aiState.getAllBots().forEach((aiId) => this.updateAi(aiId));
     }
     readDescriptions() {
@@ -46,7 +47,6 @@ class AiUpdateLoop {
         }
         //register if dead
         if (revmp.getHealth(aiId).current <= 0 && revmp.isBot(aiId)) {
-            console.log("npc died");
             let respawnInfo = this.aiState.getEntityManager().getRespawnComponent(aiId);
             if (typeof respawnInfo !== 'undefined' && typeof respawnInfo.deathTime === 'undefined') {
                 respawnInfo.deathTime = Date.now();
@@ -64,7 +64,7 @@ class AiUpdateLoop {
     respawnDeadNpcs() {
         revmp.characters.forEach(charId => {
             let respawnComponent = this.aiState.getEntityManager().getRespawnComponent(charId);
-            if (typeof respawnComponent !== 'undefined' && typeof respawnComponent.deathTime !== 'undefined' && Date.now() > respawnComponent.deathTime + (respawnComponent.respawnTime / 1000) && revmp.isBot(charId)) {
+            if (typeof respawnComponent !== 'undefined' && typeof respawnComponent.deathTime !== 'undefined' && Date.now() > respawnComponent.deathTime + (respawnComponent.respawnTime * 1000) && revmp.isBot(charId)) {
                 console.log("death time: " + respawnComponent.deathTime);
                 console.log("current time: " + Date.now());
                 // respawn npc and set state
