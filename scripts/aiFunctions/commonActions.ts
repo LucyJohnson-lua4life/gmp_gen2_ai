@@ -24,6 +24,9 @@ export class SFistAttackAction implements IAiAction {
 
 
     public executeAction(): void {
+        if(revmp.valid(this.victimId)){
+
+
         revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_ATTACK"))
         setTimeout(() => {
             // Attacker could be invalid in the meanwhile, so better check.
@@ -50,6 +53,11 @@ export class SFistAttackAction implements IAiAction {
         let dangle = getPlayerAngle(this.aiId) - getAngleToTarget(this.aiId, this.victimId)
         if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && dangle > -20 && dangle < 20) {
             revmp.attack(this.aiId, this.victimId);
+        }
+
+
+
+
         }
     }
 
@@ -91,10 +99,14 @@ export class TurnToTargetAction implements IAiAction {
     }
 
     public executeAction(): void {
-        const position = revmp.getPosition(this.aiId).position;
-        const targetPosition = revmp.getPosition(this.targetId).position;
-        const y = getAngleToTarget(this.aiId, this.targetId)
-        setPlayerAngle(this.aiId, y)
+        if(revmp.valid(this.targetId)){
+
+            const position = revmp.getPosition(this.aiId).position;
+            const targetPosition = revmp.getPosition(this.targetId).position;
+            const y = getAngleToTarget(this.aiId, this.targetId)
+            setPlayerAngle(this.aiId, y)
+
+        }
     }
 }
 
@@ -112,12 +124,16 @@ export class RunToTargetAction implements IAiAction {
     }
 
     public executeAction(): void {
-        const position = revmp.getPosition(this.aiId).position;
-        const targetPosition = revmp.getPosition(this.targetId).position;
-        const y = getAngleToTarget(this.aiId, this.targetId)
-        setPlayerAngle(this.aiId, y)
-        if (!isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL") )) {
-            revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
+        if(revmp.valid(this.targetId)){
+
+            const position = revmp.getPosition(this.aiId).position;
+            const targetPosition = revmp.getPosition(this.targetId).position;
+            const y = getAngleToTarget(this.aiId, this.targetId)
+            setPlayerAngle(this.aiId, y)
+            if (!isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))) {
+                revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
+            }
+
         }
     }
 }
@@ -327,20 +343,28 @@ export class WarnEnemy implements IAiAction {
     }
 
     public executeAction(): void {
-        const position = revmp.getPosition(this.aiId).position;
-        const targetPosition = revmp.getPosition(this.enemyId).position;
-        const y = getAngleToTarget(this.aiId, this.enemyId)
-        setPlayerAngle(this.aiId, y)
+        if(revmp.valid(this.enemyId)){
 
-        if (Date.now() > this.startTime + this.waitTime) {
-            this.setEnemy()
+            const position = revmp.getPosition(this.aiId).position;
+            const targetPosition = revmp.getPosition(this.enemyId).position;
+            const y = getAngleToTarget(this.aiId, this.enemyId)
+            setPlayerAngle(this.aiId, y)
+
+            if (Date.now() > this.startTime + this.waitTime) {
+                this.setEnemy()
+            }
+            let distance = getDistance(this.aiId, this.enemyId)
+            if (distance < this.warnDistance) {
+                revmp.startAnimation(this.aiId, "T_WARN")
+            }
+            else if (distance < this.attackDistance) {
+                this.setEnemy()
+            }
+
+
         }
-        let distance = getDistance(this.aiId, this.enemyId)
-        if (distance < this.warnDistance){
-           revmp.startAnimation(this.aiId, "T_WARN")
-        }
-        else if (distance < this.attackDistance){
-            this.setEnemy()
+        else{
+            this.shouldLoop = false
         }
     }
 

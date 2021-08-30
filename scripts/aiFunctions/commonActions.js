@@ -11,31 +11,33 @@ class SFistAttackAction {
         this.necessaryDistance = necessaryDistance;
     }
     executeAction() {
-        revmp.startAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_ATTACK"));
-        setTimeout(() => {
-            // Attacker could be invalid in the meanwhile, so better check.
-            if (revmp.valid(this.aiId)) {
-                revmp.fadeOutAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_ATTACK"));
+        if (revmp.valid(this.victimId)) {
+            revmp.startAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_ATTACK"));
+            setTimeout(() => {
+                // Attacker could be invalid in the meanwhile, so better check.
+                if (revmp.valid(this.aiId)) {
+                    revmp.fadeOutAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_ATTACK"));
+                }
+            }, 900);
+            /*
+            let dangle = Math.abs(getPlayerAngle(this.aiId) - getAngleToTarget(this.aiId, this.victimId))
+    
+            if (dangle > 180) {
+                dangle = Math.min(this.aiId, this.victimId)
             }
-        }, 900);
-        /*
-        let dangle = Math.abs(getPlayerAngle(this.aiId) - getAngleToTarget(this.aiId, this.victimId))
-
-        if (dangle > 180) {
-            dangle = Math.min(this.aiId, this.victimId)
-        }
-        console.log("dangle: " + dangle)
-        */
-        /*
-        let pAngle = getPlayerAngle(this.aiId);
-        let angleToTarget = getAngleToTarget(this.aiId, this.victimId)
-        console.log("pAngle: " + pAngle)
-        console.log("att: " + angleToTarget)
-        console.log("distance: " + getDistance(this.aiId, this.victimId))
-        */
-        let dangle = aiUtils_1.getPlayerAngle(this.aiId) - aiUtils_1.getAngleToTarget(this.aiId, this.victimId);
-        if (aiUtils_1.getDistance(this.aiId, this.victimId) < this.necessaryDistance && dangle > -20 && dangle < 20) {
-            revmp.attack(this.aiId, this.victimId);
+            console.log("dangle: " + dangle)
+            */
+            /*
+            let pAngle = getPlayerAngle(this.aiId);
+            let angleToTarget = getAngleToTarget(this.aiId, this.victimId)
+            console.log("pAngle: " + pAngle)
+            console.log("att: " + angleToTarget)
+            console.log("distance: " + getDistance(this.aiId, this.victimId))
+            */
+            let dangle = aiUtils_1.getPlayerAngle(this.aiId) - aiUtils_1.getAngleToTarget(this.aiId, this.victimId);
+            if (aiUtils_1.getDistance(this.aiId, this.victimId) < this.necessaryDistance && dangle > -20 && dangle < 20) {
+                revmp.attack(this.aiId, this.victimId);
+            }
         }
     }
 }
@@ -61,10 +63,12 @@ class TurnToTargetAction {
         this.targetId = targetId;
     }
     executeAction() {
-        const position = revmp.getPosition(this.aiId).position;
-        const targetPosition = revmp.getPosition(this.targetId).position;
-        const y = aiUtils_1.getAngleToTarget(this.aiId, this.targetId);
-        aiUtils_1.setPlayerAngle(this.aiId, y);
+        if (revmp.valid(this.targetId)) {
+            const position = revmp.getPosition(this.aiId).position;
+            const targetPosition = revmp.getPosition(this.targetId).position;
+            const y = aiUtils_1.getAngleToTarget(this.aiId, this.targetId);
+            aiUtils_1.setPlayerAngle(this.aiId, y);
+        }
     }
 }
 exports.TurnToTargetAction = TurnToTargetAction;
@@ -76,12 +80,14 @@ class RunToTargetAction {
         this.targetDistance = targetDistance;
     }
     executeAction() {
-        const position = revmp.getPosition(this.aiId).position;
-        const targetPosition = revmp.getPosition(this.targetId).position;
-        const y = aiUtils_1.getAngleToTarget(this.aiId, this.targetId);
-        aiUtils_1.setPlayerAngle(this.aiId, y);
-        if (!aiUtils_1.isAniPlaying(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_RUNL"))) {
-            revmp.startAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_RUNL"));
+        if (revmp.valid(this.targetId)) {
+            const position = revmp.getPosition(this.aiId).position;
+            const targetPosition = revmp.getPosition(this.targetId).position;
+            const y = aiUtils_1.getAngleToTarget(this.aiId, this.targetId);
+            aiUtils_1.setPlayerAngle(this.aiId, y);
+            if (!aiUtils_1.isAniPlaying(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_RUNL"))) {
+                revmp.startAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_RUNL"));
+            }
         }
     }
 }
@@ -227,19 +233,24 @@ class WarnEnemy {
         this.entityManager = input.entityManager;
     }
     executeAction() {
-        const position = revmp.getPosition(this.aiId).position;
-        const targetPosition = revmp.getPosition(this.enemyId).position;
-        const y = aiUtils_1.getAngleToTarget(this.aiId, this.enemyId);
-        aiUtils_1.setPlayerAngle(this.aiId, y);
-        if (Date.now() > this.startTime + this.waitTime) {
-            this.setEnemy();
+        if (revmp.valid(this.enemyId)) {
+            const position = revmp.getPosition(this.aiId).position;
+            const targetPosition = revmp.getPosition(this.enemyId).position;
+            const y = aiUtils_1.getAngleToTarget(this.aiId, this.enemyId);
+            aiUtils_1.setPlayerAngle(this.aiId, y);
+            if (Date.now() > this.startTime + this.waitTime) {
+                this.setEnemy();
+            }
+            let distance = aiUtils_1.getDistance(this.aiId, this.enemyId);
+            if (distance < this.warnDistance) {
+                revmp.startAnimation(this.aiId, "T_WARN");
+            }
+            else if (distance < this.attackDistance) {
+                this.setEnemy();
+            }
         }
-        let distance = aiUtils_1.getDistance(this.aiId, this.enemyId);
-        if (distance < this.warnDistance) {
-            revmp.startAnimation(this.aiId, "T_WARN");
-        }
-        else if (distance < this.attackDistance) {
-            this.setEnemy();
+        else {
+            this.shouldLoop = false;
         }
     }
     setEnemy() {

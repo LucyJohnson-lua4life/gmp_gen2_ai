@@ -9,8 +9,8 @@ class AiState {
     constructor(wpPath, fpPath) {
         this.entityManager = new entityManager_1.EntityManager();
         this.waynet = new waynet_1.Waynet(wpPath, fpPath);
-        this.playerInPositionAreas = new Map();
-        worldNames.forEach(name => this.playerInPositionAreas.set(name, new Map()));
+        this.characterInPositionAreas = new Map();
+        worldNames.forEach(name => this.characterInPositionAreas.set(name, new Map()));
         this.allBots = new Array();
         this.allPlayer = new Array();
     }
@@ -20,8 +20,8 @@ class AiState {
     getWaynet() {
         return this.waynet;
     }
-    getPlayerInPositionAreas() {
-        return this.playerInPositionAreas;
+    getCharacterInPositionAreas() {
+        return this.characterInPositionAreas;
     }
     getAllBots() {
         return this.allBots;

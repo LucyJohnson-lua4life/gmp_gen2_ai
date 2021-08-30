@@ -23,7 +23,7 @@ class EntityManager {
         let actionInfo = { entityId: npc.id, nextActions: npc.nextActions };
         let positionInfo = { entityId: npc.id, currentPosX: 0, currentPosY: 0, currentPosZ: 0, lastPosX: 0, lastPosY: 0, lastPosZ: 0, lastPosUpdate: 0, startWorld: npc.startWorld, startPoint: npc.startPoint };
         let actionDescription = { entityId: npc.id, descriptions: npc.actionDescriptions };
-        let enemyComponent = { entityId: npc.id, enemyId: -1 };
+        let enemyComponent = { entityId: npc.id, enemyId: undefined };
         this.setNpcStateComponent(npc.id, stateInfo);
         this.setRespawnComponent(npc.id, respawnInfo);
         this.setActionsComponent(npc.id, actionInfo);

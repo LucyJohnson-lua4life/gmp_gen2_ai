@@ -11,18 +11,18 @@ export class AiState {
     private allBots: Array<number>;
     private allPlayer: Array<number>;
     /*
-      map of all player positions,
+      map of all character positions,
       the first key is the world name
       the second key is a checksum that determines all players that are in the same area
       the check sum maps to a key of all playerids that are in the check sums area
       */
-    private playerInPositionAreas: Map<string, Map<number, Array<number>>>;
+    private characterInPositionAreas: Map<string, Map<number, Array<number>>>;
 
     constructor(wpPath:string, fpPath:string) {
         this.entityManager = new EntityManager()
         this.waynet = new Waynet(wpPath, fpPath)
-        this.playerInPositionAreas = new Map()
-        worldNames.forEach(name => this.playerInPositionAreas.set(name, new Map()))
+        this.characterInPositionAreas = new Map()
+        worldNames.forEach(name => this.characterInPositionAreas.set(name, new Map()))
         this.allBots = new Array()
         this.allPlayer = new Array()
     }
@@ -34,8 +34,8 @@ export class AiState {
         return this.waynet
     }
 
-    public getPlayerInPositionAreas(): Map<string, Map<number, Array<number>>>{
-        return this.playerInPositionAreas
+    public getCharacterInPositionAreas(): Map<string, Map<number, Array<number>>>{
+        return this.characterInPositionAreas
     }
     public getAllBots(): Array<number> {
         return this.allBots

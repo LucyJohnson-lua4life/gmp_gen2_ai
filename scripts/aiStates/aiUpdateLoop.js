@@ -10,15 +10,15 @@ const aiStateFunctions_1 = require("../aiStates/aiStateFunctions");
  */
 class AiUpdateLoop {
     constructor(aiState) {
-        //todo: this constant world should only be temporary!
+        //todo: this constant world should only be used temporary!
         this.world = "NEWWORLD\\NEWWORLD.ZEN";
         this.aiState = aiState;
         this.npcActionUtils = new npcActionUtils_1.NpcActionUtils(aiState);
         this.aiStateFunctions = new aiStateFunctions_1.AiStateFunctions(aiState);
     }
     updateAll() {
-        this.aiState.getPlayerInPositionAreas().set(this.world, new Map());
-        let allPositions = this.aiState.getPlayerInPositionAreas().get(this.world);
+        this.aiState.getCharacterInPositionAreas().set(this.world, new Map());
+        let allPositions = this.aiState.getCharacterInPositionAreas().get(this.world);
         // update positions for each character
         revmp.characters.forEach(charId => {
             let pos = revmp.getPosition(charId).position;
@@ -32,6 +32,7 @@ class AiUpdateLoop {
         });
         this.readDescriptions();
         this.respawnDeadNpcs();
+        this.removeDeadOrUnvalidPlayerFromEnemyLists();
         this.aiState.getAllBots().forEach((aiId) => this.updateAi(aiId));
     }
     readDescriptions() {
@@ -65,8 +66,6 @@ class AiUpdateLoop {
         revmp.characters.forEach(charId => {
             let respawnComponent = this.aiState.getEntityManager().getRespawnComponent(charId);
             if (typeof respawnComponent !== 'undefined' && typeof respawnComponent.deathTime !== 'undefined' && Date.now() > respawnComponent.deathTime + (respawnComponent.respawnTime * 1000) && revmp.isBot(charId)) {
-                console.log("death time: " + respawnComponent.deathTime);
-                console.log("current time: " + Date.now());
                 // respawn npc and set state
                 this.respawnNpc(charId);
             }
@@ -81,6 +80,14 @@ class AiUpdateLoop {
     }
     isEntityUpdateable(entityId) {
         return revmp.getHealth(entityId).current > 0 && revmp.isCharacter(entityId);
+    }
+    removeDeadOrUnvalidPlayerFromEnemyLists() {
+        revmp.bots.forEach(botId => {
+            let enemyId = this.aiState.getEntityManager().getEnemyComponent(botId).enemyId;
+            if (typeof enemyId !== 'undefined' && (!revmp.valid(enemyId) || revmp.getHealth(enemyId).current <= 0)) {
+                this.aiState.getEntityManager().setEnemyComponent(botId, { entityId: botId, enemyId: undefined });
+            }
+        });
     }
 }
 exports.AiUpdateLoop = AiUpdateLoop;

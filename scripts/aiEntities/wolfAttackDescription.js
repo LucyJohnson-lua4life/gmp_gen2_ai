@@ -120,7 +120,7 @@ class WolfAttackDescription {
             }
             */
     enemyExists(id) {
-        return id >= 0 && revmp.isPlayer(id);
+        return id >= 0 && revmp.valid(id) && revmp.isPlayer(id);
     }
 }
 exports.WolfAttackDescription = WolfAttackDescription;

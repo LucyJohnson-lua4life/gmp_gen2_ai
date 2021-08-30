@@ -134,6 +134,6 @@ export class WolfAttackDescription implements IActionDescription {
             */
 
     private enemyExists(id: number): boolean {
-        return id >= 0 && revmp.isPlayer(id)
+        return id >= 0 && revmp.valid(id) && revmp.isPlayer(id)
     }
 }

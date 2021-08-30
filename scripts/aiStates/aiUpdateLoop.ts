@@ -14,7 +14,7 @@ import { Wolf } from '../aiEntities/npcs/wolf';
  * The loops also executes descriptions, that decide which actions to put into the action collection of each npc's based on the npc state and environment.
  */
 export class AiUpdateLoop {
-    //todo: this constant world should only be temporary!
+    //todo: this constant world should only be used temporary!
     private world:string = "NEWWORLD\\NEWWORLD.ZEN"
     private aiState: AiState;
     private npcActionUtils: NpcActionUtils
@@ -27,8 +27,8 @@ export class AiUpdateLoop {
     }
 
     public updateAll() {
-        this.aiState.getPlayerInPositionAreas().set(this.world, new Map<number, Array<number>>())
-        let allPositions: Map<number, Array<number>> = this.aiState.getPlayerInPositionAreas().get(this.world)
+        this.aiState.getCharacterInPositionAreas().set(this.world, new Map<number, Array<number>>())
+        let allPositions: Map<number, Array<number>> = this.aiState.getCharacterInPositionAreas().get(this.world)
         // update positions for each character
         revmp.characters.forEach(charId =>{
             let pos = revmp.getPosition(charId).position
@@ -43,6 +43,7 @@ export class AiUpdateLoop {
 
         this.readDescriptions()
         this.respawnDeadNpcs()
+        this.removeDeadOrUnvalidPlayerFromEnemyLists()
         this.aiState.getAllBots().forEach((aiId) => this.updateAi(aiId))
     }
 
@@ -81,21 +82,14 @@ export class AiUpdateLoop {
         }
     }
 
-
     public respawnDeadNpcs(){
         revmp.characters.forEach(charId =>{
             let respawnComponent = this.aiState.getEntityManager().getRespawnComponent(charId)
             if(typeof respawnComponent !== 'undefined' && typeof respawnComponent.deathTime !== 'undefined' && Date.now() > respawnComponent.deathTime + (respawnComponent.respawnTime*1000) && revmp.isBot(charId)){
-
-                console.log("death time: " + respawnComponent.deathTime)
-                console.log("current time: " + Date.now())
                 // respawn npc and set state
                 this.respawnNpc(charId)
             }
-
-
         })
-
     }
 
     private respawnNpc(aiId: number){
@@ -108,5 +102,14 @@ export class AiUpdateLoop {
 
     private isEntityUpdateable(entityId: number){
         return revmp.getHealth(entityId).current > 0 && revmp.isCharacter(entityId)
+    }
+
+    private removeDeadOrUnvalidPlayerFromEnemyLists():void{
+        revmp.bots.forEach(botId =>{
+            let enemyId:number|undefined = this.aiState.getEntityManager().getEnemyComponent(botId).enemyId
+            if(typeof enemyId !== 'undefined' && (!revmp.valid(enemyId) || revmp.getHealth(enemyId).current <= 0)){
+                this.aiState.getEntityManager().setEnemyComponent(botId, {entityId: botId, enemyId: undefined})
+            }
+        })
     }
 }
