@@ -9,10 +9,12 @@ import { AiState } from '../aiStates/aiState';
 export class WolfAttackDescription implements IActionDescription {
     entityId: number
     lastAttackTime: number
+    attackRange: number
 
     constructor(id: number) {
         this.entityId = id
         this.lastAttackTime = 0
+        this.attackRange = 300
     }
 
     describeAction(aiState: AiState): void {
@@ -63,47 +65,57 @@ export class WolfAttackDescription implements IActionDescription {
         let dangle = getPlayerAngle(this.entityId) - getAngleToTarget(this.entityId, enemyId)
         const currentTime = Date.now()
         if (dangle > -20 && dangle < 20 && currentTime - this.lastAttackTime > 3000) {
-            entityManager.getActionsComponent(this.entityId).nextActions.push(new SFistAttackAction(this.entityId, enemyId, 250))
+            entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
+            entityManager.getActionsComponent(this.entityId).nextActions.push(new SFistAttackAction(this.entityId, enemyId, this.attackRange))
             this.lastAttackTime = currentTime
         }
-        else if (range < 100) {
+        else if (range < this.attackRange - 150) {
+            entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 200, Date.now()))
             entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunParadeJump(this.entityId))
         }
         else {
             let random = Math.floor(Math.random() * 10);
             let pangle = getAngleToTarget(this.entityId, enemyId)
             if (random < 2) {
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunParadeJump(this.entityId))
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunParadeJump(this.entityId))
             }
             else if (random <= 3) {
-
                 if (pangle > 180) {
-                    entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeRight(this.entityId))
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 300, Date.now()))
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeRight(this.entityId))
+                }
+                else {
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 300, Date.now()))
+                    entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeLeft(this.entityId))
+                }
+            }
+            else if (random <= 5) {
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 300, Date.now()))
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunParadeJump(this.entityId))
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunParadeJump(this.entityId))
+            }
+            else if (random <= 7 && dangle > -20 && dangle < 20) {
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
+                if (getAngleToTarget(this.entityId, enemyId) > 180) {
+                    entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeRight(this.entityId))
                 }
                 else {
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeLeft(this.entityId))
-                    entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 300, Date.now()))
-                    entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeLeft(this.entityId))
-                    entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 300, Date.now()))
                 }
             }
-            else if (random <= 7 && dangle > -20 && dangle < 20) {
+            else if (random <= 9 && dangle > -20 && dangle < 20) {
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 200, Date.now()))
                 if(getAngleToTarget(this.entityId, enemyId)> 180){
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeRight(this.entityId))
                 }
                 else{
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeLeft(this.entityId))
                 }
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new RunForward(this.entityId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 200, Date.now()))
             }
             else{
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 100, Date.now()))
             }
         }
     }
