@@ -31,7 +31,7 @@ export class SFistAttackAction implements IAiAction {
         setTimeout(() => {
             // Attacker could be invalid in the meanwhile, so better check.
             if (revmp.valid(this.aiId)) {
-                revmp.fadeOutAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_ATTACK"));
+                revmp.fadeOutAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "T_ATTACKR"));
             }
         }, 900);
 

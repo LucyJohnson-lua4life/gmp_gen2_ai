@@ -105,7 +105,7 @@ export function getCombatStateBasedAni(entity: revmp.Entity, ani: string) {
         return ani
     }
 
-    const weaponMode = revmp.getCombatState(entity).weaponMode;
+    let weaponMode = revmp.getCombatState(entity).weaponMode;
 
     if (weaponMode === revmp.WeaponMode.Fist || weaponMode === revmp.WeaponMode.None) {
         return ani.slice(0, index + 1) + 'FIST' + ani.slice(index + 1);
@@ -125,6 +125,7 @@ export function getCombatStateBasedAni(entity: revmp.Entity, ani: string) {
     else {
         return ani
     }
+    return ani.slice(0, index + 1) + '2H' + ani.slice(index + 1);
 }
 
 

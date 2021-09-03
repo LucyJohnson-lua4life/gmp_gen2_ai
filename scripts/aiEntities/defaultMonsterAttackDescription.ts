@@ -6,7 +6,7 @@ import { RunForward, SFistAttackAction, SRunParadeJump, SRunStrafeLeft, SRunStra
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
 import { AiState } from '../aiStates/aiState';
 
-export class WolfAttackDescription implements IActionDescription {
+export class DefaultMonsterAttackDescription implements IActionDescription {
     entityId: number
     lastAttackTime: number
     attackRange: number

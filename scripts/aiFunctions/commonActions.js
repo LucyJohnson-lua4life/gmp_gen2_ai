@@ -16,7 +16,7 @@ class SFistAttackAction {
             setTimeout(() => {
                 // Attacker could be invalid in the meanwhile, so better check.
                 if (revmp.valid(this.aiId)) {
-                    revmp.fadeOutAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_ATTACK"));
+                    revmp.fadeOutAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "T_ATTACKR"));
                 }
             }, 900);
             /*

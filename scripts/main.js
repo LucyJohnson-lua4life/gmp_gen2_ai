@@ -1,10 +1,13 @@
 "use strict";
 
 const wolf = require("./aiEntities/npcs/wolf");
+const scavenger = require("./aiEntities/npcs/scavenger");
+const orcElite = require("./aiEntities/npcs/orcElite");
+const orcWarrior = require("./aiEntities/npcs/orcWarrior");
 const funs = require("./aiStates/aiStateFunctions");
 const aiState = require("./aiStates/aiState");
 const aiUpdateLoop = require("./aiStates/aiUpdateLoop");
-const {Instances} = require("./serverComponents/weapons");
+const {Instances, initItemInstances} = require("./serverComponents/weapons");
 const damageCalculation = require("./serverComponents/damageCalculation");
 const {setAngle, getAngle, getAngleDistance, getPlayerAngle} = require("./aiFunctions/aiUtils");
 //const ai = require("./scripts/aiStates/aiUpdateLoop");
@@ -15,29 +18,6 @@ let em = state.getEntityManager();
 let updateLoop = new aiUpdateLoop.AiUpdateLoop(state);
 let aiStateFunctions = new funs.AiStateFunctions(state)
 
-function createWolf() {
-    return revmp.createBot({
-        name: "Wolf",
-        maxHealth: 1000,
-
-        visual: "Wolf.mds",
-        visualBody: {
-            bodyMesh: "Wol_Body"
-        },
-        meleeAttack: {
-            edge: 30
-        },
-        protection: {
-            blunt: 30,
-            edge: 30,
-            fire: 30,
-            fly: 30,
-        },
-        weaponMode: revmp.WeaponMode.Fist
-    });
-}
-
-
 revmp.on("init", () => {
 
     const world = revmp.createWorld({
@@ -46,30 +26,16 @@ revmp.on("init", () => {
         name: "New World",
         time: { hour: 15 }
     });
+    initItemInstances()
 
     revmp.setTime(world, { hour: 15, minute: 0 });
-
-    let w = new wolf.Wolf()
-    revmp.setHealth(w.id, {current: 1000, max: 1000})
-    //setInterval(updateLoop.readDescriptions.bind(updateLoop), 200);
     setInterval(updateLoop.updateAll.bind(updateLoop), 200);
-    //setInterval(updateLoop.respawnDeadNpcs.bind(updateLoop),10000);
-    console.log("wolf id: " + w.id)
-    //aiStateFunctions.spawnNpcByCoordinates(w,0,0,500,"NEWWORLD\\NEWWORLD.ZEN")
-    aiStateFunctions.spawnNpc(w,"HAFEN","NEWWORLD\\NEWWORLD.ZEN")
+
+    let testMonster = new orcElite.OrcElite()
+    console.log("monster id: " + testMonster.id)
+    aiStateFunctions.spawnNpc(testMonster,"HAFEN","NEWWORLD\\NEWWORLD.ZEN")
 
 });
-
-function getDistance(x1, y1, z1, x2, y2, z2) {
-    if ([x1, y1, z1, , x2, y2, z2].some((val) => (typeof val === 'undefined'))) {
-        return 99999
-    }
-    let x = x1 - x2
-    let y = y1 - y2
-    let z = z1 - z2
-
-    return Math.sqrt(x * x + y * y + z * z);
-}
 
 //export function sendChatMessage(player: number|number[], message: string, color?: [number, number, number, number?]): void
 function debugCommands(entity, msg) {
@@ -162,7 +128,11 @@ revmp.on("chatCommand", (entity, msg) => {
     if (command === "/stu2") {
         revmp.startAnimation(entity, "T_STUMBLEB");
     }
-    if (command === "/stumble2") {
+    if (command === "/toorc") {
+        revmp.setVisualBody(entity, {bodyMesh: "Orc_BodyElite", headMesh: "Orc_HeadWarrior"})
+        revmp.addItem(entity, Instances.eliteOrcSword, 1);
+        revmp.equipItem(entity, Instances.eliteOrcSword)
+        revmp.setAttributes(entity, { twoHanded: 100 })
         revmp.startAnimation(entity, "T_STAND_2_STUMBLE");
     }
 

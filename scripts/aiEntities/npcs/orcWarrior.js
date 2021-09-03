@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Wolf = void 0;
-const wolfAttackDescription_1 = require("../wolfAttackDescription");
+exports.OrcWarrior = void 0;
+const defaultMonsterAttackDescription_1 = require("../defaultMonsterAttackDescription");
 const npcInits_1 = require("./npcInits");
-class Wolf {
+class OrcWarrior {
     constructor() {
-        this.id = revmp.createBot(npcInits_1.getWolfInstance());
+        this.id = revmp.createBot(npcInits_1.getOrcWarriorInstance());
         ;
         this.isDead = false;
         this.isUnconscious = false;
@@ -13,7 +13,7 @@ class Wolf {
         this.friendIds = [];
         this.respawnTime = 10;
         this.nextActions = new Array();
-        this.actionDescriptions = [new wolfAttackDescription_1.DefaultMonsterAttackDescription(this.id)];
+        this.actionDescriptions = [new defaultMonsterAttackDescription_1.DefaultMonsterAttackDescription(this.id)];
         this.aiFlags = new Map();
         this.lastPosUpdate = 0;
         this.lastPosX = 0;
@@ -22,10 +22,10 @@ class Wolf {
         this.currentPosX = 0;
         this.currentPosY = 0;
         this.currentPosZ = 0;
-        this.npcInstance = npcInits_1.INSTANCE_WOLF;
+        this.npcInstance = npcInits_1.INSTANCE_ORC_WARRIOR;
     }
     addAction(action) {
         this.nextActions.push(action);
     }
 }
-exports.Wolf = Wolf;
+exports.OrcWarrior = OrcWarrior;

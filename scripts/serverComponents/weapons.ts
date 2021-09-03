@@ -1,8 +1,11 @@
 
 export const Instances = {
-    warsword: "warsword"
+    warsword: "warsword",
+    eliteOrcSword: "eliteOrcSword"
 } as const;
 
+
+export function initItemInstances(){
 
 revmp.createItemInstance({
     type: revmp.ItemType.MeleeWeapon,
@@ -19,7 +22,7 @@ revmp.createItemInstance({
     description: {
         text: [
             [],
-            ["Edge Damager", 100],
+            ["Edge Damage", 100],
             [],
             ["Necessary strength:", 5],
             ["One hand sword"],
@@ -27,3 +30,31 @@ revmp.createItemInstance({
         ]
     },
 });
+
+revmp.createItemInstance({
+    type: revmp.ItemType.MeleeWeapon,
+    id: Instances.eliteOrcSword,
+    name: "Elite orc sword",
+    meleeAttack: {
+        edge: 100,
+        range: 140
+    },
+    visual: "ItMw_2H_OrcSword_02.3DS",
+    material: revmp.Material.Metal,
+    category: revmp.ItemCategory.TwoHandSword,
+    value: 1000,
+    description: {
+        text: [
+            [],
+            ["Edge Damage", 100],
+            [],
+            ["Necessary strength:", 5],
+            ["One hand sword"],
+            ["Value:", 1000],
+        ]
+    },
+});
+
+
+}
+
