@@ -1,10 +1,11 @@
+
 import { IActionDescription } from "../iActionDescription";
 import { DefaultMonsterAttackDescription } from "../defaultMonsterAttackDescription";
 import { IAiAction } from "../iAiAction";
 import { IAiNpc } from "../iAiNpc";
-import { getWolfInstance, INSTANCE_WOLF} from "./npcInits";
+import { getWargInstance, INSTANCE_WARG} from "./npcInits";
 
-export class Wolf implements IAiNpc {
+export class Warg implements IAiNpc {
     enemyIds: number[];
     friendIds: number[];
     respawnTime: number;
@@ -27,7 +28,7 @@ export class Wolf implements IAiNpc {
 
 
     constructor() {
-        this.id = revmp.createBot(getWolfInstance());;
+        this.id = revmp.createBot(getWargInstance());;
         this.isDead = false;
         this.isUnconscious = false;
         this.enemyIds = [];
@@ -44,7 +45,7 @@ export class Wolf implements IAiNpc {
         this.currentPosX = 0
         this.currentPosY = 0
         this.currentPosZ = 0
-        this.npcInstance = INSTANCE_WOLF
+        this.npcInstance = INSTANCE_WARG
     }
     addAction(action: IAiAction) {
         this.nextActions.push(action)

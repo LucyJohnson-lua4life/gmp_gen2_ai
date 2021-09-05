@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Wolf = void 0;
+exports.Lurker = void 0;
 const defaultMonsterAttackDescription_1 = require("../defaultMonsterAttackDescription");
 const npcInits_1 = require("./npcInits");
-class Wolf {
+class Lurker {
     constructor() {
-        this.id = revmp.createBot(npcInits_1.getWolfInstance());
+        this.id = revmp.createBot(npcInits_1.getLurkerInstance());
         ;
         this.isDead = false;
         this.isUnconscious = false;
@@ -22,10 +22,10 @@ class Wolf {
         this.currentPosX = 0;
         this.currentPosY = 0;
         this.currentPosZ = 0;
-        this.npcInstance = npcInits_1.INSTANCE_WOLF;
+        this.npcInstance = npcInits_1.INSTANCE_LURKER;
     }
     addAction(action) {
         this.nextActions.push(action);
     }
 }
-exports.Wolf = Wolf;
+exports.Lurker = Lurker;
