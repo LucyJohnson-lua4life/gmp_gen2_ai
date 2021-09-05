@@ -9,6 +9,7 @@ export const INSTANCE_TROLL: string = "revmp_troll"
 export const INSTANCE_LURKER: string = "revmp_lurker"
 export const INSTANCE_ORC_WARRIOR: string = "revmp_orc_warrior"
 export const INSTANCE_ORC_ELITE: string = "revmp_orc_elite"
+export const INSTANCE_ORC_UNDEAD: string = "revmp_orc_elite"
 
 export function getWolfInstance() {
     return {
@@ -217,6 +218,28 @@ export function getOrcEliteInstance() {
 
 }
 
+export function getUndeadOrcInstance() {
+    return {
+        name: "Undead Orc",
+        maxHealth: 1000,
+        visual: "Orc.mds",
+        visualBody: {
+            bodyMesh: "UOW_Body"
+        },
+        meleeAttack: {
+            edge: 10,
+            range: 20
+        },
+        protection: {
+            blunt: 100,
+            edge: 100,
+            fire: 100,
+            fly: 100,
+        },
+        weaponMode: revmp.WeaponMode.TwoHand
+    }
+
+}
 export function getShadowbeastInstance() {
     return {
         name: "Shadow beast",

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getShadowbeastInstance = exports.getOrcEliteInstance = exports.getOrcWarriorInstance = exports.getTrollInstance = exports.getLurkerInstance = exports.getKeilerInstance = exports.getWargInstance = exports.getSnapperInstance = exports.getScavengerInstance = exports.getWolfInstance = exports.INSTANCE_ORC_ELITE = exports.INSTANCE_ORC_WARRIOR = exports.INSTANCE_LURKER = exports.INSTANCE_TROLL = exports.INSTANCE_KEILER = exports.INSTANCE_SHADOWBEAST = exports.INSTANCE_WARG = exports.INSTANCE_SNAPPER = exports.INSTANCE_SCAVENGER = exports.INSTANCE_WOLF = void 0;
+exports.getShadowbeastInstance = exports.getUndeadOrcInstance = exports.getOrcEliteInstance = exports.getOrcWarriorInstance = exports.getTrollInstance = exports.getLurkerInstance = exports.getKeilerInstance = exports.getWargInstance = exports.getSnapperInstance = exports.getScavengerInstance = exports.getWolfInstance = exports.INSTANCE_ORC_UNDEAD = exports.INSTANCE_ORC_ELITE = exports.INSTANCE_ORC_WARRIOR = exports.INSTANCE_LURKER = exports.INSTANCE_TROLL = exports.INSTANCE_KEILER = exports.INSTANCE_SHADOWBEAST = exports.INSTANCE_WARG = exports.INSTANCE_SNAPPER = exports.INSTANCE_SCAVENGER = exports.INSTANCE_WOLF = void 0;
 exports.INSTANCE_WOLF = "revmp_wolf";
 exports.INSTANCE_SCAVENGER = "revmp_scavenger";
 exports.INSTANCE_SNAPPER = "revmp_snapper";
@@ -11,6 +11,7 @@ exports.INSTANCE_TROLL = "revmp_troll";
 exports.INSTANCE_LURKER = "revmp_lurker";
 exports.INSTANCE_ORC_WARRIOR = "revmp_orc_warrior";
 exports.INSTANCE_ORC_ELITE = "revmp_orc_elite";
+exports.INSTANCE_ORC_UNDEAD = "revmp_orc_elite";
 function getWolfInstance() {
     return {
         name: "Wolf",
@@ -211,6 +212,28 @@ function getOrcEliteInstance() {
     };
 }
 exports.getOrcEliteInstance = getOrcEliteInstance;
+function getUndeadOrcInstance() {
+    return {
+        name: "Undead Orc",
+        maxHealth: 1000,
+        visual: "Orc.mds",
+        visualBody: {
+            bodyMesh: "UOW_Body"
+        },
+        meleeAttack: {
+            edge: 10,
+            range: 20
+        },
+        protection: {
+            blunt: 100,
+            edge: 100,
+            fire: 100,
+            fly: 100,
+        },
+        weaponMode: revmp.WeaponMode.TwoHand
+    };
+}
+exports.getUndeadOrcInstance = getUndeadOrcInstance;
 function getShadowbeastInstance() {
     return {
         name: "Shadow beast",

@@ -1,9 +1,11 @@
 "use strict";
 
 const wolf = require("./aiEntities/npcs/wolf");
+const npcInitializer = require("./initNewWorldNpcs");
 const scavenger = require("./aiEntities/npcs/scavenger");
 const orcElite = require("./aiEntities/npcs/orcElite");
 const orcWarrior = require("./aiEntities/npcs/orcWarrior");
+const undeadOrc = require("./aiEntities/npcs/undeadOrc");
 const funs = require("./aiStates/aiStateFunctions");
 const aiState = require("./aiStates/aiState");
 const aiUpdateLoop = require("./aiStates/aiUpdateLoop");
@@ -31,9 +33,10 @@ revmp.on("init", () => {
     revmp.setTime(world, { hour: 15, minute: 0 });
     setInterval(updateLoop.updateAll.bind(updateLoop), 50);
 
-    let testMonster = new orcElite.OrcElite()
+    let testMonster = new undeadOrc.UndeadOrc()
     console.log("monster id: " + testMonster.id)
     aiStateFunctions.spawnNpc(testMonster,"HAFEN","NEWWORLD\\NEWWORLD.ZEN")
+    npcInitializer.initNewWorldNpcs(state)
 
 });
 
