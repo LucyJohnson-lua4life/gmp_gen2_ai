@@ -2,7 +2,7 @@
 
 import { IAiAction } from "../aiEntities/iAiAction";
 import { setPlayerAngle, getCombatStateBasedAni, getAngleToPoint, getPlayerAngle, getAngleToTarget, getDistance, isAniPlaying } from "../aiFunctions/aiUtils";
-import { gotoPosition, getDistance as getPointDistance} from "../waynet/positionFunctions";
+import { gotoPosition, getDistance as getPointDistance } from "../waynet/positionFunctions";
 import { IPositionComponent } from "../aiEntities/components/iPositionComponent";
 import { AiState } from "../aiStates/aiState";
 import { IWaynet, Waypoint } from "../waynet/iwaynet";
@@ -24,41 +24,105 @@ export class SForwardAttackAction implements IAiAction {
 
 
     public executeAction(): void {
-        if(revmp.valid(this.victimId)){
+        if (revmp.valid(this.victimId)) {
 
 
-        revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_ATTACK"))
-        setTimeout(() => {
-            // Attacker could be invalid in the meanwhile, so better check.
-            if (revmp.valid(this.aiId)) {
-                revmp.fadeOutAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_ATTACK"));
+            revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_ATTACK"))
+            setTimeout(() => {
+                if (revmp.valid(this.aiId)) {
+                    revmp.fadeOutAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_ATTACK"));
+                }
+            }, 900);
+
+            /*
+            let dangle = Math.abs(getPlayerAngle(this.aiId) - getAngleToTarget(this.aiId, this.victimId))
+    
+            if (dangle > 180) {
+                dangle = Math.min(this.aiId, this.victimId)
             }
-        }, 900);
-
-        /*
-        let dangle = Math.abs(getPlayerAngle(this.aiId) - getAngleToTarget(this.aiId, this.victimId))
-
-        if (dangle > 180) {
-            dangle = Math.min(this.aiId, this.victimId)
-        }
-        console.log("dangle: " + dangle)
-        */
-        /*
-        let pAngle = getPlayerAngle(this.aiId);
-        let angleToTarget = getAngleToTarget(this.aiId, this.victimId)
-        console.log("pAngle: " + pAngle)
-        console.log("att: " + angleToTarget)
-        console.log("distance: " + getDistance(this.aiId, this.victimId))
-        */
-        let dangle = getPlayerAngle(this.aiId) - getAngleToTarget(this.aiId, this.victimId)
-        if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && dangle > -20 && dangle < 20) {
-            revmp.attack(this.aiId, this.victimId);
-        }
+            console.log("dangle: " + dangle)
+            */
+            /*
+            let pAngle = getPlayerAngle(this.aiId);
+            let angleToTarget = getAngleToTarget(this.aiId, this.victimId)
+            console.log("pAngle: " + pAngle)
+            console.log("att: " + angleToTarget)
+            console.log("distance: " + getDistance(this.aiId, this.victimId))
+            */
+            let dangle = getPlayerAngle(this.aiId) - getAngleToTarget(this.aiId, this.victimId)
+            if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && dangle > -20 && dangle < 20) {
+                revmp.attack(this.aiId, this.victimId);
+            }
         }
     }
 
 }
 
+export class SLeftAttackAction implements IAiAction {
+    aiId: number
+    shouldLoop: boolean
+    victimId: number
+    necessaryDistance: number
+
+    constructor(aiId: number, victimId: number, necessaryDistance: number) {
+        this.aiId = aiId
+        this.shouldLoop = false
+        this.victimId = victimId
+        this.necessaryDistance = necessaryDistance
+    }
+
+
+    public executeAction(): void {
+        if (revmp.valid(this.victimId)) {
+
+
+            revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "T_ATTACKL"))
+            setTimeout(() => {
+                if (revmp.valid(this.aiId)) {
+                    revmp.fadeOutAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "T_ATTACKL"));
+                }
+            }, 900);
+
+            let dangle = getPlayerAngle(this.aiId) - getAngleToTarget(this.aiId, this.victimId)
+            if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && dangle > -20 && dangle < 20) {
+                revmp.attack(this.aiId, this.victimId);
+            }
+        }
+    }
+}
+
+export class SRightAttackAction implements IAiAction {
+    aiId: number
+    shouldLoop: boolean
+    victimId: number
+    necessaryDistance: number
+
+    constructor(aiId: number, victimId: number, necessaryDistance: number) {
+        this.aiId = aiId
+        this.shouldLoop = false
+        this.victimId = victimId
+        this.necessaryDistance = necessaryDistance
+    }
+
+
+    public executeAction(): void {
+        if (revmp.valid(this.victimId)) {
+
+
+            revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "T_ATTACKR"))
+            setTimeout(() => {
+                if (revmp.valid(this.aiId)) {
+                    revmp.fadeOutAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "T_ATTACKR"));
+                }
+            }, 900);
+
+            let dangle = getPlayerAngle(this.aiId) - getAngleToTarget(this.aiId, this.victimId)
+            if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && dangle > -20 && dangle < 20) {
+                revmp.attack(this.aiId, this.victimId);
+            }
+        }
+    }
+}
 export class WaitAction implements IAiAction {
 
     aiId: number
@@ -95,7 +159,7 @@ export class TurnToTargetAction implements IAiAction {
     }
 
     public executeAction(): void {
-        if(revmp.valid(this.targetId)){
+        if (revmp.valid(this.targetId)) {
 
             const position = revmp.getPosition(this.aiId).position;
             const targetPosition = revmp.getPosition(this.targetId).position;
@@ -120,7 +184,7 @@ export class RunToTargetAction implements IAiAction {
     }
 
     public executeAction(): void {
-        if(revmp.valid(this.targetId)){
+        if (revmp.valid(this.targetId)) {
 
             const position = revmp.getPosition(this.aiId).position;
             const targetPosition = revmp.getPosition(this.targetId).position;
@@ -201,12 +265,12 @@ export class SRunParadeJump implements IAiAction {
 export class GotoPosition implements IAiAction {
     aiId: number
     shouldLoop: boolean
-    npcPosition:IPositionComponent
-    targetX:number
-    targetY:number
-    targetZ:number
+    npcPosition: IPositionComponent
+    targetX: number
+    targetY: number
+    targetZ: number
 
-    constructor(npcPosition:IPositionComponent, x:number, y:number, z:number) {
+    constructor(npcPosition: IPositionComponent, x: number, y: number, z: number) {
         this.aiId = npcPosition.entityId
         this.npcPosition = npcPosition
         this.shouldLoop = true
@@ -218,14 +282,14 @@ export class GotoPosition implements IAiAction {
 
     public executeAction(): void {
         gotoPosition(this.npcPosition, this.targetX, this.targetY, this.targetZ)
-        let pos:revmp.Vec3 = revmp.getPosition(this.aiId).position
-        if(getPointDistance(pos[0], pos[1], pos[2], this.targetX, this.targetY, this.targetZ) < 100){
+        let pos: revmp.Vec3 = revmp.getPosition(this.aiId).position
+        if (getPointDistance(pos[0], pos[1], pos[2], this.targetX, this.targetY, this.targetZ) < 100) {
             if (isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))) {
                 revmp.stopAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
             }
             this.shouldLoop = false
         }
-        else{
+        else {
             const y = getAngleToPoint(pos[0], pos[2], this.targetX, this.targetZ)
             setPlayerAngle(this.aiId, y)
             revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
@@ -234,7 +298,7 @@ export class GotoPosition implements IAiAction {
     }
 }
 
-export class GotoPoint implements IAiAction{
+export class GotoPoint implements IAiAction {
 
     aiId: number
     shouldLoop: boolean
@@ -243,9 +307,9 @@ export class GotoPoint implements IAiAction{
     startPoint: string
     routeIndex: number
     wayroute: Array<Waypoint>
-    aiPos:IPositionComponent
+    aiPos: IPositionComponent
 
-    constructor(aiId:number, aiState: AiState, targetWaypoint:string) {
+    constructor(aiId: number, aiState: AiState, targetWaypoint: string) {
         this.aiId = aiId
         this.shouldLoop = true
         this.aiState = aiState
@@ -261,18 +325,18 @@ export class GotoPoint implements IAiAction{
 
         // if a freepoint is given, find nearest wp and calculate the route to the nearest wp
         // put freepoint to the wayroute as last destination
-        if(Array.from(waynet.waypoints.keys()).includes(targetWaypoint)){
+        if (Array.from(waynet.waypoints.keys()).includes(targetWaypoint)) {
             this.targetPoint = targetWaypoint
             this.wayroute = waynet.getWayroute(this.startPoint, this.targetPoint)
-        }else {
+        } else {
             let targetFp = waynet.freepoints.find(fp => fp.fpName === targetWaypoint)
-            if(typeof targetFp !== 'undefined'){
+            if (typeof targetFp !== 'undefined') {
                 let nearestEndWp = waynet.getNearestWaypoint(targetFp.x, targetFp.y, targetFp.z)
                 this.wayroute = waynet.getWayroute(this.startPoint, nearestEndWp.wpName)
-                let fpToWp: Waypoint = { wpName: "TMP_WAYPOINT", x: targetFp.x, y: targetFp.y, z: targetFp.z, rotX: targetFp.rotX, rotY: targetFp.rotY, otherWps: [nearestEndWp.wpName]}
+                let fpToWp: Waypoint = { wpName: "TMP_WAYPOINT", x: targetFp.x, y: targetFp.y, z: targetFp.z, rotX: targetFp.rotX, rotY: targetFp.rotY, otherWps: [nearestEndWp.wpName] }
                 this.wayroute.push(fpToWp)
             }
-            else{
+            else {
                 this.shouldLoop = false
             }
         }
@@ -280,7 +344,7 @@ export class GotoPoint implements IAiAction{
     }
 
     public executeAction(): void {
-        if(this.routeIndex < this.wayroute.length){
+        if (this.routeIndex < this.wayroute.length) {
             let wpToVisit: Waypoint = this.wayroute[this.routeIndex]
             gotoPosition(this.aiPos, wpToVisit.x, wpToVisit.y, wpToVisit.z)
 
@@ -294,7 +358,7 @@ export class GotoPoint implements IAiAction{
                 revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
             }
         }
-        else{
+        else {
             if (isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))) {
                 revmp.stopAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
             }
@@ -304,7 +368,7 @@ export class GotoPoint implements IAiAction{
 }
 
 
-export interface WarnEnemyActionInput{
+export interface WarnEnemyActionInput {
 
     aiId: number,
     enemyId: number,
@@ -339,7 +403,7 @@ export class WarnEnemy implements IAiAction {
     }
 
     public executeAction(): void {
-        if(revmp.valid(this.enemyId)){
+        if (revmp.valid(this.enemyId)) {
 
             const position = revmp.getPosition(this.aiId).position;
             const targetPosition = revmp.getPosition(this.enemyId).position;
@@ -359,12 +423,12 @@ export class WarnEnemy implements IAiAction {
 
 
         }
-        else{
+        else {
             this.shouldLoop = false
         }
     }
 
-    private setEnemy(): void{
+    private setEnemy(): void {
         this.shouldLoop = false
         let enemyComponent: IEnemyComponent = { entityId: this.aiId, enemyId: this.enemyId }
         this.entityManager.setEnemyComponent(this.aiId, enemyComponent)

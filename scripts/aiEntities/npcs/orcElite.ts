@@ -1,7 +1,7 @@
 
 
 import { IActionDescription } from "../iActionDescription";
-import { DefaultMonsterAttackDescription } from "../defaultMonsterAttackDescription";
+import { OnehandMasterAttackDescription } from "../onehandMasterAttackDescription";
 import { IAiAction } from "../iAiAction";
 import { IAiNpc } from "../iAiNpc";
 import { getOrcEliteInstance, INSTANCE_ORC_ELITE} from "./npcInits";
@@ -37,7 +37,7 @@ export class OrcElite implements IAiNpc {
         this.friendIds = [];
         this.respawnTime = 10;
         this.nextActions =  new Array<IAiAction>()
-        this.actionDescriptions = [new DefaultMonsterAttackDescription(this.id)]
+        this.actionDescriptions = [new OnehandMasterAttackDescription(this.id)]
         this.aiFlags = new Map();
 
         this.lastPosUpdate = 0

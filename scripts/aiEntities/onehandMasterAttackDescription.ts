@@ -2,11 +2,11 @@
 import { IActionDescription } from './IActionDescription';
 import { EntityManager } from '../aiStates/entityManager';
 import { getAngleToTarget, getDistance, getPlayerAngle } from "../aiFunctions/aiUtils";
-import { RunForward, SForwardAttackAction, SRunParadeJump, SRunStrafeLeft, SRunStrafeRight, RunToTargetAction, WaitAction, TurnToTargetAction, WarnEnemy, WarnEnemyActionInput} from "../aiFunctions/commonActions";
+import { SLeftAttackAction, SRightAttackAction, SForwardAttackAction, SRunParadeJump, SRunStrafeLeft, SRunStrafeRight, RunToTargetAction, WaitAction, TurnToTargetAction, WarnEnemy, WarnEnemyActionInput } from "../aiFunctions/commonActions";
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
 import { AiState } from '../aiStates/aiState';
 
-export class OrcAttackDescription implements IActionDescription {
+export class OnehandMasterAttackDescription implements IActionDescription {
     entityId: number
     lastAttackTime: number
     attackRange: number
@@ -18,12 +18,12 @@ export class OrcAttackDescription implements IActionDescription {
     }
 
     describeAction(aiState: AiState): void {
-        if(revmp.valid(this.entityId)){
+        if (revmp.valid(this.entityId)) {
             this.describeGeneralRoutine(aiState)
         }
     }
 
-    private describeGeneralRoutine(aiState: AiState): void{
+    private describeGeneralRoutine(aiState: AiState): void {
         let npcActionUtils = new NpcActionUtils(aiState)
         let entityManager = aiState.getEntityManager()
 
@@ -36,16 +36,16 @@ export class OrcAttackDescription implements IActionDescription {
                 this.describeFightAction(entityManager, enemyId, range)
             }
         }
-        else if(actionListSize < 1){
+        else if (actionListSize < 1) {
             //TODO: the world constant should only be fixed in later versions!
             let charId = npcActionUtils.getNearestCharacter(this.entityId, "NEWWORLD\\NEWWORLD.ZEN")
             let range = 99999999
             //TODO: currently only player will get attacked/warned, should implement a proper enemy/friend mapping
-            if (charId !== this.entityId && charId !== -1 && revmp.isPlayer(charId)){
+            if (charId !== this.entityId && charId !== -1 && revmp.isPlayer(charId)) {
                 range = getDistance(this.entityId, charId)
             }
-            if (range < 400){
-                let warnInput:WarnEnemyActionInput = {aiId: this.entityId, enemyId: charId, waitTime: 10000, startTime: Date.now(), warnDistance: 400, attackDistance: 0, entityManager: entityManager}
+            if (range < 400) {
+                let warnInput: WarnEnemyActionInput = { aiId: this.entityId, enemyId: charId, waitTime: 10000, startTime: Date.now(), warnDistance: 400, attackDistance: 0, entityManager: entityManager }
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new WarnEnemy(warnInput))
             }
         }
@@ -66,12 +66,11 @@ export class OrcAttackDescription implements IActionDescription {
         const currentTime = Date.now()
         //this.setWeaponMode(this.entityId)
         if (dangle > -20 && dangle < 20 && currentTime - this.lastAttackTime > 3000) {
-            entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
-            entityManager.getActionsComponent(this.entityId).nextActions.push(new SForwardAttackAction(this.entityId, enemyId, this.attackRange))
+            this.describeAttackAction(entityManager, enemyId, range)
             this.lastAttackTime = currentTime
         }
         else if (range < this.attackRange - 150) {
-            entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 200, Date.now()))
+            entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
             entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunParadeJump(this.entityId))
         }
         else {
@@ -83,11 +82,11 @@ export class OrcAttackDescription implements IActionDescription {
             }
             else if (random <= 3) {
                 if (pangle > 180) {
-                    entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 300, Date.now()))
+                    entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeRight(this.entityId))
                 }
                 else {
-                    entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 300, Date.now()))
+                    entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeLeft(this.entityId))
                 }
             }
@@ -108,15 +107,15 @@ export class OrcAttackDescription implements IActionDescription {
             }
             else if (random <= 9 && dangle > -20 && dangle < 20) {
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 200, Date.now()))
-                if(getAngleToTarget(this.entityId, enemyId)> 180){
+                if (getAngleToTarget(this.entityId, enemyId) > 180) {
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeRight(this.entityId))
                 }
-                else{
+                else {
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeLeft(this.entityId))
                 }
             }
-            else{
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 100, Date.now()))
+            else {
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
             }
         }
     }
@@ -124,11 +123,13 @@ export class OrcAttackDescription implements IActionDescription {
         return id >= 0 && revmp.valid(id) && revmp.isPlayer(id)
     }
 
-    private setWeaponMode(id: number){
-        if(revmp.getCombatState(id).weaponMode !== revmp.WeaponMode.TwoHand){
-            console.log("had to set weapon mode newly")
-            revmp.setCombatState(id, { weaponMode: revmp.WeaponMode.TwoHand})
-        }
+    private describeAttackAction(entityManager: EntityManager, enemyId: number, range: number) {
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 1000, Date.now()))
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new SLeftAttackAction(this.entityId, enemyId, this.attackRange))
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 300, Date.now()))
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new SRightAttackAction(this.entityId, enemyId, this.attackRange))
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 300, Date.now()))
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new SLeftAttackAction(this.entityId, enemyId, this.attackRange))
     }
 
 }

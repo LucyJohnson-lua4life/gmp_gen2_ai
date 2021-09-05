@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrcElite = void 0;
-const defaultMonsterAttackDescription_1 = require("../defaultMonsterAttackDescription");
+const onehandMasterAttackDescription_1 = require("../onehandMasterAttackDescription");
 const npcInits_1 = require("./npcInits");
 const weapons_1 = require("../../serverComponents/weapons");
 class OrcElite {
@@ -14,7 +14,7 @@ class OrcElite {
         this.friendIds = [];
         this.respawnTime = 10;
         this.nextActions = new Array();
-        this.actionDescriptions = [new defaultMonsterAttackDescription_1.DefaultMonsterAttackDescription(this.id)];
+        this.actionDescriptions = [new onehandMasterAttackDescription_1.OnehandMasterAttackDescription(this.id)];
         this.aiFlags = new Map();
         this.lastPosUpdate = 0;
         this.lastPosX = 0;

@@ -54,12 +54,11 @@ class OrcAttackDescription {
         const currentTime = Date.now();
         //this.setWeaponMode(this.entityId)
         if (dangle > -20 && dangle < 20 && currentTime - this.lastAttackTime > 3000) {
-            entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 400, Date.now()));
-            entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SForwardAttackAction(this.entityId, enemyId, this.attackRange));
+            this.describeAttackAction(entityManager, enemyId, range);
             this.lastAttackTime = currentTime;
         }
         else if (range < this.attackRange - 150) {
-            entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 200, Date.now()));
+            entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 400, Date.now()));
             entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SRunParadeJump(this.entityId));
         }
         else {
@@ -71,11 +70,11 @@ class OrcAttackDescription {
             }
             else if (random <= 3) {
                 if (pangle > 180) {
-                    entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 300, Date.now()));
+                    entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 400, Date.now()));
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SRunStrafeRight(this.entityId));
                 }
                 else {
-                    entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 300, Date.now()));
+                    entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 400, Date.now()));
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SRunStrafeLeft(this.entityId));
                 }
             }
@@ -104,18 +103,20 @@ class OrcAttackDescription {
                 }
             }
             else {
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 100, Date.now()));
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 500, Date.now()));
             }
         }
     }
     enemyExists(id) {
         return id >= 0 && revmp.valid(id) && revmp.isPlayer(id);
     }
-    setWeaponMode(id) {
-        if (revmp.getCombatState(id).weaponMode !== revmp.WeaponMode.TwoHand) {
-            console.log("had to set weapon mode newly");
-            revmp.setCombatState(id, { weaponMode: revmp.WeaponMode.TwoHand });
-        }
+    describeAttackAction(entityManager, enemyId, range) {
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 1000, Date.now()));
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SLeftAttackAction(this.entityId, enemyId, this.attackRange));
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 300, Date.now()));
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SRightAttackAction(this.entityId, enemyId, this.attackRange));
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 300, Date.now()));
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SLeftAttackAction(this.entityId, enemyId, this.attackRange));
     }
 }
 exports.OrcAttackDescription = OrcAttackDescription;

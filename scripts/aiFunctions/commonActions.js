@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WarnEnemy = exports.GotoPoint = exports.GotoPosition = exports.SRunParadeJump = exports.SRunStrafeRight = exports.SRunStrafeLeft = exports.RunForward = exports.RunToTargetAction = exports.TurnToTargetAction = exports.WaitAction = exports.SForwardAttackAction = void 0;
+exports.WarnEnemy = exports.GotoPoint = exports.GotoPosition = exports.SRunParadeJump = exports.SRunStrafeRight = exports.SRunStrafeLeft = exports.RunForward = exports.RunToTargetAction = exports.TurnToTargetAction = exports.WaitAction = exports.SRightAttackAction = exports.SLeftAttackAction = exports.SForwardAttackAction = void 0;
 const aiUtils_1 = require("../aiFunctions/aiUtils");
 const positionFunctions_1 = require("../waynet/positionFunctions");
 class SForwardAttackAction {
@@ -14,7 +14,6 @@ class SForwardAttackAction {
         if (revmp.valid(this.victimId)) {
             revmp.startAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_ATTACK"));
             setTimeout(() => {
-                // Attacker could be invalid in the meanwhile, so better check.
                 if (revmp.valid(this.aiId)) {
                     revmp.fadeOutAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_ATTACK"));
                 }
@@ -42,6 +41,52 @@ class SForwardAttackAction {
     }
 }
 exports.SForwardAttackAction = SForwardAttackAction;
+class SLeftAttackAction {
+    constructor(aiId, victimId, necessaryDistance) {
+        this.aiId = aiId;
+        this.shouldLoop = false;
+        this.victimId = victimId;
+        this.necessaryDistance = necessaryDistance;
+    }
+    executeAction() {
+        if (revmp.valid(this.victimId)) {
+            revmp.startAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "T_ATTACKL"));
+            setTimeout(() => {
+                if (revmp.valid(this.aiId)) {
+                    revmp.fadeOutAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "T_ATTACKL"));
+                }
+            }, 900);
+            let dangle = aiUtils_1.getPlayerAngle(this.aiId) - aiUtils_1.getAngleToTarget(this.aiId, this.victimId);
+            if (aiUtils_1.getDistance(this.aiId, this.victimId) < this.necessaryDistance && dangle > -20 && dangle < 20) {
+                revmp.attack(this.aiId, this.victimId);
+            }
+        }
+    }
+}
+exports.SLeftAttackAction = SLeftAttackAction;
+class SRightAttackAction {
+    constructor(aiId, victimId, necessaryDistance) {
+        this.aiId = aiId;
+        this.shouldLoop = false;
+        this.victimId = victimId;
+        this.necessaryDistance = necessaryDistance;
+    }
+    executeAction() {
+        if (revmp.valid(this.victimId)) {
+            revmp.startAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "T_ATTACKR"));
+            setTimeout(() => {
+                if (revmp.valid(this.aiId)) {
+                    revmp.fadeOutAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "T_ATTACKR"));
+                }
+            }, 900);
+            let dangle = aiUtils_1.getPlayerAngle(this.aiId) - aiUtils_1.getAngleToTarget(this.aiId, this.victimId);
+            if (aiUtils_1.getDistance(this.aiId, this.victimId) < this.necessaryDistance && dangle > -20 && dangle < 20) {
+                revmp.attack(this.aiId, this.victimId);
+            }
+        }
+    }
+}
+exports.SRightAttackAction = SRightAttackAction;
 class WaitAction {
     constructor(aiId, waitTime, startTime) {
         this.aiId = aiId;

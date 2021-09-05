@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DefaultMonsterAttackDescription = void 0;
+exports.OnehandMasterAttackDescription = void 0;
 const aiUtils_1 = require("../aiFunctions/aiUtils");
 const commonActions_1 = require("../aiFunctions/commonActions");
 const npcActionUtils_1 = require("../aiFunctions/npcActionUtils");
-class DefaultMonsterAttackDescription {
+class OnehandMasterAttackDescription {
     constructor(id) {
         this.entityId = id;
         this.lastAttackTime = 0;
@@ -52,9 +52,9 @@ class DefaultMonsterAttackDescription {
     describeWhenInRange(entityManager, enemyId, range) {
         let dangle = aiUtils_1.getPlayerAngle(this.entityId) - aiUtils_1.getAngleToTarget(this.entityId, enemyId);
         const currentTime = Date.now();
+        //this.setWeaponMode(this.entityId)
         if (dangle > -20 && dangle < 20 && currentTime - this.lastAttackTime > 3000) {
-            entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 500, Date.now()));
-            entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SForwardAttackAction(this.entityId, enemyId, this.attackRange));
+            this.describeAttackAction(entityManager, enemyId, range);
             this.lastAttackTime = currentTime;
         }
         else if (range < this.attackRange - 150) {
@@ -70,11 +70,11 @@ class DefaultMonsterAttackDescription {
             }
             else if (random <= 3) {
                 if (pangle > 180) {
-                    entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 500, Date.now()));
+                    entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 400, Date.now()));
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SRunStrafeRight(this.entityId));
                 }
                 else {
-                    entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 500, Date.now()));
+                    entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 400, Date.now()));
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SRunStrafeLeft(this.entityId));
                 }
             }
@@ -107,32 +107,16 @@ class DefaultMonsterAttackDescription {
             }
         }
     }
-    /*
-            if(random == 0){
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new TurnToTargetAction(this.entityId, enemyId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new SFistAttackAction(this.entityId, enemyId, 400))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 800, Date.now()))
-            }
-            else if(random == 1){
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunParadeJump(this.entityId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new TurnToTargetAction(this.entityId, enemyId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
-            }
-
-            else if (random == 2) {
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeLeft(this.entityId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new TurnToTargetAction(this.entityId, enemyId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
-            }
-
-            else if (random == 3) {
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeRight(this.entityId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new TurnToTargetAction(this.entityId, enemyId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
-            }
-            */
     enemyExists(id) {
         return id >= 0 && revmp.valid(id) && revmp.isPlayer(id);
     }
+    describeAttackAction(entityManager, enemyId, range) {
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 1000, Date.now()));
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SLeftAttackAction(this.entityId, enemyId, this.attackRange));
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 300, Date.now()));
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SRightAttackAction(this.entityId, enemyId, this.attackRange));
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 300, Date.now()));
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SLeftAttackAction(this.entityId, enemyId, this.attackRange));
+    }
 }
-exports.DefaultMonsterAttackDescription = DefaultMonsterAttackDescription;
+exports.OnehandMasterAttackDescription = OnehandMasterAttackDescription;

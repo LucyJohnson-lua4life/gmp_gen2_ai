@@ -65,12 +65,12 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
         let dangle = getPlayerAngle(this.entityId) - getAngleToTarget(this.entityId, enemyId)
         const currentTime = Date.now()
         if (dangle > -20 && dangle < 20 && currentTime - this.lastAttackTime > 3000) {
-            entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
+            entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
             entityManager.getActionsComponent(this.entityId).nextActions.push(new SForwardAttackAction(this.entityId, enemyId, this.attackRange))
             this.lastAttackTime = currentTime
         }
         else if (range < this.attackRange - 150) {
-            entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 200, Date.now()))
+            entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
             entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunParadeJump(this.entityId))
         }
         else {
@@ -82,11 +82,11 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
             }
             else if (random <= 3) {
                 if (pangle > 180) {
-                    entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 300, Date.now()))
+                    entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeRight(this.entityId))
                 }
                 else {
-                    entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 300, Date.now()))
+                    entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeLeft(this.entityId))
                 }
             }
@@ -115,7 +115,7 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
                 }
             }
             else{
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 100, Date.now()))
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
             }
         }
     }

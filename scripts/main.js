@@ -29,7 +29,7 @@ revmp.on("init", () => {
     initItemInstances()
 
     revmp.setTime(world, { hour: 15, minute: 0 });
-    setInterval(updateLoop.updateAll.bind(updateLoop), 200);
+    setInterval(updateLoop.updateAll.bind(updateLoop), 50);
 
     let testMonster = new orcElite.OrcElite()
     console.log("monster id: " + testMonster.id)
@@ -103,7 +103,7 @@ revmp.on("chatCommand", (entity, msg) => {
         let instance = Instances.warsword
         revmp.addItem(entity, instance, 1);
         revmp.setAttributes(entity, {strength: 100, oneHanded: 100})
-        revmp.setHealth(entity, {current: 1100, max: 1100})
+        revmp.setHealth(entity, {current: 1600, max: 1600})
         revmp.addOverlay(entity, "Humans_1hST2.MDS")
         let attribute = revmp.getAttributes(entity)
         console.log("one handed"+ attribute.oneHanded)
