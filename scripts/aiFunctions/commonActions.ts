@@ -9,7 +9,7 @@ import { IWaynet, Waypoint } from "../waynet/iwaynet";
 import { IEnemyComponent } from "../aiEntities/components/iEnemyComponent";
 import { EntityManager } from "../aiStates/entityManager";
 
-export class SFistAttackAction implements IAiAction {
+export class SForwardAttackAction implements IAiAction {
     aiId: number
     shouldLoop: boolean
     victimId: number
@@ -31,7 +31,7 @@ export class SFistAttackAction implements IAiAction {
         setTimeout(() => {
             // Attacker could be invalid in the meanwhile, so better check.
             if (revmp.valid(this.aiId)) {
-                revmp.fadeOutAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "T_ATTACKR"));
+                revmp.fadeOutAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_ATTACK"));
             }
         }, 900);
 
@@ -54,10 +54,6 @@ export class SFistAttackAction implements IAiAction {
         if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && dangle > -20 && dangle < 20) {
             revmp.attack(this.aiId, this.victimId);
         }
-
-
-
-
         }
     }
 

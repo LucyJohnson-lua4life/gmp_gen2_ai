@@ -6,7 +6,7 @@ import { RunForward, SForwardAttackAction, SRunParadeJump, SRunStrafeLeft, SRunS
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
 import { AiState } from '../aiStates/aiState';
 
-export class DefaultMonsterAttackDescription implements IActionDescription {
+export class OrcAttackDescription implements IActionDescription {
     entityId: number
     lastAttackTime: number
     attackRange: number
@@ -64,6 +64,7 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
     private describeWhenInRange(entityManager: EntityManager, enemyId: number, range: number): void {
         let dangle = getPlayerAngle(this.entityId) - getAngleToTarget(this.entityId, enemyId)
         const currentTime = Date.now()
+        //this.setWeaponMode(this.entityId)
         if (dangle > -20 && dangle < 20 && currentTime - this.lastAttackTime > 3000) {
             entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
             entityManager.getActionsComponent(this.entityId).nextActions.push(new SForwardAttackAction(this.entityId, enemyId, this.attackRange))
@@ -119,33 +120,15 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
             }
         }
     }
-
-    /*
-            if(random == 0){
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new TurnToTargetAction(this.entityId, enemyId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new SFistAttackAction(this.entityId, enemyId, 400))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 800, Date.now()))
-            }
-            else if(random == 1){
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunParadeJump(this.entityId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new TurnToTargetAction(this.entityId, enemyId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
-            }
-
-            else if (random == 2) {
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeLeft(this.entityId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new TurnToTargetAction(this.entityId, enemyId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
-            }
-
-            else if (random == 3) {
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeRight(this.entityId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new TurnToTargetAction(this.entityId, enemyId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
-            }
-            */
-
     private enemyExists(id: number): boolean {
         return id >= 0 && revmp.valid(id) && revmp.isPlayer(id)
     }
+
+    private setWeaponMode(id: number){
+        if(revmp.getCombatState(id).weaponMode !== revmp.WeaponMode.TwoHand){
+            console.log("had to set weapon mode newly")
+            revmp.setCombatState(id, { weaponMode: revmp.WeaponMode.TwoHand})
+        }
+    }
+
 }

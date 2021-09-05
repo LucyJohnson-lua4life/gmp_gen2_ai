@@ -6,6 +6,7 @@ import { IAiAction } from "../iAiAction";
 import { IAiNpc } from "../iAiNpc";
 import { getOrcEliteInstance, INSTANCE_ORC_ELITE} from "./npcInits";
 import { Instances } from "../../serverComponents/weapons";
+
 export class OrcElite implements IAiNpc {
     enemyIds: number[];
     friendIds: number[];

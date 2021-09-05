@@ -66,13 +66,8 @@ function debugCommands(entity, msg) {
 
 revmp.on("attacked", (attacker, target, userEvent) => {
 
-    //todo : liefer aiAction den state mit, und entferne die die aktion selbst, wenn die position erreicht wurde
-    let aiAction = new commonActions.SFistAttackAction(2, target, attacker)
-    let turnAction = new commonActions.TurnToTargetAction(2,target, attacker)
-    let waitAction = new commonActions.WaitAction(1, target, 3000, new Date().getMilliseconds())
     if(typeof em.getEnemyComponent(target) !== 'undefined'){
         em.setEnemyComponent(target, { entityId: target, enemyId: attacker })
-        revmp.setCombatState(target, {weaponMode: revmp.WeaponMode.Fist})
     }
 
 })

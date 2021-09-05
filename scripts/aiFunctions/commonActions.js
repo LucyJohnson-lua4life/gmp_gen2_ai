@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WarnEnemy = exports.GotoPoint = exports.GotoPosition = exports.SRunParadeJump = exports.SRunStrafeRight = exports.SRunStrafeLeft = exports.RunForward = exports.RunToTargetAction = exports.TurnToTargetAction = exports.WaitAction = exports.SFistAttackAction = void 0;
+exports.WarnEnemy = exports.GotoPoint = exports.GotoPosition = exports.SRunParadeJump = exports.SRunStrafeRight = exports.SRunStrafeLeft = exports.RunForward = exports.RunToTargetAction = exports.TurnToTargetAction = exports.WaitAction = exports.SForwardAttackAction = void 0;
 const aiUtils_1 = require("../aiFunctions/aiUtils");
 const positionFunctions_1 = require("../waynet/positionFunctions");
-class SFistAttackAction {
+class SForwardAttackAction {
     constructor(aiId, victimId, necessaryDistance) {
         this.aiId = aiId;
         this.shouldLoop = false;
@@ -16,7 +16,7 @@ class SFistAttackAction {
             setTimeout(() => {
                 // Attacker could be invalid in the meanwhile, so better check.
                 if (revmp.valid(this.aiId)) {
-                    revmp.fadeOutAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "T_ATTACKR"));
+                    revmp.fadeOutAnimation(this.aiId, aiUtils_1.getCombatStateBasedAni(this.aiId, "S_ATTACK"));
                 }
             }, 900);
             /*
@@ -41,7 +41,7 @@ class SFistAttackAction {
         }
     }
 }
-exports.SFistAttackAction = SFistAttackAction;
+exports.SForwardAttackAction = SForwardAttackAction;
 class WaitAction {
     constructor(aiId, waitTime, startTime) {
         this.aiId = aiId;
