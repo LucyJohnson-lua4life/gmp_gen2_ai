@@ -38,6 +38,9 @@ class DefaultMonsterAttackDescription {
                 let warnInput = { aiId: this.entityId, enemyId: charId, waitTime: 10000, startTime: Date.now(), warnDistance: 400, attackDistance: 0, entityManager: entityManager };
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WarnEnemy(warnInput));
             }
+            else {
+                this.describeEatRoutine(entityManager);
+            }
         }
     }
     describeFightAction(entityManager, enemyId, range) {
@@ -107,32 +110,13 @@ class DefaultMonsterAttackDescription {
             }
         }
     }
-    /*
-            if(random == 0){
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new TurnToTargetAction(this.entityId, enemyId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new SFistAttackAction(this.entityId, enemyId, 400))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 800, Date.now()))
-            }
-            else if(random == 1){
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunParadeJump(this.entityId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new TurnToTargetAction(this.entityId, enemyId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
-            }
-
-            else if (random == 2) {
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeLeft(this.entityId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new TurnToTargetAction(this.entityId, enemyId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
-            }
-
-            else if (random == 3) {
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeRight(this.entityId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new TurnToTargetAction(this.entityId, enemyId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
-            }
-            */
     enemyExists(id) {
         return id >= 0 && revmp.valid(id) && revmp.isPlayer(id);
+    }
+    describeEatRoutine(entityManager) {
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 5000, Date.now()));
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.PlayAnimationForDuration(this.entityId, "S_EAT", 3000));
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.PlayAnimationForDuration(this.entityId, "T_STAND_2_EAT", 3000));
     }
 }
 exports.DefaultMonsterAttackDescription = DefaultMonsterAttackDescription;

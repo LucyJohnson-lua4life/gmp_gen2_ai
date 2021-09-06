@@ -5,7 +5,6 @@ import { AiState } from "./aiState";
 export class AiStateFunctions{
     private aiState:AiState
 
-
     constructor(aiState: AiState) {
         this.aiState = aiState
     }

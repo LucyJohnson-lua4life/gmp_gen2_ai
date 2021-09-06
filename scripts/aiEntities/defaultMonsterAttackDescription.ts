@@ -2,7 +2,7 @@
 import { IActionDescription } from './IActionDescription';
 import { EntityManager } from '../aiStates/entityManager';
 import { getAngleToTarget, getDistance, getPlayerAngle } from "../aiFunctions/aiUtils";
-import { RunForward, SForwardAttackAction, SRunParadeJump, SRunStrafeLeft, SRunStrafeRight, RunToTargetAction, WaitAction, TurnToTargetAction, WarnEnemy, WarnEnemyActionInput} from "../aiFunctions/commonActions";
+import { PlayAnimationForDuration, RunForward, SForwardAttackAction, SRunParadeJump, SRunStrafeLeft, SRunStrafeRight, RunToTargetAction, WaitAction, TurnToTargetAction, WarnEnemy, WarnEnemyActionInput} from "../aiFunctions/commonActions";
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
 import { AiState } from '../aiStates/aiState';
 
@@ -47,6 +47,9 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
             if (range < 400){
                 let warnInput:WarnEnemyActionInput = {aiId: this.entityId, enemyId: charId, waitTime: 10000, startTime: Date.now(), warnDistance: 400, attackDistance: 0, entityManager: entityManager}
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new WarnEnemy(warnInput))
+            }
+            else {
+                this.describeEatRoutine(entityManager)
             }
         }
     }
@@ -120,32 +123,15 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
         }
     }
 
-    /*
-            if(random == 0){
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new TurnToTargetAction(this.entityId, enemyId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new SFistAttackAction(this.entityId, enemyId, 400))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 800, Date.now()))
-            }
-            else if(random == 1){
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunParadeJump(this.entityId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new TurnToTargetAction(this.entityId, enemyId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
-            }
-
-            else if (random == 2) {
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeLeft(this.entityId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new TurnToTargetAction(this.entityId, enemyId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
-            }
-
-            else if (random == 3) {
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeRight(this.entityId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new TurnToTargetAction(this.entityId, enemyId))
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
-            }
-            */
-
     private enemyExists(id: number): boolean {
         return id >= 0 && revmp.valid(id) && revmp.isPlayer(id)
+    }
+
+    private describeEatRoutine(entityManager: EntityManager):void{
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 5000, Date.now()))
+
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new PlayAnimationForDuration(this.entityId, "S_EAT", 3000))
+
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new PlayAnimationForDuration(this.entityId, "T_STAND_2_EAT", 3000))
     }
 }

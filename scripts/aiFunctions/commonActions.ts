@@ -434,3 +434,31 @@ export class WarnEnemy implements IAiAction {
         this.entityManager.setEnemyComponent(this.aiId, enemyComponent)
     }
 }
+
+export class PlayAnimationForDuration implements IAiAction {
+    aiId: number
+    shouldLoop: boolean
+    duration:number
+    animationName:string
+    startTime: number
+
+
+    constructor(aiId: number, animationName:string, duration:number) {
+        this.aiId = aiId
+        this.shouldLoop = true
+        this.duration = duration
+        this.animationName = animationName
+        this.startTime = Date.now()
+    }
+
+    public executeAction(): void {
+        if (!isAniPlaying(this.aiId, this.animationName)) {
+            revmp.startAnimation(this.aiId, this.animationName)
+        }
+        if(Date.now() > this.startTime + this.duration){
+            revmp.stopAnimation(this.aiId, this.animationName)
+            this.shouldLoop = false
+        }
+    }
+}
+

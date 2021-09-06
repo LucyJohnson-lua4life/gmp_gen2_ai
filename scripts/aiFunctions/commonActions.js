@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WarnEnemy = exports.GotoPoint = exports.GotoPosition = exports.SRunParadeJump = exports.SRunStrafeRight = exports.SRunStrafeLeft = exports.RunForward = exports.RunToTargetAction = exports.TurnToTargetAction = exports.WaitAction = exports.SRightAttackAction = exports.SLeftAttackAction = exports.SForwardAttackAction = void 0;
+exports.PlayAnimationForDuration = exports.WarnEnemy = exports.GotoPoint = exports.GotoPosition = exports.SRunParadeJump = exports.SRunStrafeRight = exports.SRunStrafeLeft = exports.RunForward = exports.RunToTargetAction = exports.TurnToTargetAction = exports.WaitAction = exports.SRightAttackAction = exports.SLeftAttackAction = exports.SForwardAttackAction = void 0;
 const aiUtils_1 = require("../aiFunctions/aiUtils");
 const positionFunctions_1 = require("../waynet/positionFunctions");
 class SForwardAttackAction {
@@ -305,3 +305,22 @@ class WarnEnemy {
     }
 }
 exports.WarnEnemy = WarnEnemy;
+class PlayAnimationForDuration {
+    constructor(aiId, animationName, duration) {
+        this.aiId = aiId;
+        this.shouldLoop = true;
+        this.duration = duration;
+        this.animationName = animationName;
+        this.startTime = Date.now();
+    }
+    executeAction() {
+        if (!aiUtils_1.isAniPlaying(this.aiId, this.animationName)) {
+            revmp.startAnimation(this.aiId, this.animationName);
+        }
+        if (Date.now() > this.startTime + this.duration) {
+            revmp.stopAnimation(this.aiId, this.animationName);
+            this.shouldLoop = false;
+        }
+    }
+}
+exports.PlayAnimationForDuration = PlayAnimationForDuration;
