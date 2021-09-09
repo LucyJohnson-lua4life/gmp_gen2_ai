@@ -1,21 +1,21 @@
 "use strict";
 
-const wolf = require("./aiEntities/npcs/wolf");
-const npcInitializer = require("./initNewWorldNpcs");
-const scavenger = require("./aiEntities/npcs/scavenger");
-const orcElite = require("./aiEntities/npcs/orcElite");
-const orcWarrior = require("./aiEntities/npcs/orcWarrior");
-const undeadOrc = require("./aiEntities/npcs/undeadOrc");
-const funs = require("./aiStates/aiStateFunctions");
-const aiState = require("./aiStates/aiState");
-const aiUpdateLoop = require("./aiStates/aiUpdateLoop");
-const {Instances, initItemInstances} = require("./serverComponents/weapons");
-const damageCalculation = require("./serverComponents/damageCalculation");
-const {setAngle, getAngle, getAngleDistance, getPlayerAngle} = require("./aiFunctions/aiUtils");
+const wolf = require("./scripts/aiEntities/npcs/wolf");
+const npcInitializer = require("./scripts/initNewWorldNpcs");
+const scavenger = require("./scripts/aiEntities/npcs/scavenger");
+const orcElite = require("./scripts/aiEntities/npcs/orcElite");
+const orcWarrior = require("./scripts/aiEntities/npcs/orcWarrior");
+const undeadOrc = require("./scripts/aiEntities/npcs/undeadOrc");
+const funs = require("./scripts/aiStates/aiStateFunctions");
+const aiState = require("./scripts/aiStates/aiState");
+const aiUpdateLoop = require("./scripts/aiStates/aiUpdateLoop");
+const {Instances, initItemInstances} = require("./scripts/serverComponents/weapons");
+const damageCalculation = require("./scripts/serverComponents/damageCalculation");
+const {setAngle, getAngle, getAngleDistance, getPlayerAngle} = require("./scripts/aiFunctions/aiUtils");
 //const ai = require("./scripts/aiStates/aiUpdateLoop");
-const commonActions = require("./aiFunctions/commonActions");
-const posFuncs = require("./waynet/positionFunctions");
-let state = new aiState.AiState('./newworld.wp', './newworld.fp')
+const commonActions = require("./scripts/aiFunctions/commonActions");
+const posFuncs = require("./scripts/waynet/positionFunctions");
+let state = new aiState.AiState('./scripts/newworld.wp', './scripts/newworld.fp')
 let em = state.getEntityManager();
 let updateLoop = new aiUpdateLoop.AiUpdateLoop(state);
 let aiStateFunctions = new funs.AiStateFunctions(state)
@@ -63,16 +63,13 @@ function debugCommands(entity, msg) {
         em.setPositionsComponent(npcid, positionComponent)
         let aiAction = new commonActions.GotoPoint(npcid, state, "FP_STAND_CITY_ANDRE")
         em.getActionsComponent(npcid).nextActions.push(aiAction)
-
     }
 }
 
 revmp.on("attacked", (attacker, target, userEvent) => {
-
     if(typeof em.getEnemyComponent(target) !== 'undefined'){
         em.setEnemyComponent(target, { entityId: target, enemyId: attacker })
     }
-
 })
 
 revmp.on("chatCommand", (entity, msg) => {
@@ -142,6 +139,5 @@ revmp.on("chatCommand", (entity, msg) => {
         let focusid = revmp.getFocus(entity).focus
         setInterval(()=>{
             revmp.startAnimation(focusid, "T_WARN")}, 200);
-
     }
 });

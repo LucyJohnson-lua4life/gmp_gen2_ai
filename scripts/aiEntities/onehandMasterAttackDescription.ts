@@ -2,7 +2,10 @@
 import { IActionDescription } from './IActionDescription';
 import { EntityManager } from '../aiStates/entityManager';
 import { getAngleToTarget, getDistance, getPlayerAngle } from "../aiFunctions/aiUtils";
-import { SLeftAttackAction, SRightAttackAction, SForwardAttackAction, SRunParadeJump, SRunStrafeLeft, SRunStrafeRight, RunToTargetAction, WaitAction, TurnToTargetAction, WarnEnemy, WarnEnemyActionInput } from "../aiFunctions/commonActions";
+import { SLeftAttackAction, SRightAttackAction, SForwardAttackAction,
+         SRunParadeJump, SRunStrafeLeft, SRunStrafeRight,
+         RunToTargetAction, WaitAction, TurnToTargetAction,
+         WarnEnemy, WarnEnemyActionInput } from "../aiFunctions/commonActions";
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
 import { AiState } from '../aiStates/aiState';
 

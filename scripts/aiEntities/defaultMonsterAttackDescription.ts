@@ -2,7 +2,10 @@
 import { IActionDescription } from './IActionDescription';
 import { EntityManager } from '../aiStates/entityManager';
 import { getAngleToTarget, getDistance, getPlayerAngle } from "../aiFunctions/aiUtils";
-import { PlayAnimationForDuration, RunForward, SForwardAttackAction, SRunParadeJump, SRunStrafeLeft, SRunStrafeRight, RunToTargetAction, WaitAction, TurnToTargetAction, WarnEnemy, WarnEnemyActionInput} from "../aiFunctions/commonActions";
+import { PlayAnimationForDuration, RunForward, SForwardAttackAction,
+         SRunParadeJump, SRunStrafeLeft, SRunStrafeRight,
+         RunToTargetAction, WaitAction, TurnToTargetAction,
+         WarnEnemy, WarnEnemyActionInput} from "../aiFunctions/commonActions";
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
 import { AiState } from '../aiStates/aiState';
 
@@ -28,6 +31,7 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
         let entityManager = aiState.getEntityManager()
 
         let enemyId = entityManager.getEnemyComponent(this.entityId).enemyId
+
 
         let actionListSize = entityManager.getActionsComponent(this.entityId).nextActions.length
         if (this.enemyExists(enemyId)) {
@@ -129,9 +133,7 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
 
     private describeEatRoutine(entityManager: EntityManager):void{
         entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 5000, Date.now()))
-
         entityManager.getActionsComponent(this.entityId).nextActions.push(new PlayAnimationForDuration(this.entityId, "S_EAT", 3000))
-
         entityManager.getActionsComponent(this.entityId).nextActions.push(new PlayAnimationForDuration(this.entityId, "T_STAND_2_EAT", 3000))
     }
 }

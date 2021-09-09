@@ -1,3 +1,4 @@
+// Revmp server 0.11.0
 declare namespace revmp {
     type Entity = number;
 
@@ -259,16 +260,14 @@ declare namespace revmp {
 
     export interface WorldTemplate {
         zen: string;
-        startpoint?: string;
+        startpoint?: string; // If empty position will be [0, 0, 0].
         name?: string;
         time?: { hour?: number, minute?: number };
     }
 
     /**
      * Creates a world entity.
-     * @param zen 
-     * @param waypoint If empty position will be [0, 0, 0].
-     * @param name 
+     * @param template 
      * @returns The created entity.
      * @throws Will throw if instance contains, instance is not a WorldInstance or instance doesn't exists.
      */
@@ -309,7 +308,7 @@ declare namespace revmp {
             fly?: number;
             magic?: number;
             fall?: number;
-            range?: number;
+            range: number;
         };
         protection?: {
             blunt?: number;
@@ -337,7 +336,7 @@ declare namespace revmp {
     export function createBot(template: BotTemplate): Entity
 
     export interface VobTemplate {
-        world?: Entity;
+        world?: Entity; // Defaults to revmp.defaultWorld
         visual: string;
         name?: string;
         position?: Vec3;
@@ -348,7 +347,6 @@ declare namespace revmp {
     /**
      * Creates a vob entity.
      * @param template
-     * @param world World entity or revmp.defaultWorld
      * @returns The created entity.
      * @throws Will throw if instance contains, instance is not a CharacterInstance or instance doesn't exists.
      */
@@ -513,10 +511,40 @@ declare namespace revmp {
     ///////////////////////////////////
 
     /**
+     * Sends a user defined event to the client.
+     * @param event 
+     * @throws Will throw if event is a revmp built in event.
+     */
+    export function send(entity: Entity, event: string, ...args: unknown[]): void
+
+    /**
+     * Receives user defined event from the client.
+     * CAUTION: Client side scripts could be manipulated.
+     * @param event 
+     * @throws Will throw if event is a revmp built in event.
+     */
+    export function receive(event: string, callback: (entity: Entity, ...args: unknown[]) => void): void
+
+    /**
+     * Emits user defined event.
+     * @param event 
+     * @throws Will throw if event is a revmp built in event.
+     */
+    export function emit(event: string, ...args: unknown[]): void
+
+    /**
+     * Adds callback to an user defined event.
+     * @param event 
+     * @param callback 
+     * @returns Function to remove listener.
+     */
+    export function on(event: string, callback: (...args: unknown[]) => void): () => void
+
+    /**
      * Adds callback to global event listener.
      * @param event 
      * @param callback 
-     * @returns  Function to remove listener.
+     * @returns Function to remove listener.
      */
     export function on(event: "init", callback: () => void): () => void
 
@@ -828,7 +856,7 @@ declare namespace revmp {
         unconscious: boolean;
     }
 
-    export function setCombatState(entity: Entity, combatState: { weaponMode?: WeaponMode,  unconscious?: boolean }): void
+    export function setCombatState(entity: Entity, combatState: { weaponMode?: WeaponMode, unconscious?: boolean }): void
 
     export function getCombatState(entity: Entity): CombatState
 
@@ -886,7 +914,16 @@ declare namespace revmp {
         range: number;
     }
 
-    export function setMeleeAttack(entity: Entity, meleeAttack: MeleeAttack): void
+    export function setMeleeAttack(entity: Entity, meleeAttack: {
+        blunt?: number,
+        edge?: number,
+        point?: number,
+        fire?: number,
+        fly?: number,
+        magic?: number,
+        fall?: number,
+        range?: number
+    }): void
 
     export function getMeleeAttack(entity: Entity): MeleeAttack
 
@@ -904,7 +941,16 @@ declare namespace revmp {
         munition: Entity;
     }
 
-    export function setRangedAttack(entity: Entity, rangedAttack: RangedAttack): void
+    export function setRangedAttack(entity: Entity, rangedAttack: {
+        blunt?: number,
+        edge?: number,
+        point?: number,
+        fire?: number,
+        fly?: number,
+        magic?: number,
+        fall?: number,
+        munition?: Entity
+    }): void
 
     export function getRangedAttack(entity: Entity): RangedAttack
 
@@ -921,7 +967,15 @@ declare namespace revmp {
         fall: number;
     }
     
-    export function setProtection(entity: Entity, protection: Protection): void
+    export function setProtection(entity: Entity, protection: {
+        blunt: number,
+        edge: number,
+        point: number,
+        fire: number,
+        fly: number,
+        magic: number,
+        fall: number
+    }): void
 
     export function getProtection(entity: Entity): Protection
 
@@ -947,10 +1001,10 @@ declare namespace revmp {
     }
 
     export function setRigidBody(entity: Entity, rigidBody: {
-        staticCollision?: boolean;
-        dynamicCollision?: boolean;
-        physics?: boolean;
-        gravity?: boolean;
+        staticCollision?: boolean,
+        dynamicCollision?: boolean,
+        physics?: boolean,
+        gravity?: boolean
     }): void
 
     export function getRigidBody(entity: Entity): Guild
@@ -1069,7 +1123,7 @@ declare namespace revmp {
 
     export interface VisualBody {
         bodyMesh: string;
-         bodyTexture: number;
+        bodyTexture: number;
         skinColor: number;
         headMesh: string;
         headTexture: number;
@@ -1077,7 +1131,15 @@ declare namespace revmp {
         bodyMass: number;
     }
 
-    export function setVisualBody(entity: Entity, visualBody: VisualBody): void
+    export function setVisualBody(entity: Entity, visualBody: {
+        bodyMesh?: string,
+        bodyTexture?: number,
+        skinColor?: number,
+        headMesh?: string,
+        headTexture?: number,
+        teethTexture?: number,
+        bodyMass?: number
+    }): void
 
     export function getVisualBody(entity: Entity): VisualBody
 
@@ -1251,9 +1313,14 @@ declare namespace revmp {
     export const nullEntity: Entity;
 
     /**
-     * Revmp version.
+     * Revmp server version.
      */
     export const version: string;
+
+    /**
+     * Revmp client version.
+     */
+    export const clientVersion: string;
 
     /**
      * Delta time in seconds between last and current tick.
@@ -1274,6 +1341,11 @@ declare namespace revmp {
      * Max allowed players.
      */
     export const maxPlayers: number;
+
+    /**
+     * Log level. Possible values: "trace", "debug", "info", "warn", "error", "critical", "off".
+     */
+    export let logLevel: string;
 
     /**
      * Range in which entities are streamend to the players.
@@ -1307,5 +1379,7 @@ declare namespace revmp {
     export const bots: Entity[];
     export const worlds: Entity[];
     export const items: Entity[];
+    export const vobs: Entity[];
+    export const mobs: Entity[];
     export const itemInstances: Entity[];
 }
