@@ -1,6 +1,7 @@
 
 import { quat, vec3 } from "gl-matrix";
 import * as THREE from 'three';
+import { Waypoint } from "../waynet/iwaynet";
 // https://stackoverflow.com/a/9614122/10637905
 /**
  * Returns the angle from two points. Or in relationship with npc's it describes the angle the npc1 needs to look to npc2.
@@ -45,6 +46,16 @@ export function getDistance(entityId1: number, entityId2: number) {
     const position1 = revmp.getPosition(entityId1).position;
     const position2 = revmp.getPosition(entityId2).position;
     return vec3.distance(position1, position2);
+}
+
+/**
+   Returns the distance between a character and a waypoint/freepoint
+ * @param entityId id of the first npc
+ * @param point waypoint/freepoint
+ */
+export function getDistanceToPoint(entityId: number, point:revmp.Vec3) {
+    const characterPosition = revmp.getPosition(entityId).position;
+    return vec3.distance(point,characterPosition);
 }
 
 /**

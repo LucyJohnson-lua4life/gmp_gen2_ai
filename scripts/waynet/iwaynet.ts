@@ -25,6 +25,7 @@ export interface Freepoint {
 
 /**
  * Represents a node in the waynet. To find a path from point A to point B. 
+ //TODO: think about summarizing x,y,z to an array, since you already alway work with all 3 values for passing a parameter e.g
  */
 export interface Waypoint {
     wpName: string,

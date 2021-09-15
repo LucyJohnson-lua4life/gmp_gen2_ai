@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isAttackable = exports.getCombatStateBasedAni = exports.setPlayerAngle = exports.isAniPlaying = exports.getPlayerAngle = exports.getDistance = exports.getAngleToTarget = exports.getAngleToPoint = void 0;
+exports.isAttackable = exports.getCombatStateBasedAni = exports.setPlayerAngle = exports.isAniPlaying = exports.getPlayerAngle = exports.getDistanceToPoint = exports.getDistance = exports.getAngleToTarget = exports.getAngleToPoint = void 0;
 const gl_matrix_1 = require("gl-matrix");
 const THREE = require("three");
 // https://stackoverflow.com/a/9614122/10637905
@@ -48,6 +48,16 @@ function getDistance(entityId1, entityId2) {
     return gl_matrix_1.vec3.distance(position1, position2);
 }
 exports.getDistance = getDistance;
+/**
+   Returns the distance between a character and a waypoint/freepoint
+ * @param entityId id of the first npc
+ * @param point waypoint/freepoint
+ */
+function getDistanceToPoint(entityId, point) {
+    const characterPosition = revmp.getPosition(entityId).position;
+    return gl_matrix_1.vec3.distance(point, characterPosition);
+}
+exports.getDistanceToPoint = getDistanceToPoint;
 /**
  * Get angle of the given entityId
  * @param entityId id of the entity for which the angle should be calculated.

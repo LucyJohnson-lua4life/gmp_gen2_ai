@@ -2,7 +2,7 @@
 
 
 import { IActionDescription } from "../iActionDescription";
-import { TwohandMasterAttackDescription } from "../TwohandMasterAttackDescription";
+import { TwohandMasterAttackDescription } from "../twohandMasterAttackDescription";
 import { IAiAction } from "../iAiAction";
 import { IAiNpc } from "../iAiNpc";
 import { getUndeadOrcInstance, INSTANCE_ORC_UNDEAD} from "./npcInits";

@@ -35,6 +35,7 @@ class NpcActionUtils {
     /**
      * Returns nearest character id to given character or -1 if none exist.
      * @param npcId get id of character that is closest to the given character id
+     //TODO: world should be replaced with a world id
      */
     getNearestCharacter(characterId, world) {
         let worldPositionMap = this.aiState.getCharacterInPositionAreas().get(world);

@@ -23,7 +23,7 @@ class DefaultMonsterAttackDescription {
         if (this.enemyExists(enemyId)) {
             let range = aiUtils_1.getDistance(this.entityId, enemyId);
             if (range < 800 && actionListSize < 5) {
-                this.describeFightAction(entityManager, enemyId, range);
+                this.describeFightAction(aiState, enemyId, range);
             }
         }
         else if (actionListSize < 1) {
@@ -39,13 +39,34 @@ class DefaultMonsterAttackDescription {
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WarnEnemy(warnInput));
             }
             else {
+                this.gotoStartPointOnDistance(aiState, 400);
                 this.describeEatRoutine(entityManager);
             }
         }
     }
-    describeFightAction(entityManager, enemyId, range) {
-        if (range > 300) {
+    gotoStartPointOnDistance(aiState, distance) {
+        const entityManager = aiState.getEntityManager();
+        const startPoint = entityManager.getPositionsComponents(this.entityId).startPoint;
+        const startWayPoint = aiState.getWaynet().waypoints.get(startPoint);
+        let pointVec;
+        if (typeof startWayPoint === 'undefined') {
+            const startFreepoint = aiState.getWaynet().freepoints.find(fp => fp.fpName === startPoint);
+            pointVec = [startFreepoint.x, startFreepoint.y, startFreepoint.z];
+        }
+        else {
+            pointVec = [startWayPoint.x, startWayPoint.y, startWayPoint.z];
+        }
+        if (aiUtils_1.getDistanceToPoint(this.entityId, pointVec) > distance) {
+            entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.GotoPoint(this.entityId, aiState, startPoint));
+        }
+    }
+    describeFightAction(aiState, enemyId, range) {
+        let entityManager = aiState.getEntityManager();
+        if (range > 100) {
             entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.RunToTargetAction(this.entityId, enemyId, 300));
+        }
+        else if (range > 200) {
+            entityManager.setEnemyComponent(this.entityId, { entityId: this.entityId, enemyId: undefined });
         }
         else {
             this.describeWhenInRange(entityManager, enemyId, range);

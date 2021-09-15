@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UndeadOrc = void 0;
-const TwohandMasterAttackDescription_1 = require("../TwohandMasterAttackDescription");
+const twohandMasterAttackDescription_1 = require("../twohandMasterAttackDescription");
 const npcInits_1 = require("./npcInits");
 const weapons_1 = require("../../serverComponents/weapons");
 class UndeadOrc {
@@ -14,7 +14,7 @@ class UndeadOrc {
         this.friendIds = [];
         this.respawnTime = 10;
         this.nextActions = new Array();
-        this.actionDescriptions = [new TwohandMasterAttackDescription_1.TwohandMasterAttackDescription(this.id)];
+        this.actionDescriptions = [new twohandMasterAttackDescription_1.TwohandMasterAttackDescription(this.id)];
         this.aiFlags = new Map();
         this.lastPosUpdate = 0;
         this.lastPosX = 0;

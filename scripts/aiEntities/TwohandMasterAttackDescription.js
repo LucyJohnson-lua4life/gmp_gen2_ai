@@ -36,6 +36,7 @@ class TwohandMasterAttackDescription {
             }
             if (range < 400) {
                 let warnInput = { aiId: this.entityId, enemyId: charId, waitTime: 10000, startTime: Date.now(), warnDistance: 400, attackDistance: 0, entityManager: entityManager };
+                //revmp.startAnimation(this.entityId, "T_RUN_2_2H")
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WarnEnemy(warnInput));
                 revmp.drawMeleeWeapon(this.entityId);
             }
