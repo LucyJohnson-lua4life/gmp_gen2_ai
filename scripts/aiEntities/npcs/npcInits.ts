@@ -236,7 +236,6 @@ export function getUndeadOrcInstance() {
             fire: 100,
             fly: 100,
         },
-        weaponMode: revmp.WeaponMode.TwoHand
     }
 
 }

@@ -11,7 +11,7 @@ import {
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
 import { AiState } from '../aiStates/aiState';
 
-export class OnehandMasterAttackDescription implements IActionDescription {
+export class TwohandMasterAttackDescription implements IActionDescription {
     entityId: number
     lastAttackTime: number
     attackRange: number
@@ -52,6 +52,7 @@ export class OnehandMasterAttackDescription implements IActionDescription {
             if (range < 400) {
                 let warnInput: WarnEnemyActionInput = { aiId: this.entityId, enemyId: charId, waitTime: 10000, startTime: Date.now(), warnDistance: 400, attackDistance: 0, entityManager: entityManager }
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new WarnEnemy(warnInput))
+                revmp.drawMeleeWeapon(this.entityId)
             }
         }
     }
