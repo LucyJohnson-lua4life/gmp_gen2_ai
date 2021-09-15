@@ -81,7 +81,7 @@ class DefaultMonsterAttackDescription {
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SRunStrafeLeft(this.entityId));
                 }
             }
-            else if (random <= 5) {
+            else if (random <= 4) {
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 300, Date.now()));
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SRunParadeJump(this.entityId));
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 500, Date.now()));
@@ -114,9 +114,9 @@ class DefaultMonsterAttackDescription {
         return id >= 0 && revmp.valid(id) && revmp.isPlayer(id);
     }
     describeEatRoutine(entityManager) {
-        entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 5000, Date.now()));
-        entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.PlayAnimationForDuration(this.entityId, "S_EAT", 3000));
-        entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.PlayAnimationForDuration(this.entityId, "T_STAND_2_EAT", 3000));
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 2000, Date.now()));
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.PlayAnimationForDuration(this.entityId, "S_EAT", 2000));
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.PlayAnimationForDuration(this.entityId, "T_STAND_2_EAT", 2000));
     }
 }
 exports.DefaultMonsterAttackDescription = DefaultMonsterAttackDescription;

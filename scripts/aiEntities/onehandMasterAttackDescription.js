@@ -61,6 +61,10 @@ class OnehandMasterAttackDescription {
             entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 400, Date.now()));
             entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SRunParadeJump(this.entityId));
         }
+        else if (range < this.attackRange - 150) {
+            entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 400, Date.now()));
+            entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SRunParadeJump(this.entityId));
+        }
         else {
             let random = Math.floor(Math.random() * 10);
             let pangle = aiUtils_1.getAngleToTarget(this.entityId, enemyId);
@@ -70,15 +74,15 @@ class OnehandMasterAttackDescription {
             }
             else if (random <= 3) {
                 if (pangle > 180) {
-                    entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 400, Date.now()));
+                    entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 500, Date.now()));
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SRunStrafeRight(this.entityId));
                 }
                 else {
-                    entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 400, Date.now()));
+                    entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 500, Date.now()));
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SRunStrafeLeft(this.entityId));
                 }
             }
-            else if (random <= 5) {
+            else if (random <= 4) {
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 300, Date.now()));
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.SRunParadeJump(this.entityId));
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new commonActions_1.WaitAction(this.entityId, 500, Date.now()));

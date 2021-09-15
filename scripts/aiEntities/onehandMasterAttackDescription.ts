@@ -76,6 +76,10 @@ export class OnehandMasterAttackDescription implements IActionDescription {
             entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
             entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunParadeJump(this.entityId))
         }
+        else if (range < this.attackRange - 150) {
+            entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
+            entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunParadeJump(this.entityId))
+        }
         else {
             let random = Math.floor(Math.random() * 10);
             let pangle = getAngleToTarget(this.entityId, enemyId)
@@ -85,15 +89,15 @@ export class OnehandMasterAttackDescription implements IActionDescription {
             }
             else if (random <= 3) {
                 if (pangle > 180) {
-                    entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
+                    entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeRight(this.entityId))
                 }
                 else {
-                    entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
+                    entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeLeft(this.entityId))
                 }
             }
-            else if (random <= 5) {
+            else if (random <= 4) {
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 300, Date.now()))
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunParadeJump(this.entityId))
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
@@ -110,14 +114,14 @@ export class OnehandMasterAttackDescription implements IActionDescription {
             }
             else if (random <= 9 && dangle > -20 && dangle < 20) {
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 200, Date.now()))
-                if (getAngleToTarget(this.entityId, enemyId) > 180) {
+                if(getAngleToTarget(this.entityId, enemyId)> 180){
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeRight(this.entityId))
                 }
-                else {
+                else{
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeLeft(this.entityId))
                 }
             }
-            else {
+            else{
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
             }
         }
