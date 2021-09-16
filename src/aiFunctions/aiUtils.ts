@@ -74,9 +74,6 @@ export function getPlayerAngle(entityId: number) {
     else if (euler.x < 0 && euler.y < 0) {
         angle = 180 + (-1 * angle)
     }
-    else if (euler.x >= 0 && euler.y > 0) {
-        angle = angle
-    }
     else if (euler.x < 0 && euler.y > 0) {
         angle = 180 - angle
     }

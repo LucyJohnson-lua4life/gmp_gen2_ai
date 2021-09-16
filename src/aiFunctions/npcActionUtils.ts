@@ -63,7 +63,7 @@ export class NpcActionUtils {
         return nearestChar
     }
     private getDistance(x1, y1, z1, x2, y2, z2): number {
-        if ([x1, y1, z1, , x2, y2, z2].some((val) => (typeof val === 'undefined'))) {
+        if ([x1, y1, z1, x2, y2, z2].some((val) => (typeof val === 'undefined'))) {
             return 99999
         }
         const x = x1 - x2

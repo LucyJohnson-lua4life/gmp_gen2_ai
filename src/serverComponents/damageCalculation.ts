@@ -30,7 +30,7 @@ function getDrawnWeaponDamage(entity: revmp.Entity, target: revmp.Entity): numbe
             const random = Math.floor(Math.random() * 100);
             if (random < attributes.oneHanded) {
                 return strength + totalDamage;
-
+            } else {
                 return Math.floor((strength + totalDamage - 1) / 10);
             }
         }

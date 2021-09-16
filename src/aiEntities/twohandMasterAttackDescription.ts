@@ -82,10 +82,6 @@ export class TwohandMasterAttackDescription implements IActionDescription {
             entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
             entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunParadeJump(this.entityId))
         }
-        else if (range < this.attackRange - 150) {
-            entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
-            entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunParadeJump(this.entityId))
-        }
         else {
             const random = Math.floor(Math.random() * 10);
             const pangle = getAngleToTarget(this.entityId, enemyId)

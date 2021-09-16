@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const wolf = require("./dist/aiEntities/npcs/wolf");
 const npcInitializer = require("./dist/initNewWorldNpcs");
 const scavenger = require("./dist/aiEntities/npcs/scavenger");
