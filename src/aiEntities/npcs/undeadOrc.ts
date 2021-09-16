@@ -31,7 +31,7 @@ export class UndeadOrc implements IAiNpc {
 
 
     constructor() {
-        this.id = revmp.createBot(getUndeadOrcInstance());;
+        this.id = revmp.createBot(getUndeadOrcInstance());
         this.isDead = false;
         this.isUnconscious = false;
         this.enemyIds = [];

@@ -118,7 +118,7 @@ revmp.on("attacked", (attacker, target, userEvent) => {
     const health = revmp.getHealth(target);
     console.log("current: health" + health.current)
     const damageDealt = Math.max(5, damage);
-    let newHealth = Math.max(0, health.current - damageDealt);
+    const newHealth = Math.max(0, health.current - damageDealt);
     console.log("after asignment: " + newHealth)
 
 

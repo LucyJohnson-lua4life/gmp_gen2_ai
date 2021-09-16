@@ -5,6 +5,7 @@
     "module": "CommonJS",
     "lib": ["es2020"],
     "outDir": "dist",
+    "baseUrl": "./",
     "sourceMap": true,
     "importHelpers": true,
     "allowSyntheticDefaultImports": true,

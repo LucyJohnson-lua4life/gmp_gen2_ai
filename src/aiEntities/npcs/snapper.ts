@@ -28,7 +28,7 @@ export class Snapper implements IAiNpc {
 
 
     constructor() {
-        this.id = revmp.createBot(getSnapperInstance());;
+        this.id = revmp.createBot(getSnapperInstance());
         this.isDead = false;
         this.isUnconscious = false;
         this.enemyIds = [];

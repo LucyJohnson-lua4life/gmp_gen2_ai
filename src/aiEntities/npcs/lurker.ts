@@ -27,7 +27,7 @@ export class Lurker implements IAiNpc {
 
 
     constructor() {
-        this.id = revmp.createBot(getLurkerInstance());;
+        this.id = revmp.createBot(getLurkerInstance());
         this.isDead = false;
         this.isUnconscious = false;
         this.enemyIds = [];

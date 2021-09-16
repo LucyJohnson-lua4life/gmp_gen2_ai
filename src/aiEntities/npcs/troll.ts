@@ -28,7 +28,7 @@ export class Troll implements IAiNpc {
 
 
     constructor() {
-        this.id = revmp.createBot(getTrollInstance());;
+        this.id = revmp.createBot(getTrollInstance());
         this.isDead = false;
         this.isUnconscious = false;
         this.enemyIds = [];

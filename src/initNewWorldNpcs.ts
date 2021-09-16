@@ -13,8 +13,8 @@ import { AiState } from "./aiStates/aiState"
 
 export function initNewWorldNpcs(aiState: AiState):void{
 
-    let aiStateFunctions = new AiStateFunctions(aiState)
-    let world = "NEWWORLD\\NEWWORLD.ZEN"
+    const aiStateFunctions = new AiStateFunctions(aiState)
+    const world = "NEWWORLD\\NEWWORLD.ZEN"
 
 
 

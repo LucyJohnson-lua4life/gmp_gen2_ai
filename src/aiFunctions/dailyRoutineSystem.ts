@@ -63,7 +63,7 @@ export class DailyRoutineSystem {
     }
 
     private updateEntityLastHourAndMinute(playerid: number, currentTime: DrCurrentTime) {
-        let dailyRoutineComponent: IDrInfoComponent = this.entityManager.getDailyRoutineComponent(playerid);
+        const dailyRoutineComponent: IDrInfoComponent = this.entityManager.getDailyRoutineComponent(playerid);
         dailyRoutineComponent.lastHour = currentTime.hour;
         dailyRoutineComponent.lastMinute = currentTime.minute;
         this.entityManager.setDailyRoutineComponent(playerid, dailyRoutineComponent);
@@ -82,7 +82,7 @@ export class DailyRoutineSystem {
     }
 
     private isFirstOverlapWithTargetTime(playerid: number, currentTime: DrCurrentTime, targetTime: DrTargetTime) {
-        let lastTime: IDrInfoComponent = this.entityManager.getDailyRoutineComponent(playerid)
+        const lastTime: IDrInfoComponent = this.entityManager.getDailyRoutineComponent(playerid)
         return (typeof lastTime.startHour === 'undefined')
             || ((lastTime.startHour !== targetTime.startHour || lastTime.startMinute !== targetTime.startMinute)
                 || (lastTime.endHour !== targetTime.endHour || lastTime.endMinute !== targetTime.endMinute))
@@ -101,7 +101,7 @@ export class DailyRoutineSystem {
     }
 
     private minutesOverlap(currentTime: DrCurrentTime, info: DrTargetTime): boolean {
-        let isOverlapping: boolean = true;
+        let isOverlapping = true;
         if (currentTime.hour == info.startHour && currentTime.minute < info.startMinute) {
             isOverlapping = false;
         }

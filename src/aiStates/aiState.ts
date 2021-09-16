@@ -23,8 +23,8 @@ export class AiState {
         this.waynet = new Waynet(wpPath, fpPath)
         this.characterInPositionAreas = new Map()
         worldNames.forEach(name => this.characterInPositionAreas.set(name, new Map()))
-        this.allBots = new Array()
-        this.allPlayer = new Array()
+        this.allBots = []
+        this.allPlayer = []
     }
 
     public getEntityManager(): EntityManager{

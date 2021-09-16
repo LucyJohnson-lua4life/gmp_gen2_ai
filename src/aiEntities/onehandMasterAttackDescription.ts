@@ -29,28 +29,28 @@ export class OnehandMasterAttackDescription implements IActionDescription {
     }
 
     private describeGeneralRoutine(aiState: AiState): void {
-        let npcActionUtils = new NpcActionUtils(aiState)
-        let entityManager = aiState.getEntityManager()
+        const npcActionUtils = new NpcActionUtils(aiState)
+        const entityManager = aiState.getEntityManager()
 
-        let enemyId = entityManager.getEnemyComponent(this.entityId).enemyId
+        const enemyId = entityManager.getEnemyComponent(this.entityId).enemyId
 
-        let actionListSize = entityManager.getActionsComponent(this.entityId).nextActions.length
+        const actionListSize = entityManager.getActionsComponent(this.entityId).nextActions.length
         if (this.enemyExists(enemyId)) {
-            let range = getDistance(this.entityId, enemyId)
+            const range = getDistance(this.entityId, enemyId)
             if (range < 800 && actionListSize < 5) {
                 this.describeFightAction(entityManager, enemyId, range)
             }
         }
         else if (actionListSize < 1) {
             //TODO: the world constant should only be fixed in later versions!
-            let charId = npcActionUtils.getNearestCharacter(this.entityId, "NEWWORLD\\NEWWORLD.ZEN")
+            const charId = npcActionUtils.getNearestCharacter(this.entityId, "NEWWORLD\\NEWWORLD.ZEN")
             let range = 99999999
             //TODO: currently only player will get attacked/warned, should implement a proper enemy/friend mapping
             if (charId !== this.entityId && charId !== -1 && revmp.isPlayer(charId)) {
                 range = getDistance(this.entityId, charId)
             }
             if (range < 400) {
-                let warnInput: WarnEnemyActionInput = { aiId: this.entityId, enemyId: charId, waitTime: 10000, startTime: Date.now(), warnDistance: 400, attackDistance: 0, entityManager: entityManager }
+                const warnInput: WarnEnemyActionInput = { aiId: this.entityId, enemyId: charId, waitTime: 10000, startTime: Date.now(), warnDistance: 400, attackDistance: 0, entityManager: entityManager }
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new WarnEnemy(warnInput))
             }
         }
@@ -67,7 +67,7 @@ export class OnehandMasterAttackDescription implements IActionDescription {
     }
 
     private describeWhenInRange(entityManager: EntityManager, enemyId: number, range: number): void {
-        let dangle = getPlayerAngle(this.entityId) - getAngleToTarget(this.entityId, enemyId)
+        const dangle = getPlayerAngle(this.entityId) - getAngleToTarget(this.entityId, enemyId)
         const currentTime = Date.now()
         //this.setWeaponMode(this.entityId)
         if (dangle > -20 && dangle < 20 && currentTime - this.lastAttackTime > 3000) {
@@ -83,8 +83,8 @@ export class OnehandMasterAttackDescription implements IActionDescription {
             entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunParadeJump(this.entityId))
         }
         else {
-            let random = Math.floor(Math.random() * 10);
-            let pangle = getAngleToTarget(this.entityId, enemyId)
+            const random = Math.floor(Math.random() * 10);
+            const pangle = getAngleToTarget(this.entityId, enemyId)
             if (random < 2) {
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunParadeJump(this.entityId))

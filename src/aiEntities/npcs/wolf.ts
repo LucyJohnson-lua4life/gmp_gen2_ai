@@ -27,7 +27,7 @@ export class Wolf implements IAiNpc {
 
 
     constructor() {
-        this.id = revmp.createBot(getWolfInstance());;
+        this.id = revmp.createBot(getWolfInstance());
         this.isDead = false;
         this.isUnconscious = false;
         this.enemyIds = [];

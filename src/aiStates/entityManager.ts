@@ -35,12 +35,12 @@ export class EntityManager {
 
     //todo: add more functionality once revmp functions are available
     registerBot(npc: IAiNpc): void{
-        let stateInfo:INpcStateComponent = {entityId: npc.id, isDead:false, isUnconscious: false, npcInstance: npc.npcInstance}
-        let respawnInfo:IRespawnComponent = {entityId: npc.id, respawnTime: npc.respawnTime, deathTime: undefined}
-        let actionInfo:IActionsComponent = {entityId: npc.id, nextActions: npc.nextActions}
-        let positionInfo:IPositionComponent = {entityId: npc.id, currentPosX:0, currentPosY:0, currentPosZ:0, lastPosX:0, lastPosY: 0, lastPosZ: 0, lastPosUpdate: 0, startWorld: npc.startWorld, startPoint: npc.startPoint}
-        let actionDescription:IActionDescriptionComponent = {entityId: npc.id, descriptions: npc.actionDescriptions}
-        let enemyComponent:IEnemyComponent = {entityId: npc.id, enemyId: undefined}
+        const stateInfo:INpcStateComponent = {entityId: npc.id, isDead:false, isUnconscious: false, npcInstance: npc.npcInstance}
+        const respawnInfo:IRespawnComponent = {entityId: npc.id, respawnTime: npc.respawnTime, deathTime: undefined}
+        const actionInfo:IActionsComponent = {entityId: npc.id, nextActions: npc.nextActions}
+        const positionInfo:IPositionComponent = {entityId: npc.id, currentPosX:0, currentPosY:0, currentPosZ:0, lastPosX:0, lastPosY: 0, lastPosZ: 0, lastPosUpdate: 0, startWorld: npc.startWorld, startPoint: npc.startPoint}
+        const actionDescription:IActionDescriptionComponent = {entityId: npc.id, descriptions: npc.actionDescriptions}
+        const enemyComponent:IEnemyComponent = {entityId: npc.id, enemyId: undefined}
 
         this.setNpcStateComponent(npc.id, stateInfo)
         this.setRespawnComponent(npc.id, respawnInfo)

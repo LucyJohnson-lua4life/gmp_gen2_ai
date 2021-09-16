@@ -38,8 +38,8 @@ export function readWaypoints(path: string): Array<Waypoint> {
 
 
 
-export function readWaypointsMap(path: string): Map<String,Waypoint> {
-    let waypointsMap = new Map();
+export function readWaypointsMap(path: string): Map<string,Waypoint> {
+    const waypointsMap = new Map();
     readWaypoints(path).forEach(element => waypointsMap.set(element.wpName, element))
     return waypointsMap;
 }

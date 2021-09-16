@@ -1,22 +1,22 @@
-const wolf = require("./scripts/aiEntities/npcs/wolf");
-const npcInitializer = require("./scripts/initNewWorldNpcs");
-const scavenger = require("./scripts/aiEntities/npcs/scavenger");
-const orcElite = require("./scripts/aiEntities/npcs/orcElite");
-const orcWarrior = require("./scripts/aiEntities/npcs/orcWarrior");
-const undeadOrc = require("./scripts/aiEntities/npcs/undeadOrc");
-const funs = require("./scripts/aiStates/aiStateFunctions");
-const aiState = require("./scripts/aiStates/aiState");
-const aiUpdateLoop = require("./scripts/aiStates/aiUpdateLoop");
-const {Instances, initItemInstances} = require("./scripts/serverComponents/weapons");
-const damageCalculation = require("./scripts/serverComponents/damageCalculation");
-const {setAngle, getAngle, getAngleDistance, getPlayerAngle} = require("./scripts/aiFunctions/aiUtils");
-//const ai = require("./scripts/aiStates/aiUpdateLoop");
-const commonActions = require("./scripts/aiFunctions/commonActions");
-const posFuncs = require("./scripts/waynet/positionFunctions");
-let state = new aiState.AiState('./waynet/newworld.wp', './waynet/newworld.fp')
-let em = state.getEntityManager();
-let updateLoop = new aiUpdateLoop.AiUpdateLoop(state);
-let aiStateFunctions = new funs.AiStateFunctions(state)
+const wolf = require("./dist/aiEntities/npcs/wolf");
+const npcInitializer = require("./dist/initNewWorldNpcs");
+const scavenger = require("./dist/aiEntities/npcs/scavenger");
+const orcElite = require("./dist/aiEntities/npcs/orcElite");
+const orcWarrior = require("./dist/aiEntities/npcs/orcWarrior");
+const undeadOrc = require("./dist/aiEntities/npcs/undeadOrc");
+const funs = require("./dist/aiStates/aiStateFunctions");
+const aiState = require("./dist/aiStates/aiState");
+const aiUpdateLoop = require("./dist/aiStates/aiUpdateLoop");
+const {Instances, initItemInstances} = require("./dist/serverComponents/weapons");
+const damageCalculation = require("./dist/serverComponents/damageCalculation");
+const {setAngle, getAngle, getAngleDistance, getPlayerAngle} = require("./dist/aiFunctions/aiUtils");
+//const ai = require("./dist/aiStates/aiUpdateLoop");
+const commonActions = require("./dist/aiFunctions/commonActions");
+const posFuncs = require("./dist/waynet/positionFunctions");
+const state = new aiState.AiState('./waynet/newworld.wp', './waynet/newworld.fp')
+const em = state.getEntityManager();
+const updateLoop = new aiUpdateLoop.AiUpdateLoop(state);
+const aiStateFunctions = new funs.AiStateFunctions(state)
 
 revmp.on("init", () => {
 
@@ -31,7 +31,7 @@ revmp.on("init", () => {
     revmp.setTime(world, { hour: 15, minute: 0 });
     setInterval(updateLoop.updateAll.bind(updateLoop), 50);
 
-    let testMonster = new wolf.Wolf();
+    const testMonster = new wolf.Wolf();
     console.log("monster id: " + testMonster.id)
     aiStateFunctions.spawnNpc(testMonster,"HAFEN","NEWWORLD\\NEWWORLD.ZEN")
     npcInitializer.initNewWorldNpcs(state)
@@ -43,7 +43,7 @@ function debugCommands(entity: revmp.Entity, msg: string) {
     const words = msg.toLowerCase().split(' ');
     const command = words[0];
     if (command === "/getpos") {
-        let pos = revmp.getPosition(entity)
+        const pos = revmp.getPosition(entity)
         revmp.sendChatMessage(entity, `pos: ${pos.position[0]},${pos.position[1]},${pos.position[2]}`)
     }
     if (command === "/sendsomething") {
@@ -52,14 +52,14 @@ function debugCommands(entity: revmp.Entity, msg: string) {
 
     if (command === "/walk") {
         const param1 = words[1];
-        let npcid = parseInt(param1)
-        let positionComponent = em.getPositionsComponents(npcid)
-        let pos = revmp.getPosition(npcid).position
+        const npcid = parseInt(param1)
+        const positionComponent = em.getPositionsComponents(npcid)
+        const pos = revmp.getPosition(npcid).position
         positionComponent.currentPosX = pos[0]
         positionComponent.currentPosY = pos[1]
         positionComponent.currentPosZ = pos[2]
         em.setPositionsComponent(npcid, positionComponent)
-        let aiAction = new commonActions.GotoPoint(npcid, state, "FP_STAND_CITY_ANDRE")
+        const aiAction = new commonActions.GotoPoint(npcid, state, "FP_STAND_CITY_ANDRE")
         em.getActionsComponent(npcid).nextActions.push(aiAction)
     }
 }
@@ -83,11 +83,11 @@ revmp.on("chatCommand", (entity, msg) => {
         setInterval(revmp.attack.bind(revmp), 200, entity, entity);
     }
     if (command === "/e") {
-        let angle = getPlayerAngle(entity)
+        const angle = getPlayerAngle(entity)
         console.log("angle: " + angle)
     }
     if (command === "/a") {
-        let focusid = revmp.getFocus(entity).focus
+        const focusid = revmp.getFocus(entity).focus
         const position = revmp.getPosition(entity).position;
         const targetPosition = revmp.getPosition(focusid).position;
         const y = getAngle(position[0], position[2], targetPosition[0], targetPosition[2]);
@@ -98,17 +98,17 @@ revmp.on("chatCommand", (entity, msg) => {
         setAngle(entity, parseInt(words[1]))
     }
     if (command === "/eq") {
-        let instance = Instances.warsword
+        const instance = Instances.warsword
         revmp.addItem(entity, instance, 1);
         revmp.setAttributes(entity, {strength: 100, oneHanded: 100})
         revmp.setHealth(entity, {current: 1600, max: 1600})
         revmp.addOverlay(entity, "Humans_1hST2.MDS")
-        let attribute = revmp.getAttributes(entity)
+        const attribute = revmp.getAttributes(entity)
         console.log("one handed"+ attribute.oneHanded)
     }
     if (command === "/health") {
         revmp.setHealth(entity, { current: 700, max: 1100 })
-        let h = revmp.getHealth(entity)
+        const h = revmp.getHealth(entity)
         console.log(h.current)
         console.log(h.max)
     }
@@ -134,7 +134,7 @@ revmp.on("chatCommand", (entity, msg) => {
     }
 
     if(command === "/loopani"){
-        let focusid = revmp.getFocus(entity).focus
+        const focusid = revmp.getFocus(entity).focus
         setInterval(()=>{
             revmp.startAnimation(focusid, "T_WARN")}, 200);
     }

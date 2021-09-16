@@ -28,7 +28,7 @@ export class Scavenger implements IAiNpc {
 
 
     constructor() {
-        this.id = revmp.createBot(getScavengerInstance());;
+        this.id = revmp.createBot(getScavengerInstance());
         this.isDead = false;
         this.isUnconscious = false;
         this.enemyIds = [];

@@ -1,15 +1,15 @@
 
-export const INSTANCE_WOLF:string = "revmp_wolf"
-export const INSTANCE_SCAVENGER: string = "revmp_scavenger"
-export const INSTANCE_SNAPPER: string = "revmp_snapper"
-export const INSTANCE_WARG: string = "revmp_warg"
-export const INSTANCE_SHADOWBEAST: string = "revmp_shadowbeast"
-export const INSTANCE_KEILER: string = "revmp_keiler"
-export const INSTANCE_TROLL: string = "revmp_troll"
-export const INSTANCE_LURKER: string = "revmp_lurker"
-export const INSTANCE_ORC_WARRIOR: string = "revmp_orc_warrior"
-export const INSTANCE_ORC_ELITE: string = "revmp_orc_elite"
-export const INSTANCE_ORC_UNDEAD: string = "revmp_orc_elite"
+export const INSTANCE_WOLF = "revmp_wolf"
+export const INSTANCE_SCAVENGER = "revmp_scavenger"
+export const INSTANCE_SNAPPER = "revmp_snapper"
+export const INSTANCE_WARG = "revmp_warg"
+export const INSTANCE_SHADOWBEAST = "revmp_shadowbeast"
+export const INSTANCE_KEILER = "revmp_keiler"
+export const INSTANCE_TROLL = "revmp_troll"
+export const INSTANCE_LURKER = "revmp_lurker"
+export const INSTANCE_ORC_WARRIOR = "revmp_orc_warrior"
+export const INSTANCE_ORC_ELITE = "revmp_orc_elite"
+export const INSTANCE_ORC_UNDEAD = "revmp_orc_elite"
 
 export function getWolfInstance() {
     return {

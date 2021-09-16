@@ -30,7 +30,7 @@ export class OrcElite implements IAiNpc {
 
 
     constructor() {
-        this.id = revmp.createBot(getOrcEliteInstance());;
+        this.id = revmp.createBot(getOrcEliteInstance());
         this.isDead = false;
         this.isUnconscious = false;
         this.enemyIds = [];

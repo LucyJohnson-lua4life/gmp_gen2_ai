@@ -4,7 +4,7 @@ import { AiState } from "../aiStates/aiState";
 /**
  * Provides utility functions for npc's to execute their actions.
  */
-const AI_TARGET_DISTANCE: number = 2500;
+const AI_TARGET_DISTANCE = 2500;
 export class NpcActionUtils {
 
     private aiState: AiState;
@@ -26,10 +26,10 @@ export class NpcActionUtils {
      * @param z the z value of the point, for which nearby npc ids should be found
      */
     public getNearbyNpcs(world: string, x: number, y: number, z: number): Array<number> {
-        let worldPositionMap = this.aiState.getCharacterInPositionAreas().get(world);
-        let deepCopyOfNearbyNpcs: Array<number> = []
+        const worldPositionMap = this.aiState.getCharacterInPositionAreas().get(world);
+        const deepCopyOfNearbyNpcs: Array<number> = []
         if (typeof worldPositionMap !== 'undefined') {
-            let nearbyNpcs = worldPositionMap.get(this.calculatePositionCheckSum(x, y, z));
+            const nearbyNpcs = worldPositionMap.get(this.calculatePositionCheckSum(x, y, z));
             if (typeof nearbyNpcs !== 'undefined') {
                 nearbyNpcs.forEach(id => deepCopyOfNearbyNpcs.push(id))
             }
@@ -43,16 +43,16 @@ export class NpcActionUtils {
      //TODO: world should be replaced with a world id
      */
     public getNearestCharacter(characterId: number, world: string): number {
-        let worldPositionMap = this.aiState.getCharacterInPositionAreas().get(world);
+        const worldPositionMap = this.aiState.getCharacterInPositionAreas().get(world);
         let nearestDist = 9999999
         let nearestChar = -1
         if (typeof worldPositionMap !== 'undefined' && revmp.valid(characterId)) {
-            let pos = revmp.getPosition(characterId).position
-            let nearbyCharacter = worldPositionMap.get(this.calculatePositionCheckSum(pos[0], pos[1], pos[2]));
+            const pos = revmp.getPosition(characterId).position
+            const nearbyCharacter = worldPositionMap.get(this.calculatePositionCheckSum(pos[0], pos[1], pos[2]));
             if (typeof nearbyCharacter !== 'undefined') {
                 nearbyCharacter.forEach(targetId => {
-                    let nearbyPos = revmp.getPosition(targetId).position
-                    let tmpPos = this.getDistance(pos[0], pos[1], pos[2], nearbyPos[0], nearbyPos[1], nearbyPos[2])
+                    const nearbyPos = revmp.getPosition(targetId).position
+                    const tmpPos = this.getDistance(pos[0], pos[1], pos[2], nearbyPos[0], nearbyPos[1], nearbyPos[2])
                     if (tmpPos < nearestDist && characterId !== targetId){
                         nearestDist = tmpPos
                         nearestChar = targetId
@@ -66,9 +66,9 @@ export class NpcActionUtils {
         if ([x1, y1, z1, , x2, y2, z2].some((val) => (typeof val === 'undefined'))) {
             return 99999
         }
-        let x = x1 - x2
-        let y = y1 - y2
-        let z = z1 - z2
+        const x = x1 - x2
+        const y = y1 - y2
+        const z = z1 - z2
 
         return Math.sqrt(x * x + y * y + z * z);
     }

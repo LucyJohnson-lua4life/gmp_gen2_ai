@@ -28,7 +28,7 @@ export class Warg implements IAiNpc {
 
 
     constructor() {
-        this.id = revmp.createBot(getWargInstance());;
+        this.id = revmp.createBot(getWargInstance());
         this.isDead = false;
         this.isUnconscious = false;
         this.enemyIds = [];

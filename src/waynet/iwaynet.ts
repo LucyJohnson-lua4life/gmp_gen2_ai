@@ -3,7 +3,7 @@
  * net on which the npc's can move along the edges (the paths/way).
  */
 export interface IWaynet {
-    waypoints: Map<String, Waypoint>,
+    waypoints: Map<string, Waypoint>,
     freepoints: Array<Freepoint>
     getWayroute(start: string, end: string): Array<Waypoint>
     getNearestWaypoint(x: number, y: number, z: number): Waypoint

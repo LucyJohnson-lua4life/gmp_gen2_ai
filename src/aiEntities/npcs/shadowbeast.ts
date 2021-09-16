@@ -27,7 +27,7 @@ export class Shadowbeast implements IAiNpc {
 
 
     constructor() {
-        this.id = revmp.createBot(getShadowbeastInstance());;
+        this.id = revmp.createBot(getShadowbeastInstance());
         this.isDead = false;
         this.isUnconscious = false;
         this.enemyIds = [];

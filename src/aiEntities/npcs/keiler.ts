@@ -27,7 +27,7 @@ export class Keiler implements IAiNpc {
 
 
     constructor() {
-        this.id = revmp.createBot(getKeilerInstance());;
+        this.id = revmp.createBot(getKeilerInstance());
         this.isDead = false;
         this.isUnconscious = false;
         this.enemyIds = [];
