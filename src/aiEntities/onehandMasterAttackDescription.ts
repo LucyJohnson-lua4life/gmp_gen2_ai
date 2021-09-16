@@ -1,17 +1,17 @@
 
-import { IActionDescription } from './IActionDescription';
+import { IActionDescription } from './iActionDescription';
 import { EntityManager } from '../aiStates/entityManager';
-import { getAngleToTarget, getDistance, getPlayerAngle, getDistanceToPoint } from "../aiFunctions/aiUtils";
+import { getAngleToTarget, getDistance, getPlayerAngle } from "../aiFunctions/aiUtils";
 import {
-    PlayAnimationForDuration, RunForward, SForwardAttackAction,
+    SLeftAttackAction, SRightAttackAction, SForwardAttackAction,
     SRunParadeJump, SRunStrafeLeft, SRunStrafeRight,
     RunToTargetAction, WaitAction, TurnToTargetAction,
-    WarnEnemy, WarnEnemyActionInput, GotoPoint
+    WarnEnemy, WarnEnemyActionInput
 } from "../aiFunctions/commonActions";
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
 import { AiState } from '../aiStates/aiState';
 
-export class DefaultMonsterAttackDescription implements IActionDescription {
+export class OnehandMasterAttackDescription implements IActionDescription {
     entityId: number
     lastAttackTime: number
     attackRange: number
@@ -34,12 +34,11 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
 
         let enemyId = entityManager.getEnemyComponent(this.entityId).enemyId
 
-
         let actionListSize = entityManager.getActionsComponent(this.entityId).nextActions.length
         if (this.enemyExists(enemyId)) {
             let range = getDistance(this.entityId, enemyId)
             if (range < 800 && actionListSize < 5) {
-                this.describeFightAction(aiState, enemyId, range)
+                this.describeFightAction(entityManager, enemyId, range)
             }
         }
         else if (actionListSize < 1) {
@@ -54,40 +53,12 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
                 let warnInput: WarnEnemyActionInput = { aiId: this.entityId, enemyId: charId, waitTime: 10000, startTime: Date.now(), warnDistance: 400, attackDistance: 0, entityManager: entityManager }
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new WarnEnemy(warnInput))
             }
-            else {
-                this.gotoStartPointOnDistance(aiState, 400)
-                this.describeEatRoutine(entityManager)
-            }
         }
     }
 
-    private gotoStartPointOnDistance(aiState: AiState, distance: number) {
-        const entityManager = aiState.getEntityManager();
-        const startPoint = entityManager.getPositionsComponents(this.entityId).startPoint
-        const startWayPoint = aiState.getWaynet().waypoints.get(startPoint)
-        let pointVec: revmp.Vec3;
-
-        if (typeof startWayPoint === 'undefined') {
-            const startFreepoint = aiState.getWaynet().freepoints.find(fp => fp.fpName === startPoint)
-            pointVec = [startFreepoint.x, startFreepoint.y, startFreepoint.z]
-        }
-        else {
-            pointVec = [startWayPoint.x, startWayPoint.y, startWayPoint.z]
-        }
-
-
-        if (getDistanceToPoint(this.entityId, pointVec) > distance) {
-            entityManager.getActionsComponent(this.entityId).nextActions.push(new GotoPoint(this.entityId, aiState, startPoint))
-        }
-    }
-
-    private describeFightAction(aiState: AiState, enemyId: number, range: number): void {
-        let entityManager = aiState.getEntityManager();
-        if (range > 100) {
+    private describeFightAction(entityManager: EntityManager, enemyId: number, range: number): void {
+        if (range > 300) {
             entityManager.getActionsComponent(this.entityId).nextActions.push(new RunToTargetAction(this.entityId, enemyId, 300))
-        }
-        else if (range > 200) {
-            entityManager.setEnemyComponent(this.entityId, { entityId: this.entityId, enemyId: undefined })
         }
         else {
             this.describeWhenInRange(entityManager, enemyId, range)
@@ -98,10 +69,14 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
     private describeWhenInRange(entityManager: EntityManager, enemyId: number, range: number): void {
         let dangle = getPlayerAngle(this.entityId) - getAngleToTarget(this.entityId, enemyId)
         const currentTime = Date.now()
+        //this.setWeaponMode(this.entityId)
         if (dangle > -20 && dangle < 20 && currentTime - this.lastAttackTime > 3000) {
-            entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
-            entityManager.getActionsComponent(this.entityId).nextActions.push(new SForwardAttackAction(this.entityId, enemyId, this.attackRange))
+            this.describeAttackAction(entityManager, enemyId, range)
             this.lastAttackTime = currentTime
+        }
+        else if (range < this.attackRange - 150) {
+            entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
+            entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunParadeJump(this.entityId))
         }
         else if (range < this.attackRange - 150) {
             entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
@@ -153,14 +128,17 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
             }
         }
     }
-
     private enemyExists(id: number): boolean {
         return id >= 0 && revmp.valid(id) && revmp.isPlayer(id)
     }
 
-    private describeEatRoutine(entityManager: EntityManager): void {
-        entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 2000, Date.now()))
-        entityManager.getActionsComponent(this.entityId).nextActions.push(new PlayAnimationForDuration(this.entityId, "S_EAT", 2000))
-        entityManager.getActionsComponent(this.entityId).nextActions.push(new PlayAnimationForDuration(this.entityId, "T_STAND_2_EAT", 2000))
+    private describeAttackAction(entityManager: EntityManager, enemyId: number, range: number) {
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 1000, Date.now()))
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new SLeftAttackAction(this.entityId, enemyId, this.attackRange))
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 300, Date.now()))
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new SRightAttackAction(this.entityId, enemyId, this.attackRange))
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 300, Date.now()))
+        entityManager.getActionsComponent(this.entityId).nextActions.push(new SLeftAttackAction(this.entityId, enemyId, this.attackRange))
     }
+
 }

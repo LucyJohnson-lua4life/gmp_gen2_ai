@@ -1,5 +1,3 @@
-"use strict";
-
 const wolf = require("./scripts/aiEntities/npcs/wolf");
 const npcInitializer = require("./scripts/initNewWorldNpcs");
 const scavenger = require("./scripts/aiEntities/npcs/scavenger");
@@ -15,7 +13,7 @@ const {setAngle, getAngle, getAngleDistance, getPlayerAngle} = require("./script
 //const ai = require("./scripts/aiStates/aiUpdateLoop");
 const commonActions = require("./scripts/aiFunctions/commonActions");
 const posFuncs = require("./scripts/waynet/positionFunctions");
-let state = new aiState.AiState('./scripts/newworld.wp', './scripts/newworld.fp')
+let state = new aiState.AiState('./waynet/newworld.wp', './waynet/newworld.fp')
 let em = state.getEntityManager();
 let updateLoop = new aiUpdateLoop.AiUpdateLoop(state);
 let aiStateFunctions = new funs.AiStateFunctions(state)
@@ -41,12 +39,12 @@ revmp.on("init", () => {
 });
 
 //export function sendChatMessage(player: number|number[], message: string, color?: [number, number, number, number?]): void
-function debugCommands(entity, msg) {
+function debugCommands(entity: revmp.Entity, msg: string) {
     const words = msg.toLowerCase().split(' ');
     const command = words[0];
     if (command === "/getpos") {
         let pos = revmp.getPosition(entity)
-        revmp.sendChatMessage(entity, `pos: ${pos.x},${pos.y},${pos.z}`)
+        revmp.sendChatMessage(entity, `pos: ${pos.position[0]},${pos.position[1]},${pos.position[2]}`)
     }
     if (command === "/sendsomething") {
         revmp.sendChatMessage(entity, 'testo')

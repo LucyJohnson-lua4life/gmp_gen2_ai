@@ -1,6 +1,6 @@
 import {IPlayer} from './iPlayer';
 import {IAiAction} from './iAiAction';
-import { IActionDescription } from './IActionDescription';
+import { IActionDescription } from './iActionDescription';
 
 export interface IAiNpc extends IPlayer{
     enemyIds: Array<number>,

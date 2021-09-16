@@ -1,6 +1,6 @@
 
 
-import {IActionDescription} from '../IActionDescription';
+import {IActionDescription} from '../iActionDescription';
 /**
  * @interface IActionDescriptionComponent 
  * Contains all the action descriptions of an entity.
