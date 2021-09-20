@@ -1,9 +1,9 @@
-import { Waypoint } from "../../scripts/waynet/iwaynet";
-import * as waynet from "../../scripts/waynet/waynet";
+import { Waypoint } from "../../src/waynet/iwaynet";
+import * as waynet from "../../src/waynet/waynet";
 test('Waynet should load freepoints correctly.', () => {
-    var wn = new waynet.Waynet("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
-    var fplist = wn.freepoints;
-    var testfp = fplist[0]
+    const wn = new waynet.Waynet("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
+    const fplist = wn.freepoints;
+    const testfp = fplist[0]
     expect(fplist.length).toBe(4)
     expect(testfp.fpName).toBe("FP_TEST1")
     expect(testfp.x).toBe(1000)
@@ -15,8 +15,8 @@ test('Waynet should load freepoints correctly.', () => {
 
 
 test('Waynet should load the waypoints correctly.', () => {
-    var wn = new waynet.Waynet("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
-    var testwp = wn.waypoints.get("WP_TEST1");
+    const wn = new waynet.Waynet("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
+    const testwp = wn.waypoints.get("WP_TEST1");
     expect(wn.waypoints.size).toBe(7)
     expect(testwp.wpName).toBe("WP_TEST1")
     expect(testwp.x).toBe(1000)
@@ -29,28 +29,28 @@ test('Waynet should load the waypoints correctly.', () => {
 
 
 test('Returns the right route from WP_TEST1 to WP_TEST7', () => {
-    var wn = new waynet.Waynet("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
-    var routes:Array<string> = wn.getWayroute("WP_TEST1","WP_TEST7").map(wp => wp.wpName);
+    const wn = new waynet.Waynet("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
+    const routes:Array<string> = wn.getWayroute("WP_TEST1","WP_TEST7").map(wp => wp.wpName);
     expect(routes).toStrictEqual(["WP_TEST1","WP_TEST2","WP_TEST6","WP_TEST7"]);
 })
 
 test('Returns the right route from WP_TEST1 to WP_TEST4', () => {
-    var wn = new waynet.Waynet("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
-    var routes:Array<string> = wn.getWayroute("WP_TEST1","WP_TEST4").map(wp => wp.wpName);
+    const wn = new waynet.Waynet("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
+    const routes:Array<string> = wn.getWayroute("WP_TEST1","WP_TEST4").map(wp => wp.wpName);
     expect(routes).toStrictEqual(["WP_TEST1","WP_TEST2","WP_TEST4"]);
 })
 
 
 test('Returns the right route from WP_TEST1 to WP_TEST5', () => {
-    var wn = new waynet.Waynet("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
-    var routes:Array<string> = wn.getWayroute("WP_TEST1","WP_TEST5").map(wp => wp.wpName);
+    const wn = new waynet.Waynet("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
+    const routes:Array<string> = wn.getWayroute("WP_TEST1","WP_TEST5").map(wp => wp.wpName);
     expect(routes).toStrictEqual(["WP_TEST1","WP_TEST2","WP_TEST6","WP_TEST5"]);
 })
 
 
 test('Returns correctly the nearest waypoint', () => {
-    var wn = new waynet.Waynet("./tests/waynet/test_with_whitespaces.wp", "./tests/waynet/test_with_whitespaces.fp")
-    var nearestWp: Waypoint = wn.getNearestWaypoint(2000,3100,-4100)
+    const wn = new waynet.Waynet("./tests/waynet/test_with_whitespaces.wp", "./tests/waynet/test_with_whitespaces.fp")
+    const nearestWp: Waypoint = wn.getNearestWaypoint(2000,3100,-4100)
     expect(nearestWp.wpName).toStrictEqual("WP_TEST5");
 })
 

@@ -1,8 +1,8 @@
-import {AiUpdateLoop} from "../../scripts/aiStates/aiUpdateLoop";
+import {AiUpdateLoop} from "../../src/aiStates/aiUpdateLoop";
 import { mock,verify, instance, when } from "ts-mockito";
 import { StubAiNpc } from '../stubAiNpc';
-import { IAiAction } from "../../scripts/aiEntities/iAiAction";
-import { AiState } from "../../scripts/aiStates/aiState";
+import { IAiAction } from "../../src/aiEntities/iAiAction";
+import { AiState } from "../../src/aiStates/aiState";
 
 
 class StubAiAction implements IAiAction{
@@ -24,22 +24,22 @@ Object.defineProperty(global, "revmp", {
 
 
 test('Executes for the given id the executeAction() - method of the correct npc.', () => {
-    let aiState: AiState = new AiState("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
-    let aiNpc = new StubAiNpc(1)
-    let aiNpc2 = new StubAiNpc(2)
+    const aiState: AiState = new AiState("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
+    const aiNpc = new StubAiNpc(1)
+    const aiNpc2 = new StubAiNpc(2)
     const action:IAiAction = mock(StubAiAction)
     aiNpc.addAction(instance(action))
     aiState.getEntityManager().registerBot(aiNpc)
     aiState.getEntityManager().registerBot(aiNpc2)
-    let updateLoop = new AiUpdateLoop(aiState);
+    const updateLoop = new AiUpdateLoop(aiState);
     updateLoop.updateAi(1);
     verify(action.executeAction()).once()
 })
 
 
 test('Executes for the given id the executeAction() - non loopable action should be removed after execution.', () => {
-    let aiState: AiState = new AiState("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
-    let aiNpc = new StubAiNpc(1)
+    const aiState: AiState = new AiState("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
+    const aiNpc = new StubAiNpc(1)
 
     const nonLoopableAction:IAiAction = mock(StubAiAction)
     when(nonLoopableAction.shouldLoop).thenReturn(false)
@@ -47,7 +47,7 @@ test('Executes for the given id the executeAction() - non loopable action should
     aiNpc.addAction(instance(nonLoopableAction))
     aiState.getEntityManager().registerBot(aiNpc)
 
-    let updateLoop = new AiUpdateLoop(aiState);
+    const updateLoop = new AiUpdateLoop(aiState);
     updateLoop.updateAi(1)
     updateLoop.updateAi(1)
 
@@ -56,8 +56,8 @@ test('Executes for the given id the executeAction() - non loopable action should
 
 
 test('Executes for the given id the executeAction() - loopable action should NOT be removed after execution.', () => {
-    let aiState: AiState = new AiState("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
-    let aiNpc = new StubAiNpc(1)
+    const aiState: AiState = new AiState("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
+    const aiNpc = new StubAiNpc(1)
 
     const nonLoopableAction:IAiAction = mock(StubAiAction)
     when(nonLoopableAction.shouldLoop).thenReturn(true)
@@ -65,7 +65,7 @@ test('Executes for the given id the executeAction() - loopable action should NOT
     aiNpc.addAction(instance(nonLoopableAction))
     aiState.getEntityManager().registerBot(aiNpc)
 
-    let updateLoop = new AiUpdateLoop(aiState)
+    const updateLoop = new AiUpdateLoop(aiState)
     updateLoop.updateAi(1)
     updateLoop.updateAi(1)
 
@@ -73,8 +73,8 @@ test('Executes for the given id the executeAction() - loopable action should NOT
 })
 
 test('After executing all actions of npc. Nothing will happen. Action heap is empty.', () => {
-    let aiState: AiState = new AiState("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
-    let aiNpc = new StubAiNpc(1)
+    const aiState: AiState = new AiState("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
+    const aiNpc = new StubAiNpc(1)
 
     const nonLoopableAction: IAiAction = mock(StubAiAction)
     when(nonLoopableAction.shouldLoop).thenReturn(false)
@@ -82,7 +82,7 @@ test('After executing all actions of npc. Nothing will happen. Action heap is em
     aiNpc.addAction(instance(nonLoopableAction))
     aiState.getEntityManager().registerBot(aiNpc)
 
-    let updateLoop = new AiUpdateLoop(aiState)
+    const updateLoop = new AiUpdateLoop(aiState)
     expect(aiNpc.nextActions.length).toBe(1)
     updateLoop.updateAi(1)
     expect(aiNpc.nextActions.length).toBe(0)
