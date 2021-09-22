@@ -1,12 +1,12 @@
 
 import { IActionDescription } from './iActionDescription';
 import { EntityManager } from '../aiStates/entityManager';
-import { getAngleToTarget, getDistance, getPlayerAngle } from "../aiFunctions/aiUtils";
+import { getAngleToTarget, getDistance, getPlayerAngle, getDistanceToPoint } from "../aiFunctions/aiUtils";
 import {
     SLeftAttackAction, SRightAttackAction, SForwardAttackAction,
     SRunParadeJump, SRunStrafeLeft, SRunStrafeRight,
     RunToTargetAction, WaitAction, TurnToTargetAction,
-    WarnEnemy, WarnEnemyActionInput
+    WarnEnemy, WarnEnemyActionInput,GotoPoint
 } from "../aiFunctions/commonActions";
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
 import { AiState } from '../aiStates/aiState';
@@ -49,13 +49,16 @@ export class TwohandMasterAttackDescription implements IActionDescription {
             if (charId !== this.entityId && charId !== -1 && revmp.isPlayer(charId)) {
                 range = getDistance(this.entityId, charId)
             }
-            if (range < 400) {
+            if (range < 500) {
                 const warnInput: WarnEnemyActionInput = { aiId: this.entityId, enemyId: charId, waitTime: 10000, startTime: Date.now(), warnDistance: 400, attackDistance: 0, entityManager: entityManager }
 
                 //revmp.startAnimation(this.entityId, "T_RUN_2_2H")
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new WarnEnemy(warnInput))
                 revmp.drawMeleeWeapon(this.entityId)
 
+            }
+            else{
+                this.gotoStartPointOnDistance(aiState, 500)
             }
         }
     }
@@ -139,6 +142,26 @@ export class TwohandMasterAttackDescription implements IActionDescription {
         entityManager.getActionsComponent(this.entityId).nextActions.push(new SRightAttackAction(this.entityId, enemyId, this.attackRange))
         entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 300, Date.now()))
         entityManager.getActionsComponent(this.entityId).nextActions.push(new SLeftAttackAction(this.entityId, enemyId, this.attackRange))
+    }
+
+    private gotoStartPointOnDistance(aiState: AiState, distance: number) {
+        const entityManager = aiState.getEntityManager();
+        const startPoint = entityManager.getPositionsComponents(this.entityId).startPoint
+        const startWayPoint = aiState.getWaynet().waypoints.get(startPoint)
+        let pointVec: revmp.Vec3;
+
+        if (typeof startWayPoint === 'undefined') {
+            const startFreepoint = aiState.getWaynet().freepoints.find(fp => fp.fpName === startPoint)
+            pointVec = [startFreepoint.x, startFreepoint.y, startFreepoint.z]
+        }
+        else {
+            pointVec = [startWayPoint.x, startWayPoint.y, startWayPoint.z]
+        }
+
+
+        if (getDistanceToPoint(this.entityId, pointVec) > distance) {
+            entityManager.getActionsComponent(this.entityId).nextActions.push(new GotoPoint(this.entityId, aiState, startPoint))
+        }
     }
 
 }

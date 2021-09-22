@@ -50,13 +50,13 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
             if (charId !== this.entityId && charId !== -1 && revmp.isPlayer(charId)) {
                 range = getDistance(this.entityId, charId)
             }
-            if (range < 400) {
-                const warnInput: WarnEnemyActionInput = { aiId: this.entityId, enemyId: charId, waitTime: 10000, startTime: Date.now(), warnDistance: 400, attackDistance: 0, entityManager: entityManager }
+            if (range < 500) {
+                const warnInput: WarnEnemyActionInput = { aiId: this.entityId, enemyId: charId, waitTime: 5000, startTime: Date.now(), warnDistance: 400, attackDistance: 0, entityManager: entityManager }
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new WarnEnemy(warnInput))
             }
             else {
-                this.gotoStartPointOnDistance(aiState, 400)
                 this.describeEatRoutine(entityManager)
+                this.gotoStartPointOnDistance(aiState, 500)
             }
         }
     }
@@ -83,10 +83,10 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
 
     private describeFightAction(aiState: AiState, enemyId: number, range: number): void {
         const entityManager = aiState.getEntityManager();
-        if (range > 100) {
+        if (range > 300) {
             entityManager.getActionsComponent(this.entityId).nextActions.push(new RunToTargetAction(this.entityId, enemyId, 300))
         }
-        else if (range > 200) {
+        else if (range > 800) {
             entityManager.setEnemyComponent(this.entityId, { entityId: this.entityId, enemyId: undefined })
         }
         else {
@@ -114,7 +114,7 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunParadeJump(this.entityId))
             }
-            else if (random <= 3) {
+            else if (random <= 5) {
                 if (pangle > 180) {
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeRight(this.entityId))
@@ -124,23 +124,14 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeLeft(this.entityId))
                 }
             }
-            else if (random <= 4) {
+            else if (random <= 7) {
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 300, Date.now()))
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunParadeJump(this.entityId))
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunParadeJump(this.entityId))
             }
-            else if (random <= 7 && dangle > -20 && dangle < 20) {
+            else if (random <= 8 && dangle > -20 && dangle < 20) {
                 entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
-                if (getAngleToTarget(this.entityId, enemyId) > 180) {
-                    entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeRight(this.entityId))
-                }
-                else {
-                    entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeLeft(this.entityId))
-                }
-            }
-            else if (random <= 9 && dangle > -20 && dangle < 20) {
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 200, Date.now()))
                 if (getAngleToTarget(this.entityId, enemyId) > 180) {
                     entityManager.getActionsComponent(this.entityId).nextActions.push(new SRunStrafeRight(this.entityId))
                 }
@@ -149,7 +140,7 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
                 }
             }
             else {
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
+                entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 250, Date.now()))
             }
         }
     }
