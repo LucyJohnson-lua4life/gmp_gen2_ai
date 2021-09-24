@@ -320,8 +320,12 @@ export class GotoPoint implements IAiAction {
         this.aiPos.currentPosX = newestPos[0]
         this.aiPos.currentPosY = newestPos[1]
         this.aiPos.currentPosZ = newestPos[2]
-
-        this.startPoint = waynet.getNearestWaypoint(this.aiPos.currentPosX, this.aiPos.currentPosY, this.aiPos.currentPosZ).wpName
+        this.startPoint = ""
+        let nearestWp:Waypoint|undefined = waynet.getNearestWaypoint(this.aiPos.currentPosX, this.aiPos.currentPosY, this.aiPos.currentPosZ)
+        if(typeof nearestWp !== 'undefined'){
+            this.startPoint = nearestWp.wpName
+        }
+        
 
         // if a freepoint is given, find nearest wp and calculate the route to the nearest wp
         // put freepoint to the wayroute as last destination
@@ -331,8 +335,12 @@ export class GotoPoint implements IAiAction {
         } else {
             const targetFp = waynet.freepoints.find(fp => fp.fpName === targetWaypoint)
             if (typeof targetFp !== 'undefined') {
-                const nearestEndWp = waynet.getNearestWaypoint(targetFp.x, targetFp.y, targetFp.z)
-                this.wayroute = waynet.getWayroute(this.startPoint, nearestEndWp.wpName)
+                const nearestEndWp:Waypoint|undefined = waynet.getNearestWaypoint(targetFp.x, targetFp.y, targetFp.z)
+                let nearestEndWpName = ""
+                if(typeof nearestEndWp !== 'undefined'){
+                    nearestEndWpName = nearestEndWp.wpName
+                }
+                this.wayroute = waynet.getWayroute(this.startPoint, nearestEndWpName)
                 const fpToWp: Waypoint = { wpName: "TMP_WAYPOINT", x: targetFp.x, y: targetFp.y, z: targetFp.z, rotX: targetFp.rotX, rotY: targetFp.rotY, otherWps: [nearestEndWp.wpName] }
                 this.wayroute.push(fpToWp)
             }
