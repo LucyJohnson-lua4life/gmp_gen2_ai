@@ -151,7 +151,7 @@ export class Waynet implements IWaynet {
         return result
     }
 
-    private neighborDistanceToStartIsGreater(neighborNode: NodeInfo, distNodeToStart: number) {
+    private neighborDistanceToStartIsGreater(neighborNode: NodeInfo|undefined, distNodeToStart: number) {
         return typeof neighborNode !== 'undefined' && distNodeToStart > neighborNode.distanceToStart;
     }
 

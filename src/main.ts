@@ -70,6 +70,9 @@ revmp.on("attacked", (attacker, target, userEvent) => {
         em.setEnemyComponent(target, { entityId: target, enemyId: attacker })
     }
 })
+function elo(){
+    console.log("hello world")
+}
 
 revmp.on("chatCommand", (entity, msg) => {
     const words = msg.toLowerCase().split(' ');

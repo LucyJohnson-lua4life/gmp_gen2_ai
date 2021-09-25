@@ -32,10 +32,10 @@ export class OnehandMasterAttackDescription implements IActionDescription {
         const npcActionUtils = new NpcActionUtils(aiState)
         const entityManager = aiState.getEntityManager()
 
-        const enemyId = entityManager.getEnemyComponent(this.entityId).enemyId
+        const enemyId = entityManager.getEnemyComponent(this.entityId)?.enemyId
 
         const actionListSize = entityManager.getActionsComponent(this.entityId).nextActions.length
-        if (this.enemyExists(enemyId)) {
+        if (typeof enemyId !== 'undefined' && this.enemyExists(enemyId)) {
             const range = getDistance(this.entityId, enemyId)
             if (range < 800 && actionListSize < 5) {
                 this.describeFightAction(entityManager, enemyId, range)

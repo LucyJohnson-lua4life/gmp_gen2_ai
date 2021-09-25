@@ -36,27 +36,25 @@ export class EntityManager {
     //todo: add more functionality once revmp functions are available
     registerBot(npc: IAiNpc): void{
         const stateInfo:INpcStateComponent = {entityId: npc.id, isDead:false, isUnconscious: false, npcInstance: npc.npcInstance}
-        const respawnInfo:IRespawnComponent = {entityId: npc.id, respawnTime: npc.respawnTime, deathTime: undefined}
+        const respawnInfo:IRespawnComponent = {entityId: npc.id, respawnTime: npc.respawnTime, deathTime: -1}
         const actionInfo:IActionsComponent = {entityId: npc.id, nextActions: npc.nextActions}
         const positionInfo:IPositionComponent = {entityId: npc.id, currentPosX:0, currentPosY:0, currentPosZ:0, lastPosX:0, lastPosY: 0, lastPosZ: 0, lastPosUpdate: 0, startWorld: npc.startWorld, startPoint: npc.startPoint}
         const actionDescription:IActionDescriptionComponent = {entityId: npc.id, descriptions: npc.actionDescriptions}
-        const enemyComponent:IEnemyComponent = {entityId: npc.id, enemyId: undefined}
 
         this.setNpcStateComponent(npc.id, stateInfo)
         this.setRespawnComponent(npc.id, respawnInfo)
         this.setActionsComponent(npc.id, actionInfo)
         this.setPositionsComponent(npc.id, positionInfo)
         this.setActionDescriptionComponent(npc.id, actionDescription)
-        this.setEnemyComponent(npc.id, enemyComponent)
     }
 
     unregisterBot(npcId: number): void{
-        this.setNpcStateComponent(npcId, undefined)
-        this.setRespawnComponent(npcId, undefined)
-        this.setActionsComponent(npcId, undefined)
-        this.setPositionsComponent(npcId, undefined)
-        this.setActionDescriptionComponent(npcId, undefined)
-        this.setEnemyComponent(npcId, undefined)
+        this.npcStateComponents.delete(npcId)
+        this.respawnComponents.delete(npcId)
+        this.actionsComponents.delete(npcId)
+        this.positionsComponents.delete(npcId)
+        this.actionsComponents.delete(npcId)
+        this.enemyComponents.delete(npcId)
     }
 
     getDailyRoutineComponent(entityId: number): IDrInfoComponent|undefined{
@@ -112,5 +110,8 @@ export class EntityManager {
 
     setEnemyComponent(entityId: number, component: IEnemyComponent) {
         this.enemyComponents.set(entityId, component)
+    }
+    deleteEnemyComponent(entityId: number) {
+        this.enemyComponents.delete(entityId)
     }
 }
