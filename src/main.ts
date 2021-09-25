@@ -32,7 +32,7 @@ revmp.on("init", () => {
     revmp.setTime(world, { hour: 15, minute: 0 });
     setInterval(updateLoop.updateAll.bind(updateLoop), 50);
 
-    const testMonster = new wolf.Wolf();
+    const testMonster = new undeadOrc.UndeadOrc();
     console.log("monster id: " + testMonster.id)
     aiStateFunctions.spawnNpc(testMonster,"HAFEN","NEWWORLD\\NEWWORLD.ZEN")
     npcInitializer.initNewWorldNpcs(state)
@@ -66,9 +66,7 @@ function debugCommands(entity: revmp.Entity, msg: string) {
 }
 
 revmp.on("attacked", (attacker, target, userEvent) => {
-    if(typeof em.getEnemyComponent(target) !== 'undefined'){
         em.setEnemyComponent(target, { entityId: target, enemyId: attacker })
-    }
 })
 function elo(){
     console.log("hello world")
