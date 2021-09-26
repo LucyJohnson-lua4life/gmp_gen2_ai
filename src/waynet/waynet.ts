@@ -34,23 +34,29 @@ export class Waynet implements IWaynet {
      * @param end name of the end waypoint
      */
     public getWayroute(start: string, end: string): Array<Waypoint> {
-        const unorderedRouteNodes: Map<string, NodeInfo> = this.getUnorderedRouteNodes(this.waypoints.get(start), this.waypoints.get(end));
-        if (unorderedRouteNodes.size === 0) {
-            return [];
+        const startWaypoint: Waypoint | undefined = this.waypoints.get(start);
+        const endWaypoint: Waypoint | undefined = this.waypoints.get(end);
+        let unorderedRouteNodes: Map<string, NodeInfo> | undefined = undefined;
+        if (typeof startWaypoint !== 'undefined' && typeof endWaypoint !== 'undefined') {
+            unorderedRouteNodes = this.getUnorderedRouteNodes(startWaypoint, endWaypoint);
+            if(typeof unorderedRouteNodes !== 'undefined'){
+                return this.getNodeRoutesOrderedByMinNetDistance(unorderedRouteNodes, start, end)
+            }
         }
-        return this.getNodeRoutesOrderedByMinNetDistance(unorderedRouteNodes, start, end)
+
+        return []
     }
 
     /**
      * Returns the nearest waypoint for the given x,y,z coordinates
      */
-    public getNearestWaypoint(x:number, y:number, z:number): Waypoint {
+    public getNearestWaypoint(x: number, y: number, z: number): Waypoint | undefined {
         let shortestDistance = 999999999
-        let nearestWaypoint:Waypoint = this.waypoints[0]
+        let nearestWaypoint: Waypoint | undefined;
         this.waypoints.forEach(wp => {
-            const tmpDist = this.getDistance(x,y,z, wp.x, wp.y, wp.z)
+            const tmpDist = this.getDistance(x, y, z, wp.x, wp.y, wp.z)
 
-            if(tmpDist < shortestDistance){
+            if (tmpDist < shortestDistance) {
                 shortestDistance = tmpDist
                 nearestWaypoint = wp
             }
@@ -58,20 +64,23 @@ export class Waynet implements IWaynet {
         return nearestWaypoint
     }
 
-    private getNodeRoutesOrderedByMinNetDistance(routeNodes: Map<string, NodeInfo>, start: string, end: string) {
+    private getNodeRoutesOrderedByMinNetDistance(routeNodes: Map<string, NodeInfo>, start: string, end: string): Array<Waypoint> {
         let currentWp: Waypoint | undefined = this.waypoints.get(end);
         const wayroute = []
-        wayroute.push(currentWp)
-        while (currentWp.wpName !== start) {
-            const lastCurrentWp = currentWp;
-            currentWp = this.getNeighborWithMinNetDistance(currentWp, routeNodes);
-            if (typeof currentWp === 'undefined') {
-                return []
-            }
-            wayroute.push(currentWp);
-            routeNodes.delete(lastCurrentWp.wpName);
-        }
+        if (typeof currentWp !== 'undefined') {
+            wayroute.push(currentWp)
+            while (currentWp.wpName !== start) {
+                const lastCurrentWp = currentWp;
+                currentWp = this.getNeighborWithMinNetDistance(currentWp, routeNodes);
 
+                if (typeof currentWp === 'undefined') {
+                    return []
+                }
+
+                wayroute.push(currentWp);
+                routeNodes.delete(lastCurrentWp.wpName);
+            }
+        }
         return wayroute.reverse();
     }
 
@@ -117,16 +126,16 @@ export class Waynet implements IWaynet {
 
     private getNextNodesToVisit(nodesToVisit: Map<string, NodeInfo>, routeNodes: Map<string, NodeInfo>, currentNode: NodeInfo, end: Waypoint): Map<string, NodeInfo> {
         if (currentNode.otherWps.length == 0) {
-            return;
+            return routeNodes;
         }
         const result: Map<string, NodeInfo> = new Map();
 
         currentNode.otherWps.forEach(neighborWpName => {
-            if (typeof routeNodes.get(neighborWpName) === 'undefined') {
-                const neighborWp = this.waypoints.get(neighborWpName);
+            const neighborWp = this.waypoints.get(neighborWpName);
+            if (typeof routeNodes.get(neighborWpName) === 'undefined' && typeof neighborWp !== 'undefined') {
+                const neighborNode:NodeInfo|undefined = nodesToVisit.get(neighborWpName);
                 const distanceToNeighbor = this.getDistance(currentNode.x, currentNode.y, currentNode.z, neighborWp.x, neighborWp.y, neighborWp.z);
                 const distNodeToStart = currentNode.distanceToStart + distanceToNeighbor;
-                const neighborNode = nodesToVisit.get(neighborWpName);
                 if (!this.neighborDistanceToStartIsGreater(neighborNode, distNodeToStart)) {
                     /*aproximate means, that we are measuring the distance straight between point a to b, without measuring the distances of the nodes in between
                       measuring the aproximate absolute distance is enough of an heuristic for us to decide which node to chose next*/
@@ -142,7 +151,7 @@ export class Waynet implements IWaynet {
         return result
     }
 
-    private neighborDistanceToStartIsGreater(neighborNode: NodeInfo, distNodeToStart: number) {
+    private neighborDistanceToStartIsGreater(neighborNode: NodeInfo|undefined, distNodeToStart: number) {
         return typeof neighborNode !== 'undefined' && distNodeToStart > neighborNode.distanceToStart;
     }
 
@@ -151,17 +160,21 @@ export class Waynet implements IWaynet {
         let nextMinWaypoint: Waypoint | undefined;
 
         currentWp.otherWps.forEach(neighborWpName => {
-            const neighborNode: NodeInfo = routeNodes.get(neighborWpName);
+            const neighborNode: NodeInfo|undefined = routeNodes.get(neighborWpName);
             if (typeof neighborNode !== 'undefined') {
-
                 const distance = this.getDistance(currentWp.x, currentWp.y, currentWp.z, neighborNode.x, neighborNode.y, neighborNode.z);
-                const absoluteDistance = routeNodes.get(currentWp.wpName).distanceToEnd + distance + routeNodes.get(neighborWpName).distanceToStart
+                const currentRouteNode = routeNodes.get(currentWp.wpName)
+                const neighborRouteNode = routeNodes.get(neighborWpName)
 
-                if (smallestDistance > absoluteDistance) {
-                    smallestDistance = absoluteDistance;
-                    nextMinWaypoint = this.waypoints.get(neighborNode.wpName);
-                    routeNodes.get(neighborWpName).distanceToEnd = routeNodes.get(currentWp.wpName).distanceToEnd + distance
+                if(typeof currentRouteNode !== 'undefined' && typeof neighborRouteNode !== 'undefined'){
+                    const absoluteDistance = currentRouteNode.distanceToEnd + distance + neighborRouteNode.distanceToStart
+                    if (smallestDistance > absoluteDistance) {
+                        smallestDistance = absoluteDistance;
+                        nextMinWaypoint = this.waypoints.get(neighborNode.wpName);
+                        neighborRouteNode.distanceToEnd = currentRouteNode.distanceToEnd + distance
+                    }
                 }
+
             }
         })
         return nextMinWaypoint;
@@ -173,8 +186,9 @@ export class Waynet implements IWaynet {
         let closestWpToGoal: string | undefined;
         let closestNodeToGoal: NodeInfo | undefined;
         Array.from(nodesToVisit.keys()).forEach(wpName => {
-            if (nodesToVisit.get(wpName).aproximateAbsDistance < lowestDistance) {
-                lowestDistance = nodesToVisit.get(wpName).aproximateAbsDistance;
+            const nodeToVisit = nodesToVisit.get(wpName)
+            if (typeof nodeToVisit !== 'undefined' && nodeToVisit.aproximateAbsDistance < lowestDistance) {
+                lowestDistance = nodeToVisit.aproximateAbsDistance;
                 closestWpToGoal = wpName;
                 closestNodeToGoal = nodesToVisit.get(wpName);
             }
@@ -191,7 +205,7 @@ export class Waynet implements IWaynet {
         const x = x1 - x2;
         const y = y1 - y2;
         const z = z1 - z2;
-        return Math.sqrt((x*x) + (y*y) + (z*z));
+        return Math.sqrt((x * x) + (y * y) + (z * z));
     }
 
 }

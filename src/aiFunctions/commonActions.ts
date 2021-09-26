@@ -303,11 +303,11 @@ export class GotoPoint implements IAiAction {
     aiId: number
     shouldLoop: boolean
     aiState: AiState
-    targetPoint: string
+    targetPoint: string | undefined
     startPoint: string
     routeIndex: number
-    wayroute: Array<Waypoint>
-    aiPos: IPositionComponent
+    wayroute: Array<Waypoint> | undefined
+    aiPos: IPositionComponent | undefined
 
     constructor(aiId: number, aiState: AiState, targetWaypoint: string) {
         this.aiId = aiId
@@ -317,11 +317,20 @@ export class GotoPoint implements IAiAction {
         const waynet: IWaynet = this.aiState.getWaynet()
         const newestPos: revmp.Vec3 = revmp.getPosition(this.aiId).position
         this.aiPos = this.aiState.getEntityManager().getPositionsComponents(this.aiId)
-        this.aiPos.currentPosX = newestPos[0]
-        this.aiPos.currentPosY = newestPos[1]
-        this.aiPos.currentPosZ = newestPos[2]
 
-        this.startPoint = waynet.getNearestWaypoint(this.aiPos.currentPosX, this.aiPos.currentPosY, this.aiPos.currentPosZ).wpName
+        let nearestWp: Waypoint | undefined; 
+        if (typeof this.aiPos !== 'undefined') {
+            this.aiPos.currentPosX = newestPos[0]
+            this.aiPos.currentPosY = newestPos[1]
+            this.aiPos.currentPosZ = newestPos[2]
+            nearestWp = waynet.getNearestWaypoint(this.aiPos.currentPosX, this.aiPos.currentPosY, this.aiPos.currentPosZ)
+        }
+
+        this.startPoint = ""
+        if (typeof nearestWp !== 'undefined') {
+            this.startPoint = nearestWp.wpName
+        }
+
 
         // if a freepoint is given, find nearest wp and calculate the route to the nearest wp
         // put freepoint to the wayroute as last destination
@@ -331,9 +340,15 @@ export class GotoPoint implements IAiAction {
         } else {
             const targetFp = waynet.freepoints.find(fp => fp.fpName === targetWaypoint)
             if (typeof targetFp !== 'undefined') {
-                const nearestEndWp = waynet.getNearestWaypoint(targetFp.x, targetFp.y, targetFp.z)
-                this.wayroute = waynet.getWayroute(this.startPoint, nearestEndWp.wpName)
-                const fpToWp: Waypoint = { wpName: "TMP_WAYPOINT", x: targetFp.x, y: targetFp.y, z: targetFp.z, rotX: targetFp.rotX, rotY: targetFp.rotY, otherWps: [nearestEndWp.wpName] }
+                const nearestEndWp: Waypoint | undefined = waynet.getNearestWaypoint(targetFp.x, targetFp.y, targetFp.z)
+                let nearestEndWpName = ""
+                if (typeof nearestEndWp !== 'undefined') {
+                    nearestEndWpName = nearestEndWp.wpName
+                }
+                this.wayroute = waynet.getWayroute(this.startPoint, nearestEndWpName)
+                const fpToWp: Waypoint = { wpName: "TMP_WAYPOINT", x: targetFp.x, y: targetFp.y, z: targetFp.z, rotX: targetFp.rotX, rotY: targetFp.rotY, otherWps: [nearestEndWpName] }
+                //console.log("TARGET:" + fpToWp.wpName + " " + targetFp.x + " " + targetFp.y+ " " + targetFp.y)
+                
                 this.wayroute.push(fpToWp)
             }
             else {
@@ -344,7 +359,7 @@ export class GotoPoint implements IAiAction {
     }
 
     public executeAction(): void {
-        if (this.routeIndex < this.wayroute.length) {
+        if (typeof this.wayroute !== 'undefined' && typeof this.aiPos !== 'undefined' && this.routeIndex < this.wayroute.length) {
             const wpToVisit: Waypoint = this.wayroute[this.routeIndex]
             gotoPosition(this.aiPos, wpToVisit.x, wpToVisit.y, wpToVisit.z)
 
@@ -438,12 +453,12 @@ export class WarnEnemy implements IAiAction {
 export class PlayAnimationForDuration implements IAiAction {
     aiId: number
     shouldLoop: boolean
-    duration:number
-    animationName:string
+    duration: number
+    animationName: string
     startTime: number
 
 
-    constructor(aiId: number, animationName:string, duration:number) {
+    constructor(aiId: number, animationName: string, duration: number) {
         this.aiId = aiId
         this.shouldLoop = true
         this.duration = duration
@@ -455,7 +470,7 @@ export class PlayAnimationForDuration implements IAiAction {
         if (!isAniPlaying(this.aiId, this.animationName)) {
             revmp.startAnimation(this.aiId, this.animationName)
         }
-        if(Date.now() > this.startTime + this.duration){
+        if (Date.now() > this.startTime + this.duration) {
             revmp.stopAnimation(this.aiId, this.animationName)
             this.shouldLoop = false
         }

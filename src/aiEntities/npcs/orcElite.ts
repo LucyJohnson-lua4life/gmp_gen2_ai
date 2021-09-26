@@ -24,8 +24,8 @@ export class OrcElite implements IAiNpc {
     currentPosX: number;
     currentPosY: number;
     currentPosZ: number;
-    startPoint:string;
-    startWorld:string;
+    startPoint:string|undefined;
+    startWorld:string|undefined;
     npcInstance:string;
 
 

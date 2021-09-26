@@ -32,7 +32,7 @@ revmp.on("init", () => {
     revmp.setTime(world, { hour: 15, minute: 0 });
     setInterval(updateLoop.updateAll.bind(updateLoop), 50);
 
-    const testMonster = new wolf.Wolf();
+    const testMonster = new undeadOrc.UndeadOrc();
     console.log("monster id: " + testMonster.id)
     aiStateFunctions.spawnNpc(testMonster,"HAFEN","NEWWORLD\\NEWWORLD.ZEN")
     npcInitializer.initNewWorldNpcs(state)
@@ -60,16 +60,17 @@ function debugCommands(entity: revmp.Entity, msg: string) {
         positionComponent.currentPosY = pos[1]
         positionComponent.currentPosZ = pos[2]
         em.setPositionsComponent(npcid, positionComponent)
-        const aiAction = new commonActions.GotoPoint(npcid, state, "FP_STAND_CITY_ANDRE")
+        const aiAction = new commonActions.GotoPoint(npcid, state, "FP_SMALLTALK_HAFEN_04")
         em.getActionsComponent(npcid).nextActions.push(aiAction)
     }
 }
 
 revmp.on("attacked", (attacker, target, userEvent) => {
-    if(typeof em.getEnemyComponent(target) !== 'undefined'){
         em.setEnemyComponent(target, { entityId: target, enemyId: attacker })
-    }
 })
+function elo(){
+    console.log("hello world")
+}
 
 revmp.on("chatCommand", (entity, msg) => {
     const words = msg.toLowerCase().split(' ');

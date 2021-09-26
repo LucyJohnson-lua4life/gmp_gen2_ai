@@ -1,7 +1,6 @@
 
 import { quat, vec3 } from "gl-matrix";
 import * as THREE from 'three';
-import { Waypoint } from "../waynet/iwaynet";
 // https://stackoverflow.com/a/9614122/10637905
 /**
  * Returns the angle from two points. Or in relationship with npc's it describes the angle the npc1 needs to look to npc2.

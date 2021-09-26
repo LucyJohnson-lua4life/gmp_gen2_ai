@@ -9,7 +9,7 @@ import { AiState } from "../../src/aiStates/aiState";
 // all revmp API calls made in this unit test are mocked globally
 Object.defineProperty(global, "revmp", {
     value: {
-        setPosition: (entity, position)=>{console.log("entity!: " + entity)}
+        setPosition: (entity: number, position: [number, number, number])=>{console.log("entity!: " + entity)}
     },
 });
 

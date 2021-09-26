@@ -6,8 +6,6 @@ import { getNpcForInstance } from '../aiEntities/npcs/npcEntityUtils';
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
 import { AiStateFunctions } from '../aiStates/aiStateFunctions';
 import { AiState } from './aiState';
-import { IRespawnComponent } from '../aiEntities/components/iRespawnComponent';
-import { Wolf } from '../aiEntities/npcs/wolf';
 
 /**
  * Represents the loop that iterates through each npc state and executes the next actions for each npc.
@@ -28,18 +26,22 @@ export class AiUpdateLoop {
 
     public updateAll() {
         this.aiState.getCharacterInPositionAreas().set(this.world, new Map<number, Array<number>>())
-        const allPositions: Map<number, Array<number>> = this.aiState.getCharacterInPositionAreas().get(this.world)
+        const allPositions: Map<number, Array<number>>|undefined = this.aiState.getCharacterInPositionAreas().get(this.world)
         // update positions for each character
+        if(typeof allPositions !== 'undefined'){
+
         revmp.characters.forEach(charId =>{
             const pos = revmp.getPosition(charId).position
             const checksum = this.npcActionUtils.calculatePositionCheckSum(pos[0], pos[1], pos[2])
-
-            if(allPositions.has(checksum)){
-                allPositions.get(checksum).push(charId)
+            let playerOfChecksum = allPositions.get(checksum)
+            if(allPositions.has(checksum) && typeof playerOfChecksum !== 'undefined'){
+                playerOfChecksum.push(charId)
             }
             else{
                 allPositions.set(checksum, [charId])
             }})
+
+        }
 
         this.readDescriptions()
         this.respawnDeadNpcs()
@@ -58,14 +60,14 @@ export class AiUpdateLoop {
             const nextAction:IAiAction|undefined = actionsComponent.nextActions[actionsComponent.nextActions.length -1]
 
             if (typeof nextAction !== 'undefined' && this.isEntityUpdateable(aiId)){
-                nextAction.shouldLoop ? nextAction.executeAction() : actionsComponent.nextActions.pop().executeAction();
+                nextAction.shouldLoop ? nextAction.executeAction() : actionsComponent.nextActions.pop()?.executeAction();
             }
         }
 
         //register if dead
         if(revmp.getHealth(aiId).current <= 0 && revmp.isBot(aiId) ){
             const respawnInfo = this.aiState.getEntityManager().getRespawnComponent(aiId)
-            if(typeof respawnInfo !== 'undefined' && typeof respawnInfo.deathTime === 'undefined'){
+            if(typeof respawnInfo !== 'undefined' && respawnInfo.deathTime === -1){
                 respawnInfo.deathTime = Date.now()
                 this.aiState.getEntityManager().setRespawnComponent(aiId, respawnInfo)
             }
@@ -85,7 +87,7 @@ export class AiUpdateLoop {
     public respawnDeadNpcs(){
         revmp.characters.forEach(charId =>{
             const respawnComponent = this.aiState.getEntityManager().getRespawnComponent(charId)
-            if(typeof respawnComponent !== 'undefined' && typeof respawnComponent.deathTime !== 'undefined' && Date.now() > respawnComponent.deathTime + (respawnComponent.respawnTime*1000) && revmp.isBot(charId)){
+            if(typeof respawnComponent !== 'undefined' && respawnComponent.deathTime !== -1 && Date.now() > respawnComponent.deathTime + (respawnComponent.respawnTime*1000) && revmp.isBot(charId)){
                 // respawn npc and set state
                 this.respawnNpc(charId)
             }
@@ -94,10 +96,16 @@ export class AiUpdateLoop {
 
     private respawnNpc(aiId: number){
         const lastPosition = this.aiState.getEntityManager().getPositionsComponents(aiId)
-        const lastNpcInstance = this.aiState.getEntityManager().getNpcStateComponent(aiId).npcInstance
+        const lastNpcInstance = this.aiState.getEntityManager().getNpcStateComponent(aiId)?.npcInstance
         this.aiState.unregisterBot(aiId)
         revmp.destroyCharacter(aiId)
-        this.aiStateFunctions.spawnNpc(getNpcForInstance(lastNpcInstance),lastPosition.startPoint, lastPosition.startWorld)
+        if(typeof lastNpcInstance !== 'undefined' && typeof lastPosition !== 'undefined'){
+            //TODO: extend getNpc for state
+            //todo: fix this
+        let spawnPoint = typeof lastPosition.startPoint !== 'undefined' ? lastPosition.startPoint : "HAFEN"
+        let spawnWorld = typeof lastPosition.startWorld !== 'undefined' ? lastPosition.startWorld : this.world
+        this.aiStateFunctions.spawnNpc(getNpcForInstance(lastNpcInstance),spawnPoint, spawnWorld)
+        }
     }
 
     private isEntityUpdateable(entityId: number){
@@ -106,9 +114,9 @@ export class AiUpdateLoop {
 
     private removeDeadOrUnvalidPlayerFromEnemyLists():void{
         revmp.bots.forEach(botId =>{
-            const enemyId:number|undefined = this.aiState.getEntityManager().getEnemyComponent(botId).enemyId
+            const enemyId:number|undefined = this.aiState.getEntityManager()?.getEnemyComponent(botId)?.enemyId
             if(typeof enemyId !== 'undefined' && (!revmp.valid(enemyId) || revmp.getHealth(enemyId).current <= 0)){
-                this.aiState.getEntityManager().setEnemyComponent(botId, {entityId: botId, enemyId: undefined})
+                this.aiState.getEntityManager().deleteEnemyComponent(botId)               
             }
         })
     }
