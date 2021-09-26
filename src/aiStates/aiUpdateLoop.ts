@@ -100,7 +100,11 @@ export class AiUpdateLoop {
         this.aiState.unregisterBot(aiId)
         revmp.destroyCharacter(aiId)
         if(typeof lastNpcInstance !== 'undefined' && typeof lastPosition !== 'undefined'){
-        this.aiStateFunctions.spawnNpc(getNpcForInstance(lastNpcInstance),lastPosition.startPoint, lastPosition.startWorld)
+            //TODO: extend getNpc for state
+            //todo: fix this
+        let spawnPoint = typeof lastPosition.startPoint !== 'undefined' ? lastPosition.startPoint : "HAFEN"
+        let spawnWorld = typeof lastPosition.startWorld !== 'undefined' ? lastPosition.startWorld : this.world
+        this.aiStateFunctions.spawnNpc(getNpcForInstance(lastNpcInstance),spawnPoint, spawnWorld)
         }
     }
 

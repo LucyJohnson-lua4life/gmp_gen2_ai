@@ -21,11 +21,11 @@ test('Should only return npc ids that are in the same 2500x2500x2500 distance se
 })
 
 function addNpcByChecksum(aiState:AiState, checksum:number, npcid:number){
-    const npclist = aiState.getPlayerInPositionAreas().get(worldName).get(checksum);
+    const npclist = aiState.getCharacterInPositionAreas()?.get(worldName)?.get(checksum);
     if(typeof npclist === 'undefined'){
-        aiState.getPlayerInPositionAreas().get(worldName).set(checksum, []);
+        aiState.getCharacterInPositionAreas()?.get(worldName)?.set(checksum, []);
     }
-    aiState.getPlayerInPositionAreas().get(worldName).get(checksum).push(npcid);
+    aiState.getCharacterInPositionAreas()?.get(worldName)?.get(checksum)?.push(npcid);
 }
 
 function calculatePositionCheckSum(x:number, y:number, z:number){

@@ -62,7 +62,7 @@ export class NpcActionUtils {
         }
         return nearestChar
     }
-    private getDistance(x1, y1, z1, x2, y2, z2): number {
+    private getDistance(x1:number, y1:number, z1:number, x2:number, y2:number, z2:number): number {
         if ([x1, y1, z1, x2, y2, z2].some((val) => (typeof val === 'undefined'))) {
             return 99999
         }

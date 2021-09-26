@@ -23,6 +23,6 @@ export interface IPositionComponent {
     currentPosY:number,
     currentPosZ:number,
     // start waypoint/freepoint
-    startPoint:string,
-    startWorld:string
+    startPoint:string|undefined,
+    startWorld:string|undefined
 }

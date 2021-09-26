@@ -63,10 +63,12 @@ export class DailyRoutineSystem {
     }
 
     private updateEntityLastHourAndMinute(playerid: number, currentTime: DrCurrentTime) {
-        const dailyRoutineComponent: IDrInfoComponent = this.entityManager.getDailyRoutineComponent(playerid);
-        dailyRoutineComponent.lastHour = currentTime.hour;
-        dailyRoutineComponent.lastMinute = currentTime.minute;
-        this.entityManager.setDailyRoutineComponent(playerid, dailyRoutineComponent);
+        let dailyRoutineComponent: IDrInfoComponent | undefined = this.entityManager.getDailyRoutineComponent(playerid);
+        if (typeof dailyRoutineComponent !== 'undefined') {
+            dailyRoutineComponent.lastHour = currentTime.hour;
+            dailyRoutineComponent.lastMinute = currentTime.minute;
+            this.entityManager.setDailyRoutineComponent(playerid, dailyRoutineComponent);
+        }
     }
 
     private updateEntityDrInfo(playerid: number, targetTime: DrTargetTime, currentTime: DrCurrentTime) {
@@ -81,12 +83,15 @@ export class DailyRoutineSystem {
         });
     }
 
-    private isFirstOverlapWithTargetTime(playerid: number, currentTime: DrCurrentTime, targetTime: DrTargetTime) {
-        const lastTime: IDrInfoComponent = this.entityManager.getDailyRoutineComponent(playerid)
+    private isFirstOverlapWithTargetTime(playerid: number, currentTime: DrCurrentTime, targetTime: DrTargetTime):Boolean {
+        const lastTime: IDrInfoComponent|undefined = this.entityManager.getDailyRoutineComponent(playerid)
+        if(typeof lastTime !== 'undefined'){
         return (typeof lastTime.startHour === 'undefined')
             || ((lastTime.startHour !== targetTime.startHour || lastTime.startMinute !== targetTime.startMinute)
                 || (lastTime.endHour !== targetTime.endHour || lastTime.endMinute !== targetTime.endMinute))
             || (targetTime.startHour === 0 && targetTime.startMinute === 0 && targetTime.endHour === 24 && targetTime.endMinute === 0 && lastTime.lastHour === 23 && currentTime.hour === 0)
+        }
+        return false
     }
 
     private hoursOverlap(currentTime: DrCurrentTime, targetTime: DrTargetTime): boolean {

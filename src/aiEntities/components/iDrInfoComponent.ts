@@ -1,7 +1,7 @@
 
 /**
  * @interface IDrInfoComponent
- * Contains information about the daily routine of and entity. E.g when the curren daily routine started, or when it will end.
+ * Contains information about the daily routine of and entity. E.g when the current daily routine started, or when it will end.
  * 
  * @field entityId: id of the entity for which the daily routine information should be checked
  * @field startHour: start hour of the period - of the current daily routine
