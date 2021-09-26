@@ -347,6 +347,8 @@ export class GotoPoint implements IAiAction {
                 }
                 this.wayroute = waynet.getWayroute(this.startPoint, nearestEndWpName)
                 const fpToWp: Waypoint = { wpName: "TMP_WAYPOINT", x: targetFp.x, y: targetFp.y, z: targetFp.z, rotX: targetFp.rotX, rotY: targetFp.rotY, otherWps: [nearestEndWpName] }
+                //console.log("TARGET:" + fpToWp.wpName + " " + targetFp.x + " " + targetFp.y+ " " + targetFp.y)
+                
                 this.wayroute.push(fpToWp)
             }
             else {
