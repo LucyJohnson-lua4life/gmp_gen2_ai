@@ -3,13 +3,14 @@ import { IActionDescription } from './iActionDescription';
 import { EntityManager } from '../aiStates/entityManager';
 import { getAngleToTarget, getDistance, getPlayerAngle, getDistanceToPoint } from "../aiFunctions/aiUtils";
 import {
-    PlayAnimationForDuration, RunForward, SForwardAttackAction,
+    PlayAnimationForDuration, SForwardAttackAction, StopAnimation,
     SRunParadeJump, SRunStrafeLeft, SRunStrafeRight,
     RunToTargetAction, WaitAction, TurnToTargetAction,
     WarnEnemy, WarnEnemyActionInput, GotoPoint
 } from "../aiFunctions/commonActions";
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
 import { AiState } from '../aiStates/aiState';
+import { IActionsComponent } from './components/iActionsComponent';
 
 export class DefaultMonsterAttackDescription implements IActionDescription {
     entityId: number
@@ -31,34 +32,43 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
     private describeGeneralRoutine(aiState: AiState): void {
         const npcActionUtils = new NpcActionUtils(aiState)
         const entityManager = aiState.getEntityManager()
+        const enemyId = entityManager.getEnemyComponent(this.entityId)?.enemyId ?? -1
+        const nextActions = entityManager.getActionsComponent(this.entityId)?.nextActions ?? []
+        const actionListSize = nextActions?.length ?? 0
+        const characterRangeMap = this.getNearestCharacterRangeMapping(npcActionUtils)
 
-        const enemyId = entityManager.getEnemyComponent(this.entityId).enemyId
 
 
-        const actionListSize = entityManager.getActionsComponent(this.entityId).nextActions.length
         if (this.enemyExists(enemyId)) {
             const range = getDistance(this.entityId, enemyId)
             if (range < 800 && actionListSize < 5) {
                 this.describeFightAction(aiState, enemyId, range)
             }
         }
-        else if (actionListSize < 1) {
+
+        else if (actionListSize <= 2 && characterRangeMap[1] < 500 && !nextActions.some(action => action instanceof WarnEnemy)) {
             //TODO: the world constant should only be fixed in later versions!
-            const charId = npcActionUtils.getNearestCharacter(this.entityId, "NEWWORLD\\NEWWORLD.ZEN")
-            let range = 99999999
             //TODO: currently only player will get attacked/warned, should implement a proper enemy/friend mapping
-            if (charId !== this.entityId && charId !== -1 && revmp.isPlayer(charId)) {
-                range = getDistance(this.entityId, charId)
-            }
-            if (range < 500) {
-                const warnInput: WarnEnemyActionInput = { aiId: this.entityId, enemyId: charId, waitTime: 5000, startTime: Date.now(), warnDistance: 400, attackDistance: 0, entityManager: entityManager }
-                entityManager.getActionsComponent(this.entityId).nextActions.push(new WarnEnemy(warnInput))
-            }
-            else {
-                this.describeEatRoutine(entityManager)
-                this.gotoStartPointOnDistance(aiState, 500)
+            const warnInput: WarnEnemyActionInput = { aiId: this.entityId, enemyId: characterRangeMap[0], waitTime: 3000, startTime: Date.now(), warnDistance: 400, attackDistance: 0, entityManager: entityManager }
+            const actionsComponent = entityManager.getActionsComponent(this.entityId)
+            if (typeof actionsComponent !== 'undefined') {
+                this.clearActionList(actionsComponent)
+                actionsComponent.nextActions.push(new WarnEnemy(warnInput))
             }
         }
+        else if (actionListSize < 1) {
+            this.describeEatRoutine(entityManager)
+            this.gotoStartPointOnDistance(aiState, 500)
+        }
+    }
+
+    private getNearestCharacterRangeMapping(npcActionUtils: NpcActionUtils): [number, number] {
+        const charId = npcActionUtils.getNearestCharacter(this.entityId, "NEWWORLD\\NEWWORLD.ZEN")
+        let range = 99999999
+        if (charId !== this.entityId && charId !== -1 && revmp.isPlayer(charId)) {
+            range = getDistance(this.entityId, charId)
+        }
+        return [charId, range]
     }
 
     private gotoStartPointOnDistance(aiState: AiState, distance: number) {
@@ -150,8 +160,18 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
     }
 
     private describeEatRoutine(entityManager: EntityManager): void {
-        entityManager.getActionsComponent(this.entityId).nextActions.push(new WaitAction(this.entityId, 2000, Date.now()))
-        entityManager.getActionsComponent(this.entityId).nextActions.push(new PlayAnimationForDuration(this.entityId, "S_EAT", 2000))
-        entityManager.getActionsComponent(this.entityId).nextActions.push(new PlayAnimationForDuration(this.entityId, "T_STAND_2_EAT", 2000))
+        const actionsComponent = entityManager.getActionsComponent(this.entityId)
+        if (typeof actionsComponent !== 'undefined') {
+            const random = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
+            actionsComponent.nextActions.push(new StopAnimation(this.entityId, "S_EAT", 1000))
+            actionsComponent.nextActions.push(new PlayAnimationForDuration(this.entityId, "S_EAT", random * 1000))
+        }
+    }
+
+    private clearActionList(actionsComponent: IActionsComponent): void {
+        if (typeof actionsComponent !== 'undefined') {
+            actionsComponent.nextActions = []
+        }
     }
 }
+

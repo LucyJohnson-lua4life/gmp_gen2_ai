@@ -78,7 +78,7 @@ revmp.on("chatCommand", (entity, msg) => {
     debugCommands(entity, msg)
 
     if (command === "/spawn") {
-        aiStateFunctions.spawnNpcByCoordinates(new wolf.Wolf(), 0, 0, 0,"NEWWORLD\\NEWWORLD");
+        aiStateFunctions.spawnNpcByCoordinates(new undeadOrc.UndeadOrc(), 0, 0, 0,"NEWWORLD\\NEWWORLD");
     }
     if (command === "/masochist") {
         setInterval(revmp.attack.bind(revmp), 200, entity, entity);
