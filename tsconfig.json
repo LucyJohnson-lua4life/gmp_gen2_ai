@@ -9,7 +9,7 @@
     "sourceMap": true,
     "importHelpers": true,
     "allowSyntheticDefaultImports": true,
-    "strict": false
+    "strict": true 
   },
   "include": ["src/**/*"]
 }

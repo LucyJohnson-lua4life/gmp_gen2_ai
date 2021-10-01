@@ -9,6 +9,11 @@ class StubAiAction implements IAiAction{
     priority: number;
     aiId: number;
     shouldLoop: boolean;
+    constructor(){
+        this.priority = 1
+        this.aiId = 1
+        this.shouldLoop = false
+    }
     executeAction(): void {
         console.log("test action")
     }
@@ -16,8 +21,8 @@ class StubAiAction implements IAiAction{
 
 Object.defineProperty(global, "revmp", {
     value: {
-        getHealth: (entity) => { return {current: 100, max: 100} },
-        isCharacter: (entity) => { return true }
+        getHealth: (entity:number) => { return {current: 100, max: 100} },
+        isCharacter: (entity:number) => { return true }
     },
 });
 

@@ -17,8 +17,8 @@ export interface IAiNpc extends IPlayer{
     currentPosY:number,
     currentPosZ:number,
     //initial waypoint/freepoint
-    startPoint:string,
-    startWorld:string,
+    startPoint:string|undefined,
+    startWorld:string|undefined,
     npcInstance:string,
-    addAction(action:IAiAction)
+    addAction(action:IAiAction):void
 }
