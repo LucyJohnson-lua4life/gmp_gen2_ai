@@ -29,7 +29,6 @@ export function getWolfInstance() {
             fire: 100,
             fly: 100,
         },
-        weaponMode: revmp.WeaponMode.Fist
     }
 
 }
@@ -189,7 +188,6 @@ export function getOrcWarriorInstance() {
             fire: 100,
             fly: 100,
         },
-        weaponMode: revmp.WeaponMode.Fist
     }
 
 }
@@ -213,7 +211,6 @@ export function getOrcEliteInstance() {
             fire: 100,
             fly: 100,
         },
-        weaponMode: revmp.WeaponMode.TwoHand
     }
 
 }

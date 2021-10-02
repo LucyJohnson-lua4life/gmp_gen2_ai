@@ -2,7 +2,7 @@
 
 
 import { IActionDescription } from "../iActionDescription";
-import { TwohandMasterAttackDescription } from "../twohandMasterAttackDescription";
+import { OrcMasterDescription } from "../orcMasterDescription";
 import { IAiAction } from "../iAiAction";
 import { IAiNpc } from "../iAiNpc";
 import { getUndeadOrcInstance, INSTANCE_ORC_UNDEAD} from "./npcInits";
@@ -38,7 +38,7 @@ export class UndeadOrc implements IAiNpc {
         this.friendIds = [];
         this.respawnTime = 10;
         this.nextActions =  new Array<IAiAction>()
-        this.actionDescriptions = [new TwohandMasterAttackDescription(this.id)]
+        this.actionDescriptions = [new OrcMasterDescription(this.id)]
         this.aiFlags = new Map();
 
         this.lastPosUpdate = 0

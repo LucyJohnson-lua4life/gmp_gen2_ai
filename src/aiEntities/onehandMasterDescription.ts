@@ -11,7 +11,7 @@ import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
 import { AiState } from '../aiStates/aiState';
 import { IActionsComponent } from './components/iActionsComponent';
 
-export class OnehandMasterAttackDescription implements IActionDescription {
+export class OnehandMasterDescription implements IActionDescription {
     entityId: number
     lastAttackTime: number
     attackRange: number
@@ -51,7 +51,7 @@ export class OnehandMasterAttackDescription implements IActionDescription {
                 range = getDistance(this.entityId, charId)
             }
             if (range < 500 && typeof actionsComponent !== 'undefined') {
-                const warnInput: WarnEnemyActionInput = { aiId: this.entityId, enemyId: charId, waitTime: 10000, startTime: Date.now(), warnDistance: 400, attackDistance: 0, entityManager: entityManager }
+                const warnInput: WarnEnemyActionInput = { aiId: this.entityId, enemyId: charId, waitTime: 10000, warnDistance: 400, attackDistance: 0, entityManager: entityManager }
                 actionsComponent.nextActions.push(new WarnEnemy(warnInput))
             }
             else {
@@ -79,34 +79,34 @@ export class OnehandMasterAttackDescription implements IActionDescription {
             this.lastAttackTime = currentTime
         }
         else if (range < this.attackRange - 150) {
-            actionsComponent.nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
+            actionsComponent.nextActions.push(new WaitAction(this.entityId, 400))
             actionsComponent.nextActions.push(new SRunParadeJump(this.entityId))
         }
         else {
             const random = Math.floor(Math.random() * 10);
             const pangle = getAngleToTarget(this.entityId, enemyId)
             if (random < 2) {
-                actionsComponent.nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
+                actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
                 actionsComponent.nextActions.push(new SRunParadeJump(this.entityId))
             }
             else if (random <= 3) {
                 if (pangle > 180) {
-                    actionsComponent.nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
+                    actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
                     actionsComponent.nextActions.push(new SRunStrafeRight(this.entityId))
                 }
                 else {
-                    actionsComponent.nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
+                    actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
                     actionsComponent.nextActions.push(new SRunStrafeLeft(this.entityId))
                 }
             }
             else if (random <= 4) {
-                actionsComponent.nextActions.push(new WaitAction(this.entityId, 300, Date.now()))
+                actionsComponent.nextActions.push(new WaitAction(this.entityId, 300))
                 actionsComponent.nextActions.push(new SRunParadeJump(this.entityId))
-                actionsComponent.nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
+                actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
                 actionsComponent.nextActions.push(new SRunParadeJump(this.entityId))
             }
             else if (random <= 7 && dangle > -20 && dangle < 20) {
-                actionsComponent.nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
+                actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
                 if (getAngleToTarget(this.entityId, enemyId) > 180) {
                     actionsComponent.nextActions.push(new SRunStrafeRight(this.entityId))
                 }
@@ -115,7 +115,7 @@ export class OnehandMasterAttackDescription implements IActionDescription {
                 }
             }
             else if (random <= 9 && dangle > -20 && dangle < 20) {
-                actionsComponent.nextActions.push(new WaitAction(this.entityId, 200, Date.now()))
+                actionsComponent.nextActions.push(new WaitAction(this.entityId, 200))
                 if (getAngleToTarget(this.entityId, enemyId) > 180) {
                     actionsComponent.nextActions.push(new SRunStrafeRight(this.entityId))
                 }
@@ -124,7 +124,7 @@ export class OnehandMasterAttackDescription implements IActionDescription {
                 }
             }
             else {
-                actionsComponent.nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
+                actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
             }
         }
     }
@@ -133,11 +133,11 @@ export class OnehandMasterAttackDescription implements IActionDescription {
     }
 
     private describeAttackAction(actionsComponent: IActionsComponent, enemyId: number, range: number) {
-        actionsComponent.nextActions.push(new WaitAction(this.entityId, 1000, Date.now()))
+        actionsComponent.nextActions.push(new WaitAction(this.entityId, 1000))
         actionsComponent.nextActions.push(new SLeftAttackAction(this.entityId, enemyId, this.attackRange))
-        actionsComponent.nextActions.push(new WaitAction(this.entityId, 300, Date.now()))
+        actionsComponent.nextActions.push(new WaitAction(this.entityId, 300))
         actionsComponent.nextActions.push(new SRightAttackAction(this.entityId, enemyId, this.attackRange))
-        actionsComponent.nextActions.push(new WaitAction(this.entityId, 300, Date.now()))
+        actionsComponent.nextActions.push(new WaitAction(this.entityId, 300))
         actionsComponent.nextActions.push(new SLeftAttackAction(this.entityId, enemyId, this.attackRange))
     }
 

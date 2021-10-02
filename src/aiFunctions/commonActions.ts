@@ -128,21 +128,23 @@ export class WaitAction implements IAiAction {
     aiId: number
     shouldLoop: boolean
     waitTime: number
-    startTime: number
+    startTime: number|undefined
 
-    constructor(aiId: number, waitTime: number, startTime: number) {
+    constructor(aiId: number, waitTime: number) {
         this.aiId = aiId
         this.shouldLoop = true
         this.waitTime = waitTime
-        this.startTime = startTime
 
     }
 
     public executeAction(): void {
+        if(typeof this.startTime === 'undefined'){
+            this.startTime = Date.now()
+        }
+
         if (Date.now() > this.startTime + this.waitTime) {
             this.shouldLoop = false
         }
-
     }
 }
 
@@ -388,7 +390,6 @@ export interface WarnEnemyActionInput {
     aiId: number,
     enemyId: number,
     waitTime: number,
-    startTime: number,
     warnDistance: number,
     attackDistance: number,
     entityManager: EntityManager
@@ -401,7 +402,7 @@ export class WarnEnemy implements IAiAction {
     shouldLoop: boolean
     enemyId: number
     waitTime: number
-    startTime: number
+    startTime: number|undefined
     warnDistance: number
     attackDistance: number
     entityManager: EntityManager
@@ -411,13 +412,15 @@ export class WarnEnemy implements IAiAction {
         this.enemyId = input.enemyId
         this.shouldLoop = true
         this.waitTime = input.waitTime
-        this.startTime = input.startTime
         this.warnDistance = input.warnDistance
         this.attackDistance = input.attackDistance
         this.entityManager = input.entityManager
     }
 
     public executeAction(): void {
+        if(typeof this.startTime === 'undefined'){
+            this.startTime = Date.now()
+        }
         if (revmp.valid(this.enemyId)) {
 
             const y = getAngleToTarget(this.aiId, this.enemyId)
@@ -457,7 +460,7 @@ export class PlayAnimationForDuration implements IAiAction {
     shouldLoop: boolean
     duration: number
     animationName: string
-    startTime: number
+    startTime: number|undefined
 
 
     constructor(aiId: number, animationName: string, duration: number) {
@@ -465,10 +468,12 @@ export class PlayAnimationForDuration implements IAiAction {
         this.shouldLoop = true
         this.duration = duration
         this.animationName = animationName
-        this.startTime = Date.now()
     }
 
     public executeAction(): void {
+        if(typeof this.startTime === 'undefined'){
+            this.startTime = Date.now()
+        }
         if (!isAniPlaying(this.aiId, this.animationName)) {
             revmp.startAnimation(this.aiId, this.animationName)
         }
@@ -479,27 +484,19 @@ export class PlayAnimationForDuration implements IAiAction {
     }
 }
 
-
 export class StopAnimation implements IAiAction {
     aiId: number
     shouldLoop: boolean
-    duration: number
     animationName: string
-    startTime: number
 
 
-    constructor(aiId: number, animationName: string, duration: number) {
+    constructor(aiId: number, animationName: string) {
         this.aiId = aiId
-        this.shouldLoop = true
-        this.duration = duration
+        this.shouldLoop = false
         this.animationName = animationName
-        this.startTime = Date.now()
     }
 
     public executeAction(): void {
         revmp.stopAnimation(this.aiId, this.animationName)
-        if (Date.now() > this.startTime + this.duration) {
-            this.shouldLoop = false
-        }
     }
 }

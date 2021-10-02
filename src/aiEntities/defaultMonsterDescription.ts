@@ -12,7 +12,7 @@ import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
 import { AiState } from '../aiStates/aiState';
 import { IActionsComponent } from './components/iActionsComponent';
 
-export class DefaultMonsterAttackDescription implements IActionDescription {
+export class DefaultMonsterDescription implements IActionDescription {
     entityId: number
     lastAttackTime: number
     attackRange: number
@@ -46,14 +46,15 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
             }
         }
 
-        else if (actionListSize <= 2 && characterRangeMap[1] < 500 && !nextActions.some(action => action instanceof WarnEnemy)) {
+        else if (actionListSize <= 3 && characterRangeMap[1] < 500 && !nextActions.some(action => action instanceof WarnEnemy)) {
             //TODO: the world constant should only be fixed in later versions!
             //TODO: currently only player will get attacked/warned, should implement a proper enemy/friend mapping
-            const warnInput: WarnEnemyActionInput = { aiId: this.entityId, enemyId: characterRangeMap[0], waitTime: 3000, startTime: Date.now(), warnDistance: 400, attackDistance: 0, entityManager: entityManager }
+            const warnInput: WarnEnemyActionInput = { aiId: this.entityId, enemyId: characterRangeMap[0], waitTime: 3000, warnDistance: 400, attackDistance: 0, entityManager: entityManager }
             const actionsComponent = entityManager.getActionsComponent(this.entityId)
             if (typeof actionsComponent !== 'undefined') {
                 this.clearActionList(actionsComponent)
                 actionsComponent.nextActions.push(new WarnEnemy(warnInput))
+                revmp.drawMeleeWeapon(this.entityId)
             }
         }
         else if (actionListSize < 1) {
@@ -100,6 +101,10 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
         const entityManager = aiState.getEntityManager();
         const actionsComponent = entityManager?.getActionsComponent(this.entityId);
 
+        if (revmp.getCombatState(this.entityId).weaponMode === revmp.WeaponMode.None) {
+            revmp.drawMeleeWeapon(this.entityId)
+        }
+
         if (typeof actionsComponent !== 'undefined' && range > 300) {
             actionsComponent.nextActions.push(new RunToTargetAction(this.entityId, enemyId, 300))
         }
@@ -117,41 +122,40 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
     private describeWhenInRange(actionsComponent: IActionsComponent, enemyId: number, range: number): void {
         const dangle = getPlayerAngle(this.entityId) - getAngleToTarget(this.entityId, enemyId)
         const currentTime = Date.now()
-        if (dangle > -20 && dangle < 20 && currentTime - this.lastAttackTime > 3000) {
-            actionsComponent.nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
-            actionsComponent.nextActions.push(new SForwardAttackAction(this.entityId, enemyId, this.attackRange))
+        if (dangle > -20 && dangle < 20 && currentTime - this.lastAttackTime > 2700) {
+            this.describeAttackAction(actionsComponent, enemyId)
             this.lastAttackTime = currentTime
         }
         else if (range < this.attackRange - 150) {
-            actionsComponent.nextActions.push(new WaitAction(this.entityId, 400, Date.now()))
+            actionsComponent.nextActions.push(new WaitAction(this.entityId, 200))
             actionsComponent.nextActions.push(new SRunParadeJump(this.entityId))
         }
         else {
             const random = Math.floor(Math.random() * 10);
             const pangle = getAngleToTarget(this.entityId, enemyId)
-            if (random < 2) {
-                actionsComponent.nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
+            if (random <= 3) {
+                actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
                 actionsComponent.nextActions.push(new SRunParadeJump(this.entityId))
             }
             else if (random <= 5) {
                 if (pangle > 180) {
-                    actionsComponent.nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
+                    actionsComponent.nextActions.push(new WaitAction(this.entityId, 200))
                     actionsComponent.nextActions.push(new SRunStrafeRight(this.entityId))
                 }
                 else {
-                    actionsComponent.nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
+                    actionsComponent.nextActions.push(new WaitAction(this.entityId, 200))
                     actionsComponent.nextActions.push(new SRunStrafeLeft(this.entityId))
                 }
             }
-            else if (random <= 7) {
-                actionsComponent.nextActions.push(new WaitAction(this.entityId, 300, Date.now()))
+            else if (random <= 6) {
+                actionsComponent.nextActions.push(new WaitAction(this.entityId, 300))
                 actionsComponent.nextActions.push(new SRunParadeJump(this.entityId))
-                actionsComponent.nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
+                actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
                 actionsComponent.nextActions.push(new SRunParadeJump(this.entityId))
             }
-            else if (random <= 8 && dangle > -20 && dangle < 20) {
-                actionsComponent.nextActions.push(new WaitAction(this.entityId, 500, Date.now()))
-                if (getAngleToTarget(this.entityId, enemyId) > 180) {
+            else if (random <= 9 && dangle > -20 && dangle < 20) {
+                actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
+                if (pangle > 180) {
                     actionsComponent.nextActions.push(new SRunStrafeRight(this.entityId))
                 }
                 else {
@@ -159,11 +163,15 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
                 }
             }
             else {
-                actionsComponent.nextActions.push(new WaitAction(this.entityId, 250, Date.now()))
+                actionsComponent.nextActions.push(new WaitAction(this.entityId, 200))
             }
         }
     }
 
+    private describeAttackAction(actionsComponent: IActionsComponent, enemyId: number) {
+        actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
+        actionsComponent.nextActions.push(new SForwardAttackAction(this.entityId, enemyId, this.attackRange))
+    }
     private enemyExists(id: number): boolean {
         return id >= 0 && revmp.valid(id) && revmp.isPlayer(id)
     }
@@ -172,8 +180,10 @@ export class DefaultMonsterAttackDescription implements IActionDescription {
         const actionsComponent = entityManager.getActionsComponent(this.entityId)
         if (typeof actionsComponent !== 'undefined') {
             const random = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
-            actionsComponent.nextActions.push(new StopAnimation(this.entityId, "S_EAT", 1000))
+
+            actionsComponent.nextActions.push(new WaitAction(this.entityId, 4000))
             actionsComponent.nextActions.push(new PlayAnimationForDuration(this.entityId, "S_EAT", random * 1000))
+            actionsComponent.nextActions.push(new PlayAnimationForDuration(this.entityId, "T_STAND_2_EAT", 2000))
         }
     }
 
