@@ -3,7 +3,7 @@ import { IActionDescription } from './iActionDescription';
 import { EntityManager } from '../aiStates/entityManager';
 import { getAngleToTarget, getDistance, getPlayerAngle, getDistanceToPoint } from "../aiFunctions/aiUtils";
 import {
-    PlayAnimationForDuration, SForwardAttackAction, StopAnimation,
+    PlayAnimationForDuration, SForwardAttackAction,
     SRunParadeJump, SRunStrafeLeft, SRunStrafeRight,
     RunToTargetAction, WaitAction, TurnToTargetAction,
     WarnEnemy, WarnEnemyActionInput, GotoPoint
@@ -34,7 +34,7 @@ export class DefaultMonsterDescription implements IActionDescription {
         const entityManager = aiState.getEntityManager()
         const enemyId = entityManager.getEnemyComponent(this.entityId)?.enemyId ?? -1
         const nextActions = entityManager.getActionsComponent(this.entityId)?.nextActions ?? []
-        const actionListSize = nextActions?.length ?? 0
+        const actionListSize = nextActions?.length ?? 999999
         const characterRangeMap = this.getNearestCharacterRangeMapping(npcActionUtils)
 
 

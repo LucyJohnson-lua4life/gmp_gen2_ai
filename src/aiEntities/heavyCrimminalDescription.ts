@@ -5,11 +5,12 @@ import {
     SLeftAttackAction, SRightAttackAction,
     SRunParadeJump, SRunStrafeLeft, SRunStrafeRight,
     RunToTargetAction, WaitAction, TurnToTargetAction,
-    WarnEnemy, WarnEnemyActionInput, GotoPoint
+    WarnEnemy, WarnEnemyActionInput, GotoPoint, PlayAnimation
 } from "../aiFunctions/commonActions";
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
 import { AiState } from '../aiStates/aiState';
 import { IActionsComponent } from './components/iActionsComponent';
+import { EntityManager } from 'src/aiStates/entityManager';
 
 export class HeavyCrimminalDescription implements IActionDescription {
     entityId: number
@@ -19,7 +20,7 @@ export class HeavyCrimminalDescription implements IActionDescription {
     constructor(id: number) {
         this.entityId = id
         this.lastAttackTime = 0
-        this.attackRange = 200 
+        this.attackRange = 200
     }
 
     describeAction(aiState: AiState): void {
@@ -29,36 +30,21 @@ export class HeavyCrimminalDescription implements IActionDescription {
     }
 
     private describeGeneralRoutine(aiState: AiState): void {
-        const npcActionUtils = new NpcActionUtils(aiState)
         const entityManager = aiState.getEntityManager()
 
         const enemyId = entityManager.getEnemyComponent(this.entityId)?.enemyId
         const actionsComponent = entityManager.getActionsComponent(this.entityId)
 
-        const actionListSize = entityManager.getActionsComponent(this.entityId)?.nextActions.length
+        const actionListSize = entityManager.getActionsComponent(this.entityId)?.nextActions.length ?? 99999
         if (typeof enemyId !== 'undefined' && this.enemyExists(enemyId)) {
             const range = getDistance(this.entityId, enemyId)
             if (range < 800 && typeof actionsComponent !== 'undefined' && typeof actionListSize !== 'undefined' && actionListSize < 5) {
                 this.describeFightAction(aiState, enemyId, range)
             }
         }
-        else if (typeof actionListSize !== 'undefined' && actionListSize < 1) {
-            //TODO: the world constant should only be fixed in later versions!
-            const charId = npcActionUtils.getNearestCharacter(this.entityId, "NEWWORLD\\NEWWORLD.ZEN")
-            let range = 99999999
-            //TODO: currently only player will get attacked/warned, should implement a proper enemy/friend mapping
-            if (charId !== this.entityId && charId !== -1 && revmp.isPlayer(charId)) {
-                range = getDistance(this.entityId, charId)
-            }
-            if (range < 500 && typeof actionsComponent !== 'undefined') {
-                const warnInput: WarnEnemyActionInput = { aiId: this.entityId, enemyId: charId, waitTime: 10000, warnDistance: 400, attackDistance: 0, entityManager: entityManager }
-                actionsComponent.nextActions.push(new WarnEnemy(warnInput))
-                revmp.drawMeleeWeapon(this.entityId)
-
-            }
-            else {
-                this.gotoStartPointOnDistance(aiState, 500)
-            }
+        else if (typeof actionsComponent !== 'undefined' && actionListSize < 1) {
+            this.describeRoamingRoutine(actionsComponent, aiState)
+            //this.gotoStartPointOnDistance(aiState, 500)
         }
     }
     private describeFightAction(aiState: AiState, enemyId: number, range: number): void {
@@ -167,6 +153,18 @@ export class HeavyCrimminalDescription implements IActionDescription {
                 actionsComponent.nextActions.push(new GotoPoint(this.entityId, aiState, startPoint))
             }
         }
+    }
+
+
+    private describeRoamingRoutine(actionsComponent: IActionsComponent, aiState: AiState): void {
+        //const random = Math.floor(Math.random() * (30 - 15 + 1)) + 15;
+        aiState.getWaynetRegistry().unregisterCrimminal(this.entityId)
+        actionsComponent.nextActions.push(new WaitAction(this.entityId, 60000))
+        actionsComponent.nextActions.push(new PlayAnimation(this.entityId, "S_LGUARD"))
+        const targetPoint = aiState.getWaynetRegistry().registerCrimminalAndGetPoint(this.entityId)
+        console.log(targetPoint)
+        revmp.addOverlay(this.entityId, "HumanS_Relaxed.mds")
+        actionsComponent.nextActions.push(new GotoPoint(this.entityId, aiState, targetPoint))
     }
 
 }

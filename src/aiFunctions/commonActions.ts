@@ -339,6 +339,7 @@ export class GotoPoint implements IAiAction {
         if (Array.from(waynet.waypoints.keys()).includes(targetWaypoint)) {
             this.targetPoint = targetWaypoint
             this.wayroute = waynet.getWayroute(this.startPoint, this.targetPoint)
+               // console.log(this.wayroute)
         } else {
             const targetFp = waynet.freepoints.find(fp => fp.fpName === targetWaypoint)
             if (typeof targetFp !== 'undefined') {
@@ -480,6 +481,26 @@ export class PlayAnimationForDuration implements IAiAction {
         if (Date.now() > this.startTime + this.duration) {
             revmp.stopAnimation(this.aiId, this.animationName)
             this.shouldLoop = false
+        }
+    }
+}
+
+
+export class PlayAnimation implements IAiAction {
+    aiId: number
+    shouldLoop: boolean
+    animationName: string
+
+
+    constructor(aiId: number, animationName: string) {
+        this.aiId = aiId
+        this.shouldLoop = false
+        this.animationName = animationName
+    }
+
+    public executeAction(): void {
+        if (!isAniPlaying(this.aiId, this.animationName)) {
+            revmp.startAnimation(this.aiId, this.animationName)
         }
     }
 }

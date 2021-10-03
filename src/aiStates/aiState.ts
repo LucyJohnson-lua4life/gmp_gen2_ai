@@ -3,6 +3,7 @@ import { IAiNpc } from "../aiEntities/iAiNpc";
 import { IWaynet } from "../waynet/iwaynet";
 import { Waynet } from "../waynet/waynet";
 import { EntityManager } from "./entityManager";
+import { WaynetRegistry } from "./waynetRegistries/waynetRegistry";
 const worldNames: Array<string> = ["NEWWORLD\\NEWWORLD.ZEN", "OLDWORLD\\OLDWORLD.ZEN", "ADDON\\ADDONWORLD.ZEN"]
 /** Entry point to access the all ai related state.*/
 export class AiState {
@@ -17,6 +18,7 @@ export class AiState {
       the check sum maps to a key of all playerids that are in the check sums area
       */
     private characterInPositionAreas: Map<string, Map<number, Array<number>>>;
+    private waynetRegistry: WaynetRegistry;
 
     constructor(wpPath:string, fpPath:string) {
         this.entityManager = new EntityManager()
@@ -25,6 +27,7 @@ export class AiState {
         worldNames.forEach(name => this.characterInPositionAreas.set(name, new Map()))
         this.allBots = []
         this.allPlayer = []
+        this.waynetRegistry = new WaynetRegistry()
     }
 
     public getEntityManager(): EntityManager{
@@ -32,6 +35,10 @@ export class AiState {
     }
     public getWaynet(): IWaynet {
         return this.waynet
+    }
+
+    public getWaynetRegistry(): WaynetRegistry {
+        return this.waynetRegistry
     }
 
     public getCharacterInPositionAreas(): Map<string, Map<number, Array<number>>>{

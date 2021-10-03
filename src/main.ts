@@ -66,6 +66,30 @@ function debugCommands(entity: revmp.Entity, msg: string) {
         const aiAction = new commonActions.GotoPoint(npcid, state, "FP_SMALLTALK_HAFEN_04")
         em.getActionsComponent(npcid).nextActions.push(aiAction)
     }
+
+    if(command === "/tp"){
+        const tpTarget = parseInt(words[1])
+        if(typeof tpTarget !== 'undefined'){
+            const pos = revmp.getPosition(tpTarget)
+            revmp.setPosition(entity, pos)
+        }
+    }
+
+    if(command === "/clearAc"){
+        const tpTarget = parseInt(words[1])
+        if(typeof tpTarget !== 'undefined'){
+            const actionsComponent = em.getActionsComponent(tpTarget) 
+            actionsComponent.nextActions = []
+        }
+    }
+
+    if(command === "/ac"){
+        const tpTarget = 2797
+        if(typeof tpTarget !== 'undefined'){
+            const actionsComponent = em.getActionsComponent(tpTarget) 
+            actionsComponent.nextActions = []
+        }
+    }
 }
 
 revmp.on("attacked", (attacker, target, userEvent) => {
@@ -80,6 +104,7 @@ revmp.on("chatCommand", (entity, msg) => {
     const command = words[0];
     console.log(words);
     debugCommands(entity, msg)
+
 
     if (command === "/spawn") {
         aiStateFunctions.spawnNpcByCoordinates(new undeadOrc.UndeadOrc(), 0, 0, 0,"NEWWORLD\\NEWWORLD");

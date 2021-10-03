@@ -17,9 +17,11 @@ export function gotoPosition(npcPosition:IPositionComponent, x: number, y: numbe
         npcPosition.lastPosX = npcPosition.currentPosX;
         npcPosition.lastPosY = npcPosition.currentPosY;
         npcPosition.lastPosZ = npcPosition.currentPosZ;
-    } else if (npcPosition.lastPosUpdate + 500 < Date.now()) {
+        //fixme fix magic numbers
+    } else if (npcPosition.lastPosUpdate + 500*24 < Date.now()) {
         if (getDistance(npcPosition.lastPosX, npcPosition.lastPosY, npcPosition.lastPosZ, npcPosition.currentPosX, npcPosition.currentPosY, npcPosition.currentPosZ) < 2) {
             const timeDiff = Date.now() - npcPosition.lastPosUpdate
+            //meter per seconds
             const speed = (5*100)*(timeDiff/1000.0)
 
             let dirX = x-npcPosition.currentPosX;
