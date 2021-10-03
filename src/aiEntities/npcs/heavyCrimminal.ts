@@ -1,13 +1,13 @@
 
-
 import { IActionDescription } from "../iActionDescription";
-import { OrcMasterDescription} from "../orcMasterDescription";
+import { HeavyCrimminalDescription } from "../heavyCrimminalDescription";
 import { IAiAction } from "../iAiAction";
-import { IAiNpc } from "../iAiNpc";
-import { getOrcEliteInstance, INSTANCE_ORC_ELITE} from "./npcInits";
 import { WeaponInstances } from "../../serverComponents/weapons";
+import { ArmorInstances } from "../../serverComponents/armors";
+import { IAiNpc } from "../iAiNpc";
+import { getHeavyCrimminalInstance, INSTANCE_HEAVY_CRIMMINAL} from "./npcInits";
 
-export class OrcElite implements IAiNpc {
+export class HeavyCrimminal implements IAiNpc {
     enemyIds: number[];
     friendIds: number[];
     respawnTime: number;
@@ -30,14 +30,14 @@ export class OrcElite implements IAiNpc {
 
 
     constructor() {
-        this.id = revmp.createBot(getOrcEliteInstance());
+        this.id = revmp.createBot(getHeavyCrimminalInstance());
         this.isDead = false;
         this.isUnconscious = false;
         this.enemyIds = [];
         this.friendIds = [];
         this.respawnTime = 10;
         this.nextActions =  new Array<IAiAction>()
-        this.actionDescriptions = [new OrcMasterDescription(this.id)]
+        this.actionDescriptions = [new HeavyCrimminalDescription(this.id)]
         this.aiFlags = new Map();
 
         this.lastPosUpdate = 0
@@ -47,10 +47,14 @@ export class OrcElite implements IAiNpc {
         this.currentPosX = 0
         this.currentPosY = 0
         this.currentPosZ = 0
-        this.npcInstance = INSTANCE_ORC_ELITE
-        revmp.addItem(this.id, WeaponInstances.eliteOrcSword, 1);
-        revmp.equipItem(this.id, WeaponInstances.eliteOrcSword)
-        revmp.setAttributes(this.id, { twoHanded: 100 })
+        this.npcInstance = INSTANCE_HEAVY_CRIMMINAL
+
+        revmp.addOverlay(this.id, "Humans_1hST2.MDS")
+        revmp.setAttributes(this.id, {oneHanded: 100})
+        revmp.addItem(this.id, WeaponInstances.nobleSword, 1);
+        revmp.addItem(this.id, ArmorInstances.guardianArmor, 1);
+        revmp.equipItem(this.id, WeaponInstances.nobleSword)
+        revmp.equipItem(this.id, ArmorInstances.guardianArmor)
     }
     addAction(action: IAiAction) {
         this.nextActions.push(action)

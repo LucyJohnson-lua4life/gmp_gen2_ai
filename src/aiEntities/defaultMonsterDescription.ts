@@ -105,8 +105,8 @@ export class DefaultMonsterDescription implements IActionDescription {
             revmp.drawMeleeWeapon(this.entityId)
         }
 
-        if (typeof actionsComponent !== 'undefined' && range > 300) {
-            actionsComponent.nextActions.push(new RunToTargetAction(this.entityId, enemyId, 300))
+        if (typeof actionsComponent !== 'undefined' && range > this.attackRange) {
+            actionsComponent.nextActions.push(new RunToTargetAction(this.entityId, enemyId, this.attackRange))
         }
         else if (range > 800) {
             entityManager.deleteEnemyComponent(this.entityId)

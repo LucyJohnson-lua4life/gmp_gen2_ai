@@ -3,12 +3,14 @@ const wolf = require("./dist/aiEntities/npcs/wolf");
 const npcInitializer = require("./dist/initNewWorldNpcs");
 const scavenger = require("./dist/aiEntities/npcs/scavenger");
 const orcElite = require("./dist/aiEntities/npcs/orcElite");
+const heavyCrimminal = require("./dist/aiEntities/npcs/heavyCrimminal");
 const orcWarrior = require("./dist/aiEntities/npcs/orcWarrior");
 const undeadOrc = require("./dist/aiEntities/npcs/undeadOrc");
 const funs = require("./dist/aiStates/aiStateFunctions");
 const aiState = require("./dist/aiStates/aiState");
 const aiUpdateLoop = require("./dist/aiStates/aiUpdateLoop");
-const {Instances, initItemInstances} = require("./dist/serverComponents/weapons");
+const {WeaponInstances, initWeaponInstances} = require("./dist/serverComponents/weapons");
+const {ArmorInstances, initArmorInstances} = require("./dist/serverComponents/armors");
 const damageCalculation = require("./dist/serverComponents/damageCalculation");
 const {setAngle, getAngle, getAngleDistance, getPlayerAngle} = require("./dist/aiFunctions/aiUtils");
 //const ai = require("./dist/aiStates/aiUpdateLoop");
@@ -27,12 +29,13 @@ revmp.on("init", () => {
         name: "New World",
         time: { hour: 15 }
     });
-    initItemInstances()
+    initWeaponInstances()
+    initArmorInstances()
 
     revmp.setTime(world, { hour: 15, minute: 0 });
     setInterval(updateLoop.updateAll.bind(updateLoop), 50);
 
-    const testMonster = new wolf.Wolf();
+    const testMonster = new heavyCrimminal.HeavyCrimminal();
     console.log("monster id: " + testMonster.id)
     aiStateFunctions.spawnNpc(testMonster,"HAFEN","NEWWORLD\\NEWWORLD.ZEN")
     npcInitializer.initNewWorldNpcs(state)
@@ -100,7 +103,7 @@ revmp.on("chatCommand", (entity, msg) => {
         setAngle(entity, parseInt(words[1]))
     }
     if (command === "/eq") {
-        const instance = Instances.warsword
+        const instance = WeaponInstances.warSword
         revmp.addItem(entity, instance, 1);
         revmp.setAttributes(entity, {strength: 100, oneHanded: 100})
         revmp.setHealth(entity, {current: 1600, max: 1600})
@@ -125,8 +128,8 @@ revmp.on("chatCommand", (entity, msg) => {
     }
     if (command === "/toorc") {
         revmp.setVisualBody(entity, {bodyMesh: "Orc_BodyElite", headMesh: "Orc_HeadWarrior"})
-        revmp.addItem(entity, Instances.eliteOrcSword, 1);
-        revmp.equipItem(entity, Instances.eliteOrcSword)
+        revmp.addItem(entity, WeaponInstances.eliteOrcSword, 1);
+        revmp.equipItem(entity, WeaponInstances.eliteOrcSword)
         revmp.setAttributes(entity, { twoHanded: 100 })
         revmp.startAnimation(entity, "T_STAND_2_STUMBLE");
     }

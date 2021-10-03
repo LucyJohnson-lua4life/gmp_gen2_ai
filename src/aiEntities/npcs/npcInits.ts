@@ -10,6 +10,7 @@ export const INSTANCE_LURKER = "revmp_lurker"
 export const INSTANCE_ORC_WARRIOR = "revmp_orc_warrior"
 export const INSTANCE_ORC_ELITE = "revmp_orc_elite"
 export const INSTANCE_ORC_UNDEAD = "revmp_orc_elite"
+export const INSTANCE_HEAVY_CRIMMINAL= "revmp_heavy_crimminal"
 
 export function getWolfInstance() {
     return {
@@ -52,7 +53,6 @@ export function getScavengerInstance() {
             fire: 100,
             fly: 100,
         },
-        weaponMode: revmp.WeaponMode.Fist
     }
 
 }
@@ -75,7 +75,6 @@ export function getSnapperInstance() {
             fire: 100,
             fly: 100,
         },
-        weaponMode: revmp.WeaponMode.Fist
     }
 
 }
@@ -98,7 +97,6 @@ export function getWargInstance() {
             fire: 100,
             fly: 100,
         },
-        weaponMode: revmp.WeaponMode.Fist
     }
 
 }
@@ -121,7 +119,6 @@ export function getKeilerInstance() {
             fire: 100,
             fly: 100,
         },
-        weaponMode: revmp.WeaponMode.Fist
     }
 
 }
@@ -143,7 +140,6 @@ export function getLurkerInstance() {
             fire: 100,
             fly: 100,
         },
-        weaponMode: revmp.WeaponMode.Fist
     }
 
 }
@@ -165,7 +161,6 @@ export function getTrollInstance() {
             fire: 100,
             fly: 100,
         },
-        weaponMode: revmp.WeaponMode.Fist
     }
 
 }
@@ -254,6 +249,31 @@ export function getShadowbeastInstance() {
             fire: 100,
             fly: 100,
         },
-        weaponMode: revmp.WeaponMode.Fist
     }
+}
+
+
+export function getHeavyCrimminalInstance() {
+    return {
+        name: "Heavy Crimminal",
+        maxHealth: 1100,
+        visual: "Humans.mds",
+        visualBody: {
+            bodyMesh: "hum_body_Naked0",
+            headMesh: "Hum_Head_Pony",
+            bodyTexture: 9,
+            headTexture: 4
+        },
+        meleeAttack: {
+            edge: 10,
+            range: 20
+        },
+        protection: {
+            blunt: 100,
+            edge: 100,
+            fire: 100,
+            fly: 100,
+        },
+    }
+
 }

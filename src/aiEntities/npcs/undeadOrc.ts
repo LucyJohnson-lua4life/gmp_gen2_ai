@@ -6,7 +6,7 @@ import { OrcMasterDescription } from "../orcMasterDescription";
 import { IAiAction } from "../iAiAction";
 import { IAiNpc } from "../iAiNpc";
 import { getUndeadOrcInstance, INSTANCE_ORC_UNDEAD} from "./npcInits";
-import { Instances } from "../../serverComponents/weapons";
+import { WeaponInstances } from "../../serverComponents/weapons";
 
 export class UndeadOrc implements IAiNpc {
     enemyIds: number[];
@@ -49,8 +49,8 @@ export class UndeadOrc implements IAiNpc {
         this.currentPosY = 0
         this.currentPosZ = 0
         this.npcInstance = INSTANCE_ORC_UNDEAD
-        revmp.addItem(this.id, Instances.eliteOrcSword, 1);
-        revmp.equipItem(this.id, Instances.eliteOrcSword)
+        revmp.addItem(this.id, WeaponInstances.eliteOrcSword, 1);
+        revmp.equipItem(this.id, WeaponInstances.eliteOrcSword)
         revmp.setAttributes(this.id, { twoHanded: 100 })
     }
     addAction(action: IAiAction) {
