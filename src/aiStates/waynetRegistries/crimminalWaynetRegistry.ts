@@ -2,7 +2,7 @@
 export class CrimminalWaynetRegistry {
 
     private registry: Map<string, number>;
-    private availablePoints = ["HAFEN", "FP_SMALLTALK_HAFEN_04","CITY2"]
+    private availablePoints = ["HAFEN"]
 
     constructor() {
         this.registry = new Map()

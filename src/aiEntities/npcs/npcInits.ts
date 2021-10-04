@@ -12,6 +12,12 @@ export const INSTANCE_ORC_ELITE = "revmp_orc_elite"
 export const INSTANCE_ORC_UNDEAD = "revmp_orc_elite"
 export const INSTANCE_HEAVY_CRIMMINAL= "revmp_heavy_crimminal"
 
+/**
+ * non humanoid npcs have currently their weapon mode set to fist, because they cant set them themselfes with "drawMeleeWeapon()" 
+ * and setCombat state doesnt seem to work. therefore we pre initalize the weapon mode so, that for instance their combat state based animations
+ * like S_FISTWALKL work properly
+ *  
+ */
 export function getWolfInstance() {
     return {
         name: "Wolf",
@@ -30,6 +36,7 @@ export function getWolfInstance() {
             fire: 100,
             fly: 100,
         },
+        weaponMode: revmp.WeaponMode.Fist
     }
 
 }
@@ -53,6 +60,7 @@ export function getScavengerInstance() {
             fire: 100,
             fly: 100,
         },
+        weaponMode: revmp.WeaponMode.Fist
     }
 
 }
@@ -75,6 +83,7 @@ export function getSnapperInstance() {
             fire: 100,
             fly: 100,
         },
+        weaponMode: revmp.WeaponMode.Fist
     }
 
 }
@@ -97,6 +106,7 @@ export function getWargInstance() {
             fire: 100,
             fly: 100,
         },
+        weaponMode: revmp.WeaponMode.Fist
     }
 
 }
@@ -119,6 +129,7 @@ export function getKeilerInstance() {
             fire: 100,
             fly: 100,
         },
+        weaponMode: revmp.WeaponMode.Fist
     }
 
 }
@@ -140,6 +151,7 @@ export function getLurkerInstance() {
             fire: 100,
             fly: 100,
         },
+        weaponMode: revmp.WeaponMode.Fist
     }
 
 }
@@ -161,6 +173,7 @@ export function getTrollInstance() {
             fire: 100,
             fly: 100,
         },
+        weaponMode: revmp.WeaponMode.Fist
     }
 
 }
@@ -249,6 +262,7 @@ export function getShadowbeastInstance() {
             fire: 100,
             fly: 100,
         },
+        weaponMode: revmp.WeaponMode.Fist
     }
 }
 

@@ -35,7 +35,7 @@ revmp.on("init", () => {
     revmp.setTime(world, { hour: 15, minute: 0 });
     setInterval(updateLoop.updateAll.bind(updateLoop), 50);
 
-    const testMonster = new heavyCrimminal.HeavyCrimminal();
+    const testMonster = new undeadOrc.UndeadOrc();
     console.log("monster id: " + testMonster.id)
     aiStateFunctions.spawnNpc(testMonster,"HAFEN","NEWWORLD\\NEWWORLD.ZEN")
     npcInitializer.initNewWorldNpcs(state)
@@ -63,7 +63,9 @@ function debugCommands(entity: revmp.Entity, msg: string) {
         positionComponent.currentPosY = pos[1]
         positionComponent.currentPosZ = pos[2]
         em.setPositionsComponent(npcid, positionComponent)
-        const aiAction = new commonActions.GotoPoint(npcid, state, "FP_SMALLTALK_HAFEN_04")
+        
+        const aiAction = new commonActions.GotoPoint(npcid, state, "CITY1", "S_WALKL")
+        em.getActionsComponent(npcid).nextActions = []
         em.getActionsComponent(npcid).nextActions.push(aiAction)
     }
 

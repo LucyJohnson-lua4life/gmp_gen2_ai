@@ -128,7 +128,7 @@ export class WaitAction implements IAiAction {
     aiId: number
     shouldLoop: boolean
     waitTime: number
-    startTime: number|undefined
+    startTime: number | undefined
 
     constructor(aiId: number, waitTime: number) {
         this.aiId = aiId
@@ -138,7 +138,7 @@ export class WaitAction implements IAiAction {
     }
 
     public executeAction(): void {
-        if(typeof this.startTime === 'undefined'){
+        if (typeof this.startTime === 'undefined') {
             this.startTime = Date.now()
         }
 
@@ -300,6 +300,7 @@ export class GotoPosition implements IAiAction {
     }
 }
 
+
 export class GotoPoint implements IAiAction {
 
     aiId: number
@@ -310,17 +311,19 @@ export class GotoPoint implements IAiAction {
     routeIndex: number
     wayroute: Array<Waypoint> | undefined
     aiPos: IPositionComponent | undefined
+    walkAni: string
 
-    constructor(aiId: number, aiState: AiState, targetWaypoint: string) {
+    constructor(aiId: number, aiState: AiState, targetWaypoint: string, walkAni: string) {
         this.aiId = aiId
         this.shouldLoop = true
         this.aiState = aiState
+        this.walkAni = walkAni
 
         const waynet: IWaynet = this.aiState.getWaynet()
         const newestPos: revmp.Vec3 = revmp.getPosition(this.aiId).position
         this.aiPos = this.aiState.getEntityManager().getPositionsComponents(this.aiId)
 
-        let nearestWp: Waypoint | undefined; 
+        let nearestWp: Waypoint | undefined;
         if (typeof this.aiPos !== 'undefined') {
             this.aiPos.currentPosX = newestPos[0]
             this.aiPos.currentPosY = newestPos[1]
@@ -339,7 +342,7 @@ export class GotoPoint implements IAiAction {
         if (Array.from(waynet.waypoints.keys()).includes(targetWaypoint)) {
             this.targetPoint = targetWaypoint
             this.wayroute = waynet.getWayroute(this.startPoint, this.targetPoint)
-               // console.log(this.wayroute)
+            // console.log(this.wayroute)
         } else {
             const targetFp = waynet.freepoints.find(fp => fp.fpName === targetWaypoint)
             if (typeof targetFp !== 'undefined') {
@@ -351,7 +354,7 @@ export class GotoPoint implements IAiAction {
                 this.wayroute = waynet.getWayroute(this.startPoint, nearestEndWpName)
                 const fpToWp: Waypoint = { wpName: "TMP_WAYPOINT", x: targetFp.x, y: targetFp.y, z: targetFp.z, rotX: targetFp.rotX, rotY: targetFp.rotY, otherWps: [nearestEndWpName] }
                 //console.log("TARGET:" + fpToWp.wpName + " " + targetFp.x + " " + targetFp.y+ " " + targetFp.y)
-                
+
                 this.wayroute.push(fpToWp)
             }
             else {
@@ -373,12 +376,12 @@ export class GotoPoint implements IAiAction {
             else {
                 const y = getAngleToPoint(newPos[0], newPos[2], wpToVisit.x, wpToVisit.z)
                 setPlayerAngle(this.aiId, y)
-                revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
+                revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, this.walkAni))
             }
         }
         else {
-            if (isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))) {
-                revmp.stopAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
+            if (isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, this.walkAni))) {
+                revmp.stopAnimation(this.aiId, getCombatStateBasedAni(this.aiId, this.walkAni))
             }
             this.shouldLoop = false
         }
@@ -403,7 +406,7 @@ export class WarnEnemy implements IAiAction {
     shouldLoop: boolean
     enemyId: number
     waitTime: number
-    startTime: number|undefined
+    startTime: number | undefined
     warnDistance: number
     attackDistance: number
     entityManager: EntityManager
@@ -419,7 +422,7 @@ export class WarnEnemy implements IAiAction {
     }
 
     public executeAction(): void {
-        if(typeof this.startTime === 'undefined'){
+        if (typeof this.startTime === 'undefined') {
             this.startTime = Date.now()
         }
         if (revmp.valid(this.enemyId)) {
@@ -438,7 +441,7 @@ export class WarnEnemy implements IAiAction {
             else if (distance < this.attackDistance) {
                 this.setEnemy()
             }
-            else{
+            else {
                 this.shouldLoop = false
             }
 
@@ -461,7 +464,7 @@ export class PlayAnimationForDuration implements IAiAction {
     shouldLoop: boolean
     duration: number
     animationName: string
-    startTime: number|undefined
+    startTime: number | undefined
 
 
     constructor(aiId: number, animationName: string, duration: number) {
@@ -472,7 +475,7 @@ export class PlayAnimationForDuration implements IAiAction {
     }
 
     public executeAction(): void {
-        if(typeof this.startTime === 'undefined'){
+        if (typeof this.startTime === 'undefined') {
             this.startTime = Date.now()
         }
         if (!isAniPlaying(this.aiId, this.animationName)) {
@@ -519,5 +522,22 @@ export class StopAnimation implements IAiAction {
 
     public executeAction(): void {
         revmp.stopAnimation(this.aiId, this.animationName)
+    }
+}
+
+export class SimpleAction implements IAiAction {
+
+    aiId: number
+    shouldLoop: boolean
+    simpleAction: () => void
+
+    constructor(aiId: number, simpleAction: () => void) {
+        this.aiId = aiId
+        this.shouldLoop = false
+        this.simpleAction = simpleAction
+    }
+
+    public executeAction(): void {
+        this.simpleAction()
     }
 }

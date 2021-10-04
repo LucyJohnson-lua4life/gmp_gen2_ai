@@ -57,6 +57,7 @@ export class OrcMasterDescription implements IActionDescription {
 
             }
             else {
+                revmp.putWeaponAway(this.entityId)
                 this.gotoStartPointOnDistance(aiState, 500)
             }
         }
@@ -164,7 +165,7 @@ export class OrcMasterDescription implements IActionDescription {
         if (typeof pointVec !== 'undefined' && typeof startPoint !== 'undefined' && getDistanceToPoint(this.entityId, pointVec) > distance) {
             const actionsComponent = entityManager.getActionsComponent(this.entityId)
             if (typeof actionsComponent !== 'undefined') {
-                actionsComponent.nextActions.push(new GotoPoint(this.entityId, aiState, startPoint))
+                actionsComponent.nextActions.push(new GotoPoint(this.entityId, aiState, startPoint, "S_RUNL"))
             }
         }
     }

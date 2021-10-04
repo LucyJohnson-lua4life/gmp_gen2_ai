@@ -114,7 +114,7 @@ export function getCombatStateBasedAni(entity: revmp.Entity, ani: string) {
 
     const weaponMode = revmp.getCombatState(entity).weaponMode;
 
-    if (weaponMode === revmp.WeaponMode.Fist || weaponMode === revmp.WeaponMode.None) {
+    if (weaponMode === revmp.WeaponMode.Fist) {
         return ani.slice(0, index + 1) + 'FIST' + ani.slice(index + 1);
     }
     else if (weaponMode === revmp.WeaponMode.OneHand) {
@@ -132,7 +132,6 @@ export function getCombatStateBasedAni(entity: revmp.Entity, ani: string) {
     else {
         return ani
     }
-    return ani.slice(0, index + 1) + '2H' + ani.slice(index + 1);
 }
 
 export function isAttackable(entityId: number){

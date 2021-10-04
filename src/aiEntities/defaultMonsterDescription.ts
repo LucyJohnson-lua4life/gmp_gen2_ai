@@ -6,7 +6,7 @@ import {
     PlayAnimationForDuration, SForwardAttackAction,
     SRunParadeJump, SRunStrafeLeft, SRunStrafeRight,
     RunToTargetAction, WaitAction, TurnToTargetAction,
-    WarnEnemy, WarnEnemyActionInput, GotoPoint
+    WarnEnemy, WarnEnemyActionInput, GotoPoint, SimpleAction
 } from "../aiFunctions/commonActions";
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
 import { AiState } from '../aiStates/aiState';
@@ -92,7 +92,10 @@ export class DefaultMonsterDescription implements IActionDescription {
         if (typeof pointVec !== 'undefined' && typeof startPoint !== 'undefined' && getDistanceToPoint(this.entityId, pointVec) > distance) {
             const actionsComponent = entityManager.getActionsComponent(this.entityId)
             if (typeof actionsComponent !== 'undefined') {
-                actionsComponent.nextActions.push(new GotoPoint(this.entityId, aiState, startPoint))
+                actionsComponent.nextActions.push(new GotoPoint(this.entityId, aiState, startPoint, "S_RUNL"))
+                actionsComponent.nextActions.push(new SimpleAction(this.entityId, () => {
+                    revmp.setCombatState(this.entityId, { weaponMode: revmp.WeaponMode.Fist })
+                }))
             }
         }
     }
@@ -102,7 +105,7 @@ export class DefaultMonsterDescription implements IActionDescription {
         const actionsComponent = entityManager?.getActionsComponent(this.entityId);
 
         if (revmp.getCombatState(this.entityId).weaponMode === revmp.WeaponMode.None) {
-            revmp.drawMeleeWeapon(this.entityId)
+            revmp.setCombatState(this.entityId, { weaponMode: revmp.WeaponMode.Fist })
         }
 
         if (typeof actionsComponent !== 'undefined' && range > this.attackRange) {

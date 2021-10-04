@@ -5,7 +5,7 @@ import {
     SLeftAttackAction, SRightAttackAction,
     SRunParadeJump, SRunStrafeLeft, SRunStrafeRight,
     RunToTargetAction, WaitAction, TurnToTargetAction,
-    WarnEnemy, WarnEnemyActionInput, GotoPoint, PlayAnimation
+    PlayAnimation, GotoPoint
 } from "../aiFunctions/commonActions";
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
 import { AiState } from '../aiStates/aiState';
@@ -43,8 +43,8 @@ export class HeavyCrimminalDescription implements IActionDescription {
             }
         }
         else if (typeof actionsComponent !== 'undefined' && actionListSize < 1) {
+            revmp.putWeaponAway(this.entityId)
             this.describeRoamingRoutine(actionsComponent, aiState)
-            //this.gotoStartPointOnDistance(aiState, 500)
         }
     }
     private describeFightAction(aiState: AiState, enemyId: number, range: number): void {
@@ -130,32 +130,6 @@ export class HeavyCrimminalDescription implements IActionDescription {
         actionsComponent.nextActions.push(new SLeftAttackAction(this.entityId, enemyId, this.attackRange))
     }
 
-    private gotoStartPointOnDistance(aiState: AiState, distance: number) {
-        const entityManager = aiState.getEntityManager();
-        const startPoint = entityManager.getPositionsComponents(this.entityId)?.startPoint
-        const startWayPoint = typeof startPoint !== 'undefined' ? aiState.getWaynet().waypoints.get(startPoint) : undefined
-        let pointVec: revmp.Vec3 | undefined = undefined;
-
-        if (typeof startWayPoint === 'undefined') {
-            const startFreepoint = aiState.getWaynet().freepoints.find(fp => fp.fpName === startPoint)
-            if (typeof startFreepoint !== 'undefined') {
-                pointVec = [startFreepoint.x, startFreepoint.y, startFreepoint.z]
-            }
-        }
-        else {
-            pointVec = [startWayPoint.x, startWayPoint.y, startWayPoint.z]
-        }
-
-
-        if (typeof pointVec !== 'undefined' && typeof startPoint !== 'undefined' && getDistanceToPoint(this.entityId, pointVec) > distance) {
-            const actionsComponent = entityManager.getActionsComponent(this.entityId)
-            if (typeof actionsComponent !== 'undefined') {
-                actionsComponent.nextActions.push(new GotoPoint(this.entityId, aiState, startPoint))
-            }
-        }
-    }
-
-
     private describeRoamingRoutine(actionsComponent: IActionsComponent, aiState: AiState): void {
         //const random = Math.floor(Math.random() * (30 - 15 + 1)) + 15;
         aiState.getWaynetRegistry().unregisterCrimminal(this.entityId)
@@ -164,7 +138,7 @@ export class HeavyCrimminalDescription implements IActionDescription {
         const targetPoint = aiState.getWaynetRegistry().registerCrimminalAndGetPoint(this.entityId)
         console.log(targetPoint)
         revmp.addOverlay(this.entityId, "HumanS_Relaxed.mds")
-        actionsComponent.nextActions.push(new GotoPoint(this.entityId, aiState, targetPoint))
+        actionsComponent.nextActions.push(new GotoPoint(this.entityId, aiState, targetPoint, "S_WALKL"))
     }
 
 }
