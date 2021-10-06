@@ -162,12 +162,8 @@ export class TurnToTargetAction implements IAiAction {
 
     public executeAction(): void {
         if (revmp.valid(this.targetId)) {
-
-            const position = revmp.getPosition(this.aiId).position;
-            const targetPosition = revmp.getPosition(this.targetId).position;
             const y = getAngleToTarget(this.aiId, this.targetId)
             setPlayerAngle(this.aiId, y)
-
         }
     }
 }
@@ -187,9 +183,6 @@ export class RunToTargetAction implements IAiAction {
 
     public executeAction(): void {
         if (revmp.valid(this.targetId)) {
-
-            const position = revmp.getPosition(this.aiId).position;
-            const targetPosition = revmp.getPosition(this.targetId).position;
             const y = getAngleToTarget(this.aiId, this.targetId)
             setPlayerAngle(this.aiId, y)
             if (!isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))) {
@@ -352,7 +345,7 @@ export class GotoPoint implements IAiAction {
                     nearestEndWpName = nearestEndWp.wpName
                 }
                 this.wayroute = waynet.getWayroute(this.startPoint, nearestEndWpName)
-                const fpToWp: Waypoint = { wpName: "TMP_WAYPOINT", x: targetFp.x, y: targetFp.y, z: targetFp.z, rotX: targetFp.rotX, rotY: targetFp.rotY, otherWps: [nearestEndWpName] }
+                const fpToWp: Waypoint = { wpName: "TMP_WAYPOINT", x: targetFp.x, y: targetFp.y, z: targetFp.z, rotX: targetFp.rotX, rotZ: targetFp.rotZ, otherWps: [nearestEndWpName] }
                 //console.log("TARGET:" + fpToWp.wpName + " " + targetFp.x + " " + targetFp.y+ " " + targetFp.y)
 
                 this.wayroute.push(fpToWp)

@@ -114,7 +114,7 @@ export class Waynet implements IWaynet {
             y: waypoint.y,
             z: waypoint.z,
             rotX: waypoint.rotX,
-            rotY: waypoint.rotY,
+            rotZ: waypoint.rotZ,
             wpName: waypoint.wpName,
             otherWps: waypoint.otherWps,
             distanceToStart: 0,

@@ -1,7 +1,15 @@
 import { IPositionComponent } from "../aiEntities/components/iPositionComponent";
 import { IAiNpc } from "../aiEntities/iAiNpc";
 import { AiState } from "./aiState";
+import { getAngleToPoint, setPlayerAngle } from "../aiFunctions/aiUtils";
 
+interface PointCoordinates {
+    x: number,
+    y: number,
+    z: number,
+    dirX: number,
+    dirZ: number
+}
 export class AiStateFunctions {
     private aiState: AiState
 
@@ -24,31 +32,34 @@ export class AiStateFunctions {
 
     public spawnNpc(npc: IAiNpc, pointName: string, world: string): void {
         const entityManager = this.aiState.getEntityManager()
-        const npcPosition = this.getCoordinatesForPointName(pointName)
+        const npcPosition = this.getPointCoordinateValues(pointName)
         npc.startPoint = pointName
         npc.startWorld = world
         this.aiState.registerBot(npc)
-        revmp.setPosition(npc.id, [npcPosition[0], npcPosition[1], npcPosition[2]]);
+        revmp.setPosition(npc.id, [npcPosition.x, npcPosition.y, npcPosition.z]);
+        const spawnAngle = getAngleToPoint(npcPosition.x, npcPosition.z, npcPosition.x + npcPosition.dirX, npcPosition.z + npcPosition.dirZ)
+        setPlayerAngle(npc.id, spawnAngle)
+
         const position: IPositionComponent | undefined = entityManager.getPositionsComponents(npc.id)
         if (typeof position !== 'undefined') {
-            position.currentPosX = npcPosition[0]
-            position.currentPosY = npcPosition[1]
-            position.currentPosZ = npcPosition[2]
+            position.currentPosX = npcPosition.x
+            position.currentPosY = npcPosition.y
+            position.currentPosZ = npcPosition.z
             entityManager.setPositionsComponent(npc.id, position)
         }
     }
 
-    private getCoordinatesForPointName(pointName: string): Array<number> {
+    private getPointCoordinateValues(pointName: string): PointCoordinates {
         const waynet = this.aiState.getWaynet()
         const foundFreepoint = waynet.freepoints.find(x => x.fpName === pointName)
         if (typeof foundFreepoint !== 'undefined') {
-            return [foundFreepoint.x, foundFreepoint.y, foundFreepoint.z]
+            return { x: foundFreepoint.x, y: foundFreepoint.y, z: foundFreepoint.z, dirX: foundFreepoint.rotX, dirZ: foundFreepoint.rotZ }
         }
         const foundWaypoint = Array.from(waynet.waypoints.values()).find(wp => wp.wpName === pointName)
         if (typeof foundWaypoint !== 'undefined') {
-            return [foundWaypoint.x, foundWaypoint.y, foundWaypoint.z]
+            return { x: foundWaypoint.x, y: foundWaypoint.y, z: foundWaypoint.z, dirX: foundWaypoint.rotX, dirZ: foundWaypoint.rotZ }
         }
         console.log("Error: for the given point no coordinates where found! Default coordinates will be provided")
-        return [0, 0, 0]
+        return { x: 0, y: 0, z: 0, dirX: 0, dirZ: 0 }
     }
 }

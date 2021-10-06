@@ -19,7 +19,7 @@ export function readFreepoints(path: string): Array<Freepoint> {
         y: Number(freepoint[2]),
         z: Number(freepoint[3]),
         rotX: Number(freepoint[4]),
-        rotY: Number(freepoint[5])
+        rotZ: Number(freepoint[5])
     }));
 }
 
@@ -31,7 +31,7 @@ export function readWaypoints(path: string): Array<Waypoint> {
         y: Number(waypoint[2]),
         z: Number(waypoint[3]),
         rotX: Number(waypoint[4]),
-        rotY: Number(waypoint[5]),
+        rotZ: Number(waypoint[5]),
         otherWps: waypoint.slice(6).map(wpName => wpName.replace(/\r?\n|\r/, ""))
     }))
 }
