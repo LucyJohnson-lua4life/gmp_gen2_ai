@@ -47,7 +47,7 @@ export class OrcMasterDescription implements IActionDescription {
             const charId = npcActionUtils.getNearestCharacter(this.entityId, "NEWWORLD\\NEWWORLD.ZEN")
             let range = 99999999
             //TODO: currently only player will get attacked/warned, should implement a proper enemy/friend mapping
-            if (charId !== this.entityId && charId !== -1 && revmp.isPlayer(charId)) {
+            if (charId !== this.entityId && charId !== -1 && revmp.isPlayer(charId) && revmp.getHealth(charId).current > 0) {
                 range = getDistance(this.entityId, charId)
             }
             if (range < 500 && typeof actionsComponent !== 'undefined') {

@@ -219,6 +219,10 @@ export function getOrcEliteInstance() {
             fire: 100,
             fly: 100,
         },
+        attributes: {
+            strength: 15,
+            twoHanded: 100
+        }
     }
 
 }
@@ -226,13 +230,13 @@ export function getOrcEliteInstance() {
 export function getUndeadOrcInstance() {
     return {
         name: "Undead Orc",
-        maxHealth: 1000,
+        maxHealth: 1600,
         visual: "Orc.mds",
         visualBody: {
             bodyMesh: "UOW_Body"
         },
         meleeAttack: {
-            edge: 10,
+            edge: 20,
             range: 20
         },
         protection: {
@@ -241,6 +245,10 @@ export function getUndeadOrcInstance() {
             fire: 100,
             fly: 100,
         },
+        attributes: {
+            strength: 15,
+            twoHanded: 100
+        }
     }
 
 }
@@ -256,6 +264,10 @@ export function getShadowbeastInstance() {
             edge: 100,
             range: 20
         },
+        attributes: {
+            strength: 200,
+            twoHanded: 100
+        },
         protection: {
             blunt: 100,
             edge: 100,
@@ -265,17 +277,16 @@ export function getShadowbeastInstance() {
         weaponMode: revmp.WeaponMode.Fist
     }
 }
-
-
+//HUM_BODY_BABE0
 export function getHeavyCrimminalInstance() {
     return {
         name: "Heavy Crimminal",
-        maxHealth: 1100,
+        maxHealth: 1600,
         visual: "Humans.mds",
         visualBody: {
             bodyMesh: "hum_body_Naked0",
             headMesh: "Hum_Head_Pony",
-            bodyTexture: 9,
+            bodyTexture: 3,
             headTexture: 4
         },
         meleeAttack: {
@@ -288,6 +299,10 @@ export function getHeavyCrimminalInstance() {
             fire: 100,
             fly: 100,
         },
+        attributes: {
+            strength: 15,
+            oneHanded: 100
+        }
     }
 
 }

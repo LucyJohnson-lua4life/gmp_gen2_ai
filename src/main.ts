@@ -5,6 +5,7 @@ const scavenger = require("./dist/aiEntities/npcs/scavenger");
 const orcElite = require("./dist/aiEntities/npcs/orcElite");
 const heavyCrimminal = require("./dist/aiEntities/npcs/heavyCrimminal");
 const orcWarrior = require("./dist/aiEntities/npcs/orcWarrior");
+const shadowbeast = require("./dist/aiEntities/npcs/shadowbeast");
 const undeadOrc = require("./dist/aiEntities/npcs/undeadOrc");
 const funs = require("./dist/aiStates/aiStateFunctions");
 const aiState = require("./dist/aiStates/aiState");
@@ -35,7 +36,7 @@ revmp.on("init", () => {
     revmp.setTime(world, { hour: 15, minute: 0 });
     setInterval(updateLoop.updateAll.bind(updateLoop), 50);
 
-    const testMonster = new undeadOrc.UndeadOrc();
+    const testMonster = new shadowbeast.Shadowbeast();
     console.log("monster id: " + testMonster.id)
     aiStateFunctions.spawnNpc(testMonster,"HAFEN","NEWWORLD\\NEWWORLD.ZEN")
     npcInitializer.initNewWorldNpcs(state)
@@ -109,7 +110,7 @@ revmp.on("chatCommand", (entity, msg) => {
 
 
     if (command === "/spawn") {
-        aiStateFunctions.spawnNpcByCoordinates(new undeadOrc.UndeadOrc(), 0, 0, 0,"NEWWORLD\\NEWWORLD");
+        aiStateFunctions.spawnNpcByCoordinates(new shadowbeast.Shadowbeast(), 0, 0, 0,"NEWWORLD\\NEWWORLD");
     }
     if (command === "/masochist") {
         setInterval(revmp.attack.bind(revmp), 200, entity, entity);
@@ -132,11 +133,13 @@ revmp.on("chatCommand", (entity, msg) => {
     if (command === "/eq") {
         const instance = WeaponInstances.warSword
         revmp.addItem(entity, instance, 1);
+        revmp.addItem(entity,ArmorInstances.vlkFemaleArmor , 1);
+        revmp.addItem(entity,ArmorInstances.vlkMaleArmor , 1);
         revmp.setAttributes(entity, {strength: 100, oneHanded: 100})
-        revmp.setHealth(entity, {current: 1600, max: 1600})
+        revmp.setHealth(entity, {current: 2100, max: 2100})
         revmp.addOverlay(entity, "Humans_1hST2.MDS")
         const attribute = revmp.getAttributes(entity)
-        console.log("one handed"+ attribute.oneHanded)
+        console.log("one handed "+ attribute.oneHanded)
     }
     if (command === "/health") {
         revmp.setHealth(entity, { current: 700, max: 1100 })

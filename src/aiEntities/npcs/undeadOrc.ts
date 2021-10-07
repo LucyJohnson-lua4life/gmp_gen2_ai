@@ -51,7 +51,7 @@ export class UndeadOrc implements IAiNpc {
         this.npcInstance = INSTANCE_ORC_UNDEAD
         revmp.addItem(this.id, WeaponInstances.eliteOrcSword, 1);
         revmp.equipItem(this.id, WeaponInstances.eliteOrcSword)
-        revmp.setAttributes(this.id, { twoHanded: 100 })
+        //revmp.setAttributes(this.id, { twoHanded: 100 })
     }
     addAction(action: IAiAction) {
         this.nextActions.push(action)

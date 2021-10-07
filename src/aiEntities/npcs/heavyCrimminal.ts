@@ -50,7 +50,7 @@ export class HeavyCrimminal implements IAiNpc {
         this.npcInstance = INSTANCE_HEAVY_CRIMMINAL
 
         revmp.addOverlay(this.id, "Humans_1hST2.MDS")
-        revmp.setAttributes(this.id, {oneHanded: 100})
+        //revmp.setAttributes(this.id, {oneHanded: 100})
         revmp.addItem(this.id, WeaponInstances.nobleSword, 1);
         revmp.addItem(this.id, ArmorInstances.guardianArmor, 1);
         revmp.equipItem(this.id, WeaponInstances.nobleSword)

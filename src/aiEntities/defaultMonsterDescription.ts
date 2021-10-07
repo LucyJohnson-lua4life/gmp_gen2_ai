@@ -46,7 +46,7 @@ export class DefaultMonsterDescription implements IActionDescription {
             }
         }
 
-        else if (actionListSize <= 3 && characterRangeMap[1] < 500 && !nextActions.some(action => action instanceof WarnEnemy)) {
+        else if (actionListSize <= 3 && characterRangeMap[1] < 500 && revmp.getHealth(characterRangeMap[0]).current > 0 && !nextActions.some(action => action instanceof WarnEnemy)) {
             //TODO: the world constant should only be fixed in later versions!
             //TODO: currently only player will get attacked/warned, should implement a proper enemy/friend mapping
             const warnInput: WarnEnemyActionInput = { aiId: this.entityId, enemyId: characterRangeMap[0], waitTime: 3000, warnDistance: 400, attackDistance: 0, entityManager: entityManager }
