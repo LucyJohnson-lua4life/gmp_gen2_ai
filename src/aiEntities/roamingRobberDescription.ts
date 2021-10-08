@@ -150,6 +150,7 @@ export class RoamingRobberDescription implements IActionDescription {
         actionsComponent.nextActions.push(new PlayAnimation(this.entityId, "S_LGUARD"))
         const targetPoint = aiState.getWaynetRegistry().registerCrimminalAndGetPoint(this.entityId)
         revmp.addOverlay(this.entityId, "HumanS_Relaxed.mds")
+        console.log(this.entityId + "robber goes to: "+targetPoint)
         actionsComponent.nextActions.push(new GotoPoint(this.entityId, aiState, targetPoint, "S_WALKL"))
     }
 

@@ -22,7 +22,7 @@ export const INSTANCE_ROAMING_ROBBER= "revmp_roaming_robber"
 export function getWolfInstance() {
     return {
         name: "Wolf",
-        maxHealth: 200,
+        maxHealth: 500,
         visual: "Wolf.mds",
         visualBody: {
             bodyMesh: "Wol_Body"
@@ -37,6 +37,10 @@ export function getWolfInstance() {
             fire: 100,
             fly: 100,
         },
+
+        attributes: {
+            strength: 100,
+        },
         weaponMode: revmp.WeaponMode.Fist
     }
 
@@ -46,7 +50,7 @@ export function getWolfInstance() {
 export function getScavengerInstance() {
     return {
         name: "Scavenger",
-        maxHealth: 200,
+        maxHealth: 500,
         visual: "Scavenger.mds",
         visualBody: {
             bodyMesh: "Sca_Body"
@@ -61,6 +65,9 @@ export function getScavengerInstance() {
             fire: 100,
             fly: 100,
         },
+        attributes: {
+            strength: 100,
+        },
         weaponMode: revmp.WeaponMode.Fist
     }
 
@@ -69,7 +76,7 @@ export function getScavengerInstance() {
 export function getSnapperInstance() {
     return {
         name: "Snapper",
-        maxHealth: 400,
+        maxHealth: 500,
         visual: "Snapper.mds",
         visualBody: {
             bodyMesh: "Sna_Body"
@@ -84,6 +91,9 @@ export function getSnapperInstance() {
             fire: 100,
             fly: 100,
         },
+        attributes: {
+            strength: 200,
+        },
         weaponMode: revmp.WeaponMode.Fist
     }
 
@@ -92,7 +102,7 @@ export function getSnapperInstance() {
 export function getWargInstance() {
     return {
         name: "Warg",
-        maxHealth: 500,
+        maxHealth: 700,
         visual: "Wolf.mds",
         visualBody: {
             bodyMesh: "Warg_Body2"
@@ -107,6 +117,9 @@ export function getWargInstance() {
             fire: 100,
             fly: 100,
         },
+        attributes: {
+            strength: 150,
+        },
         weaponMode: revmp.WeaponMode.Fist
     }
 
@@ -115,7 +128,7 @@ export function getWargInstance() {
 export function getKeilerInstance() {
     return {
         name: "Keiler",
-        maxHealth: 200,
+        maxHealth: 500,
         visual: "Keiler.mds",
         visualBody: {
             bodyMesh: "Keiler_Body"
@@ -130,6 +143,9 @@ export function getKeilerInstance() {
             fire: 100,
             fly: 100,
         },
+        attributes: {
+            strength: 100,
+        },
         weaponMode: revmp.WeaponMode.Fist
     }
 
@@ -137,7 +153,7 @@ export function getKeilerInstance() {
 export function getLurkerInstance() {
     return {
         name: "Lurker",
-        maxHealth: 200,
+        maxHealth: 500,
         visual: "Lurker.mds",
         visualBody: {
             bodyMesh: "Lur_Body"
@@ -152,6 +168,9 @@ export function getLurkerInstance() {
             fire: 100,
             fly: 100,
         },
+        attributes: {
+            strength: 100,
+        },
         weaponMode: revmp.WeaponMode.Fist
     }
 
@@ -159,7 +178,7 @@ export function getLurkerInstance() {
 export function getTrollInstance() {
     return {
         name: "Troll",
-        maxHealth: 1200,
+        maxHealth: 2000,
         visual: "Troll.mds",
         visualBody: {
             bodyMesh: "Tro_Body"
@@ -174,6 +193,9 @@ export function getTrollInstance() {
             fire: 100,
             fly: 100,
         },
+        attributes: {
+            strength: 200,
+        },
         weaponMode: revmp.WeaponMode.Fist
     }
 
@@ -181,7 +203,7 @@ export function getTrollInstance() {
 export function getOrcWarriorInstance() {
     return {
         name: "Orc Warrior",
-        maxHealth: 500,
+        maxHealth: 1000,
         visual: "Orc.mds",
         visualBody: {
             bodyMesh: "Orc_BodyWarrior",
@@ -197,6 +219,10 @@ export function getOrcWarriorInstance() {
             fire: 100,
             fly: 100,
         },
+        attributes: {
+            strength: 100,
+            twoHanded: 100
+        }
     }
 
 }
