@@ -239,7 +239,7 @@ export class ThreatenPlayerAction implements IAiAction {
 
         }
         else if (Date.now() > this.startTime + this.waitTime) {
-            this.sendMessageToNearbyPlayers(this.aiName + ": " +  "I've had enough. Let's give you a lesson!")
+            this.sendMessageToNearbyPlayers(this.aiName + ": " +  "I've had enough. Let's teach you a lesson!")
             this.shouldLoop = false
             this.setEnemy()
         }

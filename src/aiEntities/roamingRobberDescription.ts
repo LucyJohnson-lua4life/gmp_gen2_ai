@@ -34,7 +34,7 @@ export class RoamingRobberDescription implements IActionDescription {
         const entityManager = aiState.getEntityManager()
         const enemyId = entityManager.getEnemyComponent(this.entityId)?.enemyId
         const actionsComponent = entityManager.getActionsComponent(this.entityId)
-
+        const nextActions = entityManager.getActionsComponent(this.entityId)?.nextActions ?? []
         const actionListSize = entityManager.getActionsComponent(this.entityId)?.nextActions.length ?? 99999
 
         if (typeof enemyId !== 'undefined' && this.enemyExists(enemyId)) {
@@ -43,7 +43,7 @@ export class RoamingRobberDescription implements IActionDescription {
                 this.describeFightAction(aiState, enemyId, range)
             }
         }
-        else if (typeof actionsComponent !== 'undefined' && actionListSize < 1) {
+        else if (typeof actionsComponent !== 'undefined' && actionListSize < 1  && !nextActions.some(action => action instanceof ThreatenPlayerAction)) {
             //TODO: the world constant should only be fixed in later versions!
             const charId = npcActionUtils.getNearestCharacter(this.entityId, "NEWWORLD\\NEWWORLD.ZEN")
             let range = 99999999
@@ -51,14 +51,14 @@ export class RoamingRobberDescription implements IActionDescription {
             if (charId !== this.entityId && charId !== -1 && revmp.isPlayer(charId) && revmp.getHealth(charId).current > 0) {
                 range = getDistance(this.entityId, charId)
             }
-            if (range < 500 && typeof actionsComponent !== 'undefined' && revmp.isPlayer(charId)) {
+            if (range < 500 && typeof actionsComponent !== 'undefined' && revmp.isPlayer(charId) && revmp.getHealth(charId).current > 0) {
                 actionsComponent.nextActions.push(new ThreatenPlayerAction(entityManager, this.entityId, charId, 200, 10000))
             }
-            else {
-                revmp.putWeaponAway(this.entityId)
-                //this.describeRoamingRoutine(actionsComponent, aiState)
-            }
         }
+            else if (typeof actionsComponent !== 'undefined' && actionListSize < 1) {
+                revmp.putWeaponAway(this.entityId)
+                this.describeRoamingRoutine(actionsComponent, aiState)
+            }
     }
     private describeFightAction(aiState: AiState, enemyId: number, range: number): void {
         const entityManager = aiState.getEntityManager();
@@ -144,12 +144,11 @@ export class RoamingRobberDescription implements IActionDescription {
     }
 
     private describeRoamingRoutine(actionsComponent: IActionsComponent, aiState: AiState): void {
-        //const random = Math.floor(Math.random() * (30 - 15 + 1)) + 15;
+        const random = Math.floor(Math.random() * (30 - 15 + 1)) + 15;
         aiState.getWaynetRegistry().unregisterCrimminal(this.entityId)
-        actionsComponent.nextActions.push(new WaitAction(this.entityId, 60000))
+        actionsComponent.nextActions.push(new WaitAction(this.entityId, random))
         actionsComponent.nextActions.push(new PlayAnimation(this.entityId, "S_LGUARD"))
         const targetPoint = aiState.getWaynetRegistry().registerCrimminalAndGetPoint(this.entityId)
-        console.log(targetPoint)
         revmp.addOverlay(this.entityId, "HumanS_Relaxed.mds")
         actionsComponent.nextActions.push(new GotoPoint(this.entityId, aiState, targetPoint, "S_WALKL"))
     }
