@@ -11,6 +11,7 @@ export const INSTANCE_ORC_WARRIOR = "revmp_orc_warrior"
 export const INSTANCE_ORC_ELITE = "revmp_orc_elite"
 export const INSTANCE_ORC_UNDEAD = "revmp_orc_elite"
 export const INSTANCE_HEAVY_CRIMMINAL= "revmp_heavy_crimminal"
+export const INSTANCE_ROAMING_ROBBER= "revmp_roaming_robber"
 
 /**
  * non humanoid npcs have currently their weapon mode set to fist, because they cant set them themselfes with "drawMeleeWeapon()" 
@@ -282,6 +283,35 @@ export function getHeavyCrimminalInstance() {
     return {
         name: "Heavy Crimminal",
         maxHealth: 1600,
+        visual: "Humans.mds",
+        visualBody: {
+            bodyMesh: "hum_body_Naked0",
+            headMesh: "Hum_Head_Pony",
+            bodyTexture: 3,
+            headTexture: 4
+        },
+        meleeAttack: {
+            edge: 10,
+            range: 20
+        },
+        protection: {
+            blunt: 100,
+            edge: 100,
+            fire: 100,
+            fly: 100,
+        },
+        attributes: {
+            strength: 15,
+            oneHanded: 100
+        }
+    }
+
+}
+
+export function getRoamingRobberInstance() {
+    return {
+        name: "Roaming Robber",
+        maxHealth: 1200,
         visual: "Humans.mds",
         visualBody: {
             bodyMesh: "hum_body_Naked0",

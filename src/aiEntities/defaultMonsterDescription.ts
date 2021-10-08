@@ -109,7 +109,7 @@ export class DefaultMonsterDescription implements IActionDescription {
         }
 
         if (typeof actionsComponent !== 'undefined' && range > this.attackRange) {
-            actionsComponent.nextActions.push(new RunToTargetAction(this.entityId, enemyId, this.attackRange))
+            actionsComponent.nextActions.push(new RunToTargetAction(this.entityId, enemyId))
         }
         else if (range > 800) {
             entityManager.deleteEnemyComponent(this.entityId)

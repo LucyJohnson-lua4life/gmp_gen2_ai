@@ -54,7 +54,7 @@ export class HeavyCrimminalDescription implements IActionDescription {
             revmp.drawMeleeWeapon(this.entityId)
         }
         if (typeof actionsComponent !== 'undefined' && range > this.attackRange) {
-            actionsComponent.nextActions.push(new RunToTargetAction(this.entityId, enemyId, 300))
+            actionsComponent.nextActions.push(new RunToTargetAction(this.entityId, enemyId))
         }
         else if (typeof actionsComponent !== 'undefined' && range > 800) {
             entityManager.deleteEnemyComponent(this.entityId)

@@ -172,13 +172,11 @@ export class RunToTargetAction implements IAiAction {
     aiId: number
     shouldLoop: boolean
     targetId: number
-    targetDistance: number
 
-    constructor(aiId: number, targetId: number, targetDistance: number) {
+    constructor(aiId: number, targetId: number) {
         this.aiId = aiId
         this.shouldLoop = false
         this.targetId = targetId
-        this.targetDistance = targetDistance
     }
 
     public executeAction(): void {
@@ -190,6 +188,80 @@ export class RunToTargetAction implements IAiAction {
             }
 
         }
+    }
+}
+
+
+export class ThreatenPlayerAction implements IAiAction {
+    aiId: number
+    shouldLoop: boolean
+    targetId: number
+    chaseDistance: number
+    waitTime: number
+    startTime: number | undefined
+    entityManager: EntityManager
+    timesWarned: number
+    aiName: string
+
+    constructor(entityManager: EntityManager, aiId: number, targetId: number, chaseDistance: number, waitTime: number) {
+        this.aiId = aiId
+        this.shouldLoop = true
+        this.targetId = targetId
+        this.chaseDistance = chaseDistance
+        this.waitTime = waitTime
+        this.entityManager = entityManager
+        this.timesWarned = 0
+        this.aiName = revmp.getName(this.aiId).name ?? "Enemy"
+    }
+
+    public executeAction(): void {
+        if (typeof this.startTime === 'undefined') {
+            this.startTime = Date.now()
+            this.sendMessageToNearbyPlayers(this.aiName + ": " + "Hey idiot! What was that stupid look of yours?")
+            this.timesWarned++
+        }
+        if (revmp.valid(this.targetId) && Date.now() < this.startTime + this.waitTime) {
+            const y = getAngleToTarget(this.aiId, this.targetId)
+            setPlayerAngle(this.aiId, y)
+            const distance = getDistance(this.aiId, this.targetId)
+
+            if(Date.now() > this.startTime + this.waitTime/2 && this.timesWarned === 1){
+                this.sendMessageToNearbyPlayers(this.aiName + ": " + "EY fuck face! I'm talking to YOU!")
+                this.timesWarned++
+            }
+
+            if (!isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL")) && distance > this.chaseDistance) {
+                revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
+            }
+            else if (distance < this.chaseDistance) {
+                revmp.stopAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
+            }
+
+        }
+        else if (Date.now() > this.startTime + this.waitTime) {
+            this.sendMessageToNearbyPlayers(this.aiName + ": " +  "I've had enough. Let's give you a lesson!")
+            this.shouldLoop = false
+            this.setEnemy()
+        }
+        else {
+            this.shouldLoop = false
+        }
+    }
+
+    private setEnemy(): void {
+        this.shouldLoop = false
+        const enemyComponent: IEnemyComponent = { entityId: this.aiId, enemyId: this.targetId }
+        this.entityManager.setEnemyComponent(this.aiId, enemyComponent)
+    }
+
+    private sendMessageToNearbyPlayers(message: string):void{
+        revmp.players.forEach(player => {
+            const distance = getDistance(this.aiId, player)
+            if(distance < this.chaseDistance*4){
+                revmp.sendChatMessage(player, message)
+            }
+        })
+
     }
 }
 
