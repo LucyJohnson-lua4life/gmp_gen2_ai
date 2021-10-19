@@ -24,6 +24,33 @@ export function getAngleToPoint(x1: number, y1: number, x2: number, y2: number):
     return theta - 90; // Idk why Gothic needs -90
 }
 
+export function getWaynetPointAngle(playerX: number, playerZ: number, waynetPointDirX: number, waynetPointDirY: number): number {
+    let x1 = playerX
+    let x2 = playerX + waynetPointDirX
+    let y1 = playerZ
+    let y2 = playerZ + waynetPointDirY
+
+    if (x1 == x2 && y1 == y2) {
+        return 0;
+    }
+    let x = x2 - x1
+    let y = y2 - y1
+
+    let angle = Math.atan(Math.abs(y) / Math.abs(x)) * 180.0 / 3.14;
+
+    if (x < 0 && y > 0) {
+        angle = 180 - angle
+    }
+    else if (x < 0 && y < 0) {
+
+        angle = angle + 180
+    }
+    else if (x > 0 && y < 0) {
+        angle = 360 - angle
+    }
+    return angle
+}
+
 
 /**
  * Returns the the angle that is necessary so that npc1 looks to npc2
@@ -52,9 +79,9 @@ export function getDistance(entityId1: number, entityId2: number) {
  * @param entityId id of the first npc
  * @param point waypoint/freepoint
  */
-export function getDistanceToPoint(entityId: number, point:revmp.Vec3) {
+export function getDistanceToPoint(entityId: number, point: revmp.Vec3) {
     const characterPosition = revmp.getPosition(entityId).position;
-    return vec3.distance(point,characterPosition);
+    return vec3.distance(point, characterPosition);
 }
 
 /**
@@ -134,6 +161,6 @@ export function getCombatStateBasedAni(entity: revmp.Entity, ani: string) {
     }
 }
 
-export function isAttackable(entityId: number){
-    return revmp.isCharacter(entityId) && revmp.getHealth(entityId).current > 0 && revmp.getCombatState(entityId).unconscious ===false
+export function isAttackable(entityId: number) {
+    return revmp.isCharacter(entityId) && revmp.getHealth(entityId).current > 0 && revmp.getCombatState(entityId).unconscious === false
 }

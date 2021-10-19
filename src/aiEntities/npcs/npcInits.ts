@@ -10,8 +10,11 @@ export const INSTANCE_LURKER = "revmp_lurker"
 export const INSTANCE_ORC_WARRIOR = "revmp_orc_warrior"
 export const INSTANCE_ORC_ELITE = "revmp_orc_elite"
 export const INSTANCE_ORC_UNDEAD = "revmp_orc_elite"
-export const INSTANCE_HEAVY_CRIMMINAL= "revmp_heavy_crimminal"
-export const INSTANCE_ROAMING_ROBBER= "revmp_roaming_robber"
+export const INSTANCE_HEAVY_CRIMMINAL = "revmp_heavy_crimminal"
+export const INSTANCE_ROAMING_ROBBER = "revmp_roaming_robber"
+export const INSTANCE_ROAMING_CITIZEN_MALE = "revmp_roaming_citizen_male"
+export const INSTANCE_ROAMING_CITIZEN_FEMALE = "revmp_roaming_citizen_female"
+export const INSTANCE_DEMON_KING = "revmp_demon_king"
 
 /**
  * non humanoid npcs have currently their weapon mode set to fist, because they cant set them themselfes with "drawMeleeWeapon()" 
@@ -19,7 +22,7 @@ export const INSTANCE_ROAMING_ROBBER= "revmp_roaming_robber"
  * like S_FISTWALKL work properly
  *  
  */
-export function getWolfInstance() {
+export function getWolfInstance(): revmp.BotTemplate {
     return {
         name: "Wolf",
         maxHealth: 500,
@@ -47,7 +50,7 @@ export function getWolfInstance() {
 }
 
 
-export function getScavengerInstance() {
+export function getScavengerInstance(): revmp.BotTemplate {
     return {
         name: "Scavenger",
         maxHealth: 500,
@@ -73,7 +76,7 @@ export function getScavengerInstance() {
 
 }
 
-export function getSnapperInstance() {
+export function getSnapperInstance(): revmp.BotTemplate {
     return {
         name: "Snapper",
         maxHealth: 500,
@@ -99,7 +102,7 @@ export function getSnapperInstance() {
 
 }
 
-export function getWargInstance() {
+export function getWargInstance(): revmp.BotTemplate {
     return {
         name: "Warg",
         maxHealth: 700,
@@ -125,7 +128,7 @@ export function getWargInstance() {
 
 }
 
-export function getKeilerInstance() {
+export function getKeilerInstance(): revmp.BotTemplate {
     return {
         name: "Keiler",
         maxHealth: 500,
@@ -150,7 +153,7 @@ export function getKeilerInstance() {
     }
 
 }
-export function getLurkerInstance() {
+export function getLurkerInstance(): revmp.BotTemplate {
     return {
         name: "Lurker",
         maxHealth: 500,
@@ -175,7 +178,7 @@ export function getLurkerInstance() {
     }
 
 }
-export function getTrollInstance() {
+export function getTrollInstance(): revmp.BotTemplate {
     return {
         name: "Troll",
         maxHealth: 2000,
@@ -200,7 +203,7 @@ export function getTrollInstance() {
     }
 
 }
-export function getOrcWarriorInstance() {
+export function getOrcWarriorInstance(): revmp.BotTemplate {
     return {
         name: "Orc Warrior",
         maxHealth: 1000,
@@ -227,7 +230,7 @@ export function getOrcWarriorInstance() {
 
 }
 
-export function getOrcEliteInstance() {
+export function getOrcEliteInstance(): revmp.BotTemplate {
     return {
         name: "Orc Elite",
         maxHealth: 1000,
@@ -254,7 +257,7 @@ export function getOrcEliteInstance() {
 
 }
 
-export function getUndeadOrcInstance() {
+export function getUndeadOrcInstance(): revmp.BotTemplate {
     return {
         name: "Undead Orc",
         maxHealth: 1600,
@@ -279,7 +282,7 @@ export function getUndeadOrcInstance() {
     }
 
 }
-export function getShadowbeastInstance() {
+export function getShadowbeastInstance(): revmp.BotTemplate {
     return {
         name: "Shadow beast",
         maxHealth: 1000,
@@ -305,7 +308,7 @@ export function getShadowbeastInstance() {
     }
 }
 //HUM_BODY_BABE0
-export function getHeavyCrimminalInstance() {
+export function getHeavyCrimminalInstance(): revmp.BotTemplate {
     return {
         name: "Heavy Crimminal",
         maxHealth: 1600,
@@ -334,7 +337,7 @@ export function getHeavyCrimminalInstance() {
 
 }
 
-export function getRoamingRobberInstance() {
+export function getRoamingRobberInstance(): revmp.BotTemplate {
     return {
         name: "Roaming Robber",
         maxHealth: 1200,
@@ -358,6 +361,95 @@ export function getRoamingRobberInstance() {
         attributes: {
             strength: 15,
             oneHanded: 100
+        }
+    }
+
+}
+
+export function getRoamingCitizenMaleInstance(): revmp.BotTemplate {
+    return {
+        name: "Citizen",
+        maxHealth: 700,
+        visual: "Humans.mds",
+        visualBody: {
+            bodyMesh: "hum_body_Naked0",
+            headMesh: "Hum_Head_Pony",
+            bodyTexture: 3,
+            headTexture: 4
+        },
+        meleeAttack: {
+            edge: 10,
+            range: 20
+        },
+        protection: {
+            blunt: 100,
+            edge: 100,
+            fire: 100,
+            fly: 100,
+        },
+        attributes: {
+            strength: 15,
+            oneHanded: 100
+        }
+    }
+
+}
+
+export function getRoamingCitizenFemaleInstance(): revmp.BotTemplate {
+    return {
+        name: "Citizen",
+        maxHealth: 700,
+        visual: "Humans.mds",
+        visualBody: {
+
+            bodyMesh: "HUM_BODY_BABE0",
+            headMesh: "Hum_Head_Pony",
+            bodyTexture: 3,
+            headTexture: 4
+        },
+        meleeAttack: {
+            edge: 10,
+            range: 20
+        },
+        protection: {
+            blunt: 100,
+            edge: 100,
+            fire: 100,
+            fly: 100,
+        },
+        attributes: {
+            strength: 15,
+            oneHanded: 100
+        }
+    }
+
+}
+
+export function getDemonKingInstance(): revmp.BotTemplate {
+    return {
+        name: "Demon King",
+        maxHealth: 2200,
+        visual: "Humans.mds",
+        visualBody: {
+            bodyMesh: "hum_body_Naked0",
+            headMesh: "Hum_Head_Pony",
+            bodyTexture: 3,
+            headTexture: 4
+        },
+        meleeAttack: {
+            edge: 10,
+            range: 20
+        },
+        protection: {
+            blunt: 100,
+            edge: 100,
+            fire: 100,
+            fly: 100,
+        },
+        attributes: {
+            strength: 15,
+            oneHanded: 100,
+            twoHanded: 100
         }
     }
 

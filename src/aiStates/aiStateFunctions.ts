@@ -1,7 +1,7 @@
 import { IPositionComponent } from "../aiEntities/components/iPositionComponent";
 import { IAiNpc } from "../aiEntities/iAiNpc";
 import { AiState } from "./aiState";
-import { getAngleToPoint, setPlayerAngle } from "../aiFunctions/aiUtils";
+import { getAngleToPoint, getWaynetPointAngle, setPlayerAngle } from "../aiFunctions/aiUtils";
 
 interface PointCoordinates {
     x: number,
@@ -37,7 +37,7 @@ export class AiStateFunctions {
         npc.startWorld = world
         this.aiState.registerBot(npc)
         revmp.setPosition(npc.id, [npcPosition.x, npcPosition.y, npcPosition.z]);
-        const spawnAngle = getAngleToPoint(npcPosition.x, npcPosition.z, npcPosition.x + npcPosition.dirX, npcPosition.z + npcPosition.dirZ)
+        const spawnAngle = getWaynetPointAngle(npcPosition.x, npcPosition.z, npcPosition.dirX,  npcPosition.dirZ)
         setPlayerAngle(npc.id, spawnAngle)
 
         const position: IPositionComponent | undefined = entityManager.getPositionsComponents(npc.id)

@@ -82,7 +82,7 @@ function canParadeAttack(attacker: revmp.Entity, target: revmp.Entity): boolean 
     if ((revmp.getGuild(attacker).guild !== revmp.GuildType.Human
         && revmp.getCombatState(attacker).weaponMode === revmp.WeaponMode.Fist)
         || isRangedAttack(attacker)) {
-            return false;
+        return false;
     }
 
     if (revmp.hasAnimations(target)) {
@@ -125,9 +125,11 @@ revmp.on("attacked", (attacker, target, userEvent) => {
     if ((newHealth == 0 || newHealth == 1)
         && revmp.getGuild(attacker).guild === revmp.GuildType.Human
         && revmp.getGuild(target).guild === revmp.GuildType.Human) {
-            health.current = 1;
-            revmp.setCombatState(target, { unconscious: true });
+        health.current = 1;
+        revmp.setCombatState(target, { unconscious: true });
     }
-    revmp.startAnimation(target,"T_STUMBLEB");
-    revmp.setHealth(target, {current: newHealth, max: health.max});
+    if (revmp.isPlayer(target)) {
+        revmp.startAnimation(target, "T_STUMBLEB");
+    }
+    revmp.setHealth(target, { current: newHealth, max: health.max });
 });

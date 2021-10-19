@@ -1,5 +1,6 @@
 export const ArmorInstances = {
     guardianArmor: "guardianArmor",
+    darkArmor: "darkArmor",
     vlkFemaleArmor: "vlkFemaleArmor",
     vlkMaleArmor: "vlkMaleArmor"
 } as const;
@@ -35,6 +36,35 @@ export function initArmorInstances() {
         },
     });
     
+
+    revmp.createItemInstance({
+        type: revmp.ItemType.Armor,
+        id: ArmorInstances.darkArmor,
+        name: "Dark armor",
+        protection: {
+            blunt: 0,
+            edge: 0,
+            point: 0,
+            fire: 0,
+            magic: 0,
+        },
+        visual: "ItAr_Raven_ADDON.3DS",
+        visualChange: "Armor_Raven_ADDON.asc",
+        visualSkin: 0,
+        material: revmp.Material.Leather,
+        category: revmp.ItemCategory.Armor,
+        value: 2500,
+        description: {
+            text: [
+                [],
+                ["A solid dark armor."],
+                [],
+                [],
+                [],
+                ["Value", 2500],
+            ]
+        },
+    });
 
     revmp.createItemInstance({
         type: revmp.ItemType.Armor,

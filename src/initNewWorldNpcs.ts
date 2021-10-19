@@ -12,6 +12,8 @@ import { Warg } from "./aiEntities/npcs/warg"
 import { AiState } from "./aiStates/aiState"
 import { HeavyCrimminal } from "./aiEntities/npcs/heavyCrimminal"
 import { RoamingRobber } from "./aiEntities/npcs/roamingRobber"
+import { CitizenMale } from "./aiEntities/npcs/citizenMale"
+import { CitizenFemale } from "./aiEntities/npcs/citizenFemale"
 
 export function initNewWorldNpcs(aiState: AiState): void {
 
@@ -616,5 +618,17 @@ export function initNewWorldNpcs(aiState: AiState): void {
     const robber = new RoamingRobber()
     const spawnPoint = aiState.getWaynetRegistry().registerCrimminalAndGetPoint(robber.id)
     aiStateFunctions.spawnNpc(robber, spawnPoint, world);
+  }
+
+  for (let i = 0; i < 15; i++) {
+    const citizen = new CitizenMale()
+    const spawnPoint = aiState.getWaynetRegistry().registerCitizenAndGetPoint(citizen.id)
+    aiStateFunctions.spawnNpc(citizen, spawnPoint, world);
+  }
+
+  for (let i = 0; i < 15; i++) {
+    const citizen = new CitizenFemale()
+    const spawnPoint = aiState.getWaynetRegistry().registerCitizenAndGetPoint(citizen.id)
+    aiStateFunctions.spawnNpc(citizen, spawnPoint, world);
   }
 }

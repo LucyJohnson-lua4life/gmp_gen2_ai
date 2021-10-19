@@ -133,7 +133,7 @@ export class HeavyCrimminalDescription implements IActionDescription {
     private describeRoamingRoutine(actionsComponent: IActionsComponent, aiState: AiState): void {
         const random = Math.floor(Math.random() * (30 - 15 + 1)) + 15;
         aiState.getWaynetRegistry().unregisterCrimminal(this.entityId)
-        actionsComponent.nextActions.push(new WaitAction(this.entityId, random))
+        actionsComponent.nextActions.push(new WaitAction(this.entityId, 60000*random))
         actionsComponent.nextActions.push(new PlayAnimation(this.entityId, "S_LGUARD"))
         const targetPoint = aiState.getWaynetRegistry().registerCrimminalAndGetPoint(this.entityId)
         console.log(this.entityId + "crimminal goes to: "+targetPoint)

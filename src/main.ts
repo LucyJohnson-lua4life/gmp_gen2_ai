@@ -3,6 +3,7 @@ const wolf = require("./dist/aiEntities/npcs/wolf");
 const npcInitializer = require("./dist/initNewWorldNpcs");
 const scavenger = require("./dist/aiEntities/npcs/scavenger");
 const orcElite = require("./dist/aiEntities/npcs/orcElite");
+const demonKing = require("./dist/aiEntities/npcs/demonKing");
 const heavyCrimminal = require("./dist/aiEntities/npcs/heavyCrimminal");
 const roamingRobber = require("./dist/aiEntities/npcs/roamingRobber");
 const orcWarrior = require("./dist/aiEntities/npcs/orcWarrior");
@@ -37,7 +38,7 @@ revmp.on("init", () => {
     revmp.setTime(world, { hour: 15, minute: 0 });
     setInterval(updateLoop.updateAll.bind(updateLoop), 50);
 
-    const testMonster = new heavyCrimminal.HeavyCrimminal();
+    const testMonster = new demonKing.DemonKing();
     console.log("monster id: " + testMonster.id)
     aiStateFunctions.spawnNpc(testMonster,"HAFEN","NEWWORLD\\NEWWORLD.ZEN")
     npcInitializer.initNewWorldNpcs(state)
@@ -84,6 +85,16 @@ function debugCommands(entity: revmp.Entity, msg: string) {
         if(typeof tpTarget !== 'undefined'){
             const actionsComponent = em.getActionsComponent(tpTarget) 
             actionsComponent.nextActions = []
+        }
+    }
+
+    if(command === "/lsac"){
+        const tpTarget = revmp.getFocus(entity).focus
+        console.log(tpTarget)
+        if(typeof tpTarget !== 'undefined'){
+            const actionsComponent = em.getActionsComponent(tpTarget) 
+            console.log("next actions:")
+            console.log(actionsComponent.nextActions)
         }
     }
 
@@ -139,8 +150,10 @@ revmp.on("chatCommand", (entity, msg) => {
         revmp.setAttributes(entity, {strength: 100, oneHanded: 100})
         revmp.setHealth(entity, {current: 2100, max: 2100})
         revmp.addOverlay(entity, "Humans_1hST2.MDS")
-        const attribute = revmp.getAttributes(entity)
-        console.log("one handed "+ attribute.oneHanded)
+    }
+    if (command === "/healme") {
+        const maxHealth = revmp.getHealth(entity).max
+        revmp.setHealth(entity, {current: maxHealth, max: maxHealth})
     }
     if (command === "/health") {
         revmp.setHealth(entity, { current: 700, max: 1100 })
