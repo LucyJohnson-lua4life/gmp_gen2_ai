@@ -24,6 +24,10 @@ const em = state.getEntityManager();
 const updateLoop = new aiUpdateLoop.AiUpdateLoop(state);
 const aiStateFunctions = new funs.AiStateFunctions(state)
 
+
+revmp.name = "Revma";
+revmp.description = "The best adventure experience.";
+
 revmp.on("init", () => {
 
     const world = revmp.createWorld({
