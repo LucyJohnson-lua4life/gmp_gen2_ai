@@ -53,7 +53,7 @@ export class EntityManager {
         this.respawnComponents.delete(npcId)
         this.actionsComponents.delete(npcId)
         this.positionsComponents.delete(npcId)
-        this.actionsComponents.delete(npcId)
+        this.actionDescriptionComponents.delete(npcId)
         this.enemyComponents.delete(npcId)
     }
 

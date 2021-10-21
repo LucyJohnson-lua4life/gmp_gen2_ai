@@ -123,9 +123,10 @@ export class DefaultMonsterDescription implements IActionDescription {
     }
 
     private describeWhenInRange(actionsComponent: IActionsComponent, enemyId: number, range: number): void {
-        const dangle = getPlayerAngle(this.entityId) - getAngleToTarget(this.entityId, enemyId)
+        const dangle =  getAngleToTarget(this.entityId, enemyId)
+        const dangle2 =  getAngleToTarget(enemyId, this.entityId)
         const currentTime = Date.now()
-        if (dangle > -20 && dangle < 20 && currentTime - this.lastAttackTime > 2700) {
+        if ((Math.abs(dangle - dangle2) < 180 + 20 || Math.abs(dangle - dangle2) > 180 + 20) && currentTime - this.lastAttackTime > 2700) {
             this.describeAttackAction(actionsComponent, enemyId)
             this.lastAttackTime = currentTime
         }

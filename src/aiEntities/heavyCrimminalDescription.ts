@@ -131,6 +131,7 @@ export class HeavyCrimminalDescription implements IActionDescription {
     }
 
     private describeRoamingRoutine(actionsComponent: IActionsComponent, aiState: AiState): void {
+        console.log("hello")
         const random = Math.floor(Math.random() * (30 - 15 + 1)) + 15;
         aiState.getWaynetRegistry().unregisterCrimminal(this.entityId)
         actionsComponent.nextActions.push(new WaitAction(this.entityId, 60000*random))

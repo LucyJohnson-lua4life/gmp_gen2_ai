@@ -11,7 +11,6 @@ import {
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
 import { AiState } from '../aiStates/aiState';
 import { IActionsComponent } from './components/iActionsComponent';
-import { type } from 'os';
 
 export class DemonKingDescription implements IActionDescription {
     entityId: number

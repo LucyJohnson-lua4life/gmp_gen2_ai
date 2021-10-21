@@ -38,10 +38,10 @@ revmp.on("init", () => {
     revmp.setTime(world, { hour: 15, minute: 0 });
     setInterval(updateLoop.updateAll.bind(updateLoop), 50);
 
-    const testMonster = new demonKing.DemonKing();
+    const testMonster = new heavyCrimminal.HeavyCrimminal();
     console.log("monster id: " + testMonster.id)
     aiStateFunctions.spawnNpc(testMonster,"HAFEN","NEWWORLD\\NEWWORLD.ZEN")
-    npcInitializer.initNewWorldNpcs(state)
+    //npcInitializer.initNewWorldNpcs(state)
 
 });
 
@@ -97,6 +97,8 @@ function debugCommands(entity: revmp.Entity, msg: string) {
             console.log(actionsComponent.nextActions)
         }
     }
+
+
 
     if(command === "/ac"){
         const tpTarget = 2797
