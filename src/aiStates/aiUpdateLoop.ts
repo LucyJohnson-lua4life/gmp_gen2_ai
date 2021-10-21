@@ -45,7 +45,6 @@ export class AiUpdateLoop {
 
         this.readDescriptions()
         this.respawnDeadNpcs()
-        this.removeDeadOrUnvalidPlayerFromEnemyLists()
         this.aiState.getAllBots().forEach((aiId) => this.updateAi(aiId))
     }
 
@@ -112,12 +111,4 @@ export class AiUpdateLoop {
         return revmp.getHealth(entityId).current > 0 && revmp.isCharacter(entityId)
     }
 
-    private removeDeadOrUnvalidPlayerFromEnemyLists():void{
-        revmp.bots.forEach(botId =>{
-            const enemyId:number|undefined = this.aiState.getEntityManager()?.getEnemyComponent(botId)?.enemyId
-            if(typeof enemyId !== 'undefined' && (!revmp.valid(enemyId) || revmp.getHealth(enemyId).current <= 0)){
-                this.aiState.getEntityManager().deleteEnemyComponent(botId)               
-            }
-        })
-    }
 }

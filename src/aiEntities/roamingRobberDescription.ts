@@ -39,8 +39,14 @@ export class RoamingRobberDescription implements IActionDescription {
 
         if (typeof enemyId !== 'undefined' && this.enemyExists(enemyId)) {
             const range = getDistance(this.entityId, enemyId)
-            if (range < 800 && typeof actionsComponent !== 'undefined' && typeof actionListSize !== 'undefined' && actionListSize < 5) {
+            const isEnemyAlive = revmp.getHealth(enemyId).current > 0
+            if (range < 800 && typeof actionsComponent !== 'undefined' && actionListSize < 5 && isEnemyAlive) {
                 this.describeFightAction(aiState, enemyId, range)
+            }
+            else if (isEnemyAlive === false && typeof actionsComponent !== 'undefined') {
+                revmp.putWeaponAway(this.entityId)
+                actionsComponent.nextActions = []
+                entityManager.deleteEnemyComponent(this.entityId)
             }
         }
         else if (typeof actionsComponent !== 'undefined' && actionListSize < 1 && !nextActions.some(action => action instanceof ThreatenPlayerAction)) {

@@ -1,7 +1,7 @@
 
 
 import { IActionDescription } from './iActionDescription';
-import { getAngleToTarget, getDistance} from "../aiFunctions/aiUtils";
+import { getAngleToTarget, getDistance } from "../aiFunctions/aiUtils";
 import {
     SLeftAttackAction, SRightAttackAction,
     SRunParadeJump, SRunStrafeLeft, SRunStrafeRight,
@@ -37,15 +37,26 @@ export class CitizenDescription implements IActionDescription {
 
         if (typeof enemyId !== 'undefined' && this.enemyExists(enemyId)) {
             const range = getDistance(this.entityId, enemyId)
-            if (range < 800 && typeof actionsComponent !== 'undefined' && typeof actionListSize !== 'undefined' && actionListSize < 5) {
+            const isEnemyAlive = revmp.getHealth(enemyId).current > 0
+
+            if (range < 800 && typeof actionsComponent !== 'undefined' && actionListSize < 5 && isEnemyAlive) {
                 this.describeFightAction(aiState, enemyId, range)
             }
+            else if (isEnemyAlive === false && typeof actionsComponent !== 'undefined') {
+                revmp.putWeaponAway(this.entityId)
+                actionsComponent.nextActions = []
+                entityManager.deleteEnemyComponent(this.entityId)
+            }
+
+        }
+        else if (typeof enemyId !== 'undefined' && !revmp.valid(enemyId)) {
+            entityManager.deleteEnemyComponent(this.entityId)
         }
         else if (typeof actionsComponent !== 'undefined' && actionListSize < 1) {
-            revmp.putWeaponAway(this.entityId)
             this.describeRoamingRoutine(actionsComponent, aiState)
         }
     }
+
     private describeFightAction(aiState: AiState, enemyId: number, range: number): void {
         const entityManager = aiState.getEntityManager();
         const actionsComponent = entityManager?.getActionsComponent(this.entityId);
@@ -121,6 +132,7 @@ export class CitizenDescription implements IActionDescription {
         return id >= 0 && revmp.valid(id) && revmp.isPlayer(id)
     }
 
+
     private describeAttackAction(actionsComponent: IActionsComponent, enemyId: number) {
         actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
         actionsComponent.nextActions.push(new SLeftAttackAction(this.entityId, enemyId, this.attackRange))
@@ -138,5 +150,6 @@ export class CitizenDescription implements IActionDescription {
         revmp.addOverlay(this.entityId, "HumanS_Relaxed.mds")
         actionsComponent.nextActions.push(new GotoPoint(this.entityId, aiState, targetPoint, "S_WALKL"))
         actionsComponent.nextActions.push(new WaitAction(this.entityId, 60000 * random))
+        actionsComponent.nextActions.push(new SimpleAction(this.entityId, () => { revmp.putWeaponAway(this.entityId) }))
     }
 }

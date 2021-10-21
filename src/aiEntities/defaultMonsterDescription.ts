@@ -36,13 +36,18 @@ export class DefaultMonsterDescription implements IActionDescription {
         const nextActions = entityManager.getActionsComponent(this.entityId)?.nextActions ?? []
         const actionListSize = nextActions?.length ?? 999999
         const characterRangeMap = this.getNearestCharacterRangeMapping(npcActionUtils)
-
+        const actionsComponent = entityManager.getActionsComponent(this.entityId)
 
 
         if (this.enemyExists(enemyId)) {
             const range = getDistance(this.entityId, enemyId)
-            if (range < 800 && typeof actionListSize !== 'undefined' && actionListSize < 5) {
+            const isEnemyAlive = revmp.getHealth(enemyId).current > 0
+            if (range < 800 && typeof actionListSize !== 'undefined' && actionListSize < 5 && isEnemyAlive) {
                 this.describeFightAction(aiState, enemyId, range)
+            }
+            else if (isEnemyAlive === false && typeof actionsComponent !== 'undefined') {
+                actionsComponent.nextActions = []
+                entityManager.deleteEnemyComponent(this.entityId)
             }
         }
 
@@ -50,7 +55,6 @@ export class DefaultMonsterDescription implements IActionDescription {
             //TODO: the world constant should only be fixed in later versions!
             //TODO: currently only player will get attacked/warned, should implement a proper enemy/friend mapping
             const warnInput: WarnEnemyActionInput = { aiId: this.entityId, enemyId: characterRangeMap[0], waitTime: 3000, warnDistance: 400, attackDistance: 0, entityManager: entityManager }
-            const actionsComponent = entityManager.getActionsComponent(this.entityId)
             if (typeof actionsComponent !== 'undefined') {
                 this.clearActionList(actionsComponent)
                 actionsComponent.nextActions.push(new WarnEnemy(warnInput))
