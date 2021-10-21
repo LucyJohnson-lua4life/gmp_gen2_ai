@@ -16,7 +16,7 @@
     }
 
     export function unregisterFromAllPoints(registry:Map<string,number>, npcId: number) {
-        for (let entry of registry.entries()) {
+        for (const entry of registry.entries()) {
             if(entry[1] === npcId){
                 registry.delete(entry[0])
             }
