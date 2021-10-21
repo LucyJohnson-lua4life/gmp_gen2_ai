@@ -29,7 +29,7 @@ revmp.name = "Revma";
 revmp.description = "The best adventure experience.";
 
 revmp.on("init", () => {
-
+    
     const world = revmp.createWorld({
         zen: "NEWWORLD/NEWWORLD.ZEN",
         startpoint: "NW_CITY_HABOUR_02_B",
@@ -59,6 +59,8 @@ function debugCommands(entity: revmp.Entity, msg: string) {
     }
     if (command === "/sendsomething") {
         revmp.sendChatMessage(entity, 'testo')
+    } else if (command === "/revive") {
+        damageCalculation.revive(entity);
     }
 
     if (command === "/walk") {
