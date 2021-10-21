@@ -62,8 +62,7 @@ function debugCommands(entity: revmp.Entity, msg: string) {
     }
 
     if (command === "/walk") {
-        const param1 = words[1];
-        const npcid = parseInt(param1)
+        const npcid = parseInt(words[1] ?? revmp.getFocus(entity).focus);
         const positionComponent = em.getPositionsComponents(npcid)
         const pos = revmp.getPosition(npcid).position
         positionComponent.currentPosX = pos[0]
