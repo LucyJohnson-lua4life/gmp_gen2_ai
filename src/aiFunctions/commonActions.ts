@@ -1,7 +1,7 @@
 
 
 import { IAiAction } from "../aiEntities/iAiAction";
-import { setPlayerAngle, getCombatStateBasedAni, getAngleToPoint, getPlayerAngle, getAngleToTarget, getDistance, isAniPlaying, getWaynetPointAngle, getDistanceToPoint } from "../aiFunctions/aiUtils";
+import { setPlayerAngle, getCombatStateBasedAni, getAngleToPoint, getAngleToTarget, getDistance, isAniPlaying, getWaynetPointAngle, getDistanceToPoint } from "../aiFunctions/aiUtils";
 import { gotoPosition, getDistance as getPointDistance } from "../waynet/positionFunctions";
 import { IPositionComponent } from "../aiEntities/components/iPositionComponent";
 import { AiState } from "../aiStates/aiState";
@@ -49,8 +49,9 @@ export class SForwardAttackAction implements IAiAction {
             console.log("att: " + angleToTarget)
             console.log("distance: " + getDistance(this.aiId, this.victimId))
             */
-            const dangle = getPlayerAngle(this.aiId) - getAngleToTarget(this.aiId, this.victimId)
-            if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && dangle > -20 && dangle < 20) {
+            const angleRange = Math.abs(getAngleToTarget(this.aiId, this.victimId) - getAngleToTarget(this.victimId, this.aiId))
+            const isEntityInEnemyAngleRange = (angleRange < 180 + 20 || angleRange > 180 + 20)
+            if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && isEntityInEnemyAngleRange) {
                 revmp.attack(this.aiId, this.victimId);
             }
         }
@@ -83,8 +84,10 @@ export class SLeftAttackAction implements IAiAction {
                 }
             }, 900);
 
-            const dangle = getPlayerAngle(this.aiId) - getAngleToTarget(this.aiId, this.victimId)
-            if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && dangle > -20 && dangle < 20) {
+
+            const angleRange = Math.abs(getAngleToTarget(this.aiId, this.victimId) - getAngleToTarget(this.victimId, this.aiId))
+            const isEntityInEnemyAngleRange = (angleRange < 180 + 20 || angleRange > 180 + 20)
+            if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && isEntityInEnemyAngleRange) {
                 revmp.attack(this.aiId, this.victimId);
             }
         }
@@ -116,8 +119,9 @@ export class SRightAttackAction implements IAiAction {
                 }
             }, 900);
 
-            const dangle = getPlayerAngle(this.aiId) - getAngleToTarget(this.aiId, this.victimId)
-            if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && dangle > -20 && dangle < 20) {
+            const angleRange = Math.abs(getAngleToTarget(this.aiId, this.victimId) - getAngleToTarget(this.victimId, this.aiId))
+            const isEntityInEnemyAngleRange = (angleRange < 180 + 20 || angleRange > 180 + 20)
+            if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && isEntityInEnemyAngleRange) {
                 revmp.attack(this.aiId, this.victimId);
             }
         }
@@ -613,14 +617,14 @@ export class SimpleAction implements IAiAction {
     }
 }
 
-export class GotoStartPointOnDistanceAction implements IAiAction{
+export class GotoStartPointOnDistanceAction implements IAiAction {
 
     aiId: number
     shouldLoop: boolean
-    aiState:AiState
-    distance:number
+    aiState: AiState
+    distance: number
 
-    constructor(aiId: number, aiState:AiState, distance: number) {
+    constructor(aiId: number, aiState: AiState, distance: number) {
         this.aiId = aiId
         this.shouldLoop = false
         this.aiState = aiState

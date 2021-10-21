@@ -1,7 +1,7 @@
 
 
 import { IActionDescription } from './iActionDescription';
-import { getAngleToTarget, getDistance, getPlayerAngle, getDistanceToPoint } from "../aiFunctions/aiUtils";
+import { getAngleToTarget, getDistance, } from "../aiFunctions/aiUtils";
 import {
     SLeftAttackAction, SRightAttackAction,
     SRunParadeJump, SRunStrafeLeft, SRunStrafeRight,
@@ -43,7 +43,7 @@ export class RoamingRobberDescription implements IActionDescription {
                 this.describeFightAction(aiState, enemyId, range)
             }
         }
-        else if (typeof actionsComponent !== 'undefined' && actionListSize < 1  && !nextActions.some(action => action instanceof ThreatenPlayerAction)) {
+        else if (typeof actionsComponent !== 'undefined' && actionListSize < 1 && !nextActions.some(action => action instanceof ThreatenPlayerAction)) {
             //TODO: the world constant should only be fixed in later versions!
             const charId = npcActionUtils.getNearestCharacter(this.entityId, "NEWWORLD\\NEWWORLD.ZEN")
             let range = 99999999
@@ -55,10 +55,10 @@ export class RoamingRobberDescription implements IActionDescription {
                 actionsComponent.nextActions.push(new ThreatenPlayerAction(entityManager, this.entityId, charId, 200, 10000))
             }
         }
-            else if (typeof actionsComponent !== 'undefined' && actionListSize < 1) {
-                revmp.putWeaponAway(this.entityId)
-                this.describeRoamingRoutine(actionsComponent, aiState)
-            }
+        else if (typeof actionsComponent !== 'undefined' && actionListSize < 1) {
+            revmp.putWeaponAway(this.entityId)
+            this.describeRoamingRoutine(actionsComponent, aiState)
+        }
     }
     private describeFightAction(aiState: AiState, enemyId: number, range: number): void {
         const entityManager = aiState.getEntityManager();
@@ -82,9 +82,10 @@ export class RoamingRobberDescription implements IActionDescription {
     }
 
     private describeWhenInRange(actionsComponent: IActionsComponent, enemyId: number, range: number): void {
-        const dangle = getPlayerAngle(this.entityId) - getAngleToTarget(this.entityId, enemyId)
+        const angleRange = Math.abs(getAngleToTarget(this.entityId, enemyId) - getAngleToTarget(enemyId, this.entityId))
+        const isEntityInEnemyAngleRange = (angleRange < 180 + 20 || angleRange > 180 + 20)
         const currentTime = Date.now()
-        if (dangle > -20 && dangle < 20 && currentTime - this.lastAttackTime > 2700) {
+        if (isEntityInEnemyAngleRange && currentTime - this.lastAttackTime > 2700) {
             this.describeAttackAction(actionsComponent, enemyId)
             this.lastAttackTime = currentTime
         }
@@ -115,7 +116,7 @@ export class RoamingRobberDescription implements IActionDescription {
                 actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
                 actionsComponent.nextActions.push(new SRunParadeJump(this.entityId))
             }
-            else if (random <= 9 && dangle > -20 && dangle < 20) {
+            else if (random <= 9 && isEntityInEnemyAngleRange) {
                 actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
                 if (pangle > 180) {
                     actionsComponent.nextActions.push(new SRunStrafeRight(this.entityId))
@@ -146,11 +147,11 @@ export class RoamingRobberDescription implements IActionDescription {
     private describeRoamingRoutine(actionsComponent: IActionsComponent, aiState: AiState): void {
         const random = Math.floor(Math.random() * (30 - 15 + 1)) + 15;
         aiState.getWaynetRegistry().unregisterCrimminal(this.entityId)
-        actionsComponent.nextActions.push(new WaitAction(this.entityId, 60000*random))
+        actionsComponent.nextActions.push(new WaitAction(this.entityId, 60000 * random))
         actionsComponent.nextActions.push(new PlayAnimation(this.entityId, "S_LGUARD"))
         const targetPoint = aiState.getWaynetRegistry().registerCrimminalAndGetPoint(this.entityId)
         revmp.addOverlay(this.entityId, "HumanS_Relaxed.mds")
-        console.log(this.entityId + "robber goes to: "+targetPoint)
+        console.log(this.entityId + "robber goes to: " + targetPoint)
         actionsComponent.nextActions.push(new GotoPoint(this.entityId, aiState, targetPoint, "S_WALKL"))
     }
 

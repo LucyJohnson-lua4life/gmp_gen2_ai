@@ -1,7 +1,7 @@
 
 import { IActionDescription } from './iActionDescription';
 import { EntityManager } from '../aiStates/entityManager';
-import { getAngleToTarget, getDistance, getPlayerAngle, getDistanceToPoint } from "../aiFunctions/aiUtils";
+import { getAngleToTarget, getDistance, getDistanceToPoint } from "../aiFunctions/aiUtils";
 import {
     PlayAnimationForDuration, SForwardAttackAction,
     SRunParadeJump, SRunStrafeLeft, SRunStrafeRight,
@@ -123,10 +123,10 @@ export class DefaultMonsterDescription implements IActionDescription {
     }
 
     private describeWhenInRange(actionsComponent: IActionsComponent, enemyId: number, range: number): void {
-        const dangle =  getAngleToTarget(this.entityId, enemyId)
-        const dangle2 =  getAngleToTarget(enemyId, this.entityId)
         const currentTime = Date.now()
-        if ((Math.abs(dangle - dangle2) < 180 + 20 || Math.abs(dangle - dangle2) > 180 + 20) && currentTime - this.lastAttackTime > 2700) {
+        const angleRange = Math.abs(getAngleToTarget(this.entityId, enemyId) - getAngleToTarget(enemyId, this.entityId))
+        const isEntityInEnemyAngleRange = (angleRange < 180 + 20 || angleRange > 180 + 20)
+        if (isEntityInEnemyAngleRange && currentTime - this.lastAttackTime > 2700) {
             this.describeAttackAction(actionsComponent, enemyId)
             this.lastAttackTime = currentTime
         }
@@ -157,7 +157,7 @@ export class DefaultMonsterDescription implements IActionDescription {
                 actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
                 actionsComponent.nextActions.push(new SRunParadeJump(this.entityId))
             }
-            else if (random <= 9 && dangle > -20 && dangle < 20) {
+            else if (random <= 9 && isEntityInEnemyAngleRange) {
                 actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
                 if (pangle > 180) {
                     actionsComponent.nextActions.push(new SRunStrafeRight(this.entityId))

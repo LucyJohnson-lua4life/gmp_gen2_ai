@@ -1,7 +1,7 @@
 
 
 import { IActionDescription } from './iActionDescription';
-import { getAngleToTarget, getDistance, getDistanceToPoint, getPlayerAngle } from "../aiFunctions/aiUtils";
+import { getAngleToTarget, getDistance} from "../aiFunctions/aiUtils";
 import {
     SLeftAttackAction, SRightAttackAction,
     SRunParadeJump, SRunStrafeLeft, SRunStrafeRight,
@@ -68,9 +68,10 @@ export class CitizenDescription implements IActionDescription {
     }
 
     private describeWhenInRange(actionsComponent: IActionsComponent, enemyId: number, range: number): void {
-        const dangle = getPlayerAngle(this.entityId) - getAngleToTarget(this.entityId, enemyId)
+        const angleRange = Math.abs(getAngleToTarget(this.entityId, enemyId) - getAngleToTarget(enemyId, this.entityId))
+        const isEntityInEnemyAngleRange = (angleRange < 180 + 20 || angleRange > 180 + 20)
         const currentTime = Date.now()
-        if (dangle > -20 && dangle < 20 && currentTime - this.lastAttackTime > 2700) {
+        if (isEntityInEnemyAngleRange && currentTime - this.lastAttackTime > 2700) {
             this.describeAttackAction(actionsComponent, enemyId)
             this.lastAttackTime = currentTime
         }
@@ -101,7 +102,7 @@ export class CitizenDescription implements IActionDescription {
                 actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
                 actionsComponent.nextActions.push(new SRunParadeJump(this.entityId))
             }
-            else if (random <= 9 && dangle > -20 && dangle < 20) {
+            else if (random <= 9 && isEntityInEnemyAngleRange) {
                 actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
                 if (pangle > 180) {
                     actionsComponent.nextActions.push(new SRunStrafeRight(this.entityId))
