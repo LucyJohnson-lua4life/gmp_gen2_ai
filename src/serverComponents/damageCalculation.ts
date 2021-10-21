@@ -271,7 +271,6 @@ export function dropUnconscious(entity: revmp.Entity, angle?: number): void {
 }
 
 export function dropDead(entity: revmp.Entity, angle?: number): void {
-    console.log("dead")
     revmp.setCombatState(entity, {
         weaponMode: revmp.WeaponMode.None,
         unconscious: false,
