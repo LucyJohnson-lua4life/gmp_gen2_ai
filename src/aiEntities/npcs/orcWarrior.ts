@@ -2,7 +2,7 @@
 
 
 import { IActionDescription } from "../iActionDescription";
-import { DefaultMonsterDescription } from "../defaultMonsterDescription";
+import { DefaultMonsterDescription } from "../descriptions/defaultMonsterDescription";
 import { IAiAction } from "../iAiAction";
 import { IAiNpc } from "../iAiNpc";
 import { getOrcWarriorInstance, INSTANCE_ORC_WARRIOR} from "./npcInits";

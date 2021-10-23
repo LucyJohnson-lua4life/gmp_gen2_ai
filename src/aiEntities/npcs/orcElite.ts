@@ -1,7 +1,7 @@
 
 
 import { IActionDescription } from "../iActionDescription";
-import { OrcMasterDescription} from "../orcMasterDescription";
+import { OrcMasterDescription} from "../descriptions/orcMasterDescription";
 import { IAiAction } from "../iAiAction";
 import { IAiNpc } from "../iAiNpc";
 import { getOrcEliteInstance, INSTANCE_ORC_ELITE} from "./npcInits";

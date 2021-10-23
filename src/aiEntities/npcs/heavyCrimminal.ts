@@ -1,6 +1,6 @@
 
 import { IActionDescription } from "../iActionDescription";
-import { HeavyCrimminalDescription } from "../heavyCrimminalDescription";
+import { HeavyCrimminalDescription } from "../descriptions/heavyCrimminalDescription";
 import { IAiAction } from "../iAiAction";
 import { WeaponInstances } from "../../serverComponents/weapons";
 import { ArmorInstances } from "../../serverComponents/armors";

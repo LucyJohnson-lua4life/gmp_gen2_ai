@@ -1,7 +1,7 @@
 
 
 import { IActionDescription } from "../iActionDescription";
-import { RoamingRobberDescription } from "../roamingRobberDescription";
+import { RoamingRobberDescription } from "../descriptions/roamingRobberDescription";
 import { IAiAction } from "../iAiAction";
 import { WeaponInstances } from "../../serverComponents/weapons";
 import { ArmorInstances } from "../../serverComponents/armors";

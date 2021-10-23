@@ -1,5 +1,5 @@
 import { IActionDescription } from "../iActionDescription";
-import { DefaultMonsterDescription } from "../defaultMonsterDescription";
+import { DefaultMonsterDescription } from "../descriptions/defaultMonsterDescription";
 import { IAiAction } from "../iAiAction";
 import { IAiNpc } from "../iAiNpc";
 import { getWolfInstance, INSTANCE_WOLF} from "./npcInits";

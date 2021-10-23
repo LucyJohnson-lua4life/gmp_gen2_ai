@@ -1,6 +1,6 @@
 
 import { IActionDescription } from "../iActionDescription";
-import { DemonKingDescription } from "../demonKingDescription";
+import { DemonKingDescription } from "../descriptions/demonKingDescription";
 import { IAiAction } from "../iAiAction";
 import { WeaponInstances } from "../../serverComponents/weapons";
 import { ArmorInstances } from "../../serverComponents/armors";

@@ -2,7 +2,7 @@
 
 
 import { IActionDescription } from "../iActionDescription";
-import { OrcMasterDescription } from "../orcMasterDescription";
+import { OrcMasterDescription } from "../descriptions/orcMasterDescription";
 import { IAiAction } from "../iAiAction";
 import { IAiNpc } from "../iAiNpc";
 import { getUndeadOrcInstance, INSTANCE_ORC_UNDEAD} from "./npcInits";
