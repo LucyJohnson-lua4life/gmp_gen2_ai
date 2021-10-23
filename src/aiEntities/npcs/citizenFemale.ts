@@ -5,7 +5,7 @@ import { WeaponInstances } from "../../serverComponents/weapons";
 import { ArmorInstances } from "../../serverComponents/armors";
 import { IAiNpc } from "../iAiNpc";
 import { getRoamingCitizenFemaleInstance, getRoamingCitizenMaleInstance, INSTANCE_HEAVY_CRIMMINAL} from "./npcInits";
-import { CitizenDescription } from "../citizenDescription";
+import { CitizenDescription } from "../descriptions/citizenDescription";
 
 export class CitizenFemale implements IAiNpc {
     enemyIds: number[];
