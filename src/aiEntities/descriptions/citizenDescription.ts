@@ -7,10 +7,10 @@ import {
     SRunParadeJump, SRunStrafeLeft, SRunStrafeRight,
     RunToTargetAction, WaitAction, TurnToTargetAction,
     PlayAnimation, GotoPoint, SimpleAction, GotoStartPointOnDistanceAction
-} from "../../aiFunctions/commonActions";
+} from "../actions/commonActions";
 import { AiState } from '../../aiStates/aiState';
 import { IActionsComponent } from '../components/iActionsComponent';
-import { NpcActionUtils } from 'src/aiFunctions/npcActionUtils';
+import { DoubleParadeWithPause, ParadeWithPause, StrafeLeftWithPause, StrafeRightWithPause } from '../actions/fightActions';
 
 export class CitizenDescription implements IActionDescription {
     entityId: number
@@ -87,39 +87,32 @@ export class CitizenDescription implements IActionDescription {
             this.lastAttackTime = currentTime
         }
         else if (range < this.attackRange - 150) {
-            actionsComponent.nextActions.push(new WaitAction(this.entityId, 200))
-            actionsComponent.nextActions.push(new SRunParadeJump(this.entityId))
+            actionsComponent.nextActions.push(new ParadeWithPause(this.entityId,200))
         }
         else {
             const random = Math.floor(Math.random() * 10);
             const pangle = getAngleToTarget(this.entityId, enemyId)
             if (random <= 2) {
-                actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
-                actionsComponent.nextActions.push(new SRunParadeJump(this.entityId))
+            actionsComponent.nextActions.push(new ParadeWithPause(this.entityId,500))
             }
             else if (random <= 6) {
                 if (pangle > 180) {
-                    actionsComponent.nextActions.push(new WaitAction(this.entityId, 200))
-                    actionsComponent.nextActions.push(new SRunStrafeRight(this.entityId))
+                    actionsComponent.nextActions.push(new StrafeRightWithPause(this.entityId,200))
                 }
                 else {
-                    actionsComponent.nextActions.push(new WaitAction(this.entityId, 200))
-                    actionsComponent.nextActions.push(new SRunStrafeLeft(this.entityId))
+                    actionsComponent.nextActions.push(new StrafeLeftWithPause(this.entityId,200))
                 }
             }
             else if (random <= 7) {
-                actionsComponent.nextActions.push(new WaitAction(this.entityId, 300))
-                actionsComponent.nextActions.push(new SRunParadeJump(this.entityId))
-                actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
-                actionsComponent.nextActions.push(new SRunParadeJump(this.entityId))
+                const newLocal = this;
+                actionsComponent.nextActions.push(new DoubleParadeWithPause(newLocal.entityId, 300))
             }
             else if (random <= 9 && isEntityInEnemyAngleRange) {
-                actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
                 if (pangle > 180) {
-                    actionsComponent.nextActions.push(new SRunStrafeRight(this.entityId))
+                    actionsComponent.nextActions.push(new StrafeRightWithPause(this.entityId, 500))
                 }
                 else {
-                    actionsComponent.nextActions.push(new SRunStrafeLeft(this.entityId))
+                    actionsComponent.nextActions.push(new StrafeLeftWithPause(this.entityId, 500))
                 }
             }
             else {

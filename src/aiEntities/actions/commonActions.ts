@@ -1,13 +1,13 @@
 
 
-import { IAiAction } from "../aiEntities/iAiAction";
-import { setPlayerAngle, getCombatStateBasedAni, getAngleToPoint, getAngleToTarget, getDistance, isAniPlaying, getWaynetPointAngle, getDistanceToPoint } from "../aiFunctions/aiUtils";
-import { gotoPosition, getDistance as getPointDistance } from "../waynet/positionFunctions";
-import { IPositionComponent } from "../aiEntities/components/iPositionComponent";
-import { AiState } from "../aiStates/aiState";
-import { IWaynet, Waypoint } from "../waynet/iwaynet";
-import { IEnemyComponent } from "../aiEntities/components/iEnemyComponent";
-import { EntityManager } from "../aiStates/entityManager";
+import { IAiAction } from "../iAiAction";
+import { setPlayerAngle, getCombatStateBasedAni, getAngleToPoint, getAngleToTarget, getDistance, isAniPlaying, getWaynetPointAngle, getDistanceToPoint } from "../../aiFunctions/aiUtils";
+import { gotoPosition, getDistance as getPointDistance } from "../../waynet/positionFunctions";
+import { IPositionComponent } from "../components/iPositionComponent";
+import { AiState } from "../../aiStates/aiState";
+import { IWaynet, Waypoint } from "../../waynet/iwaynet";
+import { IEnemyComponent } from "../components/iEnemyComponent";
+import { EntityManager } from "../../aiStates/entityManager";
 
 export class SForwardAttackAction implements IAiAction {
     aiId: number
@@ -311,8 +311,8 @@ export class SRunStrafeRight implements IAiAction {
     }
 
     public executeAction(): void {
-        if (!isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "T_RUNSTRAFEL"))) {
-            revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "T_RUNSTRAFEL"))
+        if (!isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "T_RUNSTRAFER"))) {
+            revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "T_RUNSTRAFER"))
         }
     }
 }

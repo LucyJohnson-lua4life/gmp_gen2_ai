@@ -6,7 +6,7 @@ import {
     SRunParadeJump, SRunStrafeLeft, SRunStrafeRight,
     RunToTargetAction, WaitAction, TurnToTargetAction,
     PlayAnimation, GotoPoint
-} from "../../aiFunctions/commonActions";
+} from "../actions/commonActions";
 import { AiState } from '../../aiStates/aiState';
 import { IActionsComponent } from '../components/iActionsComponent';
 

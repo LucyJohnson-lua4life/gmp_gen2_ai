@@ -7,7 +7,7 @@ import {
     SRunParadeJump, SRunStrafeLeft, SRunStrafeRight,
     RunToTargetAction, WaitAction, TurnToTargetAction,
     WarnEnemy, WarnEnemyActionInput, GotoPoint, PlayAnimation, SimpleAction
-} from "../../aiFunctions/commonActions";
+} from "../actions/commonActions";
 import { NpcActionUtils } from '../../aiFunctions/npcActionUtils';
 import { AiState } from '../../aiStates/aiState';
 import { IActionsComponent } from '../components/iActionsComponent';

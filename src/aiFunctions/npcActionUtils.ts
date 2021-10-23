@@ -1,4 +1,5 @@
 import { AiState } from "../aiStates/aiState";
+import { getDistance } from "./aiUtils";
 
 
 /**
@@ -53,7 +54,7 @@ export class NpcActionUtils {
                 nearbyCharacter.forEach(targetId => {
                     const nearbyPos = revmp.getPosition(targetId).position
                     const tmpPos = this.getDistance(pos[0], pos[1], pos[2], nearbyPos[0], nearbyPos[1], nearbyPos[2])
-                    if (tmpPos < nearestDist && characterId !== targetId){
+                    if (tmpPos < nearestDist && characterId !== targetId) {
                         nearestDist = tmpPos
                         nearestChar = targetId
                     }
@@ -62,7 +63,17 @@ export class NpcActionUtils {
         }
         return nearestChar
     }
-    private getDistance(x1:number, y1:number, z1:number, x2:number, y2:number, z2:number): number {
+    public getNearestCharacterRangeMapping(aiId: number, world: string): [number, number] {
+        //"NEWWORLD\\NEWWORLD.ZEN"
+        const charId = this.getNearestCharacter(aiId, world)
+        let range = 99999999
+        if (charId !== aiId && charId !== -1 && revmp.isPlayer(charId)) {
+            range = getDistance(aiId, charId)
+        }
+        return [charId, range]
+    }
+
+    private getDistance(x1: number, y1: number, z1: number, x2: number, y2: number, z2: number): number {
         if ([x1, y1, z1, x2, y2, z2].some((val) => (typeof val === 'undefined'))) {
             return 99999
         }
