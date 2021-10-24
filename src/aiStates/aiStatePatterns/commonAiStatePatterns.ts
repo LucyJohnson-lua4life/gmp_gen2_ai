@@ -14,7 +14,7 @@ export function livingEnemyIsInRange(aiId: number, enemyId: number, rangeLimit: 
     return currentRange < rangeLimit && isEnemyAlive
 }
 
-export function enemyIsAlive(aiId: number, enemyId: number): boolean {
+export function enemyIsAlive(enemyId: number): boolean {
      return revmp.getHealth(enemyId).current > 0
 }
 

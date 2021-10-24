@@ -6,5 +6,6 @@
  * @field enemyId: id of the enemy */
 export interface IEnemyComponent {
     entityId: number,
-    enemyId: number
+    enemyId: number,
+    lastAttackTime: number
 }

@@ -254,7 +254,7 @@ export class ThreatenPlayerAction implements IAiAction {
 
     private setEnemy(): void {
         this.shouldLoop = false
-        const enemyComponent: IEnemyComponent = { entityId: this.aiId, enemyId: this.targetId }
+        const enemyComponent: IEnemyComponent = { entityId: this.aiId, enemyId: this.targetId, lastAttackTime: 0 }
         this.entityManager.setEnemyComponent(this.aiId, enemyComponent)
     }
 
@@ -531,7 +531,7 @@ export class WarnEnemy implements IAiAction {
 
     private setEnemy(): void {
         this.shouldLoop = false
-        const enemyComponent: IEnemyComponent = { entityId: this.aiId, enemyId: this.enemyId }
+        const enemyComponent: IEnemyComponent = { entityId: this.aiId, enemyId: this.enemyId, lastAttackTime: 0 }
         this.entityManager.setEnemyComponent(this.aiId, enemyComponent)
     }
 }

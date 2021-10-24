@@ -12,6 +12,8 @@ import { NpcActionUtils } from '../../aiFunctions/npcActionUtils';
 import { AiState } from '../../aiStates/aiState';
 import { IActionsComponent } from '.././components/iActionsComponent';
 import { DoubleParadeWithPause, ForwardAttackWithPause, ParadeWithPause, StrafeLeftWithPause, StrafeRightWithPause } from '../actions/fightActions';
+import { IAiAction } from '../iAiAction';
+import { describeFightMovements, IFightMoveDescriptionTemplate } from './templates/fightDescriptionTemplates';
 
 export class DefaultMonsterDescription implements IActionDescription {
     entityId: number
@@ -25,7 +27,9 @@ export class DefaultMonsterDescription implements IActionDescription {
     }
 
     describeAction(aiState: AiState): void {
-        if (revmp.valid(this.entityId)) {
+        const nextActions = aiState.getEntityManager().getActionsComponent(this.entityId)?.nextActions ?? []
+        const actionListSize = nextActions?.length ?? 999999
+        if (revmp.valid(this.entityId) && actionListSize < 1) {
             this.describeGeneralRoutine(aiState)
         }
     }
@@ -120,58 +124,27 @@ export class DefaultMonsterDescription implements IActionDescription {
             entityManager.deleteEnemyComponent(this.entityId)
         }
         else if (typeof actionsComponent !== 'undefined') {
-            this.describeWhenInRange(actionsComponent, enemyId, range)
+            const template: IFightMoveDescriptionTemplate ={
+                fighterId: this.entityId,
+                aiState: aiState,
+                enemyId: enemyId,
+                currentRange: range,
+                necessaryRange: this.attackRange,
+                describeAttackMoves: this.describeAttackAction
+            }
+
+            describeFightMovements(template)
+            //this.describeWhenInRange(actionsComponent, enemyId, range)
         }
         if (typeof actionsComponent !== 'undefined') {
             actionsComponent.nextActions.push(new TurnToTargetAction(this.entityId, enemyId))
         }
     }
 
-    private describeWhenInRange(actionsComponent: IActionsComponent, enemyId: number, range: number): void {
-        const currentTime = Date.now()
-        const angleRange = Math.abs(getAngleToTarget(this.entityId, enemyId) - getAngleToTarget(enemyId, this.entityId))
-        const isEntityInEnemyAngleRange = (angleRange < 180 + 20 || angleRange > 180 - 20)
-        if (isEntityInEnemyAngleRange && currentTime - this.lastAttackTime > 2700) {
-            this.describeAttackAction(actionsComponent, enemyId)
-            this.lastAttackTime = currentTime
-        }
-        else if (range < this.attackRange - 150) {
-            actionsComponent.nextActions.push(new ParadeWithPause(this.entityId,200))
-        }
-        else {
-            const random = Math.floor(Math.random() * 10);
-            const pangle = getAngleToTarget(this.entityId, enemyId)
-            if (random <= 3) {
-                actionsComponent.nextActions.push(new ParadeWithPause(this.entityId, 500))
-            }
-            else if (random <= 5) {
-                if (pangle > 180) {
-                    actionsComponent.nextActions.push(new StrafeRightWithPause(this.entityId,200))
-                }
-                else {
-                    actionsComponent.nextActions.push(new StrafeLeftWithPause(this.entityId,200))
-                }
-            }
-            else if (random <= 6) {
-                actionsComponent.nextActions.push(new DoubleParadeWithPause(this.entityId, 300))
-            }
-            else if (random <= 9 && isEntityInEnemyAngleRange) {
-                if (pangle > 180) {
-                    actionsComponent.nextActions.push(new StrafeRightWithPause(this.entityId, 500))
-                }
-                else {
-                    actionsComponent.nextActions.push(new StrafeLeftWithPause(this.entityId, 500))
-                }
-            }
-            else {
-                actionsComponent.nextActions.push(new WaitAction(this.entityId, 200))
-            }
-        }
-    }
-
-    private describeAttackAction(actionsComponent: IActionsComponent, enemyId: number) {
+    private describeAttackAction(template:IFightMoveDescriptionTemplate) {
         const pauseTime = 500
-        actionsComponent.nextActions.push(new ForwardAttackWithPause(this.entityId, enemyId, this.attackRange, pauseTime))
+        const actionsComponent = template.aiState.getEntityManager().getActionsComponent(template.fighterId)
+        actionsComponent?.nextActions.push(new ForwardAttackWithPause(template.fighterId, template.enemyId, template.necessaryRange, pauseTime))
     }
     private enemyExists(id: number): boolean {
         return id >= 0 && revmp.valid(id) && revmp.isPlayer(id)
@@ -180,8 +153,7 @@ export class DefaultMonsterDescription implements IActionDescription {
     private describeEatRoutine(entityManager: EntityManager): void {
         const actionsComponent = entityManager.getActionsComponent(this.entityId)
         if (typeof actionsComponent !== 'undefined') {
-            const random = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
-            actionsComponent.nextActions.push(new PlayAnimationForDuration(this.entityId, "S_EAT", random * 1000))
+            actionsComponent.nextActions.push(new PlayAnimationForDuration(this.entityId, "S_EAT", 2000))
         }
     }
 
