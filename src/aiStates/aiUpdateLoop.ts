@@ -78,6 +78,7 @@ export class AiUpdateLoop {
         const descriptionComponent: IActionDescriptionComponent | undefined = this.aiState.getEntityManager().getActionDescriptionComponent(aiId);
         const actionListSize: number = this.aiState.getEntityManager().getActionsComponent(aiId)?.nextActions.length ?? 99999;
 
+        // remove action list restriction
         if (typeof descriptionComponent !== 'undefined' && this.isEntityUpdateable(aiId) && actionListSize < 1) {
             const descriptions: Array<IActionDescription> | undefined = descriptionComponent.descriptions
             descriptions.forEach(description => description.describeAction(this.aiState))

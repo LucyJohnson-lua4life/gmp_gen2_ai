@@ -1,9 +1,10 @@
 import { RunToTargetAction, TurnToTargetAction, WaitAction, WarnEnemy, WarnEnemyActionInput } from "../../../aiEntities/actions/commonActions"
-import { ParadeWithPause, StrafeRightWithPause, StrafeLeftWithPause, DoubleParadeWithPause } from "../../..//aiEntities/actions/fightActions"
+import { ParadeWithPause, StrafeRightWithPause, StrafeLeftWithPause, DoubleParadeWithPause, TripleQuickAttack, ForwardAttackWithPause } from "../../..//aiEntities/actions/fightActions"
 import { getAngleToTarget, getDistance } from "../../../aiFunctions/aiUtils"
 import { AiState } from "../../../aiStates/aiState"
 import { NpcActionUtils } from "../../../aiFunctions/npcActionUtils"
 import { IActionsComponent } from "../../../aiEntities/components/iActionsComponent"
+import { IAiAction } from "src/aiEntities/iAiAction"
 
 //TODO: make range constants dynamic 
 export interface IDefaultDescriptionTemplateValues {
@@ -25,7 +26,6 @@ export function describeFightMovements(template: IDefaultDescriptionTemplateValu
     const angleRange = Math.abs(getAngleToTarget(template.fighterId, enemyId) - getAngleToTarget(enemyId, template.fighterId))
     const isEntityInEnemyAngleRange = (angleRange < 180 + 20 || angleRange > 180 - 20)
     if (isEntityInEnemyAngleRange && currentTime - lastAttackTime > 2700) {
-        //this.describeAttackAction(actionsComponent, enemyId)
         template.onAiAttacks(template)
         entityManager.setEnemyComponent(template.fighterId, { entityId: template.fighterId, enemyId: enemyId, lastAttackTime: currentTime })
     }
@@ -95,10 +95,22 @@ export function describeGeneralRoutine(template: IDefaultDescriptionTemplateValu
     const actionListSize = nextActions?.length ?? 999999
     const nearestChar = getNearestCharacterRangeMapping(template.fighterId, npcActionUtils)
     const actionsComponent = entityManager.getActionsComponent(template.fighterId)
+    console.log("enemyId: ", enemyId)
+    console.log("victimId: ", template.fighterId)
 
 
     if (isExisting(enemyId)) {
+        console.log("hello?")
         const range = getDistance(template.fighterId, enemyId)
+        const actionsComponent = template.aiState.getEntityManager().getActionsComponent(template.fighterId)
+        const nextActions = actionsComponent?.nextActions
+
+        if(typeof nextActions !== 'undefined' && nextActions.length >= 1 && !isFightAction(nextActions[0])){
+            console.log("got in here")
+            revmp.sendChatMessage
+            clearActionList(actionsComponent)
+        }
+
         if (range < 800 && isAlive(enemyId)) {
             describeFightAction(template, enemyId, range)
         }
@@ -113,7 +125,7 @@ export function describeGeneralRoutine(template: IDefaultDescriptionTemplateValu
         const warnInput: WarnEnemyActionInput = {
             aiId: template.fighterId,
             enemyId: nearestChar.id,
-            waitTime: 3000,
+            waitTime: 7000,
             warnDistance: 400,
             attackDistance: 0,
             entityManager: entityManager
@@ -158,4 +170,14 @@ function clearActionList(actionsComponent: IActionsComponent| undefined): void {
     if (typeof actionsComponent !== 'undefined') {
         actionsComponent.nextActions = []
     }
+}
+
+function isFightAction(action: IAiAction){
+    return action instanceof StrafeLeftWithPause 
+    || action instanceof StrafeRightWithPause
+    || action instanceof ParadeWithPause
+    || action instanceof DoubleParadeWithPause
+    || action instanceof ForwardAttackWithPause
+    || action instanceof TripleQuickAttack
+
 }

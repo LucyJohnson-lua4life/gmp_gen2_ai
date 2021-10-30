@@ -109,6 +109,8 @@ export class EntityManager {
     }
 
     setEnemyComponent(entityId: number, component: IEnemyComponent) {
+        console.log("set victimId ", entityId)
+        console.log("set enemyId ", component.enemyId)
         this.enemyComponents.set(entityId, component)
     }
     deleteEnemyComponent(entityId: number) {
