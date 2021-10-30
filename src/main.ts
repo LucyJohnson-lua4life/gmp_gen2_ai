@@ -41,7 +41,7 @@ revmp.on("init", () => {
     const testMonster = new wolf.Wolf();
     console.log("monster id: " + testMonster.id)
     aiStateFunctions.spawnNpc(testMonster,"HAFEN","NEWWORLD\\NEWWORLD.ZEN")
-    npcInitializer.initNewWorldNpcs(state)
+    //npcInitializer.initNewWorldNpcs(state)
 
 });
 
