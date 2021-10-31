@@ -6,6 +6,7 @@ import { WeaponInstances } from "../../serverComponents/weapons";
 import { ArmorInstances } from "../../serverComponents/armors";
 import { IAiNpc } from "../iAiNpc";
 import { getDemonKingInstance, INSTANCE_DEMON_KING} from "./npcInits";
+import { OrcMasterDescription } from "../descriptions/orcMasterDescription";
 
 export class DemonKing implements IAiNpc {
     enemyIds: number[];
@@ -37,7 +38,7 @@ export class DemonKing implements IAiNpc {
         this.friendIds = [];
         this.respawnTime = 10;
         this.nextActions =  new Array<IAiAction>()
-        this.actionDescriptions = [new DemonKingDescription(this.id)]
+        this.actionDescriptions = [new OrcMasterDescription(this.id)]
         this.aiFlags = new Map();
 
         this.lastPosUpdate = 0

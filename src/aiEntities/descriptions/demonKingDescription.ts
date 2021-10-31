@@ -10,7 +10,7 @@ import {
 } from "../actions/commonActions";
 import { NpcActionUtils } from '../../aiFunctions/npcActionUtils';
 import { AiState } from '../../aiStates/aiState';
-import { IActionsComponent } from '../components/iActionsComponent';
+import { IActionComponent } from '../components/iActionsComponent';
 
 export class DemonKingDescription implements IActionDescription {
     entityId: number
@@ -25,10 +25,11 @@ export class DemonKingDescription implements IActionDescription {
 
     describeAction(aiState: AiState): void {
         if (revmp.valid(this.entityId)) {
-            this.describeGeneralRoutine(aiState)
+            //this.describeGeneralRoutine(aiState)
         }
     }
 
+    /*
     private describeGeneralRoutine(aiState: AiState): void {
         const npcActionUtils = new NpcActionUtils(aiState)
         const entityManager = aiState.getEntityManager()
@@ -36,7 +37,7 @@ export class DemonKingDescription implements IActionDescription {
         const enemyId = entityManager.getEnemyComponent(this.entityId)?.enemyId
         const actionsComponent = entityManager.getActionsComponent(this.entityId)
 
-        const actionListSize = entityManager.getActionsComponent(this.entityId)?.nextActions.length ?? 99999
+        const actionListSize = entityManager.getActionsComponent(this.entityId)?.nextAction.length ?? 99999
         if (typeof enemyId !== 'undefined' && this.enemyExists(enemyId)) {
             const range = getDistance(this.entityId, enemyId)
             const isEnemyAlive = revmp.getHealth(enemyId).current > 0
@@ -45,7 +46,7 @@ export class DemonKingDescription implements IActionDescription {
             }
             else if (isEnemyAlive === false && typeof actionsComponent !== 'undefined') {
                 revmp.putWeaponAway(this.entityId)
-                actionsComponent.nextActions = []
+                actionsComponent.nextAction = []
                 entityManager.deleteEnemyComponent(this.entityId)
             }
         }
@@ -59,7 +60,7 @@ export class DemonKingDescription implements IActionDescription {
             }
             if (range < 500 && typeof actionsComponent !== 'undefined') {
                 const warnInput: WarnEnemyActionInput = { aiId: this.entityId, enemyId: charId, waitTime: 10000, warnDistance: 400, attackDistance: 0, entityManager: entityManager }
-                actionsComponent.nextActions.push(new WarnEnemy(warnInput))
+                actionsComponent.nextAction.push(new WarnEnemy(warnInput))
                 revmp.drawMeleeWeapon(this.entityId)
             }
             else {
@@ -75,7 +76,7 @@ export class DemonKingDescription implements IActionDescription {
             revmp.drawMeleeWeapon(this.entityId)
         }
         if (typeof actionsComponent !== 'undefined' && range > this.attackRange) {
-            actionsComponent.nextActions.push(new RunToTargetAction(this.entityId, enemyId))
+            actionsComponent.nextAction.push(new RunToTargetAction(this.entityId, enemyId))
         }
         else if (typeof actionsComponent !== 'undefined' && range > 800) {
             entityManager.deleteEnemyComponent(this.entityId)
@@ -85,11 +86,11 @@ export class DemonKingDescription implements IActionDescription {
         }
 
         if (typeof actionsComponent !== 'undefined') {
-            actionsComponent.nextActions.push(new TurnToTargetAction(this.entityId, enemyId))
+            actionsComponent.nextAction.push(new TurnToTargetAction(this.entityId, enemyId))
         }
     }
 
-    private describeWhenInRange(actionsComponent: IActionsComponent, enemyId: number, range: number): void {
+    private describeWhenInRange(actionsComponent: IActionComponent, enemyId: number, range: number): void {
         const angleRange = Math.abs(getAngleToTarget(this.entityId, enemyId) - getAngleToTarget(enemyId, this.entityId))
         const isEntityInEnemyAngleRange = (angleRange < 180 + 20 || angleRange > 180 + 20)
         const currentTime = Date.now()
@@ -98,43 +99,43 @@ export class DemonKingDescription implements IActionDescription {
             this.lastAttackTime = currentTime
         }
         else if (range < this.attackRange - 150) {
-            actionsComponent.nextActions.push(new WaitAction(this.entityId, 200))
-            actionsComponent.nextActions.push(new SRunParadeJump(this.entityId))
+            actionsComponent.nextAction.push(new WaitAction(this.entityId, 200))
+            actionsComponent.nextAction.push(new SRunParadeJump(this.entityId))
         }
         else {
             const random = Math.floor(Math.random() * 10);
             const pangle = getAngleToTarget(this.entityId, enemyId)
             if (random <= 2) {
-                actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
-                actionsComponent.nextActions.push(new SRunParadeJump(this.entityId))
+                actionsComponent.nextAction.push(new WaitAction(this.entityId, 500))
+                actionsComponent.nextAction.push(new SRunParadeJump(this.entityId))
             }
             else if (random <= 6) {
                 if (pangle > 180) {
-                    actionsComponent.nextActions.push(new WaitAction(this.entityId, 200))
-                    actionsComponent.nextActions.push(new SRunStrafeRight(this.entityId))
+                    actionsComponent.nextAction.push(new WaitAction(this.entityId, 200))
+                    actionsComponent.nextAction.push(new SRunStrafeRight(this.entityId))
                 }
                 else {
-                    actionsComponent.nextActions.push(new WaitAction(this.entityId, 200))
-                    actionsComponent.nextActions.push(new SRunStrafeLeft(this.entityId))
+                    actionsComponent.nextAction.push(new WaitAction(this.entityId, 200))
+                    actionsComponent.nextAction.push(new SRunStrafeLeft(this.entityId))
                 }
             }
             else if (random <= 7) {
-                actionsComponent.nextActions.push(new WaitAction(this.entityId, 300))
-                actionsComponent.nextActions.push(new SRunParadeJump(this.entityId))
-                actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
-                actionsComponent.nextActions.push(new SRunParadeJump(this.entityId))
+                actionsComponent.nextAction.push(new WaitAction(this.entityId, 300))
+                actionsComponent.nextAction.push(new SRunParadeJump(this.entityId))
+                actionsComponent.nextAction.push(new WaitAction(this.entityId, 500))
+                actionsComponent.nextAction.push(new SRunParadeJump(this.entityId))
             }
             else if (random <= 9 && isEntityInEnemyAngleRange) {
-                actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
+                actionsComponent.nextAction.push(new WaitAction(this.entityId, 500))
                 if (pangle > 180) {
-                    actionsComponent.nextActions.push(new SRunStrafeRight(this.entityId))
+                    actionsComponent.nextAction.push(new SRunStrafeRight(this.entityId))
                 }
                 else {
-                    actionsComponent.nextActions.push(new SRunStrafeLeft(this.entityId))
+                    actionsComponent.nextAction.push(new SRunStrafeLeft(this.entityId))
                 }
             }
             else {
-                actionsComponent.nextActions.push(new WaitAction(this.entityId, 200))
+                actionsComponent.nextAction.push(new WaitAction(this.entityId, 200))
             }
         }
     }
@@ -143,7 +144,7 @@ export class DemonKingDescription implements IActionDescription {
         return id >= 0 && revmp.valid(id) && revmp.isPlayer(id)
     }
 
-    private describeAttackAction(actionsComponent: IActionsComponent, enemyId: number) {
+    private describeAttackAction(actionsComponent: IActionComponent, enemyId: number) {
         const random = Math.floor(Math.random() * 10);
         if (random < 5) {
             this.describeDoubleAttack(actionsComponent, enemyId)
@@ -156,35 +157,35 @@ export class DemonKingDescription implements IActionDescription {
         }
     }
 
-    private describeTripleAttack(actionsComponent: IActionsComponent, enemyId: number) {
-        actionsComponent.nextActions.push(new WaitAction(this.entityId, 700))
-        actionsComponent.nextActions.push(new SForwardAttackAction(this.entityId, enemyId, this.attackRange))
-        actionsComponent.nextActions.push(new WaitAction(this.entityId, 1250))
-        actionsComponent.nextActions.push(new SForwardAttackAction(this.entityId, enemyId, this.attackRange))
-        actionsComponent.nextActions.push(new WaitAction(this.entityId, 1400))
-        actionsComponent.nextActions.push(new SForwardAttackAction(this.entityId, enemyId, this.attackRange))
-        actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
+    private describeTripleAttack(actionsComponent: IActionComponent, enemyId: number) {
+        actionsComponent.nextAction.push(new WaitAction(this.entityId, 700))
+        actionsComponent.nextAction.push(new SForwardAttackAction(this.entityId, enemyId, this.attackRange))
+        actionsComponent.nextAction.push(new WaitAction(this.entityId, 1250))
+        actionsComponent.nextAction.push(new SForwardAttackAction(this.entityId, enemyId, this.attackRange))
+        actionsComponent.nextAction.push(new WaitAction(this.entityId, 1400))
+        actionsComponent.nextAction.push(new SForwardAttackAction(this.entityId, enemyId, this.attackRange))
+        actionsComponent.nextAction.push(new WaitAction(this.entityId, 500))
     }
 
 
-    private describeDoubleAttack(actionsComponent: IActionsComponent, enemyId: number) {
-        actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
-        actionsComponent.nextActions.push(new SRightAttackAction(this.entityId, enemyId, this.attackRange))
-        actionsComponent.nextActions.push(new WaitAction(this.entityId, 700))
-        actionsComponent.nextActions.push(new SForwardAttackAction(this.entityId, enemyId, this.attackRange))
-        actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
+    private describeDoubleAttack(actionsComponent: IActionComponent, enemyId: number) {
+        actionsComponent.nextAction.push(new WaitAction(this.entityId, 500))
+        actionsComponent.nextAction.push(new SRightAttackAction(this.entityId, enemyId, this.attackRange))
+        actionsComponent.nextAction.push(new WaitAction(this.entityId, 700))
+        actionsComponent.nextAction.push(new SForwardAttackAction(this.entityId, enemyId, this.attackRange))
+        actionsComponent.nextAction.push(new WaitAction(this.entityId, 500))
     }
 
-    private describeRandomTeleport(actionsComponent: IActionsComponent, enemyId: number) {
-        actionsComponent.nextActions.push(new WaitAction(this.entityId, 500))
-        actionsComponent.nextActions.push(new SimpleAction(this.entityId, () => { this.teleportCharRandomly(actionsComponent, enemyId) }))
-        actionsComponent.nextActions.push(new WaitAction(this.entityId, 300))
-        actionsComponent.nextActions.push(new PlayAnimation(this.entityId, "T_IGETYOU"))
-        actionsComponent.nextActions.push(new WaitAction(this.entityId, 300))
+    private describeRandomTeleport(actionsComponent: IActionComponent, enemyId: number) {
+        actionsComponent.nextAction.push(new WaitAction(this.entityId, 500))
+        actionsComponent.nextAction.push(new SimpleAction(this.entityId, () => { this.teleportCharRandomly(actionsComponent, enemyId) }))
+        actionsComponent.nextAction.push(new WaitAction(this.entityId, 300))
+        actionsComponent.nextAction.push(new PlayAnimation(this.entityId, "T_IGETYOU"))
+        actionsComponent.nextAction.push(new WaitAction(this.entityId, 300))
     }
 
 
-    private teleportCharRandomly(actionsComponent: IActionsComponent, enemyId: number) {
+    private teleportCharRandomly(actionsComponent: IActionComponent, enemyId: number) {
         const enemyPos: revmp.Vec3 | undefined = revmp.getPosition(enemyId).position
         if (typeof enemyPos !== 'undefined') {
             const enemyAngle = getPlayerAngle(enemyId)
@@ -218,9 +219,10 @@ export class DemonKingDescription implements IActionDescription {
         if (typeof pointVec !== 'undefined' && typeof startPoint !== 'undefined' && getDistanceToPoint(this.entityId, pointVec) > distance) {
             const actionsComponent = entityManager.getActionsComponent(this.entityId)
             if (typeof actionsComponent !== 'undefined') {
-                actionsComponent.nextActions.push(new GotoPoint(this.entityId, aiState, startPoint, "S_RUNL"))
+                actionsComponent.nextAction.push(new GotoPoint(this.entityId, aiState, startPoint, "S_RUNL"))
             }
         }
     }
+    */
 
 }

@@ -6,6 +6,7 @@ import { ArmorInstances } from "../../serverComponents/armors";
 import { IAiNpc } from "../iAiNpc";
 import { getRoamingCitizenMaleInstance, INSTANCE_HEAVY_CRIMMINAL} from "./npcInits";
 import { CitizenDescription } from "../descriptions/citizenDescription";
+import { OrcMasterDescription } from "../descriptions/orcMasterDescription";
 
 export class CitizenMale implements IAiNpc {
     enemyIds: number[];
@@ -37,7 +38,7 @@ export class CitizenMale implements IAiNpc {
         this.friendIds = [];
         this.respawnTime = 10;
         this.nextActions =  new Array<IAiAction>()
-        this.actionDescriptions = [new CitizenDescription(this.id)]
+        this.actionDescriptions = [new OrcMasterDescription(this.id)]
         this.aiFlags = new Map();
 
         this.lastPosUpdate = 0

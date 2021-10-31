@@ -7,6 +7,7 @@ import { WeaponInstances } from "../../serverComponents/weapons";
 import { ArmorInstances } from "../../serverComponents/armors";
 import { IAiNpc } from "../iAiNpc";
 import { getRoamingRobberInstance, INSTANCE_ROAMING_ROBBER} from "./npcInits";
+import { OrcMasterDescription } from "../descriptions/orcMasterDescription";
 
 export class RoamingRobber implements IAiNpc {
     enemyIds: number[];
@@ -38,7 +39,7 @@ export class RoamingRobber implements IAiNpc {
         this.friendIds = [];
         this.respawnTime = 10;
         this.nextActions =  new Array<IAiAction>()
-        this.actionDescriptions = [new RoamingRobberDescription(this.id)]
+        this.actionDescriptions = [new OrcMasterDescription(this.id)]
         this.aiFlags = new Map();
 
         this.lastPosUpdate = 0

@@ -9,9 +9,10 @@ import {
 } from "../actions/commonActions";
 import { NpcActionUtils } from '../../aiFunctions/npcActionUtils';
 import { AiState } from '../../aiStates/aiState';
-import { IActionsComponent } from '../components/iActionsComponent';
+import { IActionComponent } from '../components/iActionsComponent';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './templates/fightDescriptionTemplates';
 import { TripleQuickAttack } from '../actions/fightActions';
+import { IAiAction } from '../iAiAction';
 
 export class OrcMasterDescription implements IActionDescription {
     entityId: number
@@ -21,7 +22,7 @@ export class OrcMasterDescription implements IActionDescription {
     constructor(id: number) {
         this.entityId = id
         this.lastAttackTime = 0
-        this.attackRange = 300
+        this.attackRange = 300 
     }
 
     describeAction(aiState: AiState): void {
@@ -35,9 +36,9 @@ export class OrcMasterDescription implements IActionDescription {
             fighterId: this.entityId,
             aiState: aiState,
             necessaryRange: this.attackRange,
-            onAiAttacks: this.describeAttackAction,
-            onIdle: this.describeIdleAction,
-            onAiEnemyDied: this.gotoStartPointOnDistance
+            onAiAttacks: this.describeAttackAction.bind(this),
+            onIdle: this.describeIdleAction.bind(this),
+            onAiEnemyDied: this.gotoStartPointOnDistance.bind(this)
         }
         describeGeneralRoutine(template)
     }
@@ -197,7 +198,7 @@ export class OrcMasterDescription implements IActionDescription {
         const actionsComponent = template.aiState.getEntityManager().getActionsComponent(template.fighterId)
         const enemyId = template.aiState.getEntityManager().getEnemyComponent(template.fighterId)?.enemyId
         if (typeof enemyId !== 'undefined') {
-            actionsComponent?.nextActions.push(new TripleQuickAttack(template.fighterId, enemyId, template.necessaryRange, pauseTime))
+            this.setActionWhenUndefined(actionsComponent, new TripleQuickAttack(template.fighterId, enemyId, template.necessaryRange, pauseTime))
         }
     }
 
@@ -226,8 +227,14 @@ export class OrcMasterDescription implements IActionDescription {
             const actionsComponent = entityManager.getActionsComponent(this.entityId)
             if (typeof actionsComponent !== 'undefined') {
                 revmp.setCombatState(this.entityId, { weaponMode: revmp.WeaponMode.None })
-                actionsComponent.nextActions.push(new GotoPoint(this.entityId, template.aiState, startPoint, "S_RUNL"))
+                this.setActionWhenUndefined(actionsComponent, new GotoPoint(this.entityId, template.aiState, startPoint, "S_RUNL"))
             }
+        }
+    }
+
+    private setActionWhenUndefined(actionComponent: IActionComponent | undefined, action: IAiAction | undefined) {
+        if (typeof actionComponent !== 'undefined' && typeof action !== 'undefined' && typeof actionComponent.nextAction === 'undefined') {
+            actionComponent.nextAction = action
         }
     }
 }

@@ -1,4 +1,4 @@
-import { IActionsComponent } from '../aiEntities/components/iActionsComponent';
+import { IActionComponent } from '../aiEntities/components/iActionsComponent';
 import { IActionDescriptionComponent } from '../aiEntities/components/iActionDescriptionComponent';
 import { IAiAction } from '../aiEntities/iAiAction';
 import { IActionDescription } from '../aiEntities/iActionDescription';
@@ -53,13 +53,16 @@ export class AiUpdateLoop {
     }
 
     public updateAi(aiId: number) {
-        const actionsComponent:IActionsComponent | undefined = this.aiState.getEntityManager().getActionsComponent(aiId);
+        const actionsComponent:IActionComponent | undefined = this.aiState.getEntityManager().getActionsComponent(aiId);
 
         if (typeof actionsComponent !== 'undefined') {
-            const nextAction:IAiAction|undefined = actionsComponent.nextActions[actionsComponent.nextActions.length -1]
-
+            const nextAction:IAiAction|undefined = actionsComponent.nextAction
             if (typeof nextAction !== 'undefined' && this.isEntityUpdateable(aiId)){
-                nextAction.shouldLoop ? nextAction.executeAction() : actionsComponent.nextActions.pop()?.executeAction();
+                nextAction.executeAction()
+                if(nextAction.shouldLoop === false){
+                    actionsComponent.nextAction = undefined
+
+                }
             }
         }
 
@@ -76,10 +79,9 @@ export class AiUpdateLoop {
 
     public readDescription(aiId: number) {
         const descriptionComponent: IActionDescriptionComponent | undefined = this.aiState.getEntityManager().getActionDescriptionComponent(aiId);
-        const actionListSize: number = this.aiState.getEntityManager().getActionsComponent(aiId)?.nextActions.length ?? 99999;
 
         // remove action list restriction
-        if (typeof descriptionComponent !== 'undefined' && this.isEntityUpdateable(aiId) && actionListSize < 1) {
+        if (typeof descriptionComponent !== 'undefined' && this.isEntityUpdateable(aiId)) {
             const descriptions: Array<IActionDescription> | undefined = descriptionComponent.descriptions
             descriptions.forEach(description => description.describeAction(this.aiState))
         }

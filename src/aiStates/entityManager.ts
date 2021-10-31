@@ -1,5 +1,5 @@
 
-import { IActionsComponent } from "../aiEntities/components/iActionsComponent";
+import { IActionComponent } from "../aiEntities/components/iActionsComponent";
 import { IDrInfoComponent } from "../aiEntities/components/iDrInfoComponent";
 import { INpcStateComponent } from "../aiEntities/components/iNpcStateComponent";
 import { IPositionComponent } from "../aiEntities/components/iPositionComponent";
@@ -16,7 +16,7 @@ const worldNames: Array<string> = ["NEWWORLD\\NEWWORLD.ZEN", "OLDWORLD\\OLDWORLD
 export class EntityManager {
 
     private dailyRoutineComponents:Map<number, IDrInfoComponent>;
-    private actionsComponents:Map<number, IActionsComponent>;
+    private actionsComponents:Map<number, IActionComponent>;
     private actionDescriptionComponents: Map<number, IActionDescriptionComponent>;
     private positionsComponents:Map<number, IPositionComponent>;
     private npcStateComponents:Map<number, INpcStateComponent>;
@@ -37,7 +37,7 @@ export class EntityManager {
     registerBot(npc: IAiNpc): void{
         const stateInfo:INpcStateComponent = {entityId: npc.id, isDead:false, isUnconscious: false, npcInstance: npc.npcInstance}
         const respawnInfo:IRespawnComponent = {entityId: npc.id, respawnTime: npc.respawnTime, deathTime: -1}
-        const actionInfo:IActionsComponent = {entityId: npc.id, nextActions: npc.nextActions}
+        const actionInfo:IActionComponent = {entityId: npc.id}
         const positionInfo:IPositionComponent = {entityId: npc.id, currentPosX:0, currentPosY:0, currentPosZ:0, lastPosX:0, lastPosY: 0, lastPosZ: 0, lastPosUpdate: 0, startWorld: npc.startWorld, startPoint: npc.startPoint}
         const actionDescription:IActionDescriptionComponent = {entityId: npc.id, descriptions: npc.actionDescriptions}
 
@@ -65,11 +65,11 @@ export class EntityManager {
         this.dailyRoutineComponents.set(entityId, component)
     }
 
-    getActionsComponent(entityId: number): IActionsComponent|undefined{
+    getActionsComponent(entityId: number): IActionComponent|undefined{
         return this.actionsComponents.get(entityId);
     }
 
-    setActionsComponent(entityId: number, component: IActionsComponent){
+    setActionsComponent(entityId: number, component: IActionComponent){
         this.actionsComponents.set(entityId, component)
     }
 
@@ -109,8 +109,6 @@ export class EntityManager {
     }
 
     setEnemyComponent(entityId: number, component: IEnemyComponent) {
-        console.log("set victimId ", entityId)
-        console.log("set enemyId ", component.enemyId)
         this.enemyComponents.set(entityId, component)
     }
     deleteEnemyComponent(entityId: number) {
