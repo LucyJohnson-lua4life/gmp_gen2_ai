@@ -1,4 +1,3 @@
-import Heap from "heap-js";
 import { instance, mock, when } from "ts-mockito";
 import { StubAiNpc } from '../stubAiNpc';
 import { IAiNpc } from "../../src/aiEntities/iAiNpc";

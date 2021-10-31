@@ -87,13 +87,13 @@ function describeFightMode(template: IDefaultDescriptionTemplateValues, enemyId:
 function describeFightMovements(template: IDefaultDescriptionTemplateValues, enemyId: number, rangeToEnemy: number): void {
     const entityManager = template.aiState.getEntityManager()
     const actionsComponent = entityManager.getActionsComponent(template.fighterId)
-    const lastAttackTime = entityManager.getEnemyComponent(template.fighterId)?.lastAttackTime ?? 0
+    const lastAttackTime = entityManager.getActionHistoryComponent(template.fighterId)?.lastAttackTime ?? 0
     const currentTime = Date.now()
     const angleRange = Math.abs(getAngleToTarget(template.fighterId, enemyId) - getAngleToTarget(enemyId, template.fighterId))
     const isEntityInEnemyAngleRange = (angleRange < 180 + 20 || angleRange > 180 - 20)
     if (isEntityInEnemyAngleRange && currentTime - lastAttackTime > 2700) {
         template.onAiAttacks(template)
-        entityManager.setEnemyComponent(template.fighterId, { entityId: template.fighterId, enemyId: enemyId, lastAttackTime: currentTime })
+        entityManager.setActionHistoryComponent(template.fighterId, { entityId: template.fighterId, lastAttackTime: currentTime })
     }
     else if (rangeToEnemy < 150) {
         setActionWhenUndefined(actionsComponent, new ParadeWithPause(template.fighterId, 200))

@@ -7,6 +7,7 @@ import { IRespawnComponent } from "../aiEntities/components/iRespawnComponent";
 import { IActionDescriptionComponent } from "../aiEntities/components/iActionDescriptionComponent";
 import { IEnemyComponent } from "../aiEntities/components/iEnemyComponent";
 import { IAiNpc } from "../aiEntities/iAiNpc";
+import { IActionHistoryComponent } from "src/aiEntities/components/iActionHistoryComponent";
 
 const worldNames: Array<string> = ["NEWWORLD\\NEWWORLD.ZEN", "OLDWORLD\\OLDWORLD.ZEN", "ADDON\\ADDONWORLD.ZEN"]
 /**
@@ -22,6 +23,7 @@ export class EntityManager {
     private npcStateComponents:Map<number, INpcStateComponent>;
     private respawnComponents:Map<number, IRespawnComponent>;
     private enemyComponents: Map<number, IEnemyComponent>;
+    private actionHistoryComponents: Map<number, IActionHistoryComponent>;
 
     constructor() {
         this.dailyRoutineComponents = new Map()
@@ -31,6 +33,7 @@ export class EntityManager {
         this.npcStateComponents = new Map()
         this.respawnComponents = new Map()
         this.enemyComponents = new Map()
+        this.actionHistoryComponents = new Map()
     }
 
     //todo: add more functionality once revmp functions are available
@@ -40,12 +43,14 @@ export class EntityManager {
         const actionInfo:IActionComponent = {entityId: npc.id}
         const positionInfo:IPositionComponent = {entityId: npc.id, currentPosX:0, currentPosY:0, currentPosZ:0, lastPosX:0, lastPosY: 0, lastPosZ: 0, lastPosUpdate: 0, startWorld: npc.startWorld, startPoint: npc.startPoint}
         const actionDescription:IActionDescriptionComponent = {entityId: npc.id, descriptions: npc.actionDescriptions}
+        const actionHistory:IActionHistoryComponent = {entityId: npc.id, lastAttackTime: 0}
 
         this.setNpcStateComponent(npc.id, stateInfo)
         this.setRespawnComponent(npc.id, respawnInfo)
         this.setActionsComponent(npc.id, actionInfo)
         this.setPositionsComponent(npc.id, positionInfo)
         this.setActionDescriptionComponent(npc.id, actionDescription)
+        this.setActionHistoryComponent(npc.id, actionHistory)
     }
 
     unregisterBot(npcId: number): void{
@@ -113,5 +118,12 @@ export class EntityManager {
     }
     deleteEnemyComponent(entityId: number) {
         this.enemyComponents.delete(entityId)
+    }
+
+    getActionHistoryComponent(entityId: number): IActionHistoryComponent | undefined {
+        return this.actionHistoryComponents.get(entityId);
+    }
+    setActionHistoryComponent(entityId: number, component: IActionHistoryComponent) {
+        this.actionHistoryComponents.set(entityId, component)
     }
 }
