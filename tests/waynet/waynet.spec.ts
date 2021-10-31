@@ -10,7 +10,7 @@ test('Waynet should load freepoints correctly.', () => {
     expect(testfp.y).toBe(2000)
     expect(testfp.z).toBe(-3000)
     expect(testfp.rotX).toBe(1)
-    expect(testfp.rotY).toBe(0)
+    expect(testfp.rotZ).toBe(0)
 })
 
 
@@ -23,7 +23,7 @@ test('Waynet should load the waypoints correctly.', () => {
     expect(testwp?.y).toBe(2000)
     expect(testwp?.z).toBe(-3000)
     expect(testwp?.rotX).toBe(1)
-    expect(testwp?.rotY).toBe(0)
+    expect(testwp?.rotZ).toBe(0)
     expect(testwp?.otherWps).toStrictEqual(["WP_TEST2", "WP_TEST3"])
 })
 
