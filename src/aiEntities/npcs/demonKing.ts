@@ -1,7 +1,6 @@
 
 import { IActionDescription } from "../iActionDescription";
 import { DemonKingDescription } from "../descriptions/demonKingDescription";
-import { IAiAction } from "../iAiAction";
 import { WeaponInstances } from "../../serverComponents/weapons";
 import { ArmorInstances } from "../../serverComponents/armors";
 import { IAiNpc } from "../iAiNpc";
@@ -12,7 +11,6 @@ export class DemonKing implements IAiNpc {
     enemyIds: number[];
     friendIds: number[];
     respawnTime: number;
-    nextActions: Array<IAiAction>;
     actionDescriptions: Array<IActionDescription>;
     aiFlags: Map<string, string | number>;
     id: number;
@@ -37,7 +35,6 @@ export class DemonKing implements IAiNpc {
         this.enemyIds = [];
         this.friendIds = [];
         this.respawnTime = 10;
-        this.nextActions =  new Array<IAiAction>()
         this.actionDescriptions = [new OrcMasterDescription(this.id)]
         this.aiFlags = new Map();
 
@@ -57,8 +54,4 @@ export class DemonKing implements IAiNpc {
         revmp.equipItem(this.id, WeaponInstances.eliteOrcSword)
         revmp.equipItem(this.id, ArmorInstances.darkArmor)
     }
-    addAction(action: IAiAction) {
-        this.nextActions.push(action)
-    }
-
 }

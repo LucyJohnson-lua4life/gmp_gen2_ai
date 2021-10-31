@@ -1,6 +1,5 @@
 import { IActionDescription } from "../iActionDescription";
 import { DefaultMonsterDescription } from "../descriptions/defaultMonsterDescription";
-import { IAiAction } from "../iAiAction";
 import { IAiNpc } from "../iAiNpc";
 import { getKeilerInstance, INSTANCE_KEILER} from "./npcInits";
 
@@ -8,7 +7,6 @@ export class Keiler implements IAiNpc {
     enemyIds: number[];
     friendIds: number[];
     respawnTime: number;
-    nextActions: Array<IAiAction>;
     actionDescriptions: Array<IActionDescription>;
     aiFlags: Map<string, string | number>;
     id: number;
@@ -33,7 +31,6 @@ export class Keiler implements IAiNpc {
         this.enemyIds = [];
         this.friendIds = [];
         this.respawnTime = 10;
-        this.nextActions =  new Array<IAiAction>()
         this.actionDescriptions = [new DefaultMonsterDescription(this.id)]
         this.aiFlags = new Map();
 
@@ -46,8 +43,4 @@ export class Keiler implements IAiNpc {
         this.currentPosZ = 0
         this.npcInstance = INSTANCE_KEILER
     }
-    addAction(action: IAiAction) {
-        this.nextActions.push(action)
-    }
-
 }

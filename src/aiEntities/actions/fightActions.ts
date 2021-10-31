@@ -200,6 +200,7 @@ export class TripleQuickAttack implements IAiAction{
 
             const angleRange = Math.abs(getAngleToTarget(this.aiId, this.victimId) - getAngleToTarget(this.victimId, this.aiId))
             const isEntityInEnemyAngleRange = (angleRange < 180 + 20 || angleRange > 180 + 20)
+            console.log("in angle range: ", isEntityInEnemyAngleRange)
             if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && isEntityInEnemyAngleRange) {
                 revmp.attack(this.aiId, this.victimId);
             }

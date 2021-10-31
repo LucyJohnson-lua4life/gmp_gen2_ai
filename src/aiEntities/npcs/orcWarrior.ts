@@ -3,7 +3,6 @@
 
 import { IActionDescription } from "../iActionDescription";
 import { DefaultMonsterDescription } from "../descriptions/defaultMonsterDescription";
-import { IAiAction } from "../iAiAction";
 import { IAiNpc } from "../iAiNpc";
 import { getOrcWarriorInstance, INSTANCE_ORC_WARRIOR} from "./npcInits";
 
@@ -11,7 +10,6 @@ export class OrcWarrior implements IAiNpc {
     enemyIds: number[];
     friendIds: number[];
     respawnTime: number;
-    nextActions: Array<IAiAction>;
     actionDescriptions: Array<IActionDescription>;
     aiFlags: Map<string, string | number>;
     id: number;
@@ -36,7 +34,6 @@ export class OrcWarrior implements IAiNpc {
         this.enemyIds = [];
         this.friendIds = [];
         this.respawnTime = 10;
-        this.nextActions =  new Array<IAiAction>()
         this.actionDescriptions = [new DefaultMonsterDescription(this.id)]
         this.aiFlags = new Map();
 
@@ -48,9 +45,6 @@ export class OrcWarrior implements IAiNpc {
         this.currentPosY = 0
         this.currentPosZ = 0
         this.npcInstance = INSTANCE_ORC_WARRIOR
-    }
-    addAction(action: IAiAction) {
-        this.nextActions.push(action)
     }
 
 }

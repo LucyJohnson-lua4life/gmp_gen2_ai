@@ -127,7 +127,7 @@ revmp.on("attacked", (attacker, target, userEvent) => {
         revmp.setCombatState(target, { unconscious: true });
     }
     if (revmp.isPlayer(target)) {
-        revmp.startAnimation(target, "T_STUMBLEB");
+        revmp.startAnimation(target, "T_STUMBLE");
     }
     revmp.setHealth(target, { current: newHealth, max: health.max });
 });

@@ -1,7 +1,6 @@
 
 import { IActionDescription } from "../iActionDescription";
 import { DefaultMonsterDescription } from "../descriptions/defaultMonsterDescription";
-import { IAiAction } from "../iAiAction";
 import { IAiNpc } from "../iAiNpc";
 import { getWargInstance, INSTANCE_WARG} from "./npcInits";
 
@@ -9,7 +8,6 @@ export class Warg implements IAiNpc {
     enemyIds: number[];
     friendIds: number[];
     respawnTime: number;
-    nextActions: Array<IAiAction>;
     actionDescriptions: Array<IActionDescription>;
     aiFlags: Map<string, string | number>;
     id: number;
@@ -34,7 +32,6 @@ export class Warg implements IAiNpc {
         this.enemyIds = [];
         this.friendIds = [];
         this.respawnTime = 10;
-        this.nextActions =  new Array<IAiAction>()
         this.actionDescriptions = [new DefaultMonsterDescription(this.id)]
         this.aiFlags = new Map();
 
@@ -46,9 +43,6 @@ export class Warg implements IAiNpc {
         this.currentPosY = 0
         this.currentPosZ = 0
         this.npcInstance = INSTANCE_WARG
-    }
-    addAction(action: IAiAction) {
-        this.nextActions.push(action)
     }
 
 }

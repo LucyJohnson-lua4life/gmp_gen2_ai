@@ -2,7 +2,6 @@
 
 import { IActionDescription } from "../iActionDescription";
 import { OrcMasterDescription} from "../descriptions/orcMasterDescription";
-import { IAiAction } from "../iAiAction";
 import { IAiNpc } from "../iAiNpc";
 import { getOrcEliteInstance, INSTANCE_ORC_ELITE} from "./npcInits";
 import { WeaponInstances } from "../../serverComponents/weapons";
@@ -11,7 +10,6 @@ export class OrcElite implements IAiNpc {
     enemyIds: number[];
     friendIds: number[];
     respawnTime: number;
-    nextActions: Array<IAiAction>;
     actionDescriptions: Array<IActionDescription>;
     aiFlags: Map<string, string | number>;
     id: number;
@@ -36,7 +34,6 @@ export class OrcElite implements IAiNpc {
         this.enemyIds = [];
         this.friendIds = [];
         this.respawnTime = 10;
-        this.nextActions =  new Array<IAiAction>()
         this.actionDescriptions = [new OrcMasterDescription(this.id)]
         this.aiFlags = new Map();
 
@@ -52,8 +49,4 @@ export class OrcElite implements IAiNpc {
         revmp.equipItem(this.id, WeaponInstances.eliteOrcSword)
         revmp.setAttributes(this.id, { twoHanded: 100 })
     }
-    addAction(action: IAiAction) {
-        this.nextActions.push(action)
-    }
-
 }

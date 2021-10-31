@@ -1,12 +1,10 @@
 import {IPlayer} from './iPlayer';
-import {IAiAction} from './iAiAction';
 import { IActionDescription } from './iActionDescription';
 
 export interface IAiNpc extends IPlayer{
     enemyIds: Array<number>,
     friendIds: Array<number>,
     respawnTime: number,
-    nextActions: Array<IAiAction>,
     actionDescriptions: Array<IActionDescription>,
     aiFlags: Map<string, number|string>,
     lastPosUpdate:number,
@@ -20,5 +18,4 @@ export interface IAiNpc extends IPlayer{
     startPoint:string|undefined,
     startWorld:string|undefined,
     npcInstance:string,
-    addAction(action:IAiAction):void
 }

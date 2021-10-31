@@ -1,8 +1,6 @@
 
 
 import { IActionDescription } from "../iActionDescription";
-import { RoamingRobberDescription } from "../descriptions/roamingRobberDescription";
-import { IAiAction } from "../iAiAction";
 import { WeaponInstances } from "../../serverComponents/weapons";
 import { ArmorInstances } from "../../serverComponents/armors";
 import { IAiNpc } from "../iAiNpc";
@@ -13,7 +11,6 @@ export class RoamingRobber implements IAiNpc {
     enemyIds: number[];
     friendIds: number[];
     respawnTime: number;
-    nextActions: Array<IAiAction>;
     actionDescriptions: Array<IActionDescription>;
     aiFlags: Map<string, string | number>;
     id: number;
@@ -38,7 +35,6 @@ export class RoamingRobber implements IAiNpc {
         this.enemyIds = [];
         this.friendIds = [];
         this.respawnTime = 10;
-        this.nextActions =  new Array<IAiAction>()
         this.actionDescriptions = [new OrcMasterDescription(this.id)]
         this.aiFlags = new Map();
 
@@ -57,9 +53,6 @@ export class RoamingRobber implements IAiNpc {
         revmp.addItem(this.id, ArmorInstances.guardianArmor, 1);
         revmp.equipItem(this.id, WeaponInstances.nobleSword)
         revmp.equipItem(this.id, ArmorInstances.guardianArmor)
-    }
-    addAction(action: IAiAction) {
-        this.nextActions.push(action)
     }
 
 }
