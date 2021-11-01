@@ -25,8 +25,12 @@ const em = state.getEntityManager();
 const updateLoop = new aiUpdateLoop.AiUpdateLoop(state);
 const aiStateFunctions = new funs.AiStateFunctions(state)
 
-revmp.on("init", () => {
 
+revmp.name = "Revma";
+revmp.description = "The best adventure experience.";
+
+revmp.on("init", () => {
+    
     const world = revmp.createWorld({
         zen: "NEWWORLD/NEWWORLD.ZEN",
         startpoint: "NW_CITY_HABOUR_02_B",
@@ -56,11 +60,12 @@ function debugCommands(entity: revmp.Entity, msg: string) {
     }
     if (command === "/sendsomething") {
         revmp.sendChatMessage(entity, 'testo')
+    } else if (command === "/revive") {
+        damageCalculation.revive(entity);
     }
 
     if (command === "/walk") {
-        const param1 = words[1];
-        const npcid = parseInt(param1)
+        const npcid = parseInt(words[1] ?? revmp.getFocus(entity).focus);
         const positionComponent = em.getPositionsComponents(npcid)
         const pos = revmp.getPosition(npcid).position
         positionComponent.currentPosX = pos[0]

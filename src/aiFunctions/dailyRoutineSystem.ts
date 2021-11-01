@@ -63,7 +63,7 @@ export class DailyRoutineSystem {
     }
 
     private updateEntityLastHourAndMinute(playerid: number, currentTime: DrCurrentTime) {
-        let dailyRoutineComponent: IDrInfoComponent | undefined = this.entityManager.getDailyRoutineComponent(playerid);
+        const dailyRoutineComponent: IDrInfoComponent | undefined = this.entityManager.getDailyRoutineComponent(playerid);
         if (typeof dailyRoutineComponent !== 'undefined') {
             dailyRoutineComponent.lastHour = currentTime.hour;
             dailyRoutineComponent.lastMinute = currentTime.minute;
@@ -83,7 +83,7 @@ export class DailyRoutineSystem {
         });
     }
 
-    private isFirstOverlapWithTargetTime(playerid: number, currentTime: DrCurrentTime, targetTime: DrTargetTime):Boolean {
+    private isFirstOverlapWithTargetTime(playerid: number, currentTime: DrCurrentTime, targetTime: DrTargetTime):boolean {
         const lastTime: IDrInfoComponent|undefined = this.entityManager.getDailyRoutineComponent(playerid)
         if(typeof lastTime !== 'undefined'){
         return (typeof lastTime.startHour === 'undefined')
