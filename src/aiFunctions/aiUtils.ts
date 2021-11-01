@@ -25,16 +25,16 @@ export function getAngleToPoint(x1: number, y1: number, x2: number, y2: number):
 }
 
 export function getWaynetPointAngle(playerX: number, playerZ: number, waynetPointDirX: number, waynetPointDirY: number): number {
-    let x1 = playerX
-    let x2 = playerX + waynetPointDirX
-    let y1 = playerZ
-    let y2 = playerZ + waynetPointDirY
+    const x1 = playerX
+    const x2 = playerX + waynetPointDirX
+    const y1 = playerZ
+    const y2 = playerZ + waynetPointDirY
 
     if (x1 == x2 && y1 == y2) {
         return 0;
     }
-    let x = x2 - x1
-    let y = y2 - y1
+    const x = x2 - x1
+    const y = y2 - y1
 
     let angle = Math.atan(Math.abs(y) / Math.abs(x)) * 180.0 / 3.14;
 

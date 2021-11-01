@@ -33,7 +33,7 @@ export class AiUpdateLoop {
         revmp.characters.forEach(charId =>{
             const pos = revmp.getPosition(charId).position
             const checksum = this.npcActionUtils.calculatePositionCheckSum(pos[0], pos[1], pos[2])
-            let playerOfChecksum = allPositions.get(checksum)
+            const playerOfChecksum = allPositions.get(checksum)
             if(allPositions.has(checksum) && typeof playerOfChecksum !== 'undefined'){
                 playerOfChecksum.push(charId)
             }
@@ -101,8 +101,8 @@ export class AiUpdateLoop {
         if(typeof lastNpcInstance !== 'undefined' && typeof lastPosition !== 'undefined'){
             //TODO: extend getNpc for state
             //todo: fix this
-        let spawnPoint = typeof lastPosition.startPoint !== 'undefined' ? lastPosition.startPoint : "HAFEN"
-        let spawnWorld = typeof lastPosition.startWorld !== 'undefined' ? lastPosition.startWorld : this.world
+        const spawnPoint = typeof lastPosition.startPoint !== 'undefined' ? lastPosition.startPoint : "HAFEN"
+        const spawnWorld = typeof lastPosition.startWorld !== 'undefined' ? lastPosition.startWorld : this.world
         this.aiStateFunctions.spawnNpc(getNpcForInstance(lastNpcInstance),spawnPoint, spawnWorld)
         }
     }
