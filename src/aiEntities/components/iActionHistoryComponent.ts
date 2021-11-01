@@ -6,5 +6,6 @@
  * @field lastAttackTime: last time the entity executed an attack */
 export interface IActionHistoryComponent {
     entityId: number,
-    lastAttackTime: number
+    lastAttackTime?: number,
+    lastRoamingTime?: number
 }

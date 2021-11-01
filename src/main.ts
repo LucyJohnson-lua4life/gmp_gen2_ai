@@ -3,6 +3,7 @@ const wolf = require("./dist/aiEntities/npcs/wolf");
 const npcInitializer = require("./dist/initNewWorldNpcs");
 const scavenger = require("./dist/aiEntities/npcs/scavenger");
 const orcElite = require("./dist/aiEntities/npcs/orcElite");
+const citizenMale = require("./dist/aiEntities/npcs/citizenMale");
 const demonKing = require("./dist/aiEntities/npcs/demonKing");
 const heavyCrimminal = require("./dist/aiEntities/npcs/heavyCrimminal");
 const roamingRobber = require("./dist/aiEntities/npcs/roamingRobber");
@@ -38,7 +39,7 @@ revmp.on("init", () => {
     revmp.setTime(world, { hour: 15, minute: 0 });
     setInterval(updateLoop.updateAll.bind(updateLoop), 50);
 
-    const testMonster = new orcElite.OrcElite();
+    const testMonster = new roamingRobber.RoamingRobber();
     console.log("monster id: " + testMonster.id)
     aiStateFunctions.spawnNpc(testMonster,"HAFEN","NEWWORLD\\NEWWORLD.ZEN")
     //npcInitializer.initNewWorldNpcs(state)

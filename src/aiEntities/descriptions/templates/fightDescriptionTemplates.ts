@@ -14,16 +14,14 @@ export interface IDefaultDescriptionTemplateValues {
     onAiAttacks(template: IDefaultDescriptionTemplateValues): void
     onAiEnemyDied(template: IDefaultDescriptionTemplateValues): void
     onIdle(template: IDefaultDescriptionTemplateValues): void
+    onEnemyInWarnRange(template: IDefaultDescriptionTemplateValues, warnableEnemyId: number): void
 }
 
 export function describeGeneralRoutine(template: IDefaultDescriptionTemplateValues): void {
     const npcActionUtils = new NpcActionUtils(template.aiState)
     const entityManager = template.aiState.getEntityManager()
     const enemyId = entityManager.getEnemyComponent(template.fighterId)?.enemyId ?? -1
-    const nextAction = entityManager.getActionsComponent(template.fighterId)?.nextAction
     const nearestChar = getNearestCharacterRangeMapping(template.fighterId, npcActionUtils)
-    const actionsComponent = entityManager.getActionsComponent(template.fighterId)
-
 
     if (isExisting(enemyId)) {
         const range = getDistance(template.fighterId, enemyId)
@@ -47,20 +45,7 @@ export function describeGeneralRoutine(template: IDefaultDescriptionTemplateValu
     else if (nearestChar.distance < 500 && isAlive(nearestChar.id)) {
         //TODO: the world constant should only be fixed in later versions!
         //TODO: currently only player will get attacked/warned, should implement a proper enemy/friend mapping
-        const warnInput: WarnEnemyActionInput = {
-            aiId: template.fighterId,
-            enemyId: nearestChar.id,
-            waitTime: 3000,
-            warnDistance: 400,
-            attackDistance: 0,
-            entityManager: entityManager
-        }
-
-        if (typeof actionsComponent !== 'undefined' && !(nextAction instanceof WarnEnemy)) {
-            clearAction(actionsComponent)
-            setActionWhenUndefined(actionsComponent, new WarnEnemy(warnInput))
-            revmp.drawMeleeWeapon(template.fighterId)
-        }
+        template.onEnemyInWarnRange(template, nearestChar.id)
     }
     else {
         template.onIdle(template)
@@ -70,6 +55,9 @@ export function describeGeneralRoutine(template: IDefaultDescriptionTemplateValu
 function describeFightMode(template: IDefaultDescriptionTemplateValues, enemyId: number, rangeToEnemy: number): void {
     const entityManager = template.aiState.getEntityManager();
     const actionsComponent = entityManager?.getActionsComponent(template.fighterId);
+    if (hasMeleeWeapon(template.fighterId)) {
+        revmp.drawMeleeWeapon(template.fighterId)
+    }
 
     if (typeof actionsComponent !== 'undefined' && rangeToEnemy > template.necessaryRange) {
         setActionWhenUndefined(actionsComponent, new RunToTargetAction(template.fighterId, enemyId))
@@ -87,13 +75,16 @@ function describeFightMode(template: IDefaultDescriptionTemplateValues, enemyId:
 function describeFightMovements(template: IDefaultDescriptionTemplateValues, enemyId: number, rangeToEnemy: number): void {
     const entityManager = template.aiState.getEntityManager()
     const actionsComponent = entityManager.getActionsComponent(template.fighterId)
-    const lastAttackTime = entityManager.getActionHistoryComponent(template.fighterId)?.lastAttackTime ?? 0
+    const historyComponent = entityManager.getActionHistoryComponent(template.fighterId) ?? { entityId: template.fighterId }
+    const lastAttackTime = historyComponent.lastAttackTime ?? 0
     const currentTime = Date.now()
     const angleRange = Math.abs(getAngleToTarget(template.fighterId, enemyId) - getAngleToTarget(enemyId, template.fighterId))
     const isEntityInEnemyAngleRange = (angleRange < 180 + 20 || angleRange > 180 - 20)
+
     if (isEntityInEnemyAngleRange && currentTime - lastAttackTime > 2700) {
         template.onAiAttacks(template)
-        entityManager.setActionHistoryComponent(template.fighterId, { entityId: template.fighterId, lastAttackTime: currentTime })
+        historyComponent.lastAttackTime = currentTime
+        entityManager.setActionHistoryComponent(template.fighterId, historyComponent)
     }
     else if (rangeToEnemy < 150) {
         setActionWhenUndefined(actionsComponent, new ParadeWithPause(template.fighterId, 200))
@@ -127,7 +118,6 @@ function describeFightMovements(template: IDefaultDescriptionTemplateValues, ene
             setActionWhenUndefined(actionsComponent, new WaitAction(template.fighterId, 200))
         }
     }
-
 }
 
 interface INearestCharacter {
@@ -158,6 +148,10 @@ function clearAction(actionsComponent: IActionComponent | undefined): void {
     }
 }
 
+function hasMeleeWeapon(entityId: number): boolean {
+    return revmp.valid(revmp.getEquipment(entityId).meleeWeapon)
+}
+
 function setActionWhenUndefined(actionComponent: IActionComponent | undefined, action: IAiAction | undefined) {
     if (typeof actionComponent !== 'undefined' && typeof action !== 'undefined' && typeof actionComponent.nextAction === 'undefined') {
         actionComponent.nextAction = action
@@ -172,4 +166,24 @@ function isFightAction(action: IAiAction | undefined) {
         || action instanceof ForwardAttackWithPause
         || action instanceof TripleQuickAttack)
 
+}
+
+
+export function warnEnemy(template: IDefaultDescriptionTemplateValues, warnableEnemyId: number) {
+    const entityManager = template.aiState.getEntityManager()
+    const actionsComponent = entityManager.getActionsComponent(template.fighterId)
+    const warnInput: WarnEnemyActionInput = {
+        aiId: template.fighterId,
+        enemyId: warnableEnemyId,
+        waitTime: 3000,
+        warnDistance: 400,
+        attackDistance: 0,
+        entityManager: entityManager
+    }
+
+    if (typeof actionsComponent !== 'undefined' && !(actionsComponent.nextAction instanceof WarnEnemy)) {
+        clearAction(actionsComponent)
+        setActionWhenUndefined(actionsComponent, new WarnEnemy(warnInput))
+        revmp.drawMeleeWeapon(template.fighterId)
+    }
 }

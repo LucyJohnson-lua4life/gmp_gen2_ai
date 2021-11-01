@@ -35,7 +35,7 @@ export class CitizenMale implements IAiNpc {
         this.enemyIds = [];
         this.friendIds = [];
         this.respawnTime = 10;
-        this.actionDescriptions = [new OrcMasterDescription(this.id)]
+        this.actionDescriptions = [new CitizenDescription(this.id)]
         this.aiFlags = new Map();
 
         this.lastPosUpdate = 0

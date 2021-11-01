@@ -6,7 +6,7 @@ import {
 } from "../actions/commonActions";
 import { AiState } from '../../aiStates/aiState';
 import { ForwardAttackWithPause } from '../actions/fightActions';
-import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './templates/fightDescriptionTemplates';
+import { describeGeneralRoutine, IDefaultDescriptionTemplateValues, warnEnemy } from './templates/fightDescriptionTemplates';
 import { IActionComponent } from '../components/iActionsComponent';
 import { IAiAction } from '../iAiAction';
 
@@ -35,7 +35,9 @@ export class DefaultMonsterDescription implements IActionDescription {
             necessaryRange: this.attackRange,
             onAiAttacks: this.describeAttackAction.bind(this),
             onIdle: this.describeEatRoutine.bind(this),
-            onAiEnemyDied: this.gotoStartPointOnDistance.bind(this)
+            onAiEnemyDied: this.gotoStartPointOnDistance.bind(this),
+            onEnemyInWarnRange: warnEnemy
+            
         }
         describeGeneralRoutine(template)
     }

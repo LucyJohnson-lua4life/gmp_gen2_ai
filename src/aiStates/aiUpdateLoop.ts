@@ -61,7 +61,6 @@ export class AiUpdateLoop {
                 nextAction.executeAction()
                 if(nextAction.shouldLoop === false){
                     actionsComponent.nextAction = undefined
-
                 }
             }
         }

@@ -1,14 +1,12 @@
 
 import { IActionDescription } from './iActionDescription';
-import { getAngleToTarget, getDistance} from "../../aiFunctions/aiUtils";
-import {
-    SLeftAttackAction, SRightAttackAction,
-    SRunParadeJump, SRunStrafeLeft, SRunStrafeRight,
-    RunToTargetAction, WaitAction, TurnToTargetAction,
-    PlayAnimation, GotoPoint
-} from "../actions/commonActions";
+import { getDistanceToPoint, isAniPlaying } from "../../aiFunctions/aiUtils";
+import { GotoPoint } from "../actions/commonActions";
 import { AiState } from '../../aiStates/aiState';
 import { IActionComponent } from '../components/iActionsComponent';
+import { describeGeneralRoutine, IDefaultDescriptionTemplateValues, warnEnemy } from './templates/fightDescriptionTemplates';
+import { TripleQuickAttack } from '../actions/fightActions';
+import { IAiAction } from '../iAiAction';
 
 export class HeavyCrimminalDescription implements IActionDescription {
     entityId: number
@@ -23,130 +21,92 @@ export class HeavyCrimminalDescription implements IActionDescription {
 
     describeAction(aiState: AiState): void {
         if (revmp.valid(this.entityId)) {
-            //this.describeGeneralRoutine(aiState)
+            this.describeGeneralRoutine(aiState)
         }
     }
 
-    /*
     private describeGeneralRoutine(aiState: AiState): void {
-        const entityManager = aiState.getEntityManager()
-
-        const enemyId = entityManager.getEnemyComponent(this.entityId)?.enemyId
-        const actionsComponent = entityManager.getActionsComponent(this.entityId)
-
-        const actionListSize = entityManager.getActionsComponent(this.entityId)?.nextAction.length ?? 99999
-        if (typeof enemyId !== 'undefined' && this.enemyExists(enemyId)) {
-            const range = getDistance(this.entityId, enemyId)
-            const isEnemyAlive = revmp.getHealth(enemyId).current > 0
-            if (range < 800 && typeof actionsComponent !== 'undefined' && actionListSize < 5 && isEnemyAlive) {
-                this.describeFightAction(aiState, enemyId, range)
-            }
-            else if (isEnemyAlive === false && typeof actionsComponent !== 'undefined') {
-                revmp.putWeaponAway(this.entityId)
-                actionsComponent.nextAction = []
-                entityManager.deleteEnemyComponent(this.entityId)
-            }
+        const template: IDefaultDescriptionTemplateValues = {
+            fighterId: this.entityId,
+            aiState: aiState,
+            necessaryRange: this.attackRange,
+            onAiAttacks: this.describeAttackAction.bind(this),
+            onIdle: this.describeRoamingAction.bind(this),
+            onAiEnemyDied: this.gotoStartPointOnDistance.bind(this),
+            onEnemyInWarnRange: this.describeOnInWarnRange
         }
-        else if (typeof actionsComponent !== 'undefined' && actionListSize < 1) {
-            revmp.putWeaponAway(this.entityId)
-            this.describeRoamingRoutine(actionsComponent, aiState)
-        }
+        describeGeneralRoutine(template)
     }
-    private describeFightAction(aiState: AiState, enemyId: number, range: number): void {
-        const entityManager = aiState.getEntityManager();
-        const actionsComponent = entityManager?.getActionsComponent(this.entityId);
-        if (revmp.getCombatState(this.entityId).weaponMode === revmp.WeaponMode.None) {
-            revmp.drawMeleeWeapon(this.entityId)
-        }
-        if (typeof actionsComponent !== 'undefined' && range > this.attackRange) {
-            actionsComponent.nextAction.push(new RunToTargetAction(this.entityId, enemyId))
-        }
-        else if (typeof actionsComponent !== 'undefined' && range > 800) {
-            entityManager.deleteEnemyComponent(this.entityId)
-        }
-        else if (typeof actionsComponent !== 'undefined') {
-            this.describeWhenInRange(actionsComponent, enemyId, range)
-        }
 
-        if (typeof actionsComponent !== 'undefined') {
-            actionsComponent.nextAction.push(new TurnToTargetAction(this.entityId, enemyId))
+    private describeOnInWarnRange(template: IDefaultDescriptionTemplateValues, warnableEnemyId: number){
+
+    }
+
+    private describeAttackAction(template: IDefaultDescriptionTemplateValues) {
+        const pauseTime = 500
+        const actionsComponent = template.aiState.getEntityManager().getActionsComponent(template.fighterId)
+        const enemyId = template.aiState.getEntityManager().getEnemyComponent(template.fighterId)?.enemyId
+        if (typeof enemyId !== 'undefined') {
+            this.setActionWhenUndefined(actionsComponent, new TripleQuickAttack(template.fighterId, enemyId, template.necessaryRange, pauseTime))
         }
     }
 
-    private describeWhenInRange(actionsComponent: IActionComponent, enemyId: number, range: number): void {
-        const angleRange = Math.abs(getAngleToTarget(this.entityId, enemyId) - getAngleToTarget(enemyId, this.entityId))
-        const isEntityInEnemyAngleRange = (angleRange < 180 + 20 || angleRange > 180 + 20)
+    private describeRoamingAction(template: IDefaultDescriptionTemplateValues) {
+        //do nothing
+        const random = Math.floor(Math.random() * (30 - 15 + 1)) + 15;
+        const actionHistory = template.aiState.getEntityManager().getActionHistoryComponent(template.fighterId) ?? { entityId: template.fighterId }
+        const actionsComponent = template.aiState.getEntityManager().getActionsComponent(template.fighterId)
+        const lastRoamingTime = actionHistory?.lastRoamingTime ?? 0
         const currentTime = Date.now()
-        if (isEntityInEnemyAngleRange && currentTime - this.lastAttackTime > 2700) {
-            this.describeAttackAction(actionsComponent, enemyId)
-            this.lastAttackTime = currentTime
+        const isNoActionRunning = typeof actionsComponent?.nextAction === 'undefined'
+
+        if (isNoActionRunning && currentTime > lastRoamingTime + 30000) {
+            template.aiState.getWaynetRegistry().unregisterCrimminal(template.fighterId)
+            const targetPoint = template.aiState.getWaynetRegistry().registerCrimminalAndGetPoint(template.fighterId)
+            console.log(this.entityId + " crimminal goes to: " + targetPoint)
+            revmp.addOverlay(this.entityId, "HumanS_Relaxed.mds")
+            console.log("running into that")
+            this.setActionWhenUndefined(actionsComponent, new GotoPoint(template.fighterId, template.aiState, targetPoint, "S_WALKL"))
+            actionHistory.lastRoamingTime = currentTime
+            template.aiState.getEntityManager().setActionHistoryComponent(template.fighterId, actionHistory)
         }
-        else if (range < this.attackRange - 150) {
-            actionsComponent.nextAction.push(new WaitAction(this.entityId, 200))
-            actionsComponent.nextAction.push(new SRunParadeJump(this.entityId))
+        else if (isNoActionRunning && !isAniPlaying(template.fighterId, "S_LGUARD")) {
+            revmp.setCombatState(this.entityId, { weaponMode: revmp.WeaponMode.None })
+            revmp.startAnimation(template.fighterId, "S_LGUARD")
+        }
+    }
+
+    private gotoStartPointOnDistance(template: IDefaultDescriptionTemplateValues) {
+        const entityManager = template.aiState.getEntityManager();
+        const startPoint = entityManager.getPositionsComponents(this.entityId)?.startPoint
+        const startWayPoint = typeof startPoint !== 'undefined' ? template.aiState.getWaynet().waypoints.get(startPoint) : undefined
+        let pointVec: revmp.Vec3 | undefined = undefined;
+
+        if (typeof startWayPoint === 'undefined') {
+            const startFreepoint = template.aiState.getWaynet().freepoints.find(fp => fp.fpName === startPoint)
+            if (typeof startFreepoint !== 'undefined') {
+                pointVec = [startFreepoint.x, startFreepoint.y, startFreepoint.z]
+            }
         }
         else {
-            const random = Math.floor(Math.random() * 10);
-            const pangle = getAngleToTarget(this.entityId, enemyId)
-            if (random <= 2) {
-                actionsComponent.nextAction.push(new WaitAction(this.entityId, 500))
-                actionsComponent.nextAction.push(new SRunParadeJump(this.entityId))
-            }
-            else if (random <= 6) {
-                if (pangle > 180) {
-                    actionsComponent.nextAction.push(new WaitAction(this.entityId, 200))
-                    actionsComponent.nextAction.push(new SRunStrafeRight(this.entityId))
-                }
-                else {
-                    actionsComponent.nextAction.push(new WaitAction(this.entityId, 200))
-                    actionsComponent.nextAction.push(new SRunStrafeLeft(this.entityId))
-                }
-            }
-            else if (random <= 7) {
-                actionsComponent.nextAction.push(new WaitAction(this.entityId, 300))
-                actionsComponent.nextAction.push(new SRunParadeJump(this.entityId))
-                actionsComponent.nextAction.push(new WaitAction(this.entityId, 500))
-                actionsComponent.nextAction.push(new SRunParadeJump(this.entityId))
-            }
-            else if (random <= 9 && isEntityInEnemyAngleRange) {
-                actionsComponent.nextAction.push(new WaitAction(this.entityId, 500))
-                if (pangle > 180) {
-                    actionsComponent.nextAction.push(new SRunStrafeRight(this.entityId))
-                }
-                else {
-                    actionsComponent.nextAction.push(new SRunStrafeLeft(this.entityId))
-                }
-            }
-            else {
-                actionsComponent.nextAction.push(new WaitAction(this.entityId, 200))
+            pointVec = [startWayPoint.x, startWayPoint.y, startWayPoint.z]
+        }
+
+
+        if (typeof pointVec !== 'undefined' && typeof startPoint !== 'undefined' && getDistanceToPoint(this.entityId, pointVec) > 500) {
+            const actionsComponent = entityManager.getActionsComponent(this.entityId)
+            if (typeof actionsComponent !== 'undefined') {
+                revmp.setCombatState(this.entityId, { weaponMode: revmp.WeaponMode.None })
+                this.setActionWhenUndefined(actionsComponent, new GotoPoint(this.entityId, template.aiState, startPoint, "S_RUNL"))
             }
         }
     }
 
-    private enemyExists(id: number): boolean {
-        return id >= 0 && revmp.valid(id) && revmp.isPlayer(id)
+    private setActionWhenUndefined(actionComponent: IActionComponent | undefined, action: IAiAction | undefined) {
+        if (typeof actionComponent !== 'undefined' && typeof action !== 'undefined' && typeof actionComponent.nextAction === 'undefined') {
+            actionComponent.nextAction = action
+        }
     }
 
-    private describeAttackAction(actionsComponent: IActionComponent, enemyId: number) {
-        actionsComponent.nextAction.push(new WaitAction(this.entityId, 500))
-        actionsComponent.nextAction.push(new SLeftAttackAction(this.entityId, enemyId, this.attackRange))
-        actionsComponent.nextAction.push(new WaitAction(this.entityId, 150))
-        actionsComponent.nextAction.push(new SRightAttackAction(this.entityId, enemyId, this.attackRange))
-        actionsComponent.nextAction.push(new WaitAction(this.entityId, 150))
-        actionsComponent.nextAction.push(new SLeftAttackAction(this.entityId, enemyId, this.attackRange))
-    }
-
-    private describeRoamingRoutine(actionsComponent: IActionComponent, aiState: AiState): void {
-        console.log("hello")
-        const random = Math.floor(Math.random() * (30 - 15 + 1)) + 15;
-        aiState.getWaynetRegistry().unregisterCrimminal(this.entityId)
-        actionsComponent.nextAction.push(new WaitAction(this.entityId, 60000*random))
-        actionsComponent.nextAction.push(new PlayAnimation(this.entityId, "S_LGUARD"))
-        const targetPoint = aiState.getWaynetRegistry().registerCrimminalAndGetPoint(this.entityId)
-        console.log(this.entityId + "crimminal goes to: "+targetPoint)
-        revmp.addOverlay(this.entityId, "HumanS_Relaxed.mds")
-        actionsComponent.nextAction.push(new GotoPoint(this.entityId, aiState, targetPoint, "S_WALKL"))
-    }
-    */
 
 }

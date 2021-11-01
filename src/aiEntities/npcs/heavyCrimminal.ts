@@ -5,7 +5,6 @@ import { WeaponInstances } from "../../serverComponents/weapons";
 import { ArmorInstances } from "../../serverComponents/armors";
 import { IAiNpc } from "../iAiNpc";
 import { getHeavyCrimminalInstance, INSTANCE_HEAVY_CRIMMINAL} from "./npcInits";
-import { OrcMasterDescription } from "../descriptions/orcMasterDescription";
 
 export class HeavyCrimminal implements IAiNpc {
     enemyIds: number[];
@@ -35,7 +34,7 @@ export class HeavyCrimminal implements IAiNpc {
         this.enemyIds = [];
         this.friendIds = [];
         this.respawnTime = 10;
-        this.actionDescriptions = [new OrcMasterDescription(this.id)]
+        this.actionDescriptions = [new HeavyCrimminalDescription(this.id)]
         this.aiFlags = new Map();
 
         this.lastPosUpdate = 0
