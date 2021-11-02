@@ -1,14 +1,15 @@
-import { RunToTargetAction, TurnToTargetAction, WaitAction, WarnEnemy, WarnEnemyActionInput } from "../../../aiEntities/actions/commonActions"
-import { ParadeWithPause, StrafeRightWithPause, StrafeLeftWithPause, DoubleParadeWithPause, TripleQuickAttack, ForwardAttackWithPause } from "../../..//aiEntities/actions/fightActions"
+import { RunToTargetAction, TurnToTargetAction, WaitAction, WarnEnemy, WarnEnemyActionInput } from "../../actions/commonActions"
+import { ParadeWithPause, StrafeRightWithPause, StrafeLeftWithPause, DoubleParadeWithPause, TripleQuickAttack, ForwardAttackWithPause } from "../../actions/fightActions"
 import { getAngleToTarget, getDistance } from "../../../aiFunctions/aiUtils"
 import { AiState } from "../../../aiStates/aiState"
 import { NpcActionUtils } from "../../../aiFunctions/npcActionUtils"
-import { IActionComponent } from "../../../aiEntities/components/iActionsComponent"
+import { IActionComponent } from "../../components/iActionsComponent"
 import { IAiAction } from "src/aiEntities/iAiAction"
+import { clearAction, setActionWhenUndefined } from "./commonDefaultTemplateDescriptionFunctions"
 
 //TODO: make range constants dynamic 
 export interface IDefaultDescriptionTemplateValues {
-    fighterId: number
+    aiId: number
     aiState: AiState
     necessaryRange: number
     onAiAttacks(template: IDefaultDescriptionTemplateValues): void
@@ -20,12 +21,12 @@ export interface IDefaultDescriptionTemplateValues {
 export function describeGeneralRoutine(template: IDefaultDescriptionTemplateValues): void {
     const npcActionUtils = new NpcActionUtils(template.aiState)
     const entityManager = template.aiState.getEntityManager()
-    const enemyId = entityManager.getEnemyComponent(template.fighterId)?.enemyId ?? -1
-    const nearestChar = getNearestCharacterRangeMapping(template.fighterId, npcActionUtils)
+    const enemyId = entityManager.getEnemyComponent(template.aiId)?.enemyId ?? -1
+    const nearestChar = getNearestCharacterRangeMapping(template.aiId, npcActionUtils)
 
     if (isExisting(enemyId)) {
-        const range = getDistance(template.fighterId, enemyId)
-        const actionsComponent = template.aiState.getEntityManager().getActionsComponent(template.fighterId)
+        const range = getDistance(template.aiId, enemyId)
+        const actionsComponent = template.aiState.getEntityManager().getActionsComponent(template.aiId)
         const nextAction = actionsComponent?.nextAction
 
         //is triggered when npc is attacked and not fighting yet e.g when warning
@@ -38,7 +39,7 @@ export function describeGeneralRoutine(template: IDefaultDescriptionTemplateValu
         }
         else if (isAlive(enemyId) === false) {
             clearAction(actionsComponent)
-            entityManager.deleteEnemyComponent(template.fighterId)
+            entityManager.deleteEnemyComponent(template.aiId)
             template.onAiEnemyDied(template)
         }
     }
@@ -54,68 +55,68 @@ export function describeGeneralRoutine(template: IDefaultDescriptionTemplateValu
 
 function describeFightMode(template: IDefaultDescriptionTemplateValues, enemyId: number, rangeToEnemy: number): void {
     const entityManager = template.aiState.getEntityManager();
-    const actionsComponent = entityManager?.getActionsComponent(template.fighterId);
-    if (hasMeleeWeapon(template.fighterId)) {
-        revmp.drawMeleeWeapon(template.fighterId)
+    const actionsComponent = entityManager?.getActionsComponent(template.aiId);
+    if (hasMeleeWeapon(template.aiId)) {
+        revmp.drawMeleeWeapon(template.aiId)
     }
 
     if (typeof actionsComponent !== 'undefined' && rangeToEnemy > template.necessaryRange) {
-        setActionWhenUndefined(actionsComponent, new RunToTargetAction(template.fighterId, enemyId))
+        setActionWhenUndefined(actionsComponent, new RunToTargetAction(template.aiId, enemyId))
     }
     else if (rangeToEnemy > 800) {
-        entityManager.deleteEnemyComponent(template.fighterId)
+        entityManager.deleteEnemyComponent(template.aiId)
     }
     else if (typeof actionsComponent !== 'undefined') {
         describeFightMovements(template, enemyId, rangeToEnemy)
     }
     if (typeof actionsComponent !== 'undefined') {
-        setActionWhenUndefined(actionsComponent, new TurnToTargetAction(template.fighterId, enemyId))
+        setActionWhenUndefined(actionsComponent, new TurnToTargetAction(template.aiId, enemyId))
     }
 }
 function describeFightMovements(template: IDefaultDescriptionTemplateValues, enemyId: number, rangeToEnemy: number): void {
     const entityManager = template.aiState.getEntityManager()
-    const actionsComponent = entityManager.getActionsComponent(template.fighterId)
-    const historyComponent = entityManager.getActionHistoryComponent(template.fighterId) ?? { entityId: template.fighterId }
+    const actionsComponent = entityManager.getActionsComponent(template.aiId)
+    const historyComponent = entityManager.getActionHistoryComponent(template.aiId) ?? { entityId: template.aiId }
     const lastAttackTime = historyComponent.lastAttackTime ?? 0
     const currentTime = Date.now()
-    const angleRange = Math.abs(getAngleToTarget(template.fighterId, enemyId) - getAngleToTarget(enemyId, template.fighterId))
+    const angleRange = Math.abs(getAngleToTarget(template.aiId, enemyId) - getAngleToTarget(enemyId, template.aiId))
     const isEntityInEnemyAngleRange = (angleRange < 180 + 20 || angleRange > 180 - 20)
 
     if (isEntityInEnemyAngleRange && currentTime - lastAttackTime > 2700) {
         template.onAiAttacks(template)
         historyComponent.lastAttackTime = currentTime
-        entityManager.setActionHistoryComponent(template.fighterId, historyComponent)
+        entityManager.setActionHistoryComponent(template.aiId, historyComponent)
     }
     else if (rangeToEnemy < 150) {
-        setActionWhenUndefined(actionsComponent, new ParadeWithPause(template.fighterId, 200))
+        setActionWhenUndefined(actionsComponent, new ParadeWithPause(template.aiId, 200))
     }
     else {
         const random = Math.floor(Math.random() * 10);
-        const pangle = getAngleToTarget(template.fighterId, enemyId)
+        const pangle = getAngleToTarget(template.aiId, enemyId)
         if (random <= 3) {
-            setActionWhenUndefined(actionsComponent, new ParadeWithPause(template.fighterId, 500))
+            setActionWhenUndefined(actionsComponent, new ParadeWithPause(template.aiId, 500))
         }
         else if (random <= 5) {
             if (pangle > 180) {
-                setActionWhenUndefined(actionsComponent, new StrafeRightWithPause(template.fighterId, 200))
+                setActionWhenUndefined(actionsComponent, new StrafeRightWithPause(template.aiId, 200))
             }
             else {
-                setActionWhenUndefined(actionsComponent, new StrafeLeftWithPause(template.fighterId, 200))
+                setActionWhenUndefined(actionsComponent, new StrafeLeftWithPause(template.aiId, 200))
             }
         }
         else if (random <= 6) {
-            setActionWhenUndefined(actionsComponent, new DoubleParadeWithPause(template.fighterId, 300))
+            setActionWhenUndefined(actionsComponent, new DoubleParadeWithPause(template.aiId, 300))
         }
         else if (random <= 9 && isEntityInEnemyAngleRange) {
             if (pangle > 180) {
-                setActionWhenUndefined(actionsComponent, new StrafeRightWithPause(template.fighterId, 500))
+                setActionWhenUndefined(actionsComponent, new StrafeRightWithPause(template.aiId, 500))
             }
             else {
-                setActionWhenUndefined(actionsComponent, new StrafeLeftWithPause(template.fighterId, 500))
+                setActionWhenUndefined(actionsComponent, new StrafeLeftWithPause(template.aiId, 500))
             }
         }
         else {
-            setActionWhenUndefined(actionsComponent, new WaitAction(template.fighterId, 200))
+            setActionWhenUndefined(actionsComponent, new WaitAction(template.aiId, 200))
         }
     }
 }
@@ -142,20 +143,8 @@ function isAlive(id: number): boolean {
     return revmp.getHealth(id).current > 0
 }
 
-function clearAction(actionsComponent: IActionComponent | undefined): void {
-    if (typeof actionsComponent !== 'undefined') {
-        actionsComponent.nextAction = undefined
-    }
-}
-
 function hasMeleeWeapon(entityId: number): boolean {
     return revmp.valid(revmp.getEquipment(entityId).meleeWeapon)
-}
-
-function setActionWhenUndefined(actionComponent: IActionComponent | undefined, action: IAiAction | undefined) {
-    if (typeof actionComponent !== 'undefined' && typeof action !== 'undefined' && typeof actionComponent.nextAction === 'undefined') {
-        actionComponent.nextAction = action
-    }
 }
 
 function isFightAction(action: IAiAction | undefined) {
@@ -166,24 +155,4 @@ function isFightAction(action: IAiAction | undefined) {
         || action instanceof ForwardAttackWithPause
         || action instanceof TripleQuickAttack)
 
-}
-
-
-export function warnEnemy(template: IDefaultDescriptionTemplateValues, warnableEnemyId: number) {
-    const entityManager = template.aiState.getEntityManager()
-    const actionsComponent = entityManager.getActionsComponent(template.fighterId)
-    const warnInput: WarnEnemyActionInput = {
-        aiId: template.fighterId,
-        enemyId: warnableEnemyId,
-        waitTime: 3000,
-        warnDistance: 400,
-        attackDistance: 0,
-        entityManager: entityManager
-    }
-
-    if (typeof actionsComponent !== 'undefined' && !(actionsComponent.nextAction instanceof WarnEnemy)) {
-        clearAction(actionsComponent)
-        setActionWhenUndefined(actionsComponent, new WarnEnemy(warnInput))
-        revmp.drawMeleeWeapon(template.fighterId)
-    }
 }

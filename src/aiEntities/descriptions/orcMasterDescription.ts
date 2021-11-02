@@ -1,13 +1,9 @@
 
 import { IActionDescription } from './iActionDescription';
-import { getAngleToTarget, getDistance, getDistanceToPoint } from "../../aiFunctions/aiUtils";
-import {GotoPoint} from "../actions/commonActions";
-import { NpcActionUtils } from '../../aiFunctions/npcActionUtils';
 import { AiState } from '../../aiStates/aiState';
-import { IActionComponent } from '../components/iActionsComponent';
-import { describeGeneralRoutine, IDefaultDescriptionTemplateValues, warnEnemy } from './templates/fightDescriptionTemplates';
+import { describeGeneralRoutine, IDefaultDescriptionTemplateValues} from './templates/defaultDescriptionTemplate';
 import { TripleQuickAttack } from '../actions/fightActions';
-import { IAiAction } from '../iAiAction';
+import { gotoStartPointOnDistance, setActionWhenUndefined, warnEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
 
 export class OrcMasterDescription implements IActionDescription {
     entityId: number
@@ -28,12 +24,12 @@ export class OrcMasterDescription implements IActionDescription {
 
     private describeGeneralRoutine(aiState: AiState): void {
         const template: IDefaultDescriptionTemplateValues = {
-            fighterId: this.entityId,
+            aiId: this.entityId,
             aiState: aiState,
             necessaryRange: this.attackRange,
             onAiAttacks: this.describeAttackAction.bind(this),
             onIdle: this.describeIdleAction.bind(this),
-            onAiEnemyDied: this.gotoStartPointOnDistance.bind(this),
+            onAiEnemyDied: gotoStartPointOnDistance,
             onEnemyInWarnRange: warnEnemy
         }
         describeGeneralRoutine(template)
@@ -41,10 +37,10 @@ export class OrcMasterDescription implements IActionDescription {
 
     private describeAttackAction(template: IDefaultDescriptionTemplateValues) {
         const pauseTime = 500
-        const actionsComponent = template.aiState.getEntityManager().getActionsComponent(template.fighterId)
-        const enemyId = template.aiState.getEntityManager().getEnemyComponent(template.fighterId)?.enemyId
+        const actionsComponent = template.aiState.getEntityManager().getActionsComponent(template.aiId)
+        const enemyId = template.aiState.getEntityManager().getEnemyComponent(template.aiId)?.enemyId
         if (typeof enemyId !== 'undefined') {
-            this.setActionWhenUndefined(actionsComponent, new TripleQuickAttack(template.fighterId, enemyId, template.necessaryRange, pauseTime))
+            setActionWhenUndefined(actionsComponent, new TripleQuickAttack(template.aiId, enemyId, template.necessaryRange, pauseTime))
         }
     }
 
@@ -52,35 +48,4 @@ export class OrcMasterDescription implements IActionDescription {
         //do nothing
     }
 
-    private gotoStartPointOnDistance(template: IDefaultDescriptionTemplateValues) {
-        const entityManager = template.aiState.getEntityManager();
-        const startPoint = entityManager.getPositionsComponents(this.entityId)?.startPoint
-        const startWayPoint = typeof startPoint !== 'undefined' ? template.aiState.getWaynet().waypoints.get(startPoint) : undefined
-        let pointVec: revmp.Vec3 | undefined = undefined;
-
-        if (typeof startWayPoint === 'undefined') {
-            const startFreepoint = template.aiState.getWaynet().freepoints.find(fp => fp.fpName === startPoint)
-            if (typeof startFreepoint !== 'undefined') {
-                pointVec = [startFreepoint.x, startFreepoint.y, startFreepoint.z]
-            }
-        }
-        else {
-            pointVec = [startWayPoint.x, startWayPoint.y, startWayPoint.z]
-        }
-
-
-        if (typeof pointVec !== 'undefined' && typeof startPoint !== 'undefined' && getDistanceToPoint(this.entityId, pointVec) > 500) {
-            const actionsComponent = entityManager.getActionsComponent(this.entityId)
-            if (typeof actionsComponent !== 'undefined') {
-                revmp.setCombatState(this.entityId, { weaponMode: revmp.WeaponMode.None })
-                this.setActionWhenUndefined(actionsComponent, new GotoPoint(this.entityId, template.aiState, startPoint, "S_RUNL"))
-            }
-        }
-    }
-
-    private setActionWhenUndefined(actionComponent: IActionComponent | undefined, action: IAiAction | undefined) {
-        if (typeof actionComponent !== 'undefined' && typeof action !== 'undefined' && typeof actionComponent.nextAction === 'undefined') {
-            actionComponent.nextAction = action
-        }
-    }
 }

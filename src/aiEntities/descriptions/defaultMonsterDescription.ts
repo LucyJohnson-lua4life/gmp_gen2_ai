@@ -1,14 +1,10 @@
 
 import { IActionDescription } from './iActionDescription';
-import { getDistanceToPoint } from "../../aiFunctions/aiUtils";
-import {
-    PlayAnimationForDuration, GotoPoint
-} from "../actions/commonActions";
+import {PlayAnimationForDuration} from "../actions/commonActions";
 import { AiState } from '../../aiStates/aiState';
 import { ForwardAttackWithPause } from '../actions/fightActions';
-import { describeGeneralRoutine, IDefaultDescriptionTemplateValues, warnEnemy } from './templates/fightDescriptionTemplates';
-import { IActionComponent } from '../components/iActionsComponent';
-import { IAiAction } from '../iAiAction';
+import { describeGeneralRoutine, IDefaultDescriptionTemplateValues} from './templates/defaultDescriptionTemplate';
+import { gotoStartPointOnDistance, setActionWhenUndefined, warnEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
 
 export class DefaultMonsterDescription implements IActionDescription {
     entityId: number
@@ -22,7 +18,6 @@ export class DefaultMonsterDescription implements IActionDescription {
     }
 
     describeAction(aiState: AiState): void {
-        const nextActions = aiState.getEntityManager().getActionsComponent(this.entityId)?.nextAction ?? []
         if (revmp.valid(this.entityId) ) {
             this.describeGeneralRoutine(aiState)
         }
@@ -30,61 +25,30 @@ export class DefaultMonsterDescription implements IActionDescription {
 
     private describeGeneralRoutine(aiState: AiState): void {
         const template: IDefaultDescriptionTemplateValues = {
-            fighterId: this.entityId,
+            aiId: this.entityId,
             aiState: aiState,
             necessaryRange: this.attackRange,
             onAiAttacks: this.describeAttackAction.bind(this),
             onIdle: this.describeEatRoutine.bind(this),
-            onAiEnemyDied: this.gotoStartPointOnDistance.bind(this),
+            onAiEnemyDied: gotoStartPointOnDistance,
             onEnemyInWarnRange: warnEnemy
             
         }
         describeGeneralRoutine(template)
     }
 
-    private gotoStartPointOnDistance(template: IDefaultDescriptionTemplateValues) {
-        const entityManager = template.aiState.getEntityManager();
-        const startPoint = entityManager.getPositionsComponents(this.entityId)?.startPoint
-        const startWayPoint = typeof startPoint !== 'undefined' ? template.aiState.getWaynet().waypoints.get(startPoint) : undefined
-        let pointVec: revmp.Vec3 | undefined = undefined;
-
-        if (typeof startWayPoint === 'undefined') {
-            const startFreepoint = template.aiState.getWaynet().freepoints.find(fp => fp.fpName === startPoint)
-            if (typeof startFreepoint !== 'undefined') {
-                pointVec = [startFreepoint.x, startFreepoint.y, startFreepoint.z]
-            }
-        }
-        else {
-            pointVec = [startWayPoint.x, startWayPoint.y, startWayPoint.z]
-        }
-
-
-        if (typeof pointVec !== 'undefined' && typeof startPoint !== 'undefined' && getDistanceToPoint(this.entityId, pointVec) > 500) {
-            const actionsComponent = entityManager.getActionsComponent(this.entityId)
-            if (typeof actionsComponent !== 'undefined') {
-            this.setActionWhenUndefined(actionsComponent, new GotoPoint(this.entityId, template.aiState, startPoint, "S_RUNL"))
-                revmp.setCombatState(this.entityId, { weaponMode: revmp.WeaponMode.Fist })
-            }
-        }
-    }
-
     private describeAttackAction(template: IDefaultDescriptionTemplateValues) {
         const pauseTime = 500
-        const actionsComponent = template.aiState.getEntityManager().getActionsComponent(template.fighterId)
-        const enemyId = template.aiState.getEntityManager().getEnemyComponent(template.fighterId)?.enemyId
+        const actionsComponent = template.aiState.getEntityManager().getActionsComponent(template.aiId)
+        const enemyId = template.aiState.getEntityManager().getEnemyComponent(template.aiId)?.enemyId
         if (typeof enemyId !== 'undefined') {
-            this.setActionWhenUndefined(actionsComponent, new ForwardAttackWithPause(template.fighterId, enemyId, template.necessaryRange, pauseTime))
+            setActionWhenUndefined(actionsComponent, new ForwardAttackWithPause(template.aiId, enemyId, template.necessaryRange, pauseTime))
         }
     }
     private describeEatRoutine(template: IDefaultDescriptionTemplateValues): void {
-        const actionsComponent = template.aiState.getEntityManager().getActionsComponent(template.fighterId)
+        const actionsComponent = template.aiState.getEntityManager().getActionsComponent(template.aiId)
         if (typeof actionsComponent !== 'undefined') {
-            this.setActionWhenUndefined(actionsComponent, new PlayAnimationForDuration(template.fighterId, "S_EAT", 2000))
-        }
-    }
-    private setActionWhenUndefined(actionComponent: IActionComponent | undefined, action: IAiAction | undefined) {
-        if (typeof actionComponent !== 'undefined' && typeof action !== 'undefined' && typeof actionComponent.nextAction === 'undefined') {
-            actionComponent.nextAction = action
+            setActionWhenUndefined(actionsComponent, new PlayAnimationForDuration(template.aiId, "S_EAT", 2000))
         }
     }
 
