@@ -1,4 +1,4 @@
-import { getDistanceToPoint } from "../../../aiFunctions/aiUtils"
+import { getDistanceToPoint, hasMeleeWeapon } from "../../../aiFunctions/aiUtils"
 import { GotoPoint, WarnEnemy, WarnEnemyActionInput } from "../../actions/commonActions"
 import { IActionComponent } from "../../components/iActionsComponent"
 import { IAiAction } from "../../iAiAction"
@@ -23,7 +23,7 @@ export function warnEnemy(values: IDefaultDescriptionTemplateValues, warnableEne
     }
 }
 
-export function gotoStartPointOnDistance(values: IDefaultDescriptionTemplateValues) {
+export function gotoStartPoint(values: IDefaultDescriptionTemplateValues) {
     const entityManager = values.aiState.getEntityManager();
     const startPoint = entityManager.getPositionsComponents(values.aiId)?.startPoint
     const startWayPoint = typeof startPoint !== 'undefined' ? values.aiState.getWaynet().waypoints.get(startPoint) : undefined
@@ -39,11 +39,13 @@ export function gotoStartPointOnDistance(values: IDefaultDescriptionTemplateValu
         pointVec = [startWayPoint.x, startWayPoint.y, startWayPoint.z]
     }
 
-    if (typeof pointVec !== 'undefined' && typeof startPoint !== 'undefined' && getDistanceToPoint(values.aiId, pointVec) > 500) {
+    if (typeof pointVec !== 'undefined' && typeof startPoint !== 'undefined') {
         const actionsComponent = entityManager.getActionsComponent(values.aiId)
         if (typeof actionsComponent !== 'undefined') {
             setActionWhenUndefined(actionsComponent, new GotoPoint(values.aiId, values.aiState, startPoint, "S_RUNL"))
-            revmp.setCombatState(values.aiId, { weaponMode: revmp.WeaponMode.Fist })
+            if(hasMeleeWeapon(values.aiId)){
+                revmp.putWeaponAway(values.aiId)
+            }
         }
     }
 }

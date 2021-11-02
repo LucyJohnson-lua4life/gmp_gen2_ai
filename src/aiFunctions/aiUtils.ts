@@ -170,3 +170,12 @@ export function removeAllAnimations(entityId: number): void {
     .map(ani => ani.ani.name)
     .forEach(aniName => revmp.stopAnimation(entityId, aniName))
 }
+
+
+export function isAlive(id: number): boolean {
+    return revmp.getHealth(id).current > 0
+}
+
+export function hasMeleeWeapon(entityId: number): boolean {
+    return revmp.valid(revmp.getEquipment(entityId).meleeWeapon)
+}

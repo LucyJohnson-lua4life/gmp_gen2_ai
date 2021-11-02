@@ -7,7 +7,7 @@ import { AiState } from '../../aiStates/aiState';
 import { IActionComponent } from '.././components/iActionsComponent';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './templates/defaultDescriptionTemplate';
 import { ForwardAttackWithPause } from '../actions/fightActions';
-import { gotoStartPointOnDistance, setActionWhenUndefined } from './templates/commonDefaultTemplateDescriptionFunctions';
+import { gotoStartPoint, setActionWhenUndefined } from './templates/commonDefaultTemplateDescriptionFunctions';
 
 export class RoamingRobberDescription implements IActionDescription {
     entityId: number
@@ -33,8 +33,10 @@ export class RoamingRobberDescription implements IActionDescription {
             necessaryRange: this.attackRange,
             onAiAttacks: this.describeAttackAction.bind(this),
             onIdle: this.describeRoamingAction.bind(this),
-            onAiEnemyDies: gotoStartPointOnDistance,
-            onEnemyInWarnRange: this.threatenEnemy.bind(this)
+            onAiEnemyDies: gotoStartPoint,
+            onEnemyInWarnRange: this.threatenEnemy.bind(this),
+            onEnemyOutOfRange: gotoStartPoint,
+            onEnemyDisconnected: gotoStartPoint
         }
         describeGeneralRoutine(template)
     }

@@ -5,7 +5,7 @@ import { GotoPoint } from "../actions/commonActions";
 import { AiState } from '../../aiStates/aiState';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues} from './templates/defaultDescriptionTemplate';
 import { TripleQuickAttack } from '../actions/fightActions';
-import { gotoStartPointOnDistance, setActionWhenUndefined } from './templates/commonDefaultTemplateDescriptionFunctions';
+import { gotoStartPoint, setActionWhenUndefined } from './templates/commonDefaultTemplateDescriptionFunctions';
 
 export class HeavyCrimminalDescription implements IActionDescription {
     entityId: number
@@ -31,8 +31,10 @@ export class HeavyCrimminalDescription implements IActionDescription {
             necessaryRange: this.attackRange,
             onAiAttacks: this.describeAttackAction.bind(this),
             onIdle: this.describeRoamingAction.bind(this),
-            onAiEnemyDies: gotoStartPointOnDistance,
-            onEnemyInWarnRange: this.describeOnInWarnRange
+            onAiEnemyDies: gotoStartPoint,
+            onEnemyInWarnRange: this.describeOnInWarnRange,
+            onEnemyOutOfRange: gotoStartPoint,
+            onEnemyDisconnected: gotoStartPoint
         }
         describeGeneralRoutine(template)
     }

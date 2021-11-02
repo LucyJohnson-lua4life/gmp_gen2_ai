@@ -459,7 +459,6 @@ export class GotoPoint implements IAiAction {
                 const playerPos = revmp.getPosition(this.aiId).position
                 const spawnAngle = getWaynetPointAngle(playerPos[0], playerPos[2], targetWp.rotX, targetWp.rotZ)
                 setPlayerAngle(this.aiId, spawnAngle)
-                console.log("set angle properly to waypoint")
             }
 
         }

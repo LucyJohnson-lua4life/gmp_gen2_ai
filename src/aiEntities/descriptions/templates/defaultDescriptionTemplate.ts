@@ -1,6 +1,6 @@
 import { RunToTargetAction, TurnToTargetAction, WaitAction, WarnEnemy, WarnEnemyActionInput } from "../../actions/commonActions"
 import { ParadeWithPause, StrafeRightWithPause, StrafeLeftWithPause, DoubleParadeWithPause, TripleQuickAttack, ForwardAttackWithPause } from "../../actions/fightActions"
-import { getAngleToTarget, getDistance, removeAllAnimations } from "../../../aiFunctions/aiUtils"
+import { getAngleToTarget, getDistance, hasMeleeWeapon, isAlive, removeAllAnimations } from "../../../aiFunctions/aiUtils"
 import { AiState } from "../../../aiStates/aiState"
 import { NpcActionUtils } from "../../../aiFunctions/npcActionUtils"
 import { IAiAction } from "src/aiEntities/iAiAction"
@@ -11,10 +11,12 @@ export interface IDefaultDescriptionTemplateValues {
     aiId: number
     aiState: AiState
     necessaryRange: number
-    onAiAttacks(template: IDefaultDescriptionTemplateValues): void
-    onAiEnemyDies(template: IDefaultDescriptionTemplateValues): void
-    onIdle(template: IDefaultDescriptionTemplateValues): void
+    onAiAttacks(values: IDefaultDescriptionTemplateValues): void
+    onAiEnemyDies(values: IDefaultDescriptionTemplateValues): void
+    onIdle(values: IDefaultDescriptionTemplateValues): void
     onEnemyInWarnRange(template: IDefaultDescriptionTemplateValues, warnableEnemyId: number): void
+    onEnemyOutOfRange(values: IDefaultDescriptionTemplateValues): void
+    onEnemyDisconnected(values: IDefaultDescriptionTemplateValues): void
 }
 
 export function describeGeneralRoutine(values: IDefaultDescriptionTemplateValues): void {
@@ -28,11 +30,16 @@ export function describeGeneralRoutine(values: IDefaultDescriptionTemplateValues
         clearAction(actionsComponent)
         removeAllAnimations(values.aiId)
     }
+    else if(enemyId !== -1 && !isExisting(enemyId)){
+        entityManager.deleteEnemyComponent(values.aiId)
+        clearAction(actionsComponent)
+        values.onEnemyDisconnected(values)
+    }
     else if (isExisting(enemyId)) {
         const range = getDistance(values.aiId, enemyId)
         const nextAction = actionsComponent?.nextAction
 
-        //is triggered when npc is attacked and not fighting yet e.g when warning
+        //is triggered when npc is attacked and not fighting mode yet e.g when warning
         if (typeof nextAction !== 'undefined' && !isFightAction(nextAction)) {
             clearAction(actionsComponent)
         }
@@ -56,70 +63,72 @@ export function describeGeneralRoutine(values: IDefaultDescriptionTemplateValues
     }
 }
 
-function describeFightMode(template: IDefaultDescriptionTemplateValues, enemyId: number, rangeToEnemy: number): void {
-    const entityManager = template.aiState.getEntityManager();
-    const actionsComponent = entityManager?.getActionsComponent(template.aiId);
-    if (hasMeleeWeapon(template.aiId)) {
-        revmp.drawMeleeWeapon(template.aiId)
+function describeFightMode(values: IDefaultDescriptionTemplateValues, enemyId: number, rangeToEnemy: number): void {
+    const entityManager = values.aiState.getEntityManager();
+    const actionsComponent = entityManager?.getActionsComponent(values.aiId);
+    if (hasMeleeWeapon(values.aiId)) {
+        revmp.drawMeleeWeapon(values.aiId)
     }
 
-    if (typeof actionsComponent !== 'undefined' && rangeToEnemy > template.necessaryRange) {
-        setActionWhenUndefined(actionsComponent, new RunToTargetAction(template.aiId, enemyId))
+    if (typeof actionsComponent !== 'undefined' && rangeToEnemy > values.necessaryRange) {
+        setActionWhenUndefined(actionsComponent, new RunToTargetAction(values.aiId, enemyId))
     }
     else if (rangeToEnemy > 800) {
-        entityManager.deleteEnemyComponent(template.aiId)
+        entityManager.deleteEnemyComponent(values.aiId)
+        clearAction(actionsComponent)
+        values.onEnemyOutOfRange(values)
     }
     else if (typeof actionsComponent !== 'undefined') {
-        describeFightMovements(template, enemyId, rangeToEnemy)
+        describeFightMovements(values, enemyId, rangeToEnemy)
     }
     if (typeof actionsComponent !== 'undefined') {
-        setActionWhenUndefined(actionsComponent, new TurnToTargetAction(template.aiId, enemyId))
+        setActionWhenUndefined(actionsComponent, new TurnToTargetAction(values.aiId, enemyId))
     }
 }
-function describeFightMovements(template: IDefaultDescriptionTemplateValues, enemyId: number, rangeToEnemy: number): void {
-    const entityManager = template.aiState.getEntityManager()
-    const actionsComponent = entityManager.getActionsComponent(template.aiId)
-    const historyComponent = entityManager.getActionHistoryComponent(template.aiId) ?? { entityId: template.aiId }
+function describeFightMovements(values: IDefaultDescriptionTemplateValues, enemyId: number, rangeToEnemy: number): void {
+    const entityManager = values.aiState.getEntityManager()
+    const actionsComponent = entityManager.getActionsComponent(values.aiId)
+    const historyComponent = entityManager.getActionHistoryComponent(values.aiId) ?? { entityId: values.aiId }
     const lastAttackTime = historyComponent.lastAttackTime ?? 0
     const currentTime = Date.now()
-    const angleRange = Math.abs(getAngleToTarget(template.aiId, enemyId) - getAngleToTarget(enemyId, template.aiId))
+    const angleRange = Math.abs(getAngleToTarget(values.aiId, enemyId) - getAngleToTarget(enemyId, values.aiId))
     const isEntityInEnemyAngleRange = (angleRange < 180 + 20 || angleRange > 180 - 20)
 
     if (isEntityInEnemyAngleRange && currentTime - lastAttackTime > 2700) {
-        template.onAiAttacks(template)
+        values.onAiAttacks(values)
         historyComponent.lastAttackTime = currentTime
-        entityManager.setActionHistoryComponent(template.aiId, historyComponent)
+        entityManager.setActionHistoryComponent(values.aiId, historyComponent)
     }
     else if (rangeToEnemy < 150) {
-        setActionWhenUndefined(actionsComponent, new ParadeWithPause(template.aiId, 200))
+        setActionWhenUndefined(actionsComponent, new ParadeWithPause(values.aiId, 200))
     }
     else {
         const random = Math.floor(Math.random() * 10);
-        const pangle = getAngleToTarget(template.aiId, enemyId)
+        const pangle = getAngleToTarget(values.aiId, enemyId)
         if (random <= 3) {
-            setActionWhenUndefined(actionsComponent, new ParadeWithPause(template.aiId, 500))
+            setActionWhenUndefined(actionsComponent, new ParadeWithPause(values.aiId, 500))
         }
         else if (random <= 5) {
             if (pangle > 180) {
-                setActionWhenUndefined(actionsComponent, new StrafeRightWithPause(template.aiId, 200))
+                setActionWhenUndefined(actionsComponent, new StrafeRightWithPause(values.aiId, 200))
             }
             else {
-                setActionWhenUndefined(actionsComponent, new StrafeLeftWithPause(template.aiId, 200))
+                setActionWhenUndefined(actionsComponent, new StrafeLeftWithPause(values.aiId, 200))
             }
         }
         else if (random <= 6) {
-            setActionWhenUndefined(actionsComponent, new DoubleParadeWithPause(template.aiId, 300))
+            setActionWhenUndefined(actionsComponent, new DoubleParadeWithPause(values.aiId, 300))
         }
         else if (random <= 9 && isEntityInEnemyAngleRange) {
             if (pangle > 180) {
-                setActionWhenUndefined(actionsComponent, new StrafeRightWithPause(template.aiId, 500))
+                setActionWhenUndefined(actionsComponent, new StrafeRightWithPause(values.aiId, 500))
             }
             else {
-                setActionWhenUndefined(actionsComponent, new StrafeLeftWithPause(template.aiId, 500))
+                setActionWhenUndefined(actionsComponent, new StrafeLeftWithPause(values.aiId, 500))
             }
         }
         else {
-            setActionWhenUndefined(actionsComponent, new WaitAction(template.aiId, 200))
+            setActionWhenUndefined(actionsComponent, new WaitAction(values.aiId, 200))
         }
     }
 }
@@ -140,14 +149,6 @@ function getNearestCharacterRangeMapping(entityId: number, npcActionUtils: NpcAc
 
 function isExisting(id: number): boolean {
     return id >= 0 && revmp.valid(id) && revmp.isPlayer(id)
-}
-
-function isAlive(id: number): boolean {
-    return revmp.getHealth(id).current > 0
-}
-
-function hasMeleeWeapon(entityId: number): boolean {
-    return revmp.valid(revmp.getEquipment(entityId).meleeWeapon)
 }
 
 function isFightAction(action: IAiAction | undefined) {

@@ -6,7 +6,7 @@ import {GotoPoint} from "../actions/commonActions";
 import { AiState } from '../../aiStates/aiState';
 import { ForwardAttackWithPause} from '../actions/fightActions';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './templates/defaultDescriptionTemplate';
-import { gotoStartPointOnDistance, setActionWhenUndefined } from './templates/commonDefaultTemplateDescriptionFunctions';
+import { gotoStartPoint, setActionWhenUndefined } from './templates/commonDefaultTemplateDescriptionFunctions';
 
 export class CitizenDescription implements IActionDescription {
     entityId: number
@@ -32,8 +32,10 @@ export class CitizenDescription implements IActionDescription {
             necessaryRange: this.attackRange,
             onAiAttacks: this.describeAttackAction.bind(this),
             onIdle: this.describeRoamingAction.bind(this),
-            onAiEnemyDies: gotoStartPointOnDistance,
-            onEnemyInWarnRange: this.describeOnInWarnRange
+            onAiEnemyDies: gotoStartPoint,
+            onEnemyInWarnRange: this.describeOnInWarnRange,
+            onEnemyOutOfRange: gotoStartPoint,
+            onEnemyDisconnected: gotoStartPoint
         }
         describeGeneralRoutine(template)
     }

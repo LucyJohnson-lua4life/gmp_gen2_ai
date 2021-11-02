@@ -3,7 +3,7 @@ import { IActionDescription } from './iActionDescription';
 import { AiState } from '../../aiStates/aiState';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues} from './templates/defaultDescriptionTemplate';
 import { TripleQuickAttack } from '../actions/fightActions';
-import { gotoStartPointOnDistance, setActionWhenUndefined, warnEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
+import { gotoStartPoint, setActionWhenUndefined, warnEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
 
 export class OrcMasterDescription implements IActionDescription {
     entityId: number
@@ -29,8 +29,10 @@ export class OrcMasterDescription implements IActionDescription {
             necessaryRange: this.attackRange,
             onAiAttacks: this.describeAttackAction.bind(this),
             onIdle: this.describeIdleAction.bind(this),
-            onAiEnemyDies: gotoStartPointOnDistance,
-            onEnemyInWarnRange: warnEnemy
+            onAiEnemyDies: gotoStartPoint,
+            onEnemyInWarnRange: warnEnemy,
+            onEnemyOutOfRange: gotoStartPoint,
+            onEnemyDisconnected: gotoStartPoint
         }
         describeGeneralRoutine(template)
     }

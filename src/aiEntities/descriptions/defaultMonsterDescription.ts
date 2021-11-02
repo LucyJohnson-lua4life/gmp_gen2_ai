@@ -4,7 +4,7 @@ import {PlayAnimationForDuration} from "../actions/commonActions";
 import { AiState } from '../../aiStates/aiState';
 import { ForwardAttackWithPause } from '../actions/fightActions';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues} from './templates/defaultDescriptionTemplate';
-import { gotoStartPointOnDistance, setActionWhenUndefined, warnEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
+import { gotoStartPoint, setActionWhenUndefined, warnEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
 
 export class DefaultMonsterDescription implements IActionDescription {
     entityId: number
@@ -30,8 +30,10 @@ export class DefaultMonsterDescription implements IActionDescription {
             necessaryRange: this.attackRange,
             onAiAttacks: this.describeAttackAction.bind(this),
             onIdle: this.describeEatRoutine.bind(this),
-            onAiEnemyDies: gotoStartPointOnDistance,
-            onEnemyInWarnRange: warnEnemy
+            onAiEnemyDies: gotoStartPoint,
+            onEnemyInWarnRange: warnEnemy,
+            onEnemyOutOfRange: gotoStartPoint,
+            onEnemyDisconnected: gotoStartPoint
             
         }
         describeGeneralRoutine(template)
