@@ -164,3 +164,9 @@ export function getCombatStateBasedAni(entity: revmp.Entity, ani: string) {
 export function isAttackable(entityId: number) {
     return revmp.isCharacter(entityId) && revmp.getHealth(entityId).current > 0 && revmp.getCombatState(entityId).unconscious === false
 }
+
+export function removeAllAnimations(entityId: number): void {
+    revmp.getAnimations(entityId).activeAnis
+    .map(ani => ani.ani.name)
+    .forEach(aniName => revmp.stopAnimation(entityId, aniName))
+}

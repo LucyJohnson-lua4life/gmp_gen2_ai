@@ -30,7 +30,7 @@ export class DefaultMonsterDescription implements IActionDescription {
             necessaryRange: this.attackRange,
             onAiAttacks: this.describeAttackAction.bind(this),
             onIdle: this.describeEatRoutine.bind(this),
-            onAiEnemyDied: gotoStartPointOnDistance,
+            onAiEnemyDies: gotoStartPointOnDistance,
             onEnemyInWarnRange: warnEnemy
             
         }

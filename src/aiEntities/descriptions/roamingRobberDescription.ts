@@ -33,7 +33,7 @@ export class RoamingRobberDescription implements IActionDescription {
             necessaryRange: this.attackRange,
             onAiAttacks: this.describeAttackAction.bind(this),
             onIdle: this.describeRoamingAction.bind(this),
-            onAiEnemyDied: gotoStartPointOnDistance,
+            onAiEnemyDies: gotoStartPointOnDistance,
             onEnemyInWarnRange: this.threatenEnemy.bind(this)
         }
         describeGeneralRoutine(template)

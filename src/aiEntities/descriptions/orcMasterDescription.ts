@@ -29,7 +29,7 @@ export class OrcMasterDescription implements IActionDescription {
             necessaryRange: this.attackRange,
             onAiAttacks: this.describeAttackAction.bind(this),
             onIdle: this.describeIdleAction.bind(this),
-            onAiEnemyDied: gotoStartPointOnDistance,
+            onAiEnemyDies: gotoStartPointOnDistance,
             onEnemyInWarnRange: warnEnemy
         }
         describeGeneralRoutine(template)

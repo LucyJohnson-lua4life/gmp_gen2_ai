@@ -1,9 +1,8 @@
 import { RunToTargetAction, TurnToTargetAction, WaitAction, WarnEnemy, WarnEnemyActionInput } from "../../actions/commonActions"
 import { ParadeWithPause, StrafeRightWithPause, StrafeLeftWithPause, DoubleParadeWithPause, TripleQuickAttack, ForwardAttackWithPause } from "../../actions/fightActions"
-import { getAngleToTarget, getDistance } from "../../../aiFunctions/aiUtils"
+import { getAngleToTarget, getDistance, removeAllAnimations } from "../../../aiFunctions/aiUtils"
 import { AiState } from "../../../aiStates/aiState"
 import { NpcActionUtils } from "../../../aiFunctions/npcActionUtils"
-import { IActionComponent } from "../../components/iActionsComponent"
 import { IAiAction } from "src/aiEntities/iAiAction"
 import { clearAction, setActionWhenUndefined } from "./commonDefaultTemplateDescriptionFunctions"
 
@@ -13,20 +12,24 @@ export interface IDefaultDescriptionTemplateValues {
     aiState: AiState
     necessaryRange: number
     onAiAttacks(template: IDefaultDescriptionTemplateValues): void
-    onAiEnemyDied(template: IDefaultDescriptionTemplateValues): void
+    onAiEnemyDies(template: IDefaultDescriptionTemplateValues): void
     onIdle(template: IDefaultDescriptionTemplateValues): void
     onEnemyInWarnRange(template: IDefaultDescriptionTemplateValues, warnableEnemyId: number): void
 }
 
-export function describeGeneralRoutine(template: IDefaultDescriptionTemplateValues): void {
-    const npcActionUtils = new NpcActionUtils(template.aiState)
-    const entityManager = template.aiState.getEntityManager()
-    const enemyId = entityManager.getEnemyComponent(template.aiId)?.enemyId ?? -1
-    const nearestChar = getNearestCharacterRangeMapping(template.aiId, npcActionUtils)
+export function describeGeneralRoutine(values: IDefaultDescriptionTemplateValues): void {
+    const npcActionUtils = new NpcActionUtils(values.aiState)
+    const entityManager = values.aiState.getEntityManager()
+    const enemyId = entityManager.getEnemyComponent(values.aiId)?.enemyId ?? -1
+    const nearestChar = getNearestCharacterRangeMapping(values.aiId, npcActionUtils)
+    const actionsComponent = values.aiState.getEntityManager().getActionsComponent(values.aiId)
 
-    if (isExisting(enemyId)) {
-        const range = getDistance(template.aiId, enemyId)
-        const actionsComponent = template.aiState.getEntityManager().getActionsComponent(template.aiId)
+    if (!isAlive(values.aiId)) {
+        clearAction(actionsComponent)
+        removeAllAnimations(values.aiId)
+    }
+    else if (isExisting(enemyId)) {
+        const range = getDistance(values.aiId, enemyId)
         const nextAction = actionsComponent?.nextAction
 
         //is triggered when npc is attacked and not fighting yet e.g when warning
@@ -35,21 +38,21 @@ export function describeGeneralRoutine(template: IDefaultDescriptionTemplateValu
         }
 
         if (range < 800 && isAlive(enemyId)) {
-            describeFightMode(template, enemyId, range)
+            describeFightMode(values, enemyId, range)
         }
         else if (isAlive(enemyId) === false) {
             clearAction(actionsComponent)
-            entityManager.deleteEnemyComponent(template.aiId)
-            template.onAiEnemyDied(template)
+            entityManager.deleteEnemyComponent(values.aiId)
+            values.onAiEnemyDies(values)
         }
     }
     else if (nearestChar.distance < 500 && isAlive(nearestChar.id)) {
         //TODO: the world constant should only be fixed in later versions!
         //TODO: currently only player will get attacked/warned, should implement a proper enemy/friend mapping
-        template.onEnemyInWarnRange(template, nearestChar.id)
+        values.onEnemyInWarnRange(values, nearestChar.id)
     }
     else {
-        template.onIdle(template)
+        values.onIdle(values)
     }
 }
 
@@ -154,5 +157,4 @@ function isFightAction(action: IAiAction | undefined) {
         || action instanceof DoubleParadeWithPause
         || action instanceof ForwardAttackWithPause
         || action instanceof TripleQuickAttack)
-
 }
