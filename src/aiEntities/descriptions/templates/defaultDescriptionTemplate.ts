@@ -104,23 +104,16 @@ function describeFightMovements(values: IDefaultDescriptionTemplateValues, enemy
     }
     else {
         const random = Math.floor(Math.random() * 10);
-        const pangle = getAngleToTarget(values.aiId, enemyId)
         if (random <= 3) {
             setActionWhenUndefined(actionsComponent, new ParadeWithPause(values.aiId, 500))
         }
         else if (random <= 5) {
-            if (pangle > 180) {
-                setActionWhenUndefined(actionsComponent, new StrafeRightWithPause(values.aiId, 200))
+            if (!isEntityInEnemyAngleRange) {
+                setActionWhenUndefined(actionsComponent, new TurnToTargetAction(values.aiId, enemyId))
             }
-            else {
-                setActionWhenUndefined(actionsComponent, new StrafeLeftWithPause(values.aiId, 200))
-            }
-        }
-        else if (random <= 6) {
-            setActionWhenUndefined(actionsComponent, new DoubleParadeWithPause(values.aiId, 300))
         }
         else if (random <= 9 && isEntityInEnemyAngleRange) {
-            if (pangle > 180) {
+            if (angleRange > 180) {
                 setActionWhenUndefined(actionsComponent, new StrafeRightWithPause(values.aiId, 500))
             }
             else {
