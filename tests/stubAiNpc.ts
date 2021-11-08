@@ -1,7 +1,6 @@
-import Heap from 'heap-js';
-import { IActionDescription } from '../src/aiEntities/iActionDescription';
-import { IAiAction } from '../src/aiEntities/iAiAction';
-import { IAiNpc } from '../src/aiEntities/iAiNpc';
+import { IActionDescription } from '../src/aiScripts/aiEntities/iActionDescription';
+import { IAiAction } from '../src/aiScripts/aiEntities/iAiAction';
+import { IAiNpc } from '../src/aiScripts/aiEntities/iAiNpc';
 export class StubAiNpc implements IAiNpc {
 
     id: number;

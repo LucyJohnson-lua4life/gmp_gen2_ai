@@ -1,6 +1,6 @@
-import {EntityManager} from '../../src/aiStates/entityManager';
-import {IDrInfoComponent} from '../../src/aiEntities/components/iDrInfoComponent';
-import {DailyRoutineSystem, DrCurrentTime, DrTargetTime} from '../../src/aiFunctions/dailyRoutineSystem';
+import {EntityManager} from '../../src/aiScripts/aiStates/entityManager';
+import {IDrInfoComponent} from '../../src/aiScripts/aiEntities/components/iDrInfoComponent';
+import {DailyRoutineSystem, DrCurrentTime, DrTargetTime} from '../../src/aiScripts/aiFunctions/dailyRoutineSystem';
 
 test('hour & minute overlap trigger period first time ... SHOULD RETURN TRUE', () => {
     const botId = 1;

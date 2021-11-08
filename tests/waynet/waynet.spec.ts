@@ -1,5 +1,5 @@
-import { Waypoint } from "../../src/waynet/iwaynet";
-import * as waynet from "../../src/waynet/waynet";
+import { Waypoint } from "../../src/aiScripts/waynet/iwaynet";
+import * as waynet from "../../src/aiScripts/waynet/waynet";
 test('Waynet should load freepoints correctly.', () => {
     const wn = new waynet.Waynet("./tests/waynet/test_with_whitespaces.wp","./tests/waynet/test_with_whitespaces.fp")
     const fplist = wn.freepoints;
