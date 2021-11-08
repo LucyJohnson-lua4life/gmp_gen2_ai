@@ -5,12 +5,8 @@ import { ArmorInstances, initArmorInstances } from "./serverComponents/armors";
 import { revive } from "./serverComponents/damageCalculation";
 import { initWeaponInstances, WeaponInstances } from "./serverComponents/weapons";
 
-/* eslint-disable @typescript-eslint/no-var-requires */
-//const damageCalculation = require("./dist/serverComponents/damageCalculation");
-//const ai = require("./dist/aiStates/aiUpdateLoop");
 let entityManager:EntityManager|undefined;
 let aiState;
-
 
 revmp.name = "Revmp Adventures";
 revmp.description = "The best adventure experience.";
@@ -67,16 +63,8 @@ function debugCommands(entity: revmp.Entity, msg: string) {
             revmp.setPosition(entity, pos)
         }
     }
-
-
 }
 
-revmp.on("attacked", (attacker, target, userEvent) => {
-    const enemyId = entityManager?.getEnemyComponent(target)?.enemyId ?? -1
-    if(enemyId === -1){
-        entityManager?.setEnemyComponent(target, { entityId: target, enemyId: attacker, lastAttackTime: 0})
-    }
-})
 
 revmp.on("chatCommand", (entity, msg) => {
     const words = msg.toLowerCase().split(' ');
