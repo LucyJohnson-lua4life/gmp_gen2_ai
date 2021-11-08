@@ -4,7 +4,7 @@ import { IActionDescription } from "../iActionDescription";
 import { OrcMasterDescription} from "../descriptions/orcMasterDescription";
 import { IAiNpc } from "../iAiNpc";
 import { getOrcEliteInstance, INSTANCE_ORC_ELITE} from "./npcInits";
-import { WeaponInstances } from "../../../serverComponents/weapons";
+import { WeaponInstances } from "../equipment/weapons";
 
 export class OrcElite implements IAiNpc {
     enemyIds: number[];

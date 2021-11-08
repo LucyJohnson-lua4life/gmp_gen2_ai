@@ -1,9 +1,9 @@
+import { ArmorInstances, initArmorInstances } from "./aiScripts/aiEntities/equipment/armors";
+import { initWeaponInstances, WeaponInstances } from "./aiScripts/aiEntities/equipment/weapons";
 import { getPlayerAngle } from "./aiScripts/aiFunctions/aiUtils";
 import { initAiState } from "./aiScripts/aiInit";
 import { EntityManager } from "./aiScripts/aiStates/entityManager";
-import { ArmorInstances, initArmorInstances } from "./serverComponents/armors";
 import { revive } from "./serverComponents/damageCalculation";
-import { initWeaponInstances, WeaponInstances } from "./serverComponents/weapons";
 
 let entityManager:EntityManager|undefined;
 let aiState;

@@ -1,11 +1,11 @@
 
 import { IActionDescription } from "../iActionDescription";
 import { DemonKingDescription } from "../descriptions/demonKingDescription";
-import { WeaponInstances } from "../../../serverComponents/weapons";
-import { ArmorInstances } from "../../../serverComponents/armors";
+import { WeaponInstances } from "../equipment/weapons";
 import { IAiNpc } from "../iAiNpc";
 import { getDemonKingInstance, INSTANCE_DEMON_KING} from "./npcInits";
 import { OrcMasterDescription } from "../descriptions/orcMasterDescription";
+import { ArmorInstances } from "../equipment/armors";
 
 export class DemonKing implements IAiNpc {
     enemyIds: number[];

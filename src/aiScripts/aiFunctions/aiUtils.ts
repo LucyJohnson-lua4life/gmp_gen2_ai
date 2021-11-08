@@ -60,6 +60,8 @@ export function getWaynetPointAngle(playerX: number, playerZ: number, waynetPoin
 export function getAngleToTarget(entityId1: number, entityId2: number): number {
     const position1 = revmp.getPosition(entityId1).position;
     const position2 = revmp.getPosition(entityId2).position;
+    console.log("pos1: ", position1)
+    console.log("pos2: ", position2)
     return getAngleToPoint(position1[0], position1[2], position2[0], position2[2])
 }
 

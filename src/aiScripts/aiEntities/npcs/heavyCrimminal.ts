@@ -1,10 +1,10 @@
 
 import { IActionDescription } from "../iActionDescription";
 import { HeavyCrimminalDescription } from "../descriptions/heavyCrimminalDescription";
-import { WeaponInstances } from "../../../serverComponents/weapons";
-import { ArmorInstances } from "../../../serverComponents/armors";
+import { WeaponInstances } from "../equipment/weapons";
 import { IAiNpc } from "../iAiNpc";
 import { getHeavyCrimminalInstance, INSTANCE_HEAVY_CRIMMINAL} from "./npcInits";
+import { ArmorInstances } from "../equipment/armors";
 
 export class HeavyCrimminal implements IAiNpc {
     enemyIds: number[];

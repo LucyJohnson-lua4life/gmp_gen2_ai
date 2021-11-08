@@ -5,7 +5,7 @@ import { IActionDescription } from "../iActionDescription";
 import { OrcMasterDescription } from "../descriptions/orcMasterDescription";
 import { IAiNpc } from "../iAiNpc";
 import { getUndeadOrcInstance, INSTANCE_ORC_UNDEAD} from "./npcInits";
-import { WeaponInstances } from "../../../serverComponents/weapons";
+import { WeaponInstances } from "../equipment/weapons";
 
 export class UndeadOrc implements IAiNpc {
     enemyIds: number[];

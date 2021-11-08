@@ -1,11 +1,11 @@
 
 
 import { IActionDescription } from "../iActionDescription";
-import { WeaponInstances } from "../../../serverComponents/weapons";
-import { ArmorInstances } from "../../../serverComponents/armors";
+import { WeaponInstances } from "../equipment/weapons";
 import { IAiNpc } from "../iAiNpc";
 import { getRoamingRobberInstance, INSTANCE_ROAMING_ROBBER} from "./npcInits";
 import { RoamingRobberDescription } from "../descriptions/roamingRobberDescription";
+import { ArmorInstances } from "../equipment/armors";
 
 export class RoamingRobber implements IAiNpc {
     enemyIds: number[];
