@@ -1,10 +1,10 @@
 
 import { IActionDescription } from './iActionDescription';
-import {PlayAnimationForDuration} from "../actions/commonActions";
 import { AiState } from '../../aiStates/aiState';
 import { ForwardAttackWithPause } from '../actions/fightActions';
-import { describeGeneralRoutine, IDefaultDescriptionTemplateValues} from './templates/defaultDescriptionTemplate';
+import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './templates/defaultDescriptionTemplate';
 import { gotoStartPoint, setActionWhenUndefined, warnEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
+import { isAniPlaying } from '../../aiFunctions/aiUtils';
 
 export class DefaultMonsterDescription implements IActionDescription {
     entityId: number
@@ -18,7 +18,7 @@ export class DefaultMonsterDescription implements IActionDescription {
     }
 
     describeAction(aiState: AiState): void {
-        if (revmp.valid(this.entityId) ) {
+        if (revmp.valid(this.entityId)) {
             this.describeGeneralRoutine(aiState)
         }
     }
@@ -34,25 +34,27 @@ export class DefaultMonsterDescription implements IActionDescription {
             onEnemyInWarnRange: warnEnemy,
             onEnemyOutOfRange: gotoStartPoint,
             onEnemyDisconnected: gotoStartPoint
-            
+
         }
         describeGeneralRoutine(template)
     }
 
-    private describeAttackAction(template: IDefaultDescriptionTemplateValues) {
+    private describeAttackAction(values: IDefaultDescriptionTemplateValues) {
         const pauseTime = 500
-        const actionsComponent = template.aiState.getEntityManager().getActionsComponent(template.aiId)
-        const enemyId = template.aiState.getEntityManager().getEnemyComponent(template.aiId)?.enemyId
+        const actionsComponent = values.aiState.getEntityManager().getActionsComponent(values.aiId)
+        const enemyId = values.aiState.getEntityManager().getEnemyComponent(values.aiId)?.enemyId
         if (typeof enemyId !== 'undefined') {
-            setActionWhenUndefined(actionsComponent, new ForwardAttackWithPause(template.aiId, enemyId, template.necessaryRange, pauseTime))
+            setActionWhenUndefined(actionsComponent, new ForwardAttackWithPause(values.aiId, enemyId, values.necessaryRange, pauseTime))
         }
     }
-    private describeEatRoutine(template: IDefaultDescriptionTemplateValues): void {
-        const actionsComponent = template.aiState.getEntityManager().getActionsComponent(template.aiId)
+    private describeEatRoutine(values: IDefaultDescriptionTemplateValues): void {
+        const actionsComponent = values.aiState.getEntityManager().getActionsComponent(values.aiId)
         if (typeof actionsComponent !== 'undefined') {
-            setActionWhenUndefined(actionsComponent, new PlayAnimationForDuration(template.aiId, "S_EAT", 2000))
+            if (!isAniPlaying(values.aiId, "S_EAT")) {
+                revmp.startAnimation(values.aiId, "S_EAT")
+            }
         }
+
     }
 
 }
-

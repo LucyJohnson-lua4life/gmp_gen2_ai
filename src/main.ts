@@ -26,7 +26,7 @@ const updateLoop = new aiUpdateLoop.AiUpdateLoop(state);
 const aiStateFunctions = new funs.AiStateFunctions(state)
 
 
-revmp.name = "Revma";
+revmp.name = "Revmp Adventures";
 revmp.description = "The best adventure experience.";
 
 revmp.on("init", () => {
@@ -43,12 +43,27 @@ revmp.on("init", () => {
     revmp.setTime(world, { hour: 15, minute: 0 });
     setInterval(updateLoop.updateAll.bind(updateLoop), 50);
 
-    const testMonster = new orcElite.OrcElite();
+    const testMonster = new wolf.Wolf();
     console.log("monster id: " + testMonster.id)
     aiStateFunctions.spawnNpc(testMonster,"HAFEN","NEWWORLD\\NEWWORLD.ZEN")
-    //npcInitializer.initNewWorldNpcs(state)
+    npcInitializer.initNewWorldNpcs(state)
 
 });
+
+revmp.on("entityCreated", (entity: revmp.Entity) => {
+
+    if(revmp.isPlayer(entity)){
+        const instance = WeaponInstances.warSword
+        revmp.addItem(entity, instance, 1);
+        revmp.addItem(entity,ArmorInstances.vlkFemaleArmor , 1);
+        revmp.addItem(entity,ArmorInstances.vlkMaleArmor , 1);
+        revmp.setAttributes(entity, {strength: 100, oneHanded: 100})
+        revmp.setHealth(entity, {current: 2100, max: 2100})
+        revmp.addOverlay(entity, "Humans_1hST2.MDS")
+        revmp.sendChatMessage(entity, 'type /healme to get back to full health')
+    }
+
+})
 
 //export function sendChatMessage(player: number|number[], message: string, color?: [number, number, number, number?]): void
 function debugCommands(entity: revmp.Entity, msg: string) {
