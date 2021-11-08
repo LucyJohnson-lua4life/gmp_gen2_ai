@@ -3,7 +3,7 @@ import { ParadeWithPause, StrafeRightWithPause, StrafeLeftWithPause, DoubleParad
 import { getAngleToTarget, getDistance, hasMeleeWeapon, isAlive, removeAllAnimations } from "../../../aiFunctions/aiUtils"
 import { AiState } from "../../../aiStates/aiState"
 import { NpcActionUtils } from "../../../aiFunctions/npcActionUtils"
-import { IAiAction } from "src/aiEntities/iAiAction"
+import { IAiAction } from "../../../aiEntities/iAiAction"
 import { clearAction, setActionWhenUndefined } from "./commonDefaultTemplateDescriptionFunctions"
 
 //TODO: make range constants dynamic 

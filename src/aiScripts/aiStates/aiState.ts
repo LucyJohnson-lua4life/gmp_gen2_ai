@@ -1,6 +1,4 @@
 
-import { generateKeyPairSync } from "crypto";
-import { __spreadArrays } from "tslib";
 import { IAiNpc } from "../aiEntities/iAiNpc";
 import { IWaynet } from "../waynet/iwaynet";
 import { Waynet } from "../waynet/waynet";

@@ -1,13 +1,13 @@
 
-
 import { IActionDescription } from "../iActionDescription";
-import { WeaponInstances } from "../../serverComponents/weapons";
-import { ArmorInstances } from "../../serverComponents/armors";
+import { WeaponInstances } from "../../../serverComponents/weapons";
+import { ArmorInstances } from "../../../serverComponents/armors";
 import { IAiNpc } from "../iAiNpc";
-import { getRoamingRobberInstance, INSTANCE_ROAMING_ROBBER} from "./npcInits";
-import { RoamingRobberDescription } from "../descriptions/roamingRobberDescription";
+import { getRoamingCitizenMaleInstance, INSTANCE_HEAVY_CRIMMINAL} from "./npcInits";
+import { CitizenDescription } from "../descriptions/citizenDescription";
+import { OrcMasterDescription } from "../descriptions/orcMasterDescription";
 
-export class RoamingRobber implements IAiNpc {
+export class CitizenMale implements IAiNpc {
     enemyIds: number[];
     friendIds: number[];
     respawnTime: number;
@@ -29,13 +29,13 @@ export class RoamingRobber implements IAiNpc {
 
 
     constructor() {
-        this.id = revmp.createBot(getRoamingRobberInstance());
+        this.id = revmp.createBot(getRoamingCitizenMaleInstance());
         this.isDead = false;
         this.isUnconscious = false;
         this.enemyIds = [];
         this.friendIds = [];
         this.respawnTime = 10;
-        this.actionDescriptions = [new RoamingRobberDescription(this.id)]
+        this.actionDescriptions = [new CitizenDescription(this.id)]
         this.aiFlags = new Map();
 
         this.lastPosUpdate = 0
@@ -45,14 +45,13 @@ export class RoamingRobber implements IAiNpc {
         this.currentPosX = 0
         this.currentPosY = 0
         this.currentPosZ = 0
-        this.npcInstance = INSTANCE_ROAMING_ROBBER
+        this.npcInstance = INSTANCE_HEAVY_CRIMMINAL
 
-        revmp.addOverlay(this.id, "Humans_1hST2.MDS")
+        revmp.addOverlay(this.id, "Humans_1hST1.MDS")
         //revmp.setAttributes(this.id, {oneHanded: 100})
         revmp.addItem(this.id, WeaponInstances.nobleSword, 1);
-        revmp.addItem(this.id, ArmorInstances.guardianArmor, 1);
+        revmp.addItem(this.id, ArmorInstances.vlkMaleArmor, 1);
         revmp.equipItem(this.id, WeaponInstances.nobleSword)
-        revmp.equipItem(this.id, ArmorInstances.guardianArmor)
+        revmp.equipItem(this.id, ArmorInstances.vlkMaleArmor)
     }
-
 }

@@ -1,13 +1,13 @@
 
 import { IActionDescription } from "../iActionDescription";
-import { WeaponInstances } from "../../serverComponents/weapons";
-import { ArmorInstances } from "../../serverComponents/armors";
+import { WeaponInstances } from "../../../serverComponents/weapons";
+import { ArmorInstances } from "../../../serverComponents/armors";
 import { IAiNpc } from "../iAiNpc";
-import { getRoamingCitizenMaleInstance, INSTANCE_HEAVY_CRIMMINAL} from "./npcInits";
+import { getRoamingCitizenFemaleInstance, getRoamingCitizenMaleInstance, INSTANCE_HEAVY_CRIMMINAL} from "./npcInits";
 import { CitizenDescription } from "../descriptions/citizenDescription";
 import { OrcMasterDescription } from "../descriptions/orcMasterDescription";
 
-export class CitizenMale implements IAiNpc {
+export class CitizenFemale implements IAiNpc {
     enemyIds: number[];
     friendIds: number[];
     respawnTime: number;
@@ -29,7 +29,7 @@ export class CitizenMale implements IAiNpc {
 
 
     constructor() {
-        this.id = revmp.createBot(getRoamingCitizenMaleInstance());
+        this.id = revmp.createBot(getRoamingCitizenFemaleInstance());
         this.isDead = false;
         this.isUnconscious = false;
         this.enemyIds = [];
@@ -50,8 +50,8 @@ export class CitizenMale implements IAiNpc {
         revmp.addOverlay(this.id, "Humans_1hST1.MDS")
         //revmp.setAttributes(this.id, {oneHanded: 100})
         revmp.addItem(this.id, WeaponInstances.nobleSword, 1);
-        revmp.addItem(this.id, ArmorInstances.vlkMaleArmor, 1);
+        revmp.addItem(this.id, ArmorInstances.vlkFemaleArmor, 1);
         revmp.equipItem(this.id, WeaponInstances.nobleSword)
-        revmp.equipItem(this.id, ArmorInstances.vlkMaleArmor)
+        revmp.equipItem(this.id, ArmorInstances.vlkFemaleArmor)
     }
 }

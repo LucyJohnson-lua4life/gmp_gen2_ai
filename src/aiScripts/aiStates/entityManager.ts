@@ -7,7 +7,7 @@ import { IRespawnComponent } from "../aiEntities/components/iRespawnComponent";
 import { IActionDescriptionComponent } from "../aiEntities/components/iActionDescriptionComponent";
 import { IEnemyComponent } from "../aiEntities/components/iEnemyComponent";
 import { IAiNpc } from "../aiEntities/iAiNpc";
-import { IActionHistoryComponent } from "src/aiEntities/components/iActionHistoryComponent";
+import { IActionHistoryComponent } from "../aiEntities/components/iActionHistoryComponent";
 
 const worldNames: Array<string> = ["NEWWORLD\\NEWWORLD.ZEN", "OLDWORLD\\OLDWORLD.ZEN", "ADDON\\ADDONWORLD.ZEN"]
 /**

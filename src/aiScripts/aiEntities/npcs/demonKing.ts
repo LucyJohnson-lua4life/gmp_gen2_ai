@@ -1,8 +1,8 @@
 
 import { IActionDescription } from "../iActionDescription";
 import { DemonKingDescription } from "../descriptions/demonKingDescription";
-import { WeaponInstances } from "../../serverComponents/weapons";
-import { ArmorInstances } from "../../serverComponents/armors";
+import { WeaponInstances } from "../../../serverComponents/weapons";
+import { ArmorInstances } from "../../../serverComponents/armors";
 import { IAiNpc } from "../iAiNpc";
 import { getDemonKingInstance, INSTANCE_DEMON_KING} from "./npcInits";
 import { OrcMasterDescription } from "../descriptions/orcMasterDescription";

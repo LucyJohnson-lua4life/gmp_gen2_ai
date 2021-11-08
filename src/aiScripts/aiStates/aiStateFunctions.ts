@@ -1,7 +1,7 @@
 import { IPositionComponent } from "../aiEntities/components/iPositionComponent";
 import { IAiNpc } from "../aiEntities/iAiNpc";
 import { AiState } from "./aiState";
-import { getAngleToPoint, getWaynetPointAngle, setPlayerAngle } from "../aiFunctions/aiUtils";
+import { getWaynetPointAngle, setPlayerAngle } from "../aiFunctions/aiUtils";
 
 interface PointCoordinates {
     x: number,

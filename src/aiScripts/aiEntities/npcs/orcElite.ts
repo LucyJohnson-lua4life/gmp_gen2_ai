@@ -1,13 +1,12 @@
 
 
-
 import { IActionDescription } from "../iActionDescription";
-import { OrcMasterDescription } from "../descriptions/orcMasterDescription";
+import { OrcMasterDescription} from "../descriptions/orcMasterDescription";
 import { IAiNpc } from "../iAiNpc";
-import { getUndeadOrcInstance, INSTANCE_ORC_UNDEAD} from "./npcInits";
-import { WeaponInstances } from "../../serverComponents/weapons";
+import { getOrcEliteInstance, INSTANCE_ORC_ELITE} from "./npcInits";
+import { WeaponInstances } from "../../../serverComponents/weapons";
 
-export class UndeadOrc implements IAiNpc {
+export class OrcElite implements IAiNpc {
     enemyIds: number[];
     friendIds: number[];
     respawnTime: number;
@@ -29,7 +28,7 @@ export class UndeadOrc implements IAiNpc {
 
 
     constructor() {
-        this.id = revmp.createBot(getUndeadOrcInstance());
+        this.id = revmp.createBot(getOrcEliteInstance());
         this.isDead = false;
         this.isUnconscious = false;
         this.enemyIds = [];
@@ -45,9 +44,9 @@ export class UndeadOrc implements IAiNpc {
         this.currentPosX = 0
         this.currentPosY = 0
         this.currentPosZ = 0
-        this.npcInstance = INSTANCE_ORC_UNDEAD
+        this.npcInstance = INSTANCE_ORC_ELITE
         revmp.addItem(this.id, WeaponInstances.eliteOrcSword, 1);
         revmp.equipItem(this.id, WeaponInstances.eliteOrcSword)
-        //revmp.setAttributes(this.id, { twoHanded: 100 })
+        revmp.setAttributes(this.id, { twoHanded: 100 })
     }
 }
