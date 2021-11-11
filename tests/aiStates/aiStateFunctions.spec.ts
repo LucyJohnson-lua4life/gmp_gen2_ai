@@ -1,15 +1,15 @@
-import Heap from "heap-js";
 import { instance, mock, when } from "ts-mockito";
 import { StubAiNpc } from '../stubAiNpc';
-import { IAiNpc } from "../../src/aiEntities/iAiNpc";
-import { AiStateFunctions} from "../../src/aiStates/aiStateFunctions";
-import { AiState } from "../../src/aiStates/aiState";
+import { IAiNpc } from "../../src/aiScripts/aiEntities/iAiNpc";
+import { AiStateFunctions} from "../../src/aiScripts/aiStates/aiStateFunctions";
+import { AiState } from "../../src/aiScripts/aiStates/aiState";
 
 
 // all revmp API calls made in this unit test are mocked globally
 Object.defineProperty(global, "revmp", {
     value: {
-        setPosition: (entity: number, position: [number, number, number])=>{console.log("entity!: " + entity)}
+        setPosition: (entity: number, position: [number, number, number])=>{console.log("setPosition " + entity)},
+        setRotation: (entity: number, rotation: [number, number, number, number])=>{console.log("setRotation " + entity)}
     },
 });
 
