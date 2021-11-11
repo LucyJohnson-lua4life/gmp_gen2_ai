@@ -72,12 +72,12 @@ revmp.on("chatCommand", (entity, msg) => {
     console.log(words);
     debugCommands(entity, msg)
 
-
     if (command === "/masochist") {
         setInterval(revmp.attack.bind(revmp), 200, entity, entity);
     }
     if (command === "/e") {
         const angle = getPlayerAngle(entity)
+        console.log("juuu: ")
         console.log("angle: " + angle)
     }
     if (command === "/eq") {
@@ -119,6 +119,7 @@ revmp.on("chatCommand", (entity, msg) => {
     if (command === "/wptest") {
         revmp.setPosition(entity, [14671.2051, 1150.05042, 517.412537])
     }
+
 
     if(command === "/loopani"){
         const focusid = revmp.getFocus(entity).focus

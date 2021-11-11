@@ -1,4 +1,4 @@
-import { getAngleToTarget, getDistance } from "../../aiFunctions/aiUtils";
+import { getNecessaryAngleToWatchTarget, getDistance, isTargetInFrontOfEntity } from "../../aiFunctions/aiUtils";
 import { NpcActionUtils } from "../../aiFunctions/npcActionUtils";
 import { AiState } from "../aiState";
 
@@ -24,7 +24,6 @@ export function warnablePlayerIsNearby(aiId: number, utils: NpcActionUtils): boo
     return characterRangeMap[1] < 500 && revmp.getHealth(characterRangeMap[0]).current > 0
 }
 
-export function isAiInOpponentAngleRange(aiId: number, enemyId: number) {
-    const angleRange = Math.abs(getAngleToTarget(aiId, enemyId) - getAngleToTarget(enemyId, aiId))
-    return (angleRange < 180 + 20 || angleRange > 180 - 20)
+export function isOpponentinAiAngleRange(aiId: number, enemyId: number) {
+    return isTargetInFrontOfEntity(aiId, enemyId)
 }

@@ -1,10 +1,12 @@
 import { RunToTargetAction, TurnToTargetAction, WaitAction, WarnEnemy, WarnEnemyActionInput } from "../../actions/commonActions"
 import { ParadeWithPause, StrafeRightWithPause, StrafeLeftWithPause, DoubleParadeWithPause, TripleQuickAttack, ForwardAttackWithPause } from "../../actions/fightActions"
-import { getAngleToTarget, getDistance, hasMeleeWeapon, isAlive, removeAllAnimations } from "../../../aiFunctions/aiUtils"
+import { getNecessaryAngleToWatchTarget, getDistance, hasMeleeWeapon, isAlive, removeAllAnimations, isTargetInFrontOfEntity} from "../../../aiFunctions/aiUtils"
 import { AiState } from "../../../aiStates/aiState"
 import { NpcActionUtils } from "../../../aiFunctions/npcActionUtils"
 import { IAiAction } from "../../../aiEntities/iAiAction"
 import { clearAction, setActionWhenUndefined } from "./commonDefaultTemplateDescriptionFunctions"
+import { EqualStencilFunc } from "three"
+import { isOpponentinAiAngleRange } from "../../../aiStates/aiStatePatterns/commonAiStatePatterns"
 
 //TODO: make range constants dynamic 
 export interface IDefaultDescriptionTemplateValues {
@@ -81,9 +83,9 @@ function describeFightMode(values: IDefaultDescriptionTemplateValues, enemyId: n
     else if (typeof actionsComponent !== 'undefined') {
         describeFightMovements(values, enemyId, rangeToEnemy)
     }
-    if (typeof actionsComponent !== 'undefined') {
-        setActionWhenUndefined(actionsComponent, new TurnToTargetAction(values.aiId, enemyId))
-    }
+
+    setActionWhenUndefined(actionsComponent, new TurnToTargetAction(values.aiId, enemyId))
+   
 }
 function describeFightMovements(values: IDefaultDescriptionTemplateValues, enemyId: number, rangeToEnemy: number): void {
     const entityManager = values.aiState.getEntityManager()
@@ -91,10 +93,9 @@ function describeFightMovements(values: IDefaultDescriptionTemplateValues, enemy
     const historyComponent = entityManager.getActionHistoryComponent(values.aiId) ?? { entityId: values.aiId }
     const lastAttackTime = historyComponent.lastAttackTime ?? 0
     const currentTime = Date.now()
-    const angleRange = Math.abs(getAngleToTarget(values.aiId, enemyId) - getAngleToTarget(enemyId, values.aiId))
-    const isEntityInEnemyAngleRange = (angleRange < 180 + 20 || angleRange > 180 - 20)
+    const isOpponentInFrontOfAi = isOpponentinAiAngleRange(values.aiId, enemyId)
 
-    if (isEntityInEnemyAngleRange && currentTime - lastAttackTime > 2700) {
+    if (isOpponentInFrontOfAi && currentTime - lastAttackTime > 2700) {
         values.onAiAttacks(values)
         historyComponent.lastAttackTime = currentTime
         entityManager.setActionHistoryComponent(values.aiId, historyComponent)
@@ -104,24 +105,22 @@ function describeFightMovements(values: IDefaultDescriptionTemplateValues, enemy
     }
     else {
         const random = Math.floor(Math.random() * 10);
-        if (random <= 3) {
-            setActionWhenUndefined(actionsComponent, new ParadeWithPause(values.aiId, 500))
+        if (random <= 3 && isOpponentInFrontOfAi) {
+            setActionWhenUndefined(actionsComponent, new ParadeWithPause(values.aiId, 200))
         }
-        else if (random <= 5) {
-            if (!isEntityInEnemyAngleRange) {
-                setActionWhenUndefined(actionsComponent, new TurnToTargetAction(values.aiId, enemyId))
-            }
-        }
-        else if (random <= 9 && isEntityInEnemyAngleRange) {
-            if (angleRange > 180) {
-                setActionWhenUndefined(actionsComponent, new StrafeRightWithPause(values.aiId, 500))
+        else if (random <= 7 && isOpponentInFrontOfAi) {
+            if (getNecessaryAngleToWatchTarget(values.aiId, enemyId) > 180) {
+                setActionWhenUndefined(actionsComponent, new StrafeRightWithPause(values.aiId, 400))
             }
             else {
-                setActionWhenUndefined(actionsComponent, new StrafeLeftWithPause(values.aiId, 500))
+                setActionWhenUndefined(actionsComponent, new StrafeLeftWithPause(values.aiId, 400))
             }
         }
-        else {
+        else if (random <= 10 && isOpponentInFrontOfAi) {
             setActionWhenUndefined(actionsComponent, new WaitAction(values.aiId, 200))
+        }
+        else {
+            setActionWhenUndefined(actionsComponent, new TurnToTargetAction(values.aiId, enemyId))
         }
     }
 }

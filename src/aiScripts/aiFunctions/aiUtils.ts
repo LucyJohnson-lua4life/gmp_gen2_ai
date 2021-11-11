@@ -57,13 +57,22 @@ export function getWaynetPointAngle(playerX: number, playerZ: number, waynetPoin
  * @param entityId1 id of the first npc
  * @param entityId2 id of the second npc
  */
-export function getAngleToTarget(entityId1: number, entityId2: number): number {
+export function getNecessaryAngleToWatchTarget(entityId1: number, entityId2: number): number {
     const position1 = revmp.getPosition(entityId1).position;
     const position2 = revmp.getPosition(entityId2).position;
-    console.log("pos1: ", position1)
-    console.log("pos2: ", position2)
     return getAngleToPoint(position1[0], position1[2], position2[0], position2[2])
 }
+
+export function isTargetInFrontOfEntity(entityId: number, targetId: number): boolean {
+    const rra = revmp.getRotation(entityId);
+    const rrb = revmp.getRotation(targetId);
+    const q = new THREE.Quaternion(rra.rotation[0], rra.rotation[1], rra.rotation[2], rra.rotation[3]);
+    const q2 = new THREE.Quaternion(rrb.rotation[0], rrb.rotation[1], rrb.rotation[2], rrb.rotation[3]);
+    const angle = q.angleTo(q2)
+
+    return angle < 3.2 && angle > 2.7
+}
+
 
 /**
  * Returns the the distance between 2 npcs.
@@ -169,8 +178,8 @@ export function isAttackable(entityId: number) {
 
 export function removeAllAnimations(entityId: number): void {
     revmp.getAnimations(entityId).activeAnis
-    .map(ani => ani.ani.name)
-    .forEach(aniName => revmp.stopAnimation(entityId, aniName))
+        .map(ani => ani.ani.name)
+        .forEach(aniName => revmp.stopAnimation(entityId, aniName))
 }
 
 

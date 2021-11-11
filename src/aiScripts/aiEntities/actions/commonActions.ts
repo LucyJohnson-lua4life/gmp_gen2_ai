@@ -1,7 +1,7 @@
 
 
 import { IAiAction } from "../iAiAction";
-import { setPlayerAngle, getCombatStateBasedAni, getAngleToPoint, getAngleToTarget, getDistance, isAniPlaying, getWaynetPointAngle, getDistanceToPoint } from "../../aiFunctions/aiUtils";
+import { setPlayerAngle, getCombatStateBasedAni, getAngleToPoint, getDistance, isAniPlaying, getWaynetPointAngle, getDistanceToPoint, isTargetInFrontOfEntity, getNecessaryAngleToWatchTarget } from "../../aiFunctions/aiUtils";
 import { gotoPosition, getDistance as getPointDistance } from "../../waynet/positionFunctions";
 import { IPositionComponent } from "../components/iPositionComponent";
 import { AiState } from "../../aiStates/aiState";
@@ -9,6 +9,7 @@ import { IWaynet, Waypoint } from "../../waynet/iwaynet";
 import { IEnemyComponent } from "../components/iEnemyComponent";
 import { EntityManager } from "../../aiStates/entityManager";
 import { IActionComponent } from "../components/iActionsComponent";
+import { isOpponentinAiAngleRange } from "../../aiStates/aiStatePatterns/commonAiStatePatterns";
 
 export class SForwardAttackAction implements IAiAction {
     aiId: number
@@ -50,8 +51,7 @@ export class SForwardAttackAction implements IAiAction {
             console.log("att: " + angleToTarget)
             console.log("distance: " + getDistance(this.aiId, this.victimId))
             */
-            const angleRange = Math.abs(getAngleToTarget(this.aiId, this.victimId) - getAngleToTarget(this.victimId, this.aiId))
-            const isEntityInEnemyAngleRange = (angleRange < 180 + 20 || angleRange > 180 + 20)
+            const isEntityInEnemyAngleRange = isOpponentinAiAngleRange(this.aiId, this.victimId)
             if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && isEntityInEnemyAngleRange) {
                 revmp.attack(this.aiId, this.victimId);
             }
@@ -86,8 +86,7 @@ export class SLeftAttackAction implements IAiAction {
             }, 900);
 
 
-            const angleRange = Math.abs(getAngleToTarget(this.aiId, this.victimId) - getAngleToTarget(this.victimId, this.aiId))
-            const isEntityInEnemyAngleRange = (angleRange < 180 + 20 || angleRange > 180 + 20)
+            const isEntityInEnemyAngleRange = isOpponentinAiAngleRange(this.aiId, this.victimId)
             if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && isEntityInEnemyAngleRange) {
                 revmp.attack(this.aiId, this.victimId);
             }
@@ -120,8 +119,7 @@ export class SRightAttackAction implements IAiAction {
                 }
             }, 900);
 
-            const angleRange = Math.abs(getAngleToTarget(this.aiId, this.victimId) - getAngleToTarget(this.victimId, this.aiId))
-            const isEntityInEnemyAngleRange = (angleRange < 180 + 20 || angleRange > 180 + 20)
+            const isEntityInEnemyAngleRange = isOpponentinAiAngleRange(this.aiId, this.victimId)
             if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && isEntityInEnemyAngleRange) {
                 revmp.attack(this.aiId, this.victimId);
             }
@@ -167,7 +165,7 @@ export class TurnToTargetAction implements IAiAction {
 
     public executeAction(): void {
         if (revmp.valid(this.targetId)) {
-            const y = getAngleToTarget(this.aiId, this.targetId)
+            const y = getNecessaryAngleToWatchTarget(this.aiId, this.targetId)
             setPlayerAngle(this.aiId, y)
         }
     }
@@ -186,7 +184,7 @@ export class RunToTargetAction implements IAiAction {
 
     public executeAction(): void {
         if (revmp.valid(this.targetId)) {
-            const y = getAngleToTarget(this.aiId, this.targetId)
+            const y = getNecessaryAngleToWatchTarget(this.aiId, this.targetId)
             setPlayerAngle(this.aiId, y)
             if (!isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))) {
                 revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
@@ -226,7 +224,7 @@ export class ThreatenPlayerAction implements IAiAction {
             this.timesWarned++
         }
         if (revmp.valid(this.targetId) && Date.now() < this.startTime + this.waitTime) {
-            const y = getAngleToTarget(this.aiId, this.targetId)
+            const y = getNecessaryAngleToWatchTarget(this.aiId, this.targetId)
             setPlayerAngle(this.aiId, y)
             const distance = getDistance(this.aiId, this.targetId)
 
@@ -504,7 +502,7 @@ export class WarnEnemy implements IAiAction {
         }
         if (revmp.valid(this.enemyId)) {
 
-            const y = getAngleToTarget(this.aiId, this.enemyId)
+            const y = getNecessaryAngleToWatchTarget(this.aiId, this.enemyId)
             setPlayerAngle(this.aiId, y)
 
             const distance = getDistance(this.aiId, this.enemyId)

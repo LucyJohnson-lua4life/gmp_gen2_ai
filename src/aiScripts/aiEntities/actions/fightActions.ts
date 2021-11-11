@@ -1,4 +1,5 @@
-import { getAngleToTarget, getCombatStateBasedAni, getDistance} from "../../aiFunctions/aiUtils"
+import { isOpponentinAiAngleRange } from "../../aiStates/aiStatePatterns/commonAiStatePatterns"
+import {isTargetInFrontOfEntity, getCombatStateBasedAni, getDistance} from "../../aiFunctions/aiUtils"
 import { IAiAction} from "../iAiAction"
 
 export class StrafeLeftWithPause implements IAiAction {
@@ -134,8 +135,7 @@ export class ForwardAttackWithPause implements IAiAction {
     private attack(): void {
         if (revmp.valid(this.victimId)) {
             revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_ATTACK"))
-            const angleRange = Math.abs(getAngleToTarget(this.aiId, this.victimId) - getAngleToTarget(this.victimId, this.aiId))
-            const isEntityInEnemyAngleRange = (angleRange < 180 + 20 || angleRange > 180 + 20)
+            const isEntityInEnemyAngleRange = isOpponentinAiAngleRange(this.aiId, this.victimId)
             if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && isEntityInEnemyAngleRange) {
                 revmp.attack(this.aiId, this.victimId);
             }
@@ -184,9 +184,7 @@ export class TripleQuickAttack implements IAiAction{
     private attack(aniName: string): void {
         if (revmp.valid(this.victimId)) {
             revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, aniName))
-            const angleRange = Math.abs(getAngleToTarget(this.aiId, this.victimId) - getAngleToTarget(this.victimId, this.aiId))
-            const isEntityInEnemyAngleRange = (angleRange < 180 + 20 || angleRange > 180 + 20)
-            console.log("in angle range: ", isEntityInEnemyAngleRange)
+            const isEntityInEnemyAngleRange = isOpponentinAiAngleRange(this.aiId, this.victimId)
             if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && isEntityInEnemyAngleRange) {
                 revmp.attack(this.aiId, this.victimId);
             }

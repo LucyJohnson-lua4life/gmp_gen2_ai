@@ -1,7 +1,7 @@
 
 
 import { IActionDescription } from './iActionDescription';
-import { getAngleToTarget, getDistance, getPlayerAngle, getDistanceToPoint } from "../../aiFunctions/aiUtils";
+import { getDistance, getPlayerAngle, getDistanceToPoint } from "../../aiFunctions/aiUtils";
 import {
     SLeftAttackAction, SRightAttackAction, SForwardAttackAction,
     SRunParadeJump, SRunStrafeLeft, SRunStrafeRight,
