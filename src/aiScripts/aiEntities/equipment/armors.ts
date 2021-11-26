@@ -1,5 +1,7 @@
 export const ArmorInstances = {
     guardianArmor: "guardianArmor",
+    dragonHunterArmor: "dragonHunterArmor",
+    banditArmor: "banditArmor",
     darkArmor: "darkArmor",
     vlkFemaleArmor: "vlkFemaleArmor",
     vlkMaleArmor: "vlkMaleArmor"
@@ -23,7 +25,7 @@ export function initArmorInstances() {
         visualSkin: 0,
         material: revmp.Material.Leather,
         category: revmp.ItemCategory.Armor,
-        value: 2500,
+        value: 5000,
         description: {
             text: [
                 [],
@@ -31,11 +33,69 @@ export function initArmorInstances() {
                 [],
                 [],
                 [],
-                ["Value", 2500],
+                ["Value", 5000],
             ]
         },
     });
-    
+
+    revmp.createItemInstance({
+        type: revmp.ItemType.Armor,
+        id: ArmorInstances.dragonHunterArmor,
+        name: "Dragon Hunters Armor",
+        protection: {
+            blunt: 0,
+            edge: 0,
+            point: 0,
+            fire: 0,
+            magic: 0,
+        },
+        visual: "ItAr_Djg_M.3ds",
+        visualChange: "Armor_Djg_M.asc",
+        visualSkin: 0,
+        material: revmp.Material.Leather,
+        category: revmp.ItemCategory.Armor,
+        value: 10000,
+        description: {
+            text: [
+                [],
+                ["An armor used by dragon hunters. Its of high quality."],
+                [],
+                [],
+                [],
+                ["Value", 10000],
+            ]
+        },
+    });
+
+
+    revmp.createItemInstance({
+        type: revmp.ItemType.Armor,
+        id: ArmorInstances.banditArmor,
+        name: "Bandits Armor",
+        protection: {
+            blunt: 0,
+            edge: 0,
+            point: 0,
+            fire: 0,
+            magic: 0,
+        },
+        visual: "ItAr_Bdt_M.3ds",
+        visualChange: "Armor_Bdt_M.asc",
+        visualSkin: 0,
+        material: revmp.Material.Leather,
+        category: revmp.ItemCategory.Armor,
+        value: 1000,
+        description: {
+            text: [
+                [],
+                ["An armor used by bandits."],
+                [],
+                [],
+                [],
+                ["Value", 1000],
+            ]
+        },
+    });
 
     revmp.createItemInstance({
         type: revmp.ItemType.Armor,

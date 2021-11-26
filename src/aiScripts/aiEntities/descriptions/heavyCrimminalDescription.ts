@@ -64,9 +64,7 @@ export class HeavyCrimminalDescription implements IActionDescription {
         if (isNoActionRunning && currentTime > lastRoamingTime + 30000) {
             template.aiState.getWaynetRegistry().unregisterCrimminal(template.aiId)
             const targetPoint = template.aiState.getWaynetRegistry().registerCrimminalAndGetPoint(template.aiId)
-            console.log(this.entityId + " crimminal goes to: " + targetPoint)
             revmp.addOverlay(this.entityId, "HumanS_Relaxed.mds")
-            console.log("running into that")
             setActionWhenUndefined(actionsComponent, new GotoPoint(template.aiId, template.aiState, targetPoint, "S_WALKL"))
             actionHistory.lastRoamingTime = currentTime
             template.aiState.getEntityManager().setActionHistoryComponent(template.aiId, actionHistory)

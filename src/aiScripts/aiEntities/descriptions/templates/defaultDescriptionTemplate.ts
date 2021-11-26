@@ -105,7 +105,7 @@ function describeFightMovements(values: IDefaultDescriptionTemplateValues, enemy
     }
     else {
         const random = Math.floor(Math.random() * 10);
-        if (random <= 3 && isOpponentInFrontOfAi) {
+        if (random <= 1 && isOpponentInFrontOfAi) {
             setActionWhenUndefined(actionsComponent, new ParadeWithPause(values.aiId, 200))
         }
         else if (random <= 7 && isOpponentInFrontOfAi) {

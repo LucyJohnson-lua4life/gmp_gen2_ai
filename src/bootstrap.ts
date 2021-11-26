@@ -30,10 +30,10 @@ revmp.on("init", () => {
 revmp.on("entityCreated", (entity: revmp.Entity) => {
 
     if(revmp.isPlayer(entity)){
-        const instance = WeaponInstances.warSword
-        revmp.addItem(entity, instance, 1);
-        revmp.addItem(entity,ArmorInstances.vlkFemaleArmor , 1);
-        revmp.addItem(entity,ArmorInstances.vlkMaleArmor , 1);
+        revmp.addItem(entity, WeaponInstances.warSword, 1);
+        revmp.addItem(entity, ArmorInstances.dragonHunterArmor, 1);
+        revmp.equipItem(entity, WeaponInstances.warSword)
+        revmp.equipItem(entity, ArmorInstances.dragonHunterArmor)
         revmp.setAttributes(entity, {strength: 100, oneHanded: 100})
         revmp.setHealth(entity, {current: 2100, max: 2100})
         revmp.addOverlay(entity, "Humans_1hST2.MDS")

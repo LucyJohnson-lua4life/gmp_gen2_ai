@@ -11,7 +11,7 @@ export function initWeaponInstances(){
 revmp.createItemInstance({
     type: revmp.ItemType.MeleeWeapon,
     id: WeaponInstances.warSword,
-    name: "War Sword",
+    name: "Dragon Hunters Blade",
     meleeAttack: {
         edge: 100,
         range: 90
@@ -60,7 +60,7 @@ revmp.createItemInstance({
 revmp.createItemInstance({
     type: revmp.ItemType.MeleeWeapon,
     id: WeaponInstances.eliteOrcSword,
-    name: "Elite orc sword",
+    name: "Elite Orc Sword",
     meleeAttack: {
         edge: 100,
         range: 140

@@ -16,6 +16,10 @@ export const INSTANCE_ROAMING_CITIZEN_MALE = "revmp_roaming_citizen_male"
 export const INSTANCE_ROAMING_CITIZEN_FEMALE = "revmp_roaming_citizen_female"
 export const INSTANCE_DEMON_KING = "revmp_demon_king"
 
+const FEMALE_HEAD_MODELS = ["Hum_Head_Pony", "Hum_Head_Bald", "Hum_Head_Babe"]
+const MALE_HEAD_MODELS = ["Hum_Head_FatBald", "Hum_Head_Fighter", "Hum_Head_Pony", "Hum_Head_Bald", "Hum_Head_Thief", "Hum_Head_Psionic"]
+const RANDOM_CRIMMINAL_NAME = ["Ron", "Jack", "Baldwyn", "Don", "Creek", "Henry", "Vlad", "Stone", "Danny", "Joe"]
+const RANDOM_CRIMMINAL_TITLE = ["the Ripper", "the Tyrant", "the Killer", "the Molester", "the Vicious"]
 /**
  * non humanoid npcs have currently their weapon mode set to fist, because they cant set them themselfes with "drawMeleeWeapon()" 
  * and setCombat state doesnt seem to work. therefore we pre initalize the weapon mode so, that for instance their combat state based animations
@@ -233,14 +237,14 @@ export function getOrcWarriorInstance(): revmp.BotTemplate {
 export function getOrcEliteInstance(): revmp.BotTemplate {
     return {
         name: "Orc Elite",
-        maxHealth: 1000,
+        maxHealth: 1700,
         visual: "Orc.mds",
         visualBody: {
             bodyMesh: "Orc_BodyElite",
             headMesh: "Orc_HeadWarrior"
         },
         meleeAttack: {
-            edge: 10,
+            edge: 100,
             range: 20
         },
         protection: {
@@ -309,15 +313,20 @@ export function getShadowbeastInstance(): revmp.BotTemplate {
 }
 //HUM_BODY_BABE0
 export function getHeavyCrimminalInstance(): revmp.BotTemplate {
+    const randomHeadIndex = Math.floor(Math.random() * MALE_HEAD_MODELS.length);
+    const randomHeadTex = Math.floor(Math.random() * (80 - 35 + 1) + 35)
+    const randomNameIndex =  Math.floor(Math.random() * RANDOM_CRIMMINAL_NAME.length);
+    const randomTitleIndex =  Math.floor(Math.random() * RANDOM_CRIMMINAL_TITLE.length);
+
     return {
-        name: "Heavy Crimminal",
+        name: `${RANDOM_CRIMMINAL_NAME[randomNameIndex]} ${RANDOM_CRIMMINAL_TITLE[randomTitleIndex]}`,
         maxHealth: 1600,
         visual: "Humans.mds",
         visualBody: {
             bodyMesh: "hum_body_Naked0",
-            headMesh: "Hum_Head_Pony",
-            bodyTexture: 3,
-            headTexture: 4
+            headMesh: MALE_HEAD_MODELS[randomHeadIndex],
+            bodyTexture: 1,
+            headTexture: randomHeadTex
         },
         meleeAttack: {
             edge: 10,
@@ -338,15 +347,17 @@ export function getHeavyCrimminalInstance(): revmp.BotTemplate {
 }
 
 export function getRoamingRobberInstance(): revmp.BotTemplate {
+    const randomHeadIndex = Math.floor(Math.random() * MALE_HEAD_MODELS.length);
+    const randomHeadTex = Math.floor(Math.random() * (80 - 35 + 1) + 35)
     return {
         name: "Roaming Robber",
-        maxHealth: 1200,
+        maxHealth: 1000,
         visual: "Humans.mds",
         visualBody: {
             bodyMesh: "hum_body_Naked0",
-            headMesh: "Hum_Head_Pony",
-            bodyTexture: 3,
-            headTexture: 4
+            headMesh: MALE_HEAD_MODELS[randomHeadIndex],
+            bodyTexture: 1,
+            headTexture: randomHeadTex
         },
         meleeAttack: {
             edge: 10,
@@ -367,15 +378,17 @@ export function getRoamingRobberInstance(): revmp.BotTemplate {
 }
 
 export function getRoamingCitizenMaleInstance(): revmp.BotTemplate {
+    const randomHeadIndex = Math.floor(Math.random() * MALE_HEAD_MODELS.length);
+    const randomHeadTex = Math.floor(Math.random() * (80 - 35 + 1) + 35)
     return {
         name: "Citizen",
         maxHealth: 700,
         visual: "Humans.mds",
         visualBody: {
             bodyMesh: "hum_body_Naked0",
-            headMesh: "Hum_Head_Pony",
-            bodyTexture: 3,
-            headTexture: 4
+            headMesh: MALE_HEAD_MODELS[randomHeadIndex],
+            bodyTexture: 1,
+            headTexture: randomHeadTex
         },
         meleeAttack: {
             edge: 10,
@@ -392,10 +405,12 @@ export function getRoamingCitizenMaleInstance(): revmp.BotTemplate {
             oneHanded: 100
         }
     }
-
 }
 
+
 export function getRoamingCitizenFemaleInstance(): revmp.BotTemplate {
+    const randomHeadIndex = Math.floor(Math.random() * FEMALE_HEAD_MODELS.length);
+    const randomHeadTex = Math.floor(Math.random() * (155 - 142 + 1) + 142)
     return {
         name: "Citizen",
         maxHealth: 700,
@@ -403,9 +418,9 @@ export function getRoamingCitizenFemaleInstance(): revmp.BotTemplate {
         visualBody: {
 
             bodyMesh: "HUM_BODY_BABE0",
-            headMesh: "Hum_Head_Pony",
-            bodyTexture: 3,
-            headTexture: 4
+            headMesh: FEMALE_HEAD_MODELS[randomHeadIndex],
+            bodyTexture: 4,
+            headTexture: randomHeadTex
         },
         meleeAttack: {
             edge: 10,

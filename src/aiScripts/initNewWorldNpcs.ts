@@ -46,7 +46,7 @@ export function initNewWorldNpcs(aiState: AiState): void {
   // monster auf dem weg zu farm 1
   aiStateFunctions.spawnNpc(new OrcElite(), "NW_XARDAS_TOWER_04", world);
   aiStateFunctions.spawnNpc(new OrcElite(), "NW_XARDAS_PATH_FARM1_11", world);
-  aiStateFunctions.spawnNpc(new OrcElite(), "NW_XARDAS_GOBBO_01", world);
+  //aiStateFunctions.spawnNpc(new OrcElite(), "NW_XARDAS_GOBBO_01", world);
   aiStateFunctions.spawnNpc(new OrcElite(), "NW_XARDAS_GOBBO_02", world);
   //aiStateFunctions.spawnNpc(OrcElite(), "NW_XARDAS_MONSTER_INSERT_01", world);
   //xardas secret

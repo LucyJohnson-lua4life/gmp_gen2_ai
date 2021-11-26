@@ -6,7 +6,7 @@ import {GotoPoint, ThreatenPlayerAction} from "../actions/commonActions";
 import { AiState } from '../../aiStates/aiState';
 import { IActionComponent } from '.././components/iActionsComponent';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './templates/defaultDescriptionTemplate';
-import { ForwardAttackWithPause } from '../actions/fightActions';
+import { TripleQuickAttack } from '../actions/fightActions';
 import { gotoStartPoint, setActionWhenUndefined } from './templates/commonDefaultTemplateDescriptionFunctions';
 
 export class RoamingRobberDescription implements IActionDescription {
@@ -47,7 +47,7 @@ export class RoamingRobberDescription implements IActionDescription {
         const actionsComponent = template.aiState.getEntityManager().getActionsComponent(template.aiId)
         const enemyId = template.aiState.getEntityManager().getEnemyComponent(template.aiId)?.enemyId
         if (typeof enemyId !== 'undefined') {
-            setActionWhenUndefined(actionsComponent, new ForwardAttackWithPause(template.aiId, enemyId, template.necessaryRange, pauseTime))
+           setActionWhenUndefined(actionsComponent, new TripleQuickAttack(template.aiId, enemyId, template.necessaryRange, pauseTime))
         }
     }
 

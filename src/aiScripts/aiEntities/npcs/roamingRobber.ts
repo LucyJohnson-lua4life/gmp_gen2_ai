@@ -47,12 +47,12 @@ export class RoamingRobber implements IAiNpc {
         this.currentPosZ = 0
         this.npcInstance = INSTANCE_ROAMING_ROBBER
 
-        revmp.addOverlay(this.id, "Humans_1hST2.MDS")
+        revmp.addOverlay(this.id, "Humans_1hST1.MDS")
         //revmp.setAttributes(this.id, {oneHanded: 100})
         revmp.addItem(this.id, WeaponInstances.nobleSword, 1);
-        revmp.addItem(this.id, ArmorInstances.guardianArmor, 1);
+        revmp.addItem(this.id, ArmorInstances.banditArmor, 1);
         revmp.equipItem(this.id, WeaponInstances.nobleSword)
-        revmp.equipItem(this.id, ArmorInstances.guardianArmor)
+        revmp.equipItem(this.id, ArmorInstances.banditArmor)
     }
 
 }
