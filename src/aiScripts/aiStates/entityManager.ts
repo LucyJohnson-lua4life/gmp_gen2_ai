@@ -8,6 +8,7 @@ import { IActionDescriptionComponent } from "../aiEntities/components/iActionDes
 import { IEnemyComponent } from "../aiEntities/components/iEnemyComponent";
 import { IAiNpc } from "../aiEntities/iAiNpc";
 import { IActionHistoryComponent } from "../aiEntities/components/iActionHistoryComponent";
+import { IAttackEventComponent } from "../aiEntities/components/iAttackEventComponent";
 
 const worldNames: Array<string> = ["NEWWORLD\\NEWWORLD.ZEN", "OLDWORLD\\OLDWORLD.ZEN", "ADDON\\ADDONWORLD.ZEN"]
 /**
@@ -24,6 +25,7 @@ export class EntityManager {
     private respawnComponents:Map<number, IRespawnComponent>;
     private enemyComponents: Map<number, IEnemyComponent>;
     private actionHistoryComponents: Map<number, IActionHistoryComponent>;
+    private attackEventComponents: Map<number, IAttackEventComponent>;
 
     constructor() {
         this.dailyRoutineComponents = new Map()
@@ -34,6 +36,7 @@ export class EntityManager {
         this.respawnComponents = new Map()
         this.enemyComponents = new Map()
         this.actionHistoryComponents = new Map()
+        this.attackEventComponents = new Map()
     }
 
     //todo: add more functionality once revmp functions are available
@@ -44,6 +47,7 @@ export class EntityManager {
         const positionInfo:IPositionComponent = {entityId: npc.id, currentPosX:0, currentPosY:0, currentPosZ:0, lastPosX:0, lastPosY: 0, lastPosZ: 0, lastPosUpdate: 0, startWorld: npc.startWorld, startPoint: npc.startPoint}
         const actionDescription:IActionDescriptionComponent = {entityId: npc.id, descriptions: npc.actionDescriptions}
         const actionHistory:IActionHistoryComponent = {entityId: npc.id, lastAttackTime: 0}
+        const attackEvent:IAttackEventComponent = {isUnderAttack: false, attackedBy: -1}
 
         this.setNpcStateComponent(npc.id, stateInfo)
         this.setRespawnComponent(npc.id, respawnInfo)
@@ -125,5 +129,11 @@ export class EntityManager {
     }
     setActionHistoryComponent(entityId: number, component: IActionHistoryComponent) {
         this.actionHistoryComponents.set(entityId, component)
+    }
+    getAttackEventComponent(entityId: number): IAttackEventComponent | undefined {
+        return this.attackEventComponents.get(entityId);
+    }
+    setAttackEventComponent(entityId: number, component: IAttackEventComponent) {
+        this.attackEventComponents.set(entityId, component)
     }
 }

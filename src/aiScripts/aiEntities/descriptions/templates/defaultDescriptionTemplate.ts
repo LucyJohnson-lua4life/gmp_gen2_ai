@@ -7,6 +7,7 @@ import { IAiAction } from "../../../aiEntities/iAiAction"
 import { clearAction, setActionWhenUndefined } from "./commonDefaultTemplateDescriptionFunctions"
 import { EqualStencilFunc } from "three"
 import { isOpponentinAiAngleRange } from "../../../aiStates/aiStatePatterns/commonAiStatePatterns"
+import { EntityManager } from "src/aiScripts/aiStates/entityManager"
 
 //TODO: make range constants dynamic 
 export interface IDefaultDescriptionTemplateValues {
@@ -27,6 +28,16 @@ export function describeGeneralRoutine(values: IDefaultDescriptionTemplateValues
     const enemyId = entityManager.getEnemyComponent(values.aiId)?.enemyId ?? -1
     const nearestChar = getNearestCharacterRangeMapping(values.aiId, npcActionUtils)
     const actionsComponent = values.aiState.getEntityManager().getActionsComponent(values.aiId)
+    const attackEvent = entityManager.getAttackEventComponent(values.aiId) ?? {isUnderAttack: false, attackedBy: -1}
+
+    //TODO: make this point hookable
+    if (attackEvent.isUnderAttack) {
+        const enemyId = entityManager.getEnemyComponent(values.aiId)?.enemyId ?? -1
+        if (enemyId === -1) {
+            entityManager.setEnemyComponent(values.aiId, { entityId: values.aiId, enemyId: attackEvent.attackedBy, lastAttackTime: 0 })
+        }
+        entityManager.setAttackEventComponent(values.aiId, {isUnderAttack: false, attackedBy: -1})
+    }
 
     if (!isAlive(values.aiId)) {
         clearAction(actionsComponent)

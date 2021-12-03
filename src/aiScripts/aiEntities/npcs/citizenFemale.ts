@@ -4,7 +4,6 @@ import { WeaponInstances } from "../equipment/weapons";
 import { IAiNpc } from "../iAiNpc";
 import { getRoamingCitizenFemaleInstance, getRoamingCitizenMaleInstance, INSTANCE_HEAVY_CRIMMINAL} from "./npcInits";
 import { CitizenDescription } from "../descriptions/citizenDescription";
-import { OrcMasterDescription } from "../descriptions/orcMasterDescription";
 import { ArmorInstances } from "../equipment/armors";
 
 export class CitizenFemale implements IAiNpc {
