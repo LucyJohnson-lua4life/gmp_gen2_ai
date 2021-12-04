@@ -20,9 +20,9 @@ export class AiState {
     private characterInPositionAreas: Map<string, Map<number, Array<number>>>;
     private waynetRegistry: WaynetRegistry;
 
-    constructor(wpPath: string, fpPath: string) {
+    constructor(wpPath: string, fpPath: string, waynet?: revmp.Waynet) {
         this.entityManager = new EntityManager()
-        this.waynet = new Waynet(wpPath, fpPath)
+        this.waynet = new Waynet(wpPath, fpPath, waynet)
         this.characterInPositionAreas = new Map()
         worldNames.forEach(name => this.characterInPositionAreas.set(name, new Map()))
         this.allBots = []

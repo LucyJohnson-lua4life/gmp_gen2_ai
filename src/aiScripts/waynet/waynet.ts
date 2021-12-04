@@ -23,9 +23,15 @@ export class Waynet implements IWaynet {
     waypoints: Map<string, Waypoint>;
     freepoints: Array<Freepoint>;
 
-    constructor(waypointFile: string, freepointFile: string) {
-        this.waypoints = waynetReader.readWaypointsMap(waypointFile);
-        this.freepoints = waynetReader.readFreepoints(freepointFile);
+    constructor(waypointFile: string, freepointFile: string, waynet?: revmp.Waynet) {
+        if (typeof waynet !== 'undefined') {
+            this.waypoints = waynetReader.readWaypointsMapFromRevmp(waynet)
+            this.freepoints = waynetReader.readFreepointsFromRevmp(waynet)
+        }
+        else {
+            this.waypoints = waynetReader.readWaypointsMap(waypointFile);
+            this.freepoints = waynetReader.readFreepoints(freepointFile);
+        }
     }
 
     /**

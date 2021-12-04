@@ -20,7 +20,8 @@ export interface Freepoint {
     y: number,
     z: number,
     rotX: number,
-    rotZ: number
+    rotZ: number,
+    rotation?: [number, number, number, number] | Float32Array
 }
 
 /**
@@ -34,7 +35,8 @@ export interface Waypoint {
     z: number,
     rotX: number,
     rotZ: number
-    otherWps: Array<string>
+    otherWps: Array<string>,
+    rotation?: [number, number, number, number] | Float32Array
 }
 
 

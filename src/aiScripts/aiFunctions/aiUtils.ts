@@ -51,6 +51,10 @@ export function getWaynetPointAngle(playerX: number, playerZ: number, waynetPoin
     return angle
 }
 
+export function getRotationForPointName(name: string){
+
+}
+
 
 /**
  * Returns the the angle that is necessary so that npc1 looks to npc2

@@ -21,8 +21,10 @@ revmp.on("init", () => {
     });
     initWeaponInstances()
     initArmorInstances()
+    revmp.loadWaynet(world)
+    const waynet = revmp.getWaynet(world)
     
-    aiState = initAiState()
+    aiState = initAiState(waynet)
     entityManager = aiState.getEntityManager()
 
 });
