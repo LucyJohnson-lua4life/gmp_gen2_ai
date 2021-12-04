@@ -2,11 +2,14 @@ import { ArmorInstances, initArmorInstances } from "./aiScripts/aiEntities/equip
 import { initWeaponInstances, WeaponInstances } from "./aiScripts/aiEntities/equipment/weapons";
 import { getPlayerAngle } from "./aiScripts/aiFunctions/aiUtils";
 import { initAiState } from "./aiScripts/aiInit";
+import { AiState } from "./aiScripts/aiStates/aiState";
+import { AiStateFunctions } from "./aiScripts/aiStates/aiStateFunctions";
+import { updateWorldAcordingToState } from "./aiScripts/aiStates/aiWorldStateInterpreter";
 import { EntityManager } from "./aiScripts/aiStates/entityManager";
 import { revive } from "./serverComponents/damageCalculation";
 
 let entityManager:EntityManager|undefined;
-let aiState;
+let aiState: AiState;
 
 revmp.name = "Revmp Adventures";
 revmp.description = "The best adventure experience.";
@@ -15,13 +18,15 @@ revmp.on("init", () => {
     
     const world = revmp.createWorld({
         zen: "NEWWORLD/NEWWORLD.ZEN",
-        startpoint: "NW_CITY_HABOUR_02_B",
+        //startpoint: "NW_CITY_HABOUR_02_B",
+        startpoint: "NW_CITY_CITYHALL_IN_01",
         name: "New World",
         time: { hour: 15 }
     });
     initWeaponInstances()
     initArmorInstances()
-    
+
+
     aiState = initAiState()
     entityManager = aiState.getEntityManager()
 
@@ -30,9 +35,9 @@ revmp.on("init", () => {
 revmp.on("entityCreated", (entity: revmp.Entity) => {
 
     if(revmp.isPlayer(entity)){
-        revmp.addItem(entity, WeaponInstances.warSword, 1);
+        revmp.addItem(entity, WeaponInstances.dragonHunterBlade, 1);
         revmp.addItem(entity, ArmorInstances.dragonHunterArmor, 1);
-        revmp.equipItem(entity, WeaponInstances.warSword)
+        revmp.equipItem(entity, WeaponInstances.dragonHunterBlade)
         revmp.equipItem(entity, ArmorInstances.dragonHunterArmor)
         revmp.setAttributes(entity, {strength: 100, oneHanded: 100})
         revmp.setHealth(entity, {current: 2100, max: 2100})
@@ -52,79 +57,56 @@ function debugCommands(entity: revmp.Entity, msg: string) {
     }
     if (command === "/sendsomething") {
         revmp.sendChatMessage(entity, 'testo')
-    } else if (command === "/revive") {
+    } 
+    else if (command === "/revive") {
         revive(entity);
     }
 
-    if(command === "/tp"){
+    else if (command === "/tp") {
         const tpTarget = parseInt(words[1])
-        if(typeof tpTarget !== 'undefined'){
+        if (typeof tpTarget !== 'undefined') {
             const pos = revmp.getPosition(tpTarget)
             revmp.setPosition(entity, pos)
         }
+    }
+
+    else if (command === "/healme") {
+        const maxHealth = revmp.getHealth(entity).max
+        revmp.setHealth(entity, { current: maxHealth, max: maxHealth })
+    }
+
+    else if (command === "/v1") {
+        revmp.setPosition(entity, { position: [15553, 1048, 49] })
+    }
+    else if (command === "/v2") {
+        revmp.setPosition(entity, [1000, 1000, 1000])
+    }
+
+    else if (command === "/v3") {
+        revmp.setPosition(entity, { position: [0, 0, 0] })
+    }
+
+    else if (command === "/ws") {
+        const state = aiState.getWorldEventState()
+        revmp.sendChatMessage(entity, "influence of gods: " + state.influenceOfTheGods)
+        revmp.sendChatMessage(entity, "khorinis state: " + state.khorinisState)
+        revmp.sendChatMessage(entity, "bigfarm state: " + state.bigFarmState)
+        revmp.sendChatMessage(entity, "last update: " + state.lastStateUpdate)
+    }
+
+    else if (command === "/setig") {
+        const influenceofgods = parseInt(words[1])
+        aiState.getWorldEventState().influenceOfTheGods = influenceofgods
+    }
+    else if (command === "/update") {
+        updateWorldAcordingToState(aiState, new AiStateFunctions(aiState))
     }
 }
 
 
 revmp.on("chatCommand", (entity, msg) => {
     const words = msg.toLowerCase().split(' ');
-    const command = words[0];
     console.log(words);
     debugCommands(entity, msg)
-
-    if (command === "/masochist") {
-        setInterval(revmp.attack.bind(revmp), 200, entity, entity);
-    }
-    if (command === "/e") {
-        const angle = getPlayerAngle(entity)
-        console.log("juuu: ")
-        console.log("angle: " + angle)
-    }
-    if (command === "/eq") {
-        const instance = WeaponInstances.warSword
-        revmp.addItem(entity, instance, 1);
-        revmp.addItem(entity,ArmorInstances.vlkFemaleArmor , 1);
-        revmp.addItem(entity,ArmorInstances.vlkMaleArmor , 1);
-        revmp.setAttributes(entity, {strength: 100, oneHanded: 100})
-        revmp.setHealth(entity, {current: 2100, max: 2100})
-        revmp.addOverlay(entity, "Humans_1hST2.MDS")
-    }
-    if (command === "/healme") {
-        const maxHealth = revmp.getHealth(entity).max
-        revmp.setHealth(entity, {current: maxHealth, max: maxHealth})
-    }
-    if (command === "/health") {
-        revmp.setHealth(entity, { current: 700, max: 1100 })
-        const h = revmp.getHealth(entity)
-        console.log(h.current)
-        console.log(h.max)
-    }
-    if (command === "/jump") {
-        revmp.startAnimation(entity, "S_JUMP");
-    }
-    if (command === "/stumble") {
-        revmp.startAnimation(entity, "T_STUMBLE");
-    }
-    if (command === "/stu2") {
-        revmp.startAnimation(entity, "T_STUMBLEB");
-    }
-    if (command === "/toorc") {
-        revmp.setVisualBody(entity, {bodyMesh: "Orc_BodyElite", headMesh: "Orc_HeadWarrior"})
-        revmp.addItem(entity, WeaponInstances.eliteOrcSword, 1);
-        revmp.equipItem(entity, WeaponInstances.eliteOrcSword)
-        revmp.setAttributes(entity, { twoHanded: 100 })
-        revmp.startAnimation(entity, "T_STAND_2_STUMBLE");
-    }
-
-    if (command === "/wptest") {
-        revmp.setPosition(entity, [14671.2051, 1150.05042, 517.412537])
-    }
-
-
-    if(command === "/loopani"){
-        const focusid = revmp.getFocus(entity).focus
-        setInterval(()=>{
-            revmp.startAnimation(focusid, "T_WARN")}, 200);
-    }
 });
 

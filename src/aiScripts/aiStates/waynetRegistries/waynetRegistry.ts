@@ -1,14 +1,14 @@
-import { CitizenWaynetRegistry } from "./citizenWaynetRegistry";
+import { TownWaynetRegistry } from "./citizenWaynetRegistry";
 import { CrimminalWaynetRegistry } from "./crimminalWaynetRegistry";
 
 export class WaynetRegistry {
 
     private crimminalRegistry:CrimminalWaynetRegistry
-    private citizenRegistry:CitizenWaynetRegistry
+    private townieRegistry:TownWaynetRegistry
 
     constructor(){
         this.crimminalRegistry = new CrimminalWaynetRegistry()
-        this.citizenRegistry = new CitizenWaynetRegistry()
+        this.townieRegistry = new TownWaynetRegistry()
     }
 
 
@@ -20,12 +20,21 @@ export class WaynetRegistry {
         return this.crimminalRegistry.unregisterFromAllPoints(npcId)
     }
 
-
-    public registerCitizenAndGetPoint(npcId: number): string{
-        return this.citizenRegistry.registerAndGetRandomPoint(npcId)
+    public resetCrimminalRegistry(){
+        this.crimminalRegistry = new CrimminalWaynetRegistry()
     }
 
-    public unregisterCitizen(npcId: number): void {
-        return this.citizenRegistry.unregisterFromAllPoints(npcId)
+
+    public registerTownieAndGetPoint(npcId: number): string{
+        return this.townieRegistry.registerAndGetRandomPoint(npcId)
     }
+
+    public unregisterTownie(npcId: number): void {
+        return this.townieRegistry.unregisterFromAllPoints(npcId)
+    }
+    public resetTownieRegistry(){
+        this.townieRegistry = new TownWaynetRegistry()
+    }
+
+
 }

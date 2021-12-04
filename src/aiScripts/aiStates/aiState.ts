@@ -3,6 +3,7 @@ import { IAiNpc } from "../aiEntities/iAiNpc";
 import { IWaynet } from "../waynet/iwaynet";
 import { Waynet } from "../waynet/waynet";
 import { EntityManager } from "./entityManager";
+import { IWorldEventState } from "./waynetRegistries/iWorldEventState";
 import { WaynetRegistry } from "./waynetRegistries/waynetRegistry";
 const worldNames: Array<string> = ["NEWWORLD\\NEWWORLD.ZEN", "OLDWORLD\\OLDWORLD.ZEN", "ADDON\\ADDONWORLD.ZEN"]
 /** Entry point to access the all ai related state.*/
@@ -11,6 +12,7 @@ export class AiState {
     private waynet: IWaynet
     private allBots: Array<number>;
     private allPlayer: Array<number>;
+    private worldEventState: IWorldEventState
     /*
       map of all character positions,
       the first key is the world name
@@ -28,6 +30,7 @@ export class AiState {
         this.allBots = []
         this.allPlayer = []
         this.waynetRegistry = new WaynetRegistry()
+        this.worldEventState = {influenceOfTheGods: 50, khorinisState: 0, bigFarmState: 0, lastStateUpdate: Date.now()}
     }
 
     public getEntityManager(): EntityManager {
@@ -68,6 +71,10 @@ export class AiState {
                 }
             }
         }
+    }
+
+    public getWorldEventState(): IWorldEventState{
+        return this.worldEventState
     }
 
 }

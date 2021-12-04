@@ -12,8 +12,9 @@ import { Warg } from "./aiEntities/npcs/warg"
 import { AiState } from "./aiStates/aiState"
 import { HeavyCrimminal } from "./aiEntities/npcs/heavyCrimminal"
 import { RoamingRobber } from "./aiEntities/npcs/roamingRobber"
-import { CitizenMale } from "./aiEntities/npcs/citizenMale"
-import { CitizenFemale } from "./aiEntities/npcs/citizenFemale"
+import { TownCitizenMale } from "./aiEntities/npcs/townCitizenMale"
+import { TownCitizenFemale } from "./aiEntities/npcs/townCitizenFemale"
+import { TownPaladinLeader } from "./aiEntities/npcs/townPaladinLeader"
 
 export function initNewWorldNpcs(aiState: AiState): void {
 
@@ -621,14 +622,17 @@ export function initNewWorldNpcs(aiState: AiState): void {
   }
 
   for (let i = 0; i < 15; i++) {
-    const citizen = new CitizenMale()
-    const spawnPoint = aiState.getWaynetRegistry().registerCitizenAndGetPoint(citizen.id)
+    const citizen = new TownCitizenMale()
+    const spawnPoint = aiState.getWaynetRegistry().registerTownieAndGetPoint(citizen.id)
     aiStateFunctions.spawnNpc(citizen, spawnPoint, world);
   }
 
   for (let i = 0; i < 15; i++) {
-    const citizen = new CitizenFemale()
-    const spawnPoint = aiState.getWaynetRegistry().registerCitizenAndGetPoint(citizen.id)
+    const citizen = new TownCitizenFemale()
+    const spawnPoint = aiState.getWaynetRegistry().registerTownieAndGetPoint(citizen.id)
     aiStateFunctions.spawnNpc(citizen, spawnPoint, world);
   }
+
+  let pal = new TownPaladinLeader()
+    aiStateFunctions.spawnNpc(pal, "HAFEN", world);
 }

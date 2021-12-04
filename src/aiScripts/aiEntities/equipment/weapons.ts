@@ -1,7 +1,8 @@
 
 export const WeaponInstances = {
-    warSword: "warSword",
+    dragonHunterBlade: "dragonHunterBlade",
     eliteOrcSword: "eliteOrcSword",
+    flamberge: "flamberge",
     nobleSword: "nobleSword"
 } as const;
 
@@ -10,7 +11,7 @@ export function initWeaponInstances(){
 
 revmp.createItemInstance({
     type: revmp.ItemType.MeleeWeapon,
-    id: WeaponInstances.warSword,
+    id: WeaponInstances.dragonHunterBlade,
     name: "Dragon Hunters Blade",
     meleeAttack: {
         edge: 100,
@@ -72,10 +73,34 @@ revmp.createItemInstance({
     description: {
         text: [
             [],
-            ["Edge Damage", 100],
+            ["Edge Damage", 150],
             [],
             ["Necessary strength:", 5],
             ["One hand sword"],
+            ["Value:", 1000],
+        ]
+    },
+});
+
+revmp.createItemInstance({
+    type: revmp.ItemType.MeleeWeapon,
+    id: WeaponInstances.flamberge,
+    name: "Flamberge",
+    meleeAttack: {
+        edge: 100,
+        range: 140
+    },
+    visual: "ItMw_040_2h_PAL_sword_heavy_RAW_01.3DS",
+    material: revmp.Material.Metal,
+    category: revmp.ItemCategory.TwoHandSword,
+    value: 1000,
+    description: {
+        text: [
+            [],
+            ["Edge Damage", 150],
+            [],
+            ["Necessary strength:", 5],
+            ["Two hand sword"],
             ["Value:", 1000],
         ]
     },

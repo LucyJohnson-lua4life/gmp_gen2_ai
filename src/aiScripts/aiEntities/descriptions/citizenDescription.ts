@@ -62,8 +62,8 @@ export class CitizenDescription implements IActionDescription {
         const isNoActionRunning = typeof actionsComponent?.nextAction === 'undefined'
 
         if (isNoActionRunning && currentTime > lastRoamingTime + random*60000) {
-            template.aiState.getWaynetRegistry().unregisterCitizen(template.aiId)
-            const targetPoint = template.aiState.getWaynetRegistry().registerCitizenAndGetPoint(template.aiId)
+            template.aiState.getWaynetRegistry().unregisterTownie(template.aiId)
+            const targetPoint = template.aiState.getWaynetRegistry().registerTownieAndGetPoint(template.aiId)
             setActionWhenUndefined(actionsComponent, new GotoPoint(template.aiId, template.aiState, targetPoint, "S_WALKL"))
             actionHistory.lastRoamingTime = currentTime
             template.aiState.getEntityManager().setActionHistoryComponent(template.aiId, actionHistory)

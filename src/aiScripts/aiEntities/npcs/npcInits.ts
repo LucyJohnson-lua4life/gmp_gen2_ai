@@ -346,6 +346,39 @@ export function getHeavyCrimminalInstance(): revmp.BotTemplate {
 
 }
 
+
+export function getWeaponMasterMaleInstance(): revmp.BotTemplate {
+    const randomHeadIndex = Math.floor(Math.random() * MALE_HEAD_MODELS.length);
+    const randomHeadTex = Math.floor(Math.random() * (80 - 35 + 1) + 35)
+    return {
+        name: "Twohand Master",
+        maxHealth: 1500,
+        visual: "Humans.mds",
+        visualBody: {
+            bodyMesh: "hum_body_Naked0",
+            headMesh: MALE_HEAD_MODELS[randomHeadIndex],
+            bodyTexture: 1,
+            headTexture: randomHeadTex
+        },
+        meleeAttack: {
+            edge: 10,
+            range: 20
+        },
+        protection: {
+            blunt: 100,
+            edge: 100,
+            fire: 100,
+            fly: 100,
+        },
+        attributes: {
+            strength: 15,
+            oneHanded: 100,
+            twoHanded: 100
+        }
+    }
+
+}
+
 export function getRoamingRobberInstance(): revmp.BotTemplate {
     const randomHeadIndex = Math.floor(Math.random() * MALE_HEAD_MODELS.length);
     const randomHeadTex = Math.floor(Math.random() * (80 - 35 + 1) + 35)

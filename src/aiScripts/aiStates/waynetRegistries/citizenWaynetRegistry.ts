@@ -1,6 +1,6 @@
 import { registerAndGetRandomPoint, unregisterFromAllPoints } from "./waynetRegistryFunctions";
 
-export class CitizenWaynetRegistry {
+export class TownWaynetRegistry {
 
     private registry: Map<string, number>;
     private availablePoints = [

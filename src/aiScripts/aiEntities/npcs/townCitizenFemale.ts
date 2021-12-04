@@ -5,8 +5,9 @@ import { IAiNpc } from "../iAiNpc";
 import { getRoamingCitizenFemaleInstance, getRoamingCitizenMaleInstance, INSTANCE_HEAVY_CRIMMINAL} from "./npcInits";
 import { CitizenDescription } from "../descriptions/citizenDescription";
 import { ArmorInstances } from "../equipment/armors";
+import { TOWN_CITIZEN } from "./semanticNpcNames";
 
-export class CitizenFemale implements IAiNpc {
+export class TownCitizenFemale implements IAiNpc {
     enemyIds: number[];
     friendIds: number[];
     respawnTime: number;
@@ -28,7 +29,9 @@ export class CitizenFemale implements IAiNpc {
 
 
     constructor() {
-        this.id = revmp.createBot(getRoamingCitizenFemaleInstance());
+        const instance = getRoamingCitizenFemaleInstance()
+        instance.name = TOWN_CITIZEN
+        this.id = revmp.createBot(instance);
         this.isDead = false;
         this.isUnconscious = false;
         this.enemyIds = [];

@@ -61,8 +61,8 @@ export class RoamingRobberDescription implements IActionDescription {
         const isNoActionRunning = typeof actionsComponent?.nextAction === 'undefined'
 
         if (isNoActionRunning && currentTime > lastRoamingTime + 30000) {
-            template.aiState.getWaynetRegistry().unregisterCitizen(template.aiId)
-            const targetPoint = template.aiState.getWaynetRegistry().registerCitizenAndGetPoint(template.aiId)
+            template.aiState.getWaynetRegistry().unregisterTownie(template.aiId)
+            const targetPoint = template.aiState.getWaynetRegistry().registerTownieAndGetPoint(template.aiId)
             revmp.addOverlay(this.entityId, "HumanS_Relaxed.mds")
             setActionWhenUndefined(actionsComponent, new GotoPoint(template.aiId, template.aiState, targetPoint, "S_WALKL"))
             actionHistory.lastRoamingTime = currentTime

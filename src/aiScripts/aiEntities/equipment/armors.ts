@@ -4,7 +4,11 @@ export const ArmorInstances = {
     banditArmor: "banditArmor",
     darkArmor: "darkArmor",
     vlkFemaleArmor: "vlkFemaleArmor",
-    vlkMaleArmor: "vlkMaleArmor"
+    vlkMaleArmor: "vlkMaleArmor",
+    farmFemaleArmor: "farmFemaleArmor",
+    farmMaleArmor: "farmMaleArmor",
+    heavyMercenaryArmor: "heavyMercenaryArmor",
+    heavyPaladinArmor: "heavyPaladinArmor",
 } as const;
 
 export function initArmorInstances() {
@@ -142,7 +146,7 @@ export function initArmorInstances() {
         visualSkin: 0,
         material: revmp.Material.Leather,
         category: revmp.ItemCategory.Armor,
-        value: 2500,
+        value: 100,
         description: {
             text: [
                 [],
@@ -150,7 +154,7 @@ export function initArmorInstances() {
                 [],
                 [],
                 [],
-                ["Value", 2500],
+                ["Value", 100],
             ]
         },
     });
@@ -172,11 +176,98 @@ export function initArmorInstances() {
         visualSkin: 0,
         material: revmp.Material.Leather,
         category: revmp.ItemCategory.Armor,
-        value: 2500,
+        value: 100,
         description: {
             text: [
                 [],
                 ["Clothes for normal citizens of Khorinis."],
+                [],
+                [],
+                [],
+                ["Value", 100],
+            ]
+        },
+    });
+
+    revmp.createItemInstance({
+        type: revmp.ItemType.Armor,
+        id: ArmorInstances.farmMaleArmor,
+        name: "Farmer Clothes",
+        protection: {
+            blunt: 0,
+            edge: 0,
+            point: 0,
+            fire: 0,
+            magic: 0,
+        },
+        visual: "ItAr_Bau_L.3DS",
+        visualChange: "Armor_Bau_L.asc",
+        visualSkin: 0,
+        material: revmp.Material.Leather,
+        category: revmp.ItemCategory.Armor,
+        value: 100,
+        description: {
+            text: [
+                [],
+                ["Clothes for normal farmers of Khorinis."],
+                [],
+                [],
+                [],
+                ["Value", 100],
+            ]
+        },
+    });
+
+    revmp.createItemInstance({
+        type: revmp.ItemType.Armor,
+        id: ArmorInstances.farmFemaleArmor,
+        name: "Farmer Clothes",
+        protection: {
+            blunt: 0,
+            edge: 0,
+            point: 0,
+            fire: 0,
+            magic: 0,
+        },
+        visual: "ItAr_VLKBabe.3DS",
+        visualChange: "Armor_BauBabe_L.asc",
+        visualSkin: 0,
+        material: revmp.Material.Leather,
+        category: revmp.ItemCategory.Armor,
+        value: 100,
+        description: {
+            text: [
+                [],
+                ["Clothes for normal farmers of Khorinis."],
+                [],
+                [],
+                [],
+                ["Value", 100],
+            ]
+        },
+    });
+
+    revmp.createItemInstance({
+        type: revmp.ItemType.Armor,
+        id: ArmorInstances.heavyMercenaryArmor,
+        name: "Heavy Mercenary Armor",
+        protection: {
+            blunt: 0,
+            edge: 0,
+            point: 0,
+            fire: 0,
+            magic: 0,
+        },
+        visual: "ItAr_Sld_H.3DS",
+        visualChange: "Armor_Sld_H.asc",
+        visualSkin: 0,
+        material: revmp.Material.Leather,
+        category: revmp.ItemCategory.Armor,
+        value: 2500,
+        description: {
+            text: [
+                [],
+                ["Heavy armor worn by important executives."],
                 [],
                 [],
                 [],
@@ -185,5 +276,33 @@ export function initArmorInstances() {
         },
     });
 
+    revmp.createItemInstance({
+        type: revmp.ItemType.Armor,
+        id: ArmorInstances.heavyPaladinArmor,
+        name: "Heavy Paladin Armor",
+        protection: {
+            blunt: 0,
+            edge: 0,
+            point: 0,
+            fire: 0,
+            magic: 0,
+        },
+        visual: "ItAr_Pal_H.3DS",
+        visualChange: "Armor_Pal_H.asc",
+        visualSkin: 0,
+        material: revmp.Material.Leather,
+        category: revmp.ItemCategory.Armor,
+        value: 2500,
+        description: {
+            text: [
+                [],
+                ["Heavy armor worn by important executives."],
+                [],
+                [],
+                [],
+                ["Value", 2500],
+            ]
+        },
+    });
 
 }
