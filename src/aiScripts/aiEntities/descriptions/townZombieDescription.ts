@@ -1,12 +1,12 @@
+
 import { IActionDescription } from './iActionDescription';
-import { isAniPlaying } from "../../aiFunctions/aiUtils";
 import {GotoPoint} from "../actions/commonActions";
 import { AiState } from '../../aiStates/aiState';
 import { ForwardAttackWithPause} from '../actions/fightActions';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './templates/defaultDescriptionTemplate';
-import { gotoStartPoint, setActionWhenUndefined } from './templates/commonDefaultTemplateDescriptionFunctions';
+import { gotoStartPoint, setActionWhenUndefined, warnEnemy} from './templates/commonDefaultTemplateDescriptionFunctions';
 
-export class CitizenDescription implements IActionDescription {
+export class TownZombieDescription implements IActionDescription {
     entityId: number
     lastAttackTime: number
     attackRange: number
@@ -31,15 +31,11 @@ export class CitizenDescription implements IActionDescription {
             onAiAttacks: this.describeAttackAction.bind(this),
             onIdle: this.describeRoamingAction.bind(this),
             onAiEnemyDies: gotoStartPoint,
-            onEnemyInWarnRange: this.describeOnInWarnRange,
+            onEnemyInWarnRange: warnEnemy,
             onEnemyOutOfRange: gotoStartPoint,
             onEnemyDisconnected: gotoStartPoint
         }
         describeGeneralRoutine(template)
-    }
-
-    private describeOnInWarnRange(template: IDefaultDescriptionTemplateValues, warnableEnemyId: number){
-        //do nothing
     }
 
     private describeAttackAction(template: IDefaultDescriptionTemplateValues) {
@@ -66,9 +62,8 @@ export class CitizenDescription implements IActionDescription {
             actionHistory.lastRoamingTime = currentTime
             template.aiState.getEntityManager().setActionHistoryComponent(template.aiId, actionHistory)
         }
-        else if (isNoActionRunning && !isAniPlaying(template.aiId, "S_LGUARD")) {
+        else if (isNoActionRunning) {
             revmp.setCombatState(this.entityId, { weaponMode: revmp.WeaponMode.None })
-            revmp.startAnimation(template.aiId, "S_LGUARD")
         }
     }
 }

@@ -3,6 +3,7 @@ import { TownCitizenFemale } from "../aiEntities/npcs/townCitizenFemale";
 import { TownCitizenMale } from "../aiEntities/npcs/townCitizenMale";
 import { TownFarmerFemale } from "../aiEntities/npcs/townFarmerFemale";
 import { TownFarmerMale } from "../aiEntities/npcs/townFarmerMale";
+import { TownZombie } from "../aiEntities/npcs/zombie";
 import { AiState } from "./aiState";
 import { AiStateFunctions } from "./aiStateFunctions";
 
@@ -20,7 +21,13 @@ export function updateWorldAcordingToState(aiState: AiState, aiStateFunctions: A
                 aiState.getWaynetRegistry().resetTownieRegistry()
             }
         })
-        spawnFarmersInKhorinis(aiState, aiStateFunctions)
+        if(worldState.influenceOfTheGods >= 10){
+            spawnFarmersInKhorinis(aiState, aiStateFunctions)
+        }
+       
+        else if(worldState.influenceOfTheGods < 10){
+            spawnZombiesInKhorinis(aiState, aiStateFunctions)
+        }
     }
 }
 
@@ -50,4 +57,12 @@ function spawnFarmersInKhorinis(aiState: AiState, aiStateFunctions: AiStateFunct
     const spawnPoint = aiState.getWaynetRegistry().registerTownieAndGetPoint(citizen.id)
     aiStateFunctions.spawnNpc(citizen, spawnPoint, world);
   }
+}
+function spawnZombiesInKhorinis(aiState: AiState, aiStateFunctions: AiStateFunctions){
+  for (let i = 0; i < 30; i++) {
+    const citizen = new TownZombie()
+    const spawnPoint = aiState.getWaynetRegistry().registerTownieAndGetPoint(citizen.id)
+    aiStateFunctions.spawnNpc(citizen, spawnPoint, world);
+  }
+
 }

@@ -15,6 +15,7 @@ export const INSTANCE_ROAMING_ROBBER = "revmp_roaming_robber"
 export const INSTANCE_ROAMING_CITIZEN_MALE = "revmp_roaming_citizen_male"
 export const INSTANCE_ROAMING_CITIZEN_FEMALE = "revmp_roaming_citizen_female"
 export const INSTANCE_DEMON_KING = "revmp_demon_king"
+export const INSTANCE_ZOMBIE = "revmp_zombie"
 
 const FEMALE_HEAD_MODELS = ["Hum_Head_Pony", "Hum_Head_Bald", "Hum_Head_Babe"]
 const MALE_HEAD_MODELS = ["Hum_Head_FatBald", "Hum_Head_Fighter", "Hum_Head_Pony", "Hum_Head_Bald", "Hum_Head_Thief", "Hum_Head_Psionic"]
@@ -501,4 +502,31 @@ export function getDemonKingInstance(): revmp.BotTemplate {
         }
     }
 
+}
+
+export function getZombieInstance(): revmp.BotTemplate {
+    return {
+        name: "Zombie",
+        maxHealth: 1000,
+        visual: "Zombie.mds",
+        visualBody: {
+            bodyMesh: "Zom_Body",
+            headMesh: "Zom_Head"
+        },
+        meleeAttack: {
+            edge: 100,
+            range: 20
+        },
+        attributes: {
+            strength: 200,
+            twoHanded: 100
+        },
+        protection: {
+            blunt: 100,
+            edge: 100,
+            fire: 100,
+            fly: 100,
+        },
+        weaponMode: revmp.WeaponMode.Fist
+    }
 }
