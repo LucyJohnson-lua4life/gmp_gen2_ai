@@ -3,7 +3,7 @@ import { IActionDescription } from './iActionDescription';
 import { AiState } from '../../aiStates/aiState';
 import { ForwardAttackWithPause } from '../actions/fightActions';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './templates/defaultDescriptionTemplate';
-import { gotoStartPoint, setActionWhenUndefined, warnEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
+import { gotoStartPoint, setActionWhenUndefined, setAttackerToEnemy, warnEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
 import { isAniPlaying } from '../../aiFunctions/aiUtils';
 
 export class DefaultMonsterDescription implements IActionDescription {
@@ -27,13 +27,14 @@ export class DefaultMonsterDescription implements IActionDescription {
         const template: IDefaultDescriptionTemplateValues = {
             aiId: this.entityId,
             aiState: aiState,
-            necessaryRange: this.attackRange,
+            attackRange: this.attackRange,
             onAiAttacks: this.describeAttackAction.bind(this),
             onIdle: this.describeEatRoutine.bind(this),
             onAiEnemyDies: gotoStartPoint,
             onEnemyInWarnRange: warnEnemy,
             onEnemyOutOfRange: gotoStartPoint,
-            onEnemyDisconnected: gotoStartPoint
+            onEnemyDisconnected: gotoStartPoint,
+            onAiIsAttacked: setAttackerToEnemy
 
         }
         describeGeneralRoutine(template)
@@ -44,7 +45,7 @@ export class DefaultMonsterDescription implements IActionDescription {
         const actionsComponent = values.aiState.getEntityManager().getActionsComponent(values.aiId)
         const enemyId = values.aiState.getEntityManager().getEnemyComponent(values.aiId)?.enemyId
         if (typeof enemyId !== 'undefined') {
-            setActionWhenUndefined(actionsComponent, new ForwardAttackWithPause(values.aiId, enemyId, values.necessaryRange, pauseTime))
+            setActionWhenUndefined(actionsComponent, new ForwardAttackWithPause(values.aiId, enemyId, this.attackRange, pauseTime))
         }
     }
     private describeEatRoutine(values: IDefaultDescriptionTemplateValues): void {

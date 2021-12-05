@@ -23,6 +23,16 @@ export function warnEnemy(values: IDefaultDescriptionTemplateValues, warnableEne
     }
 }
 
+export function setAttackerToEnemy(values: IDefaultDescriptionTemplateValues){
+    const entityManager = values.aiState.getEntityManager()
+    const attackEvent = entityManager.getAttackEventComponent(values.aiId) ?? {isUnderAttack: false, attackedBy: -1}
+        const enemyId = entityManager.getEnemyComponent(values.aiId)?.enemyId ?? -1
+        if (enemyId === -1) {
+            entityManager.setEnemyComponent(values.aiId, { entityId: values.aiId, enemyId: attackEvent.attackedBy, lastAttackTime: 0 })
+        }
+        entityManager.setAttackEventComponent(values.aiId, {isUnderAttack: false, attackedBy: -1})
+}
+
 export function gotoStartPoint(values: IDefaultDescriptionTemplateValues) {
     const entityManager = values.aiState.getEntityManager();
     const startPoint = entityManager.getPositionsComponents(values.aiId)?.startPoint
@@ -61,3 +71,4 @@ export function setActionWhenUndefined(actionComponent: IActionComponent | undef
         actionComponent.nextAction = action
     }
 }
+

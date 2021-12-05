@@ -1,25 +1,30 @@
-import { RunToTargetAction, TurnToTargetAction, WaitAction, WarnEnemy, WarnEnemyActionInput } from "../../actions/commonActions"
+import { RunToTargetAction, TurnToTargetAction, WaitAction} from "../../actions/commonActions"
 import { ParadeWithPause, StrafeRightWithPause, StrafeLeftWithPause, DoubleParadeWithPause, TripleQuickAttack, ForwardAttackWithPause } from "../../actions/fightActions"
-import { getNecessaryAngleToWatchTarget, getDistance, hasMeleeWeapon, isAlive, removeAllAnimations, isTargetInFrontOfEntity} from "../../../aiFunctions/aiUtils"
+import { getNecessaryAngleToWatchTarget, getDistance, hasMeleeWeapon, isAlive, removeAllAnimations} from "../../../aiFunctions/aiUtils"
 import { AiState } from "../../../aiStates/aiState"
 import { NpcActionUtils } from "../../../aiFunctions/npcActionUtils"
 import { IAiAction } from "../../../aiEntities/iAiAction"
 import { clearAction, setActionWhenUndefined } from "./commonDefaultTemplateDescriptionFunctions"
-import { EqualStencilFunc } from "three"
 import { isOpponentinAiAngleRange } from "../../../aiStates/aiStatePatterns/commonAiStatePatterns"
-import { EntityManager } from "src/aiScripts/aiStates/entityManager"
 
-//TODO: make range constants dynamic 
+const DEFAULT_ATTACK_RANGE = 300
+const DEFAULT_WARN_RANGE = 500
+const DEFAULT_CHASE_RANGE = 800 
+const DEFAULT_ATTACK_FREQUENCY = 2700 
 export interface IDefaultDescriptionTemplateValues {
     aiId: number
     aiState: AiState
-    necessaryRange: number
+    attackRange?: number
+    warnRange?: number
+    chaseRange?: number
+    attackFrequency?: number
     onAiAttacks(values: IDefaultDescriptionTemplateValues): void
     onAiEnemyDies(values: IDefaultDescriptionTemplateValues): void
     onIdle(values: IDefaultDescriptionTemplateValues): void
     onEnemyInWarnRange(template: IDefaultDescriptionTemplateValues, warnableEnemyId: number): void
     onEnemyOutOfRange(values: IDefaultDescriptionTemplateValues): void
     onEnemyDisconnected(values: IDefaultDescriptionTemplateValues): void
+    onAiIsAttacked(values: IDefaultDescriptionTemplateValues): void
 }
 
 export function describeGeneralRoutine(values: IDefaultDescriptionTemplateValues): void {
@@ -30,13 +35,8 @@ export function describeGeneralRoutine(values: IDefaultDescriptionTemplateValues
     const actionsComponent = values.aiState.getEntityManager().getActionsComponent(values.aiId)
     const attackEvent = entityManager.getAttackEventComponent(values.aiId) ?? {isUnderAttack: false, attackedBy: -1}
 
-    //TODO: make this point hookable
     if (attackEvent.isUnderAttack) {
-        const enemyId = entityManager.getEnemyComponent(values.aiId)?.enemyId ?? -1
-        if (enemyId === -1) {
-            entityManager.setEnemyComponent(values.aiId, { entityId: values.aiId, enemyId: attackEvent.attackedBy, lastAttackTime: 0 })
-        }
-        entityManager.setAttackEventComponent(values.aiId, {isUnderAttack: false, attackedBy: -1})
+        values.onAiIsAttacked(values)
     }
 
     if (!isAlive(values.aiId)) {
@@ -57,7 +57,7 @@ export function describeGeneralRoutine(values: IDefaultDescriptionTemplateValues
             clearAction(actionsComponent)
         }
 
-        if (range < 800 && isAlive(enemyId)) {
+        if (range < (values.chaseRange ?? DEFAULT_CHASE_RANGE) && isAlive(enemyId)) {
             describeFightMode(values, enemyId, range)
         }
         else if (isAlive(enemyId) === false) {
@@ -66,7 +66,7 @@ export function describeGeneralRoutine(values: IDefaultDescriptionTemplateValues
             values.onAiEnemyDies(values)
         }
     }
-    else if (nearestChar.distance < 500 && isAlive(nearestChar.id)) {
+    else if (nearestChar.distance < (values.warnRange ?? DEFAULT_WARN_RANGE) && isAlive(nearestChar.id)) {
         //TODO: the world constant should only be fixed in later versions!
         //TODO: currently only player will get attacked/warned, should implement a proper enemy/friend mapping
         values.onEnemyInWarnRange(values, nearestChar.id)
@@ -83,10 +83,10 @@ function describeFightMode(values: IDefaultDescriptionTemplateValues, enemyId: n
         revmp.drawMeleeWeapon(values.aiId)
     }
 
-    if (typeof actionsComponent !== 'undefined' && rangeToEnemy > values.necessaryRange) {
+    if (typeof actionsComponent !== 'undefined' && rangeToEnemy > (values.attackRange ?? DEFAULT_ATTACK_RANGE)) {
         setActionWhenUndefined(actionsComponent, new RunToTargetAction(values.aiId, enemyId))
     }
-    else if (rangeToEnemy > 800) {
+    else if (rangeToEnemy > (values.chaseRange ?? DEFAULT_CHASE_RANGE)) {
         entityManager.deleteEnemyComponent(values.aiId)
         clearAction(actionsComponent)
         values.onEnemyOutOfRange(values)
@@ -106,7 +106,7 @@ function describeFightMovements(values: IDefaultDescriptionTemplateValues, enemy
     const currentTime = Date.now()
     const isOpponentInFrontOfAi = isOpponentinAiAngleRange(values.aiId, enemyId)
 
-    if (isOpponentInFrontOfAi && currentTime - lastAttackTime > 2700) {
+    if (isOpponentInFrontOfAi && currentTime - lastAttackTime > (values.attackFrequency ?? DEFAULT_ATTACK_FREQUENCY)) {
         values.onAiAttacks(values)
         historyComponent.lastAttackTime = currentTime
         entityManager.setActionHistoryComponent(values.aiId, historyComponent)

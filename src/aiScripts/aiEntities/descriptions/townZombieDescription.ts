@@ -4,7 +4,7 @@ import {GotoPoint} from "../actions/commonActions";
 import { AiState } from '../../aiStates/aiState';
 import { ForwardAttackWithPause} from '../actions/fightActions';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './templates/defaultDescriptionTemplate';
-import { gotoStartPoint, setActionWhenUndefined, warnEnemy} from './templates/commonDefaultTemplateDescriptionFunctions';
+import { gotoStartPoint, setActionWhenUndefined, setAttackerToEnemy, warnEnemy} from './templates/commonDefaultTemplateDescriptionFunctions';
 
 export class TownZombieDescription implements IActionDescription {
     entityId: number
@@ -27,13 +27,14 @@ export class TownZombieDescription implements IActionDescription {
         const template: IDefaultDescriptionTemplateValues = {
             aiId: this.entityId,
             aiState: aiState,
-            necessaryRange: this.attackRange,
+            attackRange: this.attackRange,
             onAiAttacks: this.describeAttackAction.bind(this),
             onIdle: this.describeRoamingAction.bind(this),
             onAiEnemyDies: gotoStartPoint,
             onEnemyInWarnRange: warnEnemy,
             onEnemyOutOfRange: gotoStartPoint,
-            onEnemyDisconnected: gotoStartPoint
+            onEnemyDisconnected: gotoStartPoint,
+            onAiIsAttacked: setAttackerToEnemy
         }
         describeGeneralRoutine(template)
     }
@@ -43,7 +44,7 @@ export class TownZombieDescription implements IActionDescription {
         const actionsComponent = template.aiState.getEntityManager().getActionsComponent(template.aiId)
         const enemyId = template.aiState.getEntityManager().getEnemyComponent(template.aiId)?.enemyId
         if (typeof enemyId !== 'undefined') {
-            setActionWhenUndefined(actionsComponent, new ForwardAttackWithPause(template.aiId, enemyId, template.necessaryRange, pauseTime))
+            setActionWhenUndefined(actionsComponent, new ForwardAttackWithPause(template.aiId, enemyId, this.attackRange, pauseTime))
         }
     }
 
