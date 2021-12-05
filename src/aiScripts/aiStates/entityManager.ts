@@ -9,6 +9,7 @@ import { IEnemyComponent } from "../aiEntities/components/iEnemyComponent";
 import { IAiNpc } from "../aiEntities/iAiNpc";
 import { IActionHistoryComponent } from "../aiEntities/components/iActionHistoryComponent";
 import { IAttackEventComponent } from "../aiEntities/components/iAttackEventComponent";
+import { INpcTagsComponent } from "../aiEntities/components/iNpcTagsComponent";
 
 const worldNames: Array<string> = ["NEWWORLD\\NEWWORLD.ZEN", "OLDWORLD\\OLDWORLD.ZEN", "ADDON\\ADDONWORLD.ZEN"]
 /**
@@ -26,6 +27,8 @@ export class EntityManager {
     private enemyComponents: Map<number, IEnemyComponent>;
     private actionHistoryComponents: Map<number, IActionHistoryComponent>;
     private attackEventComponents: Map<number, IAttackEventComponent>;
+    private npcTagsComponent: Map<number, INpcTagsComponent>;
+
 
     constructor() {
         this.dailyRoutineComponents = new Map()
@@ -37,6 +40,7 @@ export class EntityManager {
         this.enemyComponents = new Map()
         this.actionHistoryComponents = new Map()
         this.attackEventComponents = new Map()
+        this.npcTagsComponent = new Map()
     }
 
     //todo: add more functionality once revmp functions are available
@@ -48,6 +52,7 @@ export class EntityManager {
         const actionDescription:IActionDescriptionComponent = {entityId: npc.id, descriptions: npc.actionDescriptions}
         const actionHistory:IActionHistoryComponent = {entityId: npc.id, lastAttackTime: 0}
         const attackEvent:IAttackEventComponent = {isUnderAttack: false, attackedBy: -1}
+        const npcTags:INpcTagsComponent = {tags: npc.aiTags}
 
         this.setNpcStateComponent(npc.id, stateInfo)
         this.setRespawnComponent(npc.id, respawnInfo)
@@ -55,6 +60,8 @@ export class EntityManager {
         this.setPositionsComponent(npc.id, positionInfo)
         this.setActionDescriptionComponent(npc.id, actionDescription)
         this.setActionHistoryComponent(npc.id, actionHistory)
+        this.setAttackEventComponent(npc.id,attackEvent)
+        this.setNpcTagsComponent(npc.id, npcTags)
     }
 
     unregisterBot(npcId: number): void{
@@ -135,5 +142,11 @@ export class EntityManager {
     }
     setAttackEventComponent(entityId: number, component: IAttackEventComponent) {
         this.attackEventComponents.set(entityId, component)
+    }
+    getNpcTagsComponent(entityId: number): INpcTagsComponent | undefined {
+        return this.npcTagsComponent.get(entityId);
+    }
+    setNpcTagsComponent(entityId: number, component: INpcTagsComponent) {
+        this.npcTagsComponent.set(entityId, component)
     }
 }

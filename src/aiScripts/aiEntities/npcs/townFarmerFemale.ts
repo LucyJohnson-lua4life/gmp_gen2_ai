@@ -4,14 +4,14 @@ import { IAiNpc } from "../iAiNpc";
 import { getRoamingCitizenFemaleInstance, INSTANCE_HEAVY_CRIMMINAL} from "./npcInits";
 import { CitizenDescription } from "../descriptions/citizenDescription";
 import { ArmorInstances } from "../equipment/armors";
-import { TOWN_FARMER } from "./semanticNpcNames";
+import { LIVES_IN_TOWN_TAG } from "../components/iNpcTagsComponent";
 
 export class TownFarmerFemale implements IAiNpc {
     enemyIds: number[];
     friendIds: number[];
     respawnTime: number;
     actionDescriptions: Array<IActionDescription>;
-    aiFlags: Map<string, string | number>;
+    aiTags: Map<string, boolean>;
     id: number;
     isDead: boolean;
     isUnconscious: boolean;
@@ -29,7 +29,8 @@ export class TownFarmerFemale implements IAiNpc {
 
     constructor() {
         const instance = getRoamingCitizenFemaleInstance()
-        instance.name = TOWN_FARMER
+        instance.name = "Citizen"
+        instance.guild = revmp.GuildType.Sld
         this.id = revmp.createBot(instance);
         this.isDead = false;
         this.isUnconscious = false;
@@ -37,7 +38,8 @@ export class TownFarmerFemale implements IAiNpc {
         this.friendIds = [];
         this.respawnTime = 10;
         this.actionDescriptions = [new CitizenDescription(this.id)]
-        this.aiFlags = new Map();
+        this.aiTags = new Map();
+        this.aiTags.set(LIVES_IN_TOWN_TAG, true)
 
         this.lastPosUpdate = 0
         this.lastPosX = 0

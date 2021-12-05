@@ -5,13 +5,14 @@ import { getWeaponMasterMaleInstance, INSTANCE_ROAMING_ROBBER} from "./npcInits"
 import { RoamingRobberDescription } from "../descriptions/roamingRobberDescription";
 import { ArmorInstances } from "../equipment/armors";
 import { StaticTwoHandMaster } from "../descriptions/staticTwoHandMasterDescription";
+import { LIVES_IN_TOWN_TAG } from "../components/iNpcTagsComponent";
 
 export class TownPaladinLeader implements IAiNpc {
     enemyIds: number[];
     friendIds: number[];
     respawnTime: number;
     actionDescriptions: Array<IActionDescription>;
-    aiFlags: Map<string, string | number>;
+    aiTags: Map<string, boolean>;
     id: number;
     isDead: boolean;
     isUnconscious: boolean;
@@ -29,7 +30,8 @@ export class TownPaladinLeader implements IAiNpc {
 
     constructor() {
         const instance = getWeaponMasterMaleInstance()
-        instance.name = "Town Paladin Leader"
+        instance.name = "Town Leader"
+        instance.guild = revmp.GuildType.Mil
         instance.maxHealth = 500
         this.id = revmp.createBot(instance);
         this.isDead = false;
@@ -38,7 +40,8 @@ export class TownPaladinLeader implements IAiNpc {
         this.friendIds = [];
         this.respawnTime = 10;
         this.actionDescriptions = [new StaticTwoHandMaster(this.id)]
-        this.aiFlags = new Map();
+        this.aiTags = new Map();
+        this.aiTags.set(LIVES_IN_TOWN_TAG, true)
 
         this.lastPosUpdate = 0
         this.lastPosX = 0

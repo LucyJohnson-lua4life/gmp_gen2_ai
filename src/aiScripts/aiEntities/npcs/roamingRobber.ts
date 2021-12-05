@@ -12,7 +12,7 @@ export class RoamingRobber implements IAiNpc {
     friendIds: number[];
     respawnTime: number;
     actionDescriptions: Array<IActionDescription>;
-    aiFlags: Map<string, string | number>;
+    aiTags: Map<string, boolean>;
     id: number;
     isDead: boolean;
     isUnconscious: boolean;
@@ -36,7 +36,7 @@ export class RoamingRobber implements IAiNpc {
         this.friendIds = [];
         this.respawnTime = 10;
         this.actionDescriptions = [new RoamingRobberDescription(this.id)]
-        this.aiFlags = new Map();
+        this.aiTags = new Map();
 
         this.lastPosUpdate = 0
         this.lastPosX = 0

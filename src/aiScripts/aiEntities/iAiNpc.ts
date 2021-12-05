@@ -6,7 +6,7 @@ export interface IAiNpc extends IPlayer{
     friendIds: Array<number>,
     respawnTime: number,
     actionDescriptions: Array<IActionDescription>,
-    aiFlags: Map<string, number|string>,
+    aiTags: Map<string, boolean>,
     lastPosUpdate:number,
     lastPosX:number,
     lastPosY:number,

@@ -49,7 +49,8 @@ export function getWolfInstance(): revmp.BotTemplate {
         attributes: {
             strength: 100,
         },
-        weaponMode: revmp.WeaponMode.Fist
+        weaponMode: revmp.WeaponMode.Fist,
+        guild: revmp.GuildType.Wolf
     }
 
 }
@@ -76,7 +77,8 @@ export function getScavengerInstance(): revmp.BotTemplate {
         attributes: {
             strength: 100,
         },
-        weaponMode: revmp.WeaponMode.Fist
+        weaponMode: revmp.WeaponMode.Fist,
+        guild: revmp.GuildType.Scavenger
     }
 
 }
@@ -102,7 +104,8 @@ export function getSnapperInstance(): revmp.BotTemplate {
         attributes: {
             strength: 200,
         },
-        weaponMode: revmp.WeaponMode.Fist
+        weaponMode: revmp.WeaponMode.Fist,
+        guild: revmp.GuildType.Snapper
     }
 
 }
@@ -128,7 +131,8 @@ export function getWargInstance(): revmp.BotTemplate {
         attributes: {
             strength: 150,
         },
-        weaponMode: revmp.WeaponMode.Fist
+        weaponMode: revmp.WeaponMode.Fist,
+        guild: revmp.GuildType.Wolf
     }
 
 }
@@ -154,7 +158,8 @@ export function getKeilerInstance(): revmp.BotTemplate {
         attributes: {
             strength: 100,
         },
-        weaponMode: revmp.WeaponMode.Fist
+        weaponMode: revmp.WeaponMode.Fist,
+        guild: revmp.GuildType.Scavenger
     }
 
 }
@@ -179,7 +184,8 @@ export function getLurkerInstance(): revmp.BotTemplate {
         attributes: {
             strength: 100,
         },
-        weaponMode: revmp.WeaponMode.Fist
+        weaponMode: revmp.WeaponMode.Fist,
+        guild: revmp.GuildType.Lurker
     }
 
 }
@@ -204,7 +210,8 @@ export function getTrollInstance(): revmp.BotTemplate {
         attributes: {
             strength: 200,
         },
-        weaponMode: revmp.WeaponMode.Fist
+        weaponMode: revmp.WeaponMode.Fist,
+        guild: revmp.GuildType.Troll
     }
 
 }
@@ -230,8 +237,10 @@ export function getOrcWarriorInstance(): revmp.BotTemplate {
         attributes: {
             strength: 100,
             twoHanded: 100
-        }
+        },
+        guild: revmp.GuildType.Orc
     }
+
 
 }
 
@@ -257,7 +266,8 @@ export function getOrcEliteInstance(): revmp.BotTemplate {
         attributes: {
             strength: 15,
             twoHanded: 100
-        }
+        },
+        guild: revmp.GuildType.Orc
     }
 
 }
@@ -283,7 +293,8 @@ export function getUndeadOrcInstance(): revmp.BotTemplate {
         attributes: {
             strength: 15,
             twoHanded: 100
-        }
+        },
+        guild: revmp.GuildType.Orc
     }
 
 }
@@ -309,7 +320,8 @@ export function getShadowbeastInstance(): revmp.BotTemplate {
             fire: 100,
             fly: 100,
         },
-        weaponMode: revmp.WeaponMode.Fist
+        weaponMode: revmp.WeaponMode.Fist,
+        guild: revmp.GuildType.Shadowbeast
     }
 }
 //HUM_BODY_BABE0
@@ -342,7 +354,8 @@ export function getHeavyCrimminalInstance(): revmp.BotTemplate {
         attributes: {
             strength: 15,
             oneHanded: 100
-        }
+        },
+        guild: revmp.GuildType.Bdt
     }
 
 }
@@ -375,7 +388,8 @@ export function getWeaponMasterMaleInstance(): revmp.BotTemplate {
             strength: 15,
             oneHanded: 100,
             twoHanded: 100
-        }
+        },
+        guild: revmp.GuildType.None
     }
 
 }
@@ -406,7 +420,8 @@ export function getRoamingRobberInstance(): revmp.BotTemplate {
         attributes: {
             strength: 15,
             oneHanded: 100
-        }
+        },
+        guild: revmp.GuildType.Bdt
     }
 
 }
@@ -437,7 +452,8 @@ export function getRoamingCitizenMaleInstance(): revmp.BotTemplate {
         attributes: {
             strength: 15,
             oneHanded: 100
-        }
+        },
+        guild: revmp.GuildType.None
     }
 }
 
@@ -469,7 +485,8 @@ export function getRoamingCitizenFemaleInstance(): revmp.BotTemplate {
         attributes: {
             strength: 15,
             oneHanded: 100
-        }
+        },
+        guild: revmp.GuildType.None
     }
 
 }
@@ -499,7 +516,8 @@ export function getDemonKingInstance(): revmp.BotTemplate {
             strength: 15,
             oneHanded: 100,
             twoHanded: 100
-        }
+        },
+        guild: revmp.GuildType.Demon
     }
 
 }
@@ -527,6 +545,7 @@ export function getZombieInstance(): revmp.BotTemplate {
             fire: 100,
             fly: 100,
         },
-        weaponMode: revmp.WeaponMode.Fist
+        weaponMode: revmp.WeaponMode.Fist,
+        guild: revmp.GuildType.Zombie
     }
 }

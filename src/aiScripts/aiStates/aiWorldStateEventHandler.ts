@@ -10,12 +10,10 @@ export class AiWorldStateEventHandler {
 
 
     public onAttacked(attacker: number, target: number): void {
-        if(revmp.getName(target).name === 'Town Paladin Leader'){
+        if(revmp.getName(target).name === 'Town Leader'){
             if(revmp.getHealth(target).current <= 0){
                 revmp.sendChatMessage(revmp.players, "The town leader was defeated.")
                 this.aiState.getWorldEventState().influenceOfTheGods -= 10
-                this.aiState.getWorldEventState().khorinisState = -1
-
             }
 
         }

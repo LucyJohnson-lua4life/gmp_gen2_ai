@@ -1,14 +1,14 @@
 import { IActionDescription } from "../iActionDescription";
-import { DefaultMonsterDescription } from "../descriptions/defaultMonsterDescription";
 import { IAiNpc } from "../iAiNpc";
 import { getZombieInstance, INSTANCE_WOLF} from "./npcInits";
+import { TownZombieDescription } from "../descriptions/townZombieDescription";
 
 export class TownZombie implements IAiNpc {
     enemyIds: number[];
     friendIds: number[];
     respawnTime: number;
     actionDescriptions: Array<IActionDescription>;
-    aiFlags: Map<string, string | number>;
+    aiTags: Map<string, boolean>;
     id: number;
     isDead: boolean;
     isUnconscious: boolean;
@@ -31,8 +31,8 @@ export class TownZombie implements IAiNpc {
         this.enemyIds = [];
         this.friendIds = [];
         this.respawnTime = 10;
-        this.actionDescriptions = [new DefaultMonsterDescription(this.id)]
-        this.aiFlags = new Map();
+        this.actionDescriptions = [new TownZombieDescription(this.id)]
+        this.aiTags = new Map();
 
         this.lastPosUpdate = 0
         this.lastPosX = 0

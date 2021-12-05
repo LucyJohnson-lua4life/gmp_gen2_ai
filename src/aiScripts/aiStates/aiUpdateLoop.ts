@@ -96,17 +96,17 @@ export class AiUpdateLoop {
         })
     }
 
-    private respawnNpc(aiId: number){
+    private respawnNpc(aiId: number) {
         const lastPosition = this.aiState.getEntityManager().getPositionsComponents(aiId)
         const lastNpcInstance = this.aiState.getEntityManager().getNpcStateComponent(aiId)?.npcInstance
         this.aiState.unregisterBot(aiId)
         revmp.destroyCharacter(aiId)
-        if(typeof lastNpcInstance !== 'undefined' && typeof lastPosition !== 'undefined'){
+        if (typeof lastNpcInstance !== 'undefined' && typeof lastPosition !== 'undefined') {
             //TODO: extend getNpc for state
             //todo: fix this
-        const spawnPoint = typeof lastPosition.startPoint !== 'undefined' ? lastPosition.startPoint : "HAFEN"
-        const spawnWorld = typeof lastPosition.startWorld !== 'undefined' ? lastPosition.startWorld : this.world
-        this.aiStateFunctions.spawnNpc(getNpcForInstance(lastNpcInstance),spawnPoint, spawnWorld)
+            const spawnPoint = typeof lastPosition.startPoint !== 'undefined' ? lastPosition.startPoint : "HAFEN"
+            const spawnWorld = typeof lastPosition.startWorld !== 'undefined' ? lastPosition.startWorld : this.world
+            this.aiStateFunctions.spawnNpc(getNpcForInstance(lastNpcInstance), spawnPoint, spawnWorld)
         }
     }
 
