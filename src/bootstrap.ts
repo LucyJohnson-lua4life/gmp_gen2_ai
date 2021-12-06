@@ -99,7 +99,8 @@ function debugCommands(entity: revmp.Entity, msg: string) {
         aiState.getWorldEventState().influenceOfTheGods = input
     }
     else if (command === "/setks") {
-        aiState.getWorldEventState().khorinisState = -1
+        const input = parseInt(words[1])
+        aiState.getWorldEventState().khorinisState = input
     }
     else if (command === "/update") {
         updateWorldAcordingToState(aiState, new AiStateFunctions(aiState))

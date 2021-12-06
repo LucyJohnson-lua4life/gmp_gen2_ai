@@ -2,6 +2,7 @@ import { IActionDescription } from "../iActionDescription";
 import { IAiNpc } from "../iAiNpc";
 import { getZombieInstance, INSTANCE_WOLF} from "./npcInits";
 import { TownZombieDescription } from "../descriptions/townZombieDescription";
+import { LIVES_IN_TOWN_TAG } from "../components/iNpcTagsComponent";
 
 export class TownZombie implements IAiNpc {
     enemyIds: number[];
@@ -33,6 +34,7 @@ export class TownZombie implements IAiNpc {
         this.respawnTime = 10;
         this.actionDescriptions = [new TownZombieDescription(this.id)]
         this.aiTags = new Map();
+        this.aiTags.set(LIVES_IN_TOWN_TAG, true)
 
         this.lastPosUpdate = 0
         this.lastPosX = 0
