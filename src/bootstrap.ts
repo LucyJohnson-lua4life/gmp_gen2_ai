@@ -105,6 +105,9 @@ function debugCommands(entity: revmp.Entity, msg: string) {
     else if (command === "/update") {
         updateWorldAcordingToState(aiState, new AiStateFunctions(aiState))
     }
+    else if (command === "/pray") {
+        revmp.startAnimation(entity, "S_PRAY")
+    }
 }
 
 

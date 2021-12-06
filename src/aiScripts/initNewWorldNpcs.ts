@@ -16,6 +16,7 @@ import { PaladinLeader } from "./aiEntities/npcs/paladinLeader"
 import { LIVES_IN_TOWN_TAG } from "./aiEntities/components/iNpcTagsComponent"
 import { CitizenFemale } from "./aiEntities/npcs/citizenFemale"
 import { CitizenMale } from "./aiEntities/npcs/citizenMale"
+import { HolyEnforcer } from "./aiEntities/npcs/holyEnforcer"
 
 export function initNewWorldNpcs(aiState: AiState): void {
 
@@ -634,6 +635,6 @@ export function initNewWorldNpcs(aiState: AiState): void {
     aiStateFunctions.spawnNpc(citizen, spawnPoint, world);
   }
 
-  let pal = new PaladinLeader([LIVES_IN_TOWN_TAG])
+  let pal = new HolyEnforcer([LIVES_IN_TOWN_TAG])
     aiStateFunctions.spawnNpc(pal, "HAFEN", world);
 }
