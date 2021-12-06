@@ -2,6 +2,9 @@ export const ArmorInstances = {
     guardianArmor: "guardianArmor",
     dragonHunterArmor: "dragonHunterArmor",
     banditArmor: "banditArmor",
+    heavyBanditArmor: "heavyBanditArmor",
+    pirateClothes: "pirateClothes",
+    pirateArmor: "pirateArmor",
     darkArmor: "darkArmor",
     vlkFemaleArmor: "vlkFemaleArmor",
     vlkMaleArmor: "vlkMaleArmor",
@@ -93,6 +96,94 @@ export function initArmorInstances() {
             text: [
                 [],
                 ["An armor used by bandits."],
+                [],
+                [],
+                [],
+                ["Value", 1000],
+            ]
+        },
+    });
+
+
+    revmp.createItemInstance({
+        type: revmp.ItemType.Armor,
+        id: ArmorInstances.heavyBanditArmor,
+        name: "Heavy Bandits Armor",
+        protection: {
+            blunt: 0,
+            edge: 0,
+            point: 0,
+            fire: 0,
+            magic: 0,
+        },
+        visual: "ItAr_Bdt_H.3ds",
+        visualChange: "Armor_Bdt_H.asc",
+        visualSkin: 0,
+        material: revmp.Material.Leather,
+        category: revmp.ItemCategory.Armor,
+        value: 1000,
+        description: {
+            text: [
+                [],
+                ["An armor used by bandits."],
+                [],
+                [],
+                [],
+                ["Value", 1000],
+            ]
+        },
+    });
+
+    revmp.createItemInstance({
+        type: revmp.ItemType.Armor,
+        id: ArmorInstances.pirateClothes,
+        name: "Pirate Clothes",
+        protection: {
+            blunt: 0,
+            edge: 0,
+            point: 0,
+            fire: 0,
+            magic: 0,
+        },
+        visual: "ItAr_PIR_L_ADDON.3ds",
+        visualChange: "Armor_Pir_L_Addon.ASC",
+        visualSkin: 0,
+        material: revmp.Material.Leather,
+        category: revmp.ItemCategory.Armor,
+        value: 1000,
+        description: {
+            text: [
+                [],
+                ["An armor used by pirates."],
+                [],
+                [],
+                [],
+                ["Value", 1000],
+            ]
+        },
+    });
+
+    revmp.createItemInstance({
+        type: revmp.ItemType.Armor,
+        id: ArmorInstances.pirateArmor,
+        name: "Pirate Armor",
+        protection: {
+            blunt: 0,
+            edge: 0,
+            point: 0,
+            fire: 0,
+            magic: 0,
+        },
+        visual: "ItAr_PIR_M_ADDON.3ds",
+        visualChange: "Armor_PIR_M_ADDON.asc",
+        visualSkin: 0,
+        material: revmp.Material.Leather,
+        category: revmp.ItemCategory.Armor,
+        value: 1000,
+        description: {
+            text: [
+                [],
+                ["An armor used by pirates."],
                 [],
                 [],
                 [],
