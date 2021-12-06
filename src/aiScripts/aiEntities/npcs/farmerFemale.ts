@@ -1,13 +1,11 @@
-
 import { IActionDescription } from "../iActionDescription";
 import { WeaponInstances } from "../equipment/weapons";
 import { IAiNpc } from "../iAiNpc";
-import { getRoamingCitizenMaleInstance, INSTANCE_HEAVY_CRIMMINAL} from "./npcInits";
+import { getRoamingCitizenFemaleInstance, INSTANCE_HEAVY_CRIMMINAL} from "./npcInits";
 import { CitizenDescription } from "../descriptions/citizenDescription";
 import { ArmorInstances } from "../equipment/armors";
-import { LIVES_IN_TOWN_TAG } from "../components/iNpcTagsComponent";
 
-export class TownFarmerMale implements IAiNpc {
+export class FarmerFemale implements IAiNpc {
     enemyIds: number[];
     friendIds: number[];
     respawnTime: number;
@@ -28,8 +26,8 @@ export class TownFarmerMale implements IAiNpc {
     npcInstance:string;
 
 
-    constructor() {
-        const instance = getRoamingCitizenMaleInstance()
+    constructor(tags: Array<string>) {
+        const instance = getRoamingCitizenFemaleInstance()
         instance.name = "Citizen"
         instance.guild = revmp.GuildType.Sld
         this.id = revmp.createBot(instance);
@@ -40,7 +38,7 @@ export class TownFarmerMale implements IAiNpc {
         this.respawnTime = 10;
         this.actionDescriptions = [new CitizenDescription(this.id)]
         this.aiTags = new Map();
-        this.aiTags.set(LIVES_IN_TOWN_TAG, true)
+        tags.forEach(tag =>this.aiTags.set(tag, true))
 
         this.lastPosUpdate = 0
         this.lastPosX = 0
@@ -54,8 +52,8 @@ export class TownFarmerMale implements IAiNpc {
         revmp.addOverlay(this.id, "Humans_1hST1.MDS")
         //revmp.setAttributes(this.id, {oneHanded: 100})
         revmp.addItem(this.id, WeaponInstances.nobleSword, 1);
-        revmp.addItem(this.id, ArmorInstances.farmMaleArmor, 1);
+        revmp.addItem(this.id, ArmorInstances.farmFemaleArmor, 1);
         revmp.equipItem(this.id, WeaponInstances.nobleSword)
-        revmp.equipItem(this.id, ArmorInstances.farmMaleArmor)
+        revmp.equipItem(this.id, ArmorInstances.farmFemaleArmor)
     }
 }

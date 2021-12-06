@@ -2,9 +2,8 @@ import { IActionDescription } from "../iActionDescription";
 import { IAiNpc } from "../iAiNpc";
 import { getZombieInstance, INSTANCE_WOLF} from "./npcInits";
 import { TownZombieDescription } from "../descriptions/townZombieDescription";
-import { LIVES_IN_TOWN_TAG } from "../components/iNpcTagsComponent";
 
-export class TownZombie implements IAiNpc {
+export class Zombie implements IAiNpc {
     enemyIds: number[];
     friendIds: number[];
     respawnTime: number;
@@ -25,7 +24,7 @@ export class TownZombie implements IAiNpc {
     npcInstance:string;
 
 
-    constructor() {
+    constructor(tags: Array<string>) {
         this.id = revmp.createBot(getZombieInstance());
         this.isDead = false;
         this.isUnconscious = false;
@@ -34,7 +33,7 @@ export class TownZombie implements IAiNpc {
         this.respawnTime = 10;
         this.actionDescriptions = [new TownZombieDescription(this.id)]
         this.aiTags = new Map();
-        this.aiTags.set(LIVES_IN_TOWN_TAG, true)
+        tags.forEach(tag => this.aiTags.set(tag, true))
 
         this.lastPosUpdate = 0
         this.lastPosX = 0

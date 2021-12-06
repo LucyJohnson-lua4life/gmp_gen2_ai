@@ -5,9 +5,8 @@ import { IAiNpc } from "../iAiNpc";
 import { getRoamingCitizenMaleInstance, INSTANCE_HEAVY_CRIMMINAL} from "./npcInits";
 import { CitizenDescription } from "../descriptions/citizenDescription";
 import { ArmorInstances } from "../equipment/armors";
-import { LIVES_IN_TOWN_TAG } from "../components/iNpcTagsComponent";
 
-export class TownCitizenMale implements IAiNpc {
+export class FarmerMale implements IAiNpc {
     enemyIds: number[];
     friendIds: number[];
     respawnTime: number;
@@ -28,10 +27,10 @@ export class TownCitizenMale implements IAiNpc {
     npcInstance:string;
 
 
-    constructor() {
+    constructor(tags:Array<string>) {
         const instance = getRoamingCitizenMaleInstance()
-        instance.name = "Citizen"  
-        instance.guild = revmp.GuildType.Mil
+        instance.name = "Citizen"
+        instance.guild = revmp.GuildType.Sld
         this.id = revmp.createBot(instance);
         this.isDead = false;
         this.isUnconscious = false;
@@ -40,7 +39,7 @@ export class TownCitizenMale implements IAiNpc {
         this.respawnTime = 10;
         this.actionDescriptions = [new CitizenDescription(this.id)]
         this.aiTags = new Map();
-        this.aiTags.set(LIVES_IN_TOWN_TAG, true)
+        tags.forEach(tag =>this.aiTags.set(tag, true))
 
         this.lastPosUpdate = 0
         this.lastPosX = 0
@@ -54,8 +53,8 @@ export class TownCitizenMale implements IAiNpc {
         revmp.addOverlay(this.id, "Humans_1hST1.MDS")
         //revmp.setAttributes(this.id, {oneHanded: 100})
         revmp.addItem(this.id, WeaponInstances.nobleSword, 1);
-        revmp.addItem(this.id, ArmorInstances.vlkMaleArmor, 1);
+        revmp.addItem(this.id, ArmorInstances.farmMaleArmor, 1);
         revmp.equipItem(this.id, WeaponInstances.nobleSword)
-        revmp.equipItem(this.id, ArmorInstances.vlkMaleArmor)
+        revmp.equipItem(this.id, ArmorInstances.farmMaleArmor)
     }
 }

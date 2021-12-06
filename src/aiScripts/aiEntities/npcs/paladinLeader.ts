@@ -1,13 +1,11 @@
-
 import { IActionDescription } from "../iActionDescription";
 import { WeaponInstances } from "../equipment/weapons";
 import { IAiNpc } from "../iAiNpc";
-import { getRoamingCitizenFemaleInstance, getRoamingCitizenMaleInstance, INSTANCE_HEAVY_CRIMMINAL} from "./npcInits";
-import { CitizenDescription } from "../descriptions/citizenDescription";
+import { getWeaponMasterMaleInstance, INSTANCE_ROAMING_ROBBER} from "./npcInits";
 import { ArmorInstances } from "../equipment/armors";
-import { LIVES_IN_TOWN_TAG } from "../components/iNpcTagsComponent";
+import { StaticTwoHandMaster } from "../descriptions/staticTwoHandMasterDescription";
 
-export class TownCitizenFemale implements IAiNpc {
+export class PaladinLeader implements IAiNpc {
     enemyIds: number[];
     friendIds: number[];
     respawnTime: number;
@@ -28,19 +26,20 @@ export class TownCitizenFemale implements IAiNpc {
     npcInstance:string;
 
 
-    constructor() {
-        const instance = getRoamingCitizenFemaleInstance()
-        instance.name = "Citizen"
+    constructor(tags: Array<string>) {
+        const instance = getWeaponMasterMaleInstance()
+        instance.name = "Town Leader"
         instance.guild = revmp.GuildType.Mil
+        instance.maxHealth = 500
         this.id = revmp.createBot(instance);
         this.isDead = false;
         this.isUnconscious = false;
         this.enemyIds = [];
         this.friendIds = [];
         this.respawnTime = 10;
-        this.actionDescriptions = [new CitizenDescription(this.id)]
+        this.actionDescriptions = [new StaticTwoHandMaster(this.id)]
         this.aiTags = new Map();
-        this.aiTags.set(LIVES_IN_TOWN_TAG, true)
+        tags.forEach(tag =>this.aiTags.set(tag, true))
 
         this.lastPosUpdate = 0
         this.lastPosX = 0
@@ -49,13 +48,15 @@ export class TownCitizenFemale implements IAiNpc {
         this.currentPosX = 0
         this.currentPosY = 0
         this.currentPosZ = 0
-        this.npcInstance = INSTANCE_HEAVY_CRIMMINAL
+        this.npcInstance = INSTANCE_ROAMING_ROBBER
 
-        revmp.addOverlay(this.id, "Humans_1hST1.MDS")
+        revmp.addOverlay(this.id, "Humans_2hST2.MDS")
+        revmp.addOverlay(this.id, "Humans_1hST2.MDS")
         //revmp.setAttributes(this.id, {oneHanded: 100})
-        revmp.addItem(this.id, WeaponInstances.nobleSword, 1);
-        revmp.addItem(this.id, ArmorInstances.vlkFemaleArmor, 1);
-        revmp.equipItem(this.id, WeaponInstances.nobleSword)
-        revmp.equipItem(this.id, ArmorInstances.vlkFemaleArmor)
+        revmp.addItem(this.id, WeaponInstances.flamberge, 1);
+        revmp.addItem(this.id, ArmorInstances.heavyPaladinArmor, 1);
+        revmp.equipItem(this.id, WeaponInstances.flamberge)
+        revmp.equipItem(this.id, ArmorInstances.heavyPaladinArmor)
     }
+
 }

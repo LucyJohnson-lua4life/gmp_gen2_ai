@@ -1,12 +1,12 @@
+
 import { IActionDescription } from "../iActionDescription";
 import { WeaponInstances } from "../equipment/weapons";
 import { IAiNpc } from "../iAiNpc";
-import { getRoamingCitizenFemaleInstance, INSTANCE_HEAVY_CRIMMINAL} from "./npcInits";
+import { getRoamingCitizenMaleInstance, INSTANCE_HEAVY_CRIMMINAL} from "./npcInits";
 import { CitizenDescription } from "../descriptions/citizenDescription";
 import { ArmorInstances } from "../equipment/armors";
-import { LIVES_IN_TOWN_TAG } from "../components/iNpcTagsComponent";
 
-export class TownFarmerFemale implements IAiNpc {
+export class CitizenMale implements IAiNpc {
     enemyIds: number[];
     friendIds: number[];
     respawnTime: number;
@@ -27,10 +27,10 @@ export class TownFarmerFemale implements IAiNpc {
     npcInstance:string;
 
 
-    constructor() {
-        const instance = getRoamingCitizenFemaleInstance()
-        instance.name = "Citizen"
-        instance.guild = revmp.GuildType.Sld
+    constructor(tags: Array<string>) {
+        const instance = getRoamingCitizenMaleInstance()
+        instance.name = "Citizen"  
+        instance.guild = revmp.GuildType.Mil
         this.id = revmp.createBot(instance);
         this.isDead = false;
         this.isUnconscious = false;
@@ -39,7 +39,7 @@ export class TownFarmerFemale implements IAiNpc {
         this.respawnTime = 10;
         this.actionDescriptions = [new CitizenDescription(this.id)]
         this.aiTags = new Map();
-        this.aiTags.set(LIVES_IN_TOWN_TAG, true)
+        tags.forEach(tag =>this.aiTags.set(tag, true))
 
         this.lastPosUpdate = 0
         this.lastPosX = 0
@@ -53,8 +53,8 @@ export class TownFarmerFemale implements IAiNpc {
         revmp.addOverlay(this.id, "Humans_1hST1.MDS")
         //revmp.setAttributes(this.id, {oneHanded: 100})
         revmp.addItem(this.id, WeaponInstances.nobleSword, 1);
-        revmp.addItem(this.id, ArmorInstances.farmFemaleArmor, 1);
+        revmp.addItem(this.id, ArmorInstances.vlkMaleArmor, 1);
         revmp.equipItem(this.id, WeaponInstances.nobleSword)
-        revmp.equipItem(this.id, ArmorInstances.farmFemaleArmor)
+        revmp.equipItem(this.id, ArmorInstances.vlkMaleArmor)
     }
 }
