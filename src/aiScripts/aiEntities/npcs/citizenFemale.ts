@@ -2,7 +2,7 @@
 import { IActionDescription } from "../iActionDescription";
 import { WeaponInstances } from "../equipment/weapons";
 import { IAiNpc } from "../iAiNpc";
-import { getRoamingCitizenFemaleInstance, INSTANCE_HEAVY_CRIMMINAL} from "./npcInits";
+import { getCommonFemaleInstance, INSTANCE_HEAVY_CRIMMINAL} from "./npcInits";
 import { CitizenDescription } from "../descriptions/citizenDescription";
 import { ArmorInstances } from "../equipment/armors";
 
@@ -28,7 +28,7 @@ export class CitizenFemale implements IAiNpc {
 
 
     constructor(tags: Array<string>) {
-        const instance = getRoamingCitizenFemaleInstance()
+        const instance = getCommonFemaleInstance()
         instance.name = "Citizen"
         instance.guild = revmp.GuildType.Mil
         this.id = revmp.createBot(instance);

@@ -1,7 +1,7 @@
 import { IActionDescription } from "../iActionDescription";
 import { WeaponInstances } from "../equipment/weapons";
 import { IAiNpc } from "../iAiNpc";
-import { getRoamingCitizenFemaleInstance, INSTANCE_HEAVY_CRIMMINAL} from "./npcInits";
+import { getCommonFemaleInstance, INSTANCE_FARMER_FEMALE} from "./npcInits";
 import { CitizenDescription } from "../descriptions/citizenDescription";
 import { ArmorInstances } from "../equipment/armors";
 
@@ -27,7 +27,7 @@ export class FarmerFemale implements IAiNpc {
 
 
     constructor(tags: Array<string>) {
-        const instance = getRoamingCitizenFemaleInstance()
+        const instance = getCommonFemaleInstance()
         instance.name = "Citizen"
         instance.guild = revmp.GuildType.Sld
         this.id = revmp.createBot(instance);
@@ -47,7 +47,7 @@ export class FarmerFemale implements IAiNpc {
         this.currentPosX = 0
         this.currentPosY = 0
         this.currentPosZ = 0
-        this.npcInstance = INSTANCE_HEAVY_CRIMMINAL
+        this.npcInstance = INSTANCE_FARMER_FEMALE 
 
         revmp.addOverlay(this.id, "Humans_1hST1.MDS")
         //revmp.setAttributes(this.id, {oneHanded: 100})

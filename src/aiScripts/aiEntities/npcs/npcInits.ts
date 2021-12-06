@@ -12,8 +12,10 @@ export const INSTANCE_ORC_ELITE = "revmp_orc_elite"
 export const INSTANCE_ORC_UNDEAD = "revmp_orc_elite"
 export const INSTANCE_HEAVY_CRIMMINAL = "revmp_heavy_crimminal"
 export const INSTANCE_ROAMING_ROBBER = "revmp_roaming_robber"
-export const INSTANCE_ROAMING_CITIZEN_MALE = "revmp_roaming_citizen_male"
-export const INSTANCE_ROAMING_CITIZEN_FEMALE = "revmp_roaming_citizen_female"
+export const INSTANCE_CITIZEN_MALE = "revmp_citizen_male"
+export const INSTANCE_CITIZEN_FEMALE = "revmp_citizen_female"
+export const INSTANCE_FARMER_MALE = "revmp_farmer_male"
+export const INSTANCE_FARMER_FEMALE = "revmp_farmer_female"
 export const INSTANCE_DEMON_KING = "revmp_demon_king"
 export const INSTANCE_ZOMBIE = "revmp_zombie"
 
@@ -426,7 +428,7 @@ export function getRoamingRobberInstance(): revmp.BotTemplate {
 
 }
 
-export function getRoamingCitizenMaleInstance(): revmp.BotTemplate {
+export function getCommonMaleInstance(): revmp.BotTemplate {
     const randomHeadIndex = Math.floor(Math.random() * MALE_HEAD_MODELS.length);
     const randomHeadTex = Math.floor(Math.random() * (80 - 35 + 1) + 35)
     return {
@@ -458,7 +460,7 @@ export function getRoamingCitizenMaleInstance(): revmp.BotTemplate {
 }
 
 
-export function getRoamingCitizenFemaleInstance(): revmp.BotTemplate {
+export function getCommonFemaleInstance(): revmp.BotTemplate {
     const randomHeadIndex = Math.floor(Math.random() * FEMALE_HEAD_MODELS.length);
     const randomHeadTex = Math.floor(Math.random() * (155 - 142 + 1) + 142)
     return {
