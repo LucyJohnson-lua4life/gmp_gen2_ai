@@ -16,7 +16,7 @@ export class AiEventHandler {
         const entityManager = this.aiState.getEntityManager();
 
         revmp.on("attacked", (attacker, target, userEvent) => {
-            entityManager.setAttackEventComponent(target,{isUnderAttack: true, attackedBy: attacker})
+            entityManager.setAttackEventComponent(target,{entityId: target, isUnderAttack: true, attackedBy: attacker})
             this.worldStateEventHandler.onAttacked(attacker, target)
 
         })

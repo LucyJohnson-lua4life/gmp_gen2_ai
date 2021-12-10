@@ -30,7 +30,7 @@ export function setAttackerToEnemy(values: IDefaultDescriptionTemplateValues){
         if (enemyId === -1) {
             entityManager.setEnemyComponent(values.aiId, { entityId: values.aiId, enemyId: attackEvent.attackedBy, lastAttackTime: 0 })
         }
-        entityManager.setAttackEventComponent(values.aiId, {isUnderAttack: false, attackedBy: -1})
+        entityManager.setAttackEventComponent(values.aiId, {entityId: values.aiId, isUnderAttack: false, attackedBy: -1})
 }
 
 export function gotoStartPoint(values: IDefaultDescriptionTemplateValues) {

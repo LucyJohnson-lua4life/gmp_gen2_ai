@@ -5,6 +5,7 @@
  * @field tags simple lookup table that maps a tag to an boolean. If the npc contains a tag, it will map to true, otherwise undefined
  */
 export interface IAiNpcTags {
+    entityId: number
     tags: Map<string, boolean>
 }
 

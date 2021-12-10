@@ -51,8 +51,8 @@ export class EntityManager {
         const positionInfo:IAiPosition = {entityId: npc.id, currentPosX:0, currentPosY:0, currentPosZ:0, lastPosX:0, lastPosY: 0, lastPosZ: 0, lastPosUpdate: 0, startWorld: npc.startWorld, startPoint: npc.startPoint}
         const actionDescription:IAiActionDescriptions = {entityId: npc.id, descriptions: npc.actionDescriptions}
         const actionHistory:IAiActionHistory = {entityId: npc.id, lastAttackTime: 0}
-        const attackEvent:IAiAttackEventInfo = {isUnderAttack: false, attackedBy: -1}
-        const npcTags:IAiNpcTags = {tags: npc.aiTags}
+        const attackEvent:IAiAttackEventInfo = {entityId: npc.id, isUnderAttack: false, attackedBy: -1}
+        const npcTags:IAiNpcTags = {entityId: npc.id, tags: npc.aiTags}
 
         this.setNpcStateComponent(npc.id, stateInfo)
         this.setRespawnComponent(npc.id, respawnInfo)
