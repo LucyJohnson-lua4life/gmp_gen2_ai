@@ -1,5 +1,5 @@
 import { EntityManager } from "../aiStates/entityManager";
-import { IDrInfoComponent } from "../aiEntities/components/iDrInfoComponent";
+import { iAiDailyRoutineInfo } from "../aiEntities/components/iAiDailyRoutineInfo";
 
 /**
  * @interface DrTargetTime
@@ -63,7 +63,7 @@ export class DailyRoutineSystem {
     }
 
     private updateEntityLastHourAndMinute(playerid: number, currentTime: DrCurrentTime) {
-        const dailyRoutineComponent: IDrInfoComponent | undefined = this.entityManager.getDailyRoutineComponent(playerid);
+        const dailyRoutineComponent: iAiDailyRoutineInfo | undefined = this.entityManager.getDailyRoutineComponent(playerid);
         if (typeof dailyRoutineComponent !== 'undefined') {
             dailyRoutineComponent.lastHour = currentTime.hour;
             dailyRoutineComponent.lastMinute = currentTime.minute;
@@ -84,7 +84,7 @@ export class DailyRoutineSystem {
     }
 
     private isFirstOverlapWithTargetTime(playerid: number, currentTime: DrCurrentTime, targetTime: DrTargetTime):boolean {
-        const lastTime: IDrInfoComponent|undefined = this.entityManager.getDailyRoutineComponent(playerid)
+        const lastTime: iAiDailyRoutineInfo|undefined = this.entityManager.getDailyRoutineComponent(playerid)
         if(typeof lastTime !== 'undefined'){
         return (typeof lastTime.startHour === 'undefined')
             || ((lastTime.startHour !== targetTime.startHour || lastTime.startMinute !== targetTime.startMinute)

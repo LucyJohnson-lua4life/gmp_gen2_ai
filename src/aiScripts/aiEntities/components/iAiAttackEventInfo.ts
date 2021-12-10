@@ -1,5 +1,5 @@
 
-export interface IAttackEventComponent {
+export interface IAiAttackEventInfo {
     isUnderAttack: boolean,
     attackedBy: number
 }

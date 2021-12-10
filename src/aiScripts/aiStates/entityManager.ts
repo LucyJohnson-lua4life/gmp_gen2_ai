@@ -1,15 +1,15 @@
 
 import { IActionComponent } from "../aiEntities/components/iActionsComponent";
-import { IDrInfoComponent } from "../aiEntities/components/iDrInfoComponent";
-import { INpcStateComponent } from "../aiEntities/components/iNpcStateComponent";
-import { IPositionComponent } from "../aiEntities/components/iPositionComponent";
-import { IRespawnComponent } from "../aiEntities/components/iRespawnComponent";
-import { IActionDescriptionComponent } from "../aiEntities/components/iActionDescriptionComponent";
-import { IEnemyComponent } from "../aiEntities/components/iEnemyComponent";
+import { iAiDailyRoutineInfo } from "../aiEntities/components/iAiDailyRoutineInfo";
+import { IAiNpcStatus } from "../aiEntities/components/iAiNpcStatus";
+import { IAiPosition } from "../aiEntities/components/iAiPosition";
+import { IAiRespawnInfo } from "../aiEntities/components/iAiRespawnInfo";
+import { IAiActionDescriptions } from "../aiEntities/components/iAiActionDescriptions";
+import { IAiEnemyInfo } from "../aiEntities/components/iAiEnemyInfo";
 import { IAiNpc } from "../aiEntities/iAiNpc";
-import { IActionHistoryComponent } from "../aiEntities/components/iActionHistoryComponent";
-import { IAttackEventComponent } from "../aiEntities/components/iAttackEventComponent";
-import { INpcTagsComponent } from "../aiEntities/components/iNpcTagsComponent";
+import { IAiActionHistory } from "../aiEntities/components/iAiActionHistory";
+import { IAiAttackEventInfo } from "../aiEntities/components/iAiAttackEventInfo";
+import { IAiNpcTags } from "../aiEntities/components/iAiNpcTags";
 
 const worldNames: Array<string> = ["NEWWORLD\\NEWWORLD.ZEN", "OLDWORLD\\OLDWORLD.ZEN", "ADDON\\ADDONWORLD.ZEN"]
 /**
@@ -18,16 +18,16 @@ const worldNames: Array<string> = ["NEWWORLD\\NEWWORLD.ZEN", "OLDWORLD\\OLDWORLD
  */
 export class EntityManager {
 
-    private dailyRoutineComponents:Map<number, IDrInfoComponent>;
+    private dailyRoutineComponents:Map<number, iAiDailyRoutineInfo>;
     private actionsComponents:Map<number, IActionComponent>;
-    private actionDescriptionComponents: Map<number, IActionDescriptionComponent>;
-    private positionsComponents:Map<number, IPositionComponent>;
-    private npcStateComponents:Map<number, INpcStateComponent>;
-    private respawnComponents:Map<number, IRespawnComponent>;
-    private enemyComponents: Map<number, IEnemyComponent>;
-    private actionHistoryComponents: Map<number, IActionHistoryComponent>;
-    private attackEventComponents: Map<number, IAttackEventComponent>;
-    private npcTagsComponent: Map<number, INpcTagsComponent>;
+    private actionDescriptionComponents: Map<number, IAiActionDescriptions>;
+    private positionsComponents:Map<number, IAiPosition>;
+    private npcStateComponents:Map<number, IAiNpcStatus>;
+    private respawnComponents:Map<number, IAiRespawnInfo>;
+    private enemyComponents: Map<number, IAiEnemyInfo>;
+    private actionHistoryComponents: Map<number, IAiActionHistory>;
+    private attackEventComponents: Map<number, IAiAttackEventInfo>;
+    private npcTagsComponent: Map<number, IAiNpcTags>;
 
 
     constructor() {
@@ -45,14 +45,14 @@ export class EntityManager {
 
     //todo: add more functionality once revmp functions are available
     registerBot(npc: IAiNpc): void{
-        const stateInfo:INpcStateComponent = {entityId: npc.id, isDead:false, isUnconscious: false, npcInstance: npc.npcInstance}
-        const respawnInfo:IRespawnComponent = {entityId: npc.id, respawnTime: npc.respawnTime, deathTime: -1}
+        const stateInfo:IAiNpcStatus = {entityId: npc.id, isDead:false, isUnconscious: false, npcInstance: npc.npcInstance}
+        const respawnInfo:IAiRespawnInfo = {entityId: npc.id, respawnTime: npc.respawnTime, deathTime: -1}
         const actionInfo:IActionComponent = {entityId: npc.id}
-        const positionInfo:IPositionComponent = {entityId: npc.id, currentPosX:0, currentPosY:0, currentPosZ:0, lastPosX:0, lastPosY: 0, lastPosZ: 0, lastPosUpdate: 0, startWorld: npc.startWorld, startPoint: npc.startPoint}
-        const actionDescription:IActionDescriptionComponent = {entityId: npc.id, descriptions: npc.actionDescriptions}
-        const actionHistory:IActionHistoryComponent = {entityId: npc.id, lastAttackTime: 0}
-        const attackEvent:IAttackEventComponent = {isUnderAttack: false, attackedBy: -1}
-        const npcTags:INpcTagsComponent = {tags: npc.aiTags}
+        const positionInfo:IAiPosition = {entityId: npc.id, currentPosX:0, currentPosY:0, currentPosZ:0, lastPosX:0, lastPosY: 0, lastPosZ: 0, lastPosUpdate: 0, startWorld: npc.startWorld, startPoint: npc.startPoint}
+        const actionDescription:IAiActionDescriptions = {entityId: npc.id, descriptions: npc.actionDescriptions}
+        const actionHistory:IAiActionHistory = {entityId: npc.id, lastAttackTime: 0}
+        const attackEvent:IAiAttackEventInfo = {isUnderAttack: false, attackedBy: -1}
+        const npcTags:IAiNpcTags = {tags: npc.aiTags}
 
         this.setNpcStateComponent(npc.id, stateInfo)
         this.setRespawnComponent(npc.id, respawnInfo)
@@ -73,11 +73,11 @@ export class EntityManager {
         this.enemyComponents.delete(npcId)
     }
 
-    getDailyRoutineComponent(entityId: number): IDrInfoComponent|undefined{
+    getDailyRoutineComponent(entityId: number): iAiDailyRoutineInfo|undefined{
         return this.dailyRoutineComponents.get(entityId);
     }
 
-    setDailyRoutineComponent(entityId: number, component: IDrInfoComponent){
+    setDailyRoutineComponent(entityId: number, component: iAiDailyRoutineInfo){
         this.dailyRoutineComponents.set(entityId, component)
     }
 
@@ -89,64 +89,64 @@ export class EntityManager {
         this.actionsComponents.set(entityId, component)
     }
 
-    getActionDescriptionComponent(entityId: number): IActionDescriptionComponent | undefined {
+    getActionDescriptionComponent(entityId: number): IAiActionDescriptions | undefined {
         return this.actionDescriptionComponents.get(entityId);
     }
 
-    setActionDescriptionComponent(entityId: number, component: IActionDescriptionComponent) {
+    setActionDescriptionComponent(entityId: number, component: IAiActionDescriptions) {
         this.actionDescriptionComponents.set(entityId, component)
     }
 
-    getPositionsComponents(entityId: number): IPositionComponent|undefined{
+    getPositionsComponents(entityId: number): IAiPosition|undefined{
         return this.positionsComponents.get(entityId);
     }
 
-    setPositionsComponent(entityId: number, component: IPositionComponent){
+    setPositionsComponent(entityId: number, component: IAiPosition){
         this.positionsComponents.set(entityId, component)
     }
 
-    getNpcStateComponent(entityId: number): INpcStateComponent|undefined{
+    getNpcStateComponent(entityId: number): IAiNpcStatus|undefined{
         return this.npcStateComponents.get(entityId);
     }
-    setNpcStateComponent(entityId: number, component: INpcStateComponent){
+    setNpcStateComponent(entityId: number, component: IAiNpcStatus){
         this.npcStateComponents.set(entityId, component)
     }
 
-    getRespawnComponent(entityId: number): IRespawnComponent|undefined{
+    getRespawnComponent(entityId: number): IAiRespawnInfo|undefined{
         return this.respawnComponents.get(entityId);
     }
 
-    setRespawnComponent(entityId: number, component: IRespawnComponent){
+    setRespawnComponent(entityId: number, component: IAiRespawnInfo){
         this.respawnComponents.set(entityId, component)
     }
 
-    getEnemyComponent(entityId: number): IEnemyComponent | undefined {
+    getEnemyComponent(entityId: number): IAiEnemyInfo | undefined {
         return this.enemyComponents.get(entityId);
     }
 
-    setEnemyComponent(entityId: number, component: IEnemyComponent) {
+    setEnemyComponent(entityId: number, component: IAiEnemyInfo) {
         this.enemyComponents.set(entityId, component)
     }
     deleteEnemyComponent(entityId: number) {
         this.enemyComponents.delete(entityId)
     }
 
-    getActionHistoryComponent(entityId: number): IActionHistoryComponent | undefined {
+    getActionHistoryComponent(entityId: number): IAiActionHistory | undefined {
         return this.actionHistoryComponents.get(entityId);
     }
-    setActionHistoryComponent(entityId: number, component: IActionHistoryComponent) {
+    setActionHistoryComponent(entityId: number, component: IAiActionHistory) {
         this.actionHistoryComponents.set(entityId, component)
     }
-    getAttackEventComponent(entityId: number): IAttackEventComponent | undefined {
+    getAttackEventComponent(entityId: number): IAiAttackEventInfo | undefined {
         return this.attackEventComponents.get(entityId);
     }
-    setAttackEventComponent(entityId: number, component: IAttackEventComponent) {
+    setAttackEventComponent(entityId: number, component: IAiAttackEventInfo) {
         this.attackEventComponents.set(entityId, component)
     }
-    getNpcTagsComponent(entityId: number): INpcTagsComponent | undefined {
+    getNpcTagsComponent(entityId: number): IAiNpcTags | undefined {
         return this.npcTagsComponent.get(entityId);
     }
-    setNpcTagsComponent(entityId: number, component: INpcTagsComponent) {
+    setNpcTagsComponent(entityId: number, component: IAiNpcTags) {
         this.npcTagsComponent.set(entityId, component)
     }
 }

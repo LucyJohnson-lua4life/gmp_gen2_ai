@@ -1,4 +1,4 @@
-import { IPositionComponent } from "../aiEntities/components/iPositionComponent";
+import { IAiPosition } from "../aiEntities/components/iAiPosition";
 
 export function getDistance(x1: number, y1: number, z1: number, x2: number, y2: number, z2: number) {
     if ([x1, y1, z1, x2, y2, z2].some((val) => (typeof val === 'undefined'))) {
@@ -11,7 +11,7 @@ export function getDistance(x1: number, y1: number, z1: number, x2: number, y2: 
     return Math.sqrt(x * x + y * y + z * z);
 }
 
-export function gotoPosition(npcPosition: IPositionComponent, x: number, y: number, z: number) {
+export function gotoPosition(npcPosition: IAiPosition, x: number, y: number, z: number) {
     const MS_PER_TICK = 33 
     if ((typeof npcPosition.lastPosUpdate == 'undefined') || npcPosition.lastPosUpdate == 0) {
         npcPosition.lastPosUpdate = Date.now()

@@ -1,4 +1,4 @@
-import { LIVES_IN_TOWN_TAG } from "../aiEntities/components/iNpcTagsComponent";
+import { LIVES_IN_TOWN_TAG } from "../aiEntities/components/iAiNpcTags";
 import { CitizenFemale } from "../aiEntities/npcs/citizenFemale";
 import { CitizenMale } from "../aiEntities/npcs/citizenMale";
 import { FarmerFemale } from "../aiEntities/npcs/farmerFemale";

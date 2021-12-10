@@ -3,10 +3,10 @@
 import { IAiAction } from "../iAiAction";
 import { setPlayerAngle, getCombatStateBasedAni, getAngleToPoint, getDistance, isAniPlaying, getWaynetPointAngle, getDistanceToPoint, isTargetInFrontOfEntity, getNecessaryAngleToWatchTarget } from "../../aiFunctions/aiUtils";
 import { gotoPosition, getDistance as getPointDistance } from "../../waynet/positionFunctions";
-import { IPositionComponent } from "../components/iPositionComponent";
+import { IAiPosition } from "../components/iAiPosition";
 import { AiState } from "../../aiStates/aiState";
 import { IWaynet, Waypoint } from "../../waynet/iwaynet";
-import { IEnemyComponent } from "../components/iEnemyComponent";
+import { IAiEnemyInfo } from "../components/iAiEnemyInfo";
 import { EntityManager } from "../../aiStates/entityManager";
 import { IActionComponent } from "../components/iActionsComponent";
 import { isOpponentinAiAngleRange } from "../../aiStates/aiStatePatterns/commonAiStatePatterns";
@@ -253,7 +253,7 @@ export class ThreatenPlayerAction implements IAiAction {
 
     private setEnemy(): void {
         this.shouldLoop = false
-        const enemyComponent: IEnemyComponent = { entityId: this.aiId, enemyId: this.targetId, lastAttackTime: 0 }
+        const enemyComponent: IAiEnemyInfo = { entityId: this.aiId, enemyId: this.targetId, lastAttackTime: 0 }
         this.entityManager.setEnemyComponent(this.aiId, enemyComponent)
     }
 
@@ -335,12 +335,12 @@ export class SRunParadeJump implements IAiAction {
 export class GotoPosition implements IAiAction {
     aiId: number
     shouldLoop: boolean
-    npcPosition: IPositionComponent
+    npcPosition: IAiPosition
     targetX: number
     targetY: number
     targetZ: number
 
-    constructor(npcPosition: IPositionComponent, x: number, y: number, z: number) {
+    constructor(npcPosition: IAiPosition, x: number, y: number, z: number) {
         this.aiId = npcPosition.entityId
         this.npcPosition = npcPosition
         this.shouldLoop = true
@@ -379,7 +379,7 @@ export class GotoPoint implements IAiAction {
     startPoint: string
     routeIndex: number
     wayroute: Array<Waypoint> | undefined
-    aiPos: IPositionComponent | undefined
+    aiPos: IAiPosition | undefined
     walkAni: string
 
     constructor(aiId: number, aiState: AiState, targetWaypoint: string, walkAni: string) {
@@ -529,7 +529,7 @@ export class WarnEnemy implements IAiAction {
 
     private setEnemy(): void {
         this.shouldLoop = false
-        const enemyComponent: IEnemyComponent = { entityId: this.aiId, enemyId: this.enemyId, lastAttackTime: 0 }
+        const enemyComponent: IAiEnemyInfo = { entityId: this.aiId, enemyId: this.enemyId, lastAttackTime: 0 }
         this.entityManager.setEnemyComponent(this.aiId, enemyComponent)
     }
 }

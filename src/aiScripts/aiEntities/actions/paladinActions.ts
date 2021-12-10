@@ -1,7 +1,7 @@
 import { AiState } from "src/aiScripts/aiStates/aiState"
 import { getCombatStateBasedAni, getDistance, getNecessaryAngleToWatchTarget, hasMeleeWeapon, isAniPlaying, setPlayerAngle } from "../../aiFunctions/aiUtils"
 import { EntityManager } from "../../aiStates/entityManager"
-import { IEnemyComponent } from "../components/iEnemyComponent"
+import { IAiEnemyInfo } from "../components/iAiEnemyInfo"
 import { setActionWhenUndefined } from "../descriptions/templates/commonDefaultTemplateDescriptionFunctions"
 import { IAiAction } from "../iAiAction"
 import { GotoPoint } from "./commonActions"
@@ -126,7 +126,7 @@ export class EnforcePrayerAction implements IAiAction {
 
     private setEnemy(): void {
         this.shouldLoop = false
-        const enemyComponent: IEnemyComponent = { entityId: this.aiId, enemyId: this.targetId, lastAttackTime: 0 }
+        const enemyComponent: IAiEnemyInfo = { entityId: this.aiId, enemyId: this.targetId, lastAttackTime: 0 }
         this.aiState.getEntityManager().setEnemyComponent(this.aiId, enemyComponent)
     }
 

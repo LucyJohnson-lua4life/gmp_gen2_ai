@@ -1,5 +1,5 @@
 import { IActionComponent } from '../aiEntities/components/iActionsComponent';
-import { IActionDescriptionComponent } from '../aiEntities/components/iActionDescriptionComponent';
+import { IAiActionDescriptions } from '../aiEntities/components/iAiActionDescriptions';
 import { IAiAction } from '../aiEntities/iAiAction';
 import { IActionDescription } from '../aiEntities/iActionDescription';
 import { getNpcForInstance } from '../aiEntities/npcs/npcEntityUtils';
@@ -77,7 +77,7 @@ export class AiUpdateLoop {
     }
 
     public readDescription(aiId: number) {
-        const descriptionComponent: IActionDescriptionComponent | undefined = this.aiState.getEntityManager().getActionDescriptionComponent(aiId);
+        const descriptionComponent: IAiActionDescriptions | undefined = this.aiState.getEntityManager().getActionDescriptionComponent(aiId);
 
         // remove action list restriction
         if (typeof descriptionComponent !== 'undefined' && this.isEntityUpdateable(aiId)) {
