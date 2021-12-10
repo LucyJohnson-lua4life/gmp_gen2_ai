@@ -2,7 +2,7 @@
 import { IActionComponent } from "../aiEntities/components/iActionsComponent";
 import { IAiActionHistory } from "../aiEntities/components/iAiActionHistory";
 import { IAiAttackEventInfo } from "../aiEntities/components/iAiAttackEventInfo";
-import { iAiDailyRoutineInfo } from "../aiEntities/components/iAiDailyRoutineInfo";
+import { IAiDailyRoutineInfo } from "../aiEntities/components/iAiDailyRoutineInfo";
 import { IAiPosition } from "../aiEntities/components/iAiPosition";
 import { IAiNpcStatus } from "../aiEntities/components/iAiNpcStatus";
 import { IAiNpcTags } from "../aiEntities/components/iAiNpcTags";
@@ -11,14 +11,13 @@ import { IAiEnemyInfo } from "../aiEntities/components/iAiEnemyInfo";
 import { IAiNpc } from "../aiEntities/iAiNpc";
 import { IWaynet } from "../waynet/iwaynet";
 import { Waynet } from "../waynet/waynet";
-import { EntityManager } from "./entityManager";
 import { IWorldEventState } from "./waynetRegistries/iWorldEventState";
 import { WaynetRegistry } from "./waynetRegistries/waynetRegistry";
 import { IAiActionDescriptions } from "../aiEntities/components/iAiActionDescriptions";
+import { deleteBot, insertBot } from "./commonAiStateFunctions";
 const worldNames: Array<string> = ["NEWWORLD\\NEWWORLD.ZEN", "OLDWORLD\\OLDWORLD.ZEN", "ADDON\\ADDONWORLD.ZEN"]
 /** Entry point to access the all ai related state.*/
 export class AiState {
-    private entityManager: EntityManager
     private waynet: IWaynet
     private allBots: Array<number>;
     private allPlayer: Array<number>;
@@ -36,7 +35,7 @@ export class AiState {
 
     //entity based state
 
-   dailyRoutineComponents:Map<number, iAiDailyRoutineInfo>;
+   dailyRoutineComponents:Map<number, IAiDailyRoutineInfo>;
    actionsComponents:Map<number, IActionComponent>;
    actionDescriptionComponents: Map<number, IAiActionDescriptions>;
    positionsComponents:Map<number, IAiPosition>;
@@ -48,7 +47,6 @@ export class AiState {
    npcTagsComponent: Map<number, IAiNpcTags>;
 
     constructor(wpPath: string, fpPath: string) {
-        this.entityManager = new EntityManager()
         this.waynet = new Waynet(wpPath, fpPath)
         this.characterInPositionAreas = new Map()
         worldNames.forEach(name => this.characterInPositionAreas.set(name, new Map()))
@@ -69,9 +67,6 @@ export class AiState {
         this.npcTagsComponent = new Map()
     }
 
-    public getEntityManager(): EntityManager {
-        return this.entityManager
-    }
     public getWaynet(): IWaynet {
         return this.waynet
     }
@@ -89,12 +84,12 @@ export class AiState {
 
     registerBot(npc: IAiNpc): void {
         this.allBots.push(npc.id)
-        this.entityManager.registerBot(npc)
+        insertBot(this, npc)
     }
 
     unregisterBot(npcId: number) {
         this.allBots = this.allBots.filter(id => id !== npcId)
-        this.entityManager.unregisterBot(npcId)
+        deleteBot(this, npcId)
 
         for (let worldName of this.characterInPositionAreas.keys()) {
             const areaHashes: Iterable<number> | undefined = this.characterInPositionAreas.get(worldName)?.keys()

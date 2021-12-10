@@ -5,6 +5,7 @@ import { ForwardAttackWithPause} from '../actions/fightActions';
 import { gotoStartPoint, setActionWhenUndefined, setAttackerToEnemy, warnEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
 import { EnforcePrayerAction } from '../actions/paladinActions';
 import { IActionComponent } from '../components/iActionsComponent';
+import { getActionsComponent, getEnemyComponent } from '../../../aiScripts/aiStates/commonAiStateFunctions';
 
 export class HolyEnforcerDescription implements IActionDescription {
     entityId: number
@@ -43,16 +44,15 @@ export class HolyEnforcerDescription implements IActionDescription {
 
     private describeAttackAction(template: IDefaultDescriptionTemplateValues) {
         const pauseTime = 500
-        const actionsComponent = template.aiState.getEntityManager().getActionsComponent(template.aiId)
-        const enemyId = template.aiState.getEntityManager().getEnemyComponent(template.aiId)?.enemyId
+        const actionsComponent = getActionsComponent(template.aiState, template.aiId)
+        const enemyId = getEnemyComponent(template.aiState, template.aiId)?.enemyId
         if (typeof enemyId !== 'undefined') {
             setActionWhenUndefined(actionsComponent, new ForwardAttackWithPause(template.aiId, enemyId, this.attackRange, pauseTime))
         }
     }
 
     private threatenEnemy(template: IDefaultDescriptionTemplateValues, warnableEnemyId: number) {
-        const entityManager = template.aiState.getEntityManager()
-        const actionsComponent = entityManager.getActionsComponent(template.aiId)
+        const actionsComponent = getActionsComponent(template.aiState, template.aiId)
 
         if (typeof actionsComponent !== 'undefined' && !(actionsComponent.nextAction instanceof EnforcePrayerAction) && Date.now() > this.lastPrayerTime + 180000) {
             this.clearAction(actionsComponent)

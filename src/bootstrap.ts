@@ -5,10 +5,8 @@ import { initAiState } from "./aiScripts/aiInit";
 import { AiState } from "./aiScripts/aiStates/aiState";
 import { AiStateFunctions } from "./aiScripts/aiStates/aiStateFunctions";
 import { updateWorldAcordingToState } from "./aiScripts/aiStates/aiWorldStateInterpreter";
-import { EntityManager } from "./aiScripts/aiStates/entityManager";
 import { revive } from "./serverComponents/damageCalculation";
 
-let entityManager:EntityManager|undefined;
 let aiState: AiState;
 
 revmp.name = "Revmp Adventures";
@@ -28,7 +26,6 @@ revmp.on("init", () => {
 
 
     aiState = initAiState()
-    entityManager = aiState.getEntityManager()
 
 });
 

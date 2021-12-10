@@ -2,6 +2,7 @@ import { IAiPosition } from "../aiEntities/components/iAiPosition";
 import { IAiNpc } from "../aiEntities/iAiNpc";
 import { AiState } from "./aiState";
 import { getWaynetPointAngle, setPlayerAngle } from "../aiFunctions/aiUtils";
+import { getPositionsComponents, setPositionsComponent } from "./commonAiStateFunctions";
 
 interface PointCoordinates {
     x: number,
@@ -18,20 +19,18 @@ export class AiStateFunctions {
     }
 
     public spawnNpcByCoordinates(npc: IAiNpc, x: number, y: number, z: number, world: string): void {
-        const entityManager = this.aiState.getEntityManager()
         this.aiState.registerBot(npc)
         revmp.setPosition(npc.id, [x, y, z]);
-        const position: IAiPosition | undefined = entityManager.getPositionsComponents(npc.id)
+        const position: IAiPosition | undefined = getPositionsComponents(this.aiState, npc.id)
         if (typeof position !== 'undefined') {
             position.currentPosX = x
             position.currentPosY = y
             position.currentPosZ = z
-            entityManager.setPositionsComponent(npc.id, position)
+            setPositionsComponent(this.aiState, position)
         }
     }
 
     public spawnNpc(npc: IAiNpc, pointName: string, world: string): void {
-        const entityManager = this.aiState.getEntityManager()
         const npcPosition = this.getPointCoordinateValues(pointName)
         npc.startPoint = pointName
         npc.startWorld = world
@@ -40,12 +39,12 @@ export class AiStateFunctions {
         const spawnAngle = getWaynetPointAngle(npcPosition.x, npcPosition.z, npcPosition.dirX,  npcPosition.dirZ)
         setPlayerAngle(npc.id, spawnAngle)
 
-        const position: IAiPosition | undefined = entityManager.getPositionsComponents(npc.id)
+        const position: IAiPosition | undefined = getPositionsComponents(this.aiState, npc.id)
         if (typeof position !== 'undefined') {
             position.currentPosX = npcPosition.x
             position.currentPosY = npcPosition.y
             position.currentPosZ = npcPosition.z
-            entityManager.setPositionsComponent(npc.id, position)
+            setPositionsComponent(this.aiState, position)
         }
     }
 

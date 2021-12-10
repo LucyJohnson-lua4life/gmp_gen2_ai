@@ -7,9 +7,9 @@ import { IAiPosition } from "../components/iAiPosition";
 import { AiState } from "../../aiStates/aiState";
 import { IWaynet, Waypoint } from "../../waynet/iwaynet";
 import { IAiEnemyInfo } from "../components/iAiEnemyInfo";
-import { EntityManager } from "../../aiStates/entityManager";
 import { IActionComponent } from "../components/iActionsComponent";
 import { isOpponentinAiAngleRange } from "../../aiStates/aiStatePatterns/commonAiStatePatterns";
+import { getActionsComponent, getPositionsComponents, setEnemyComponent } from "../../../aiScripts/aiStates/commonAiStateFunctions";
 
 export class SForwardAttackAction implements IAiAction {
     aiId: number
@@ -202,17 +202,17 @@ export class ThreatenPlayerAction implements IAiAction {
     chaseDistance: number
     waitTime: number
     startTime: number | undefined
-    entityManager: EntityManager
+    aiState: AiState 
     timesWarned: number
     aiName: string
 
-    constructor(entityManager: EntityManager, aiId: number, targetId: number, chaseDistance: number, waitTime: number) {
+    constructor(aiState: AiState, aiId: number, targetId: number, chaseDistance: number, waitTime: number) {
         this.aiId = aiId
         this.shouldLoop = true
         this.targetId = targetId
         this.chaseDistance = chaseDistance
         this.waitTime = waitTime
-        this.entityManager = entityManager
+        this.aiState = aiState
         this.timesWarned = 0
         this.aiName = revmp.getName(this.aiId).name ?? "Enemy"
     }
@@ -254,7 +254,7 @@ export class ThreatenPlayerAction implements IAiAction {
     private setEnemy(): void {
         this.shouldLoop = false
         const enemyComponent: IAiEnemyInfo = { entityId: this.aiId, enemyId: this.targetId, lastAttackTime: 0 }
-        this.entityManager.setEnemyComponent(this.aiId, enemyComponent)
+        setEnemyComponent(this.aiState, enemyComponent)
     }
 
     private sendMessageToNearbyPlayers(message: string): void {
@@ -390,7 +390,7 @@ export class GotoPoint implements IAiAction {
 
         const waynet: IWaynet = this.aiState.getWaynet()
         const newestPos: revmp.Vec3 = revmp.getPosition(this.aiId).position
-        this.aiPos = this.aiState.getEntityManager().getPositionsComponents(this.aiId)
+        this.aiPos = getPositionsComponents(this.aiState, this.aiId)
 
         let nearestWp: Waypoint | undefined;
         if (typeof this.aiPos !== 'undefined') {
@@ -471,7 +471,7 @@ export interface WarnEnemyActionInput {
     waitTime: number,
     warnDistance: number,
     attackDistance: number,
-    entityManager: EntityManager
+    aiState: AiState 
 
 }
 
@@ -484,7 +484,7 @@ export class WarnEnemy implements IAiAction {
     startTime: number | undefined
     warnDistance: number
     attackDistance: number
-    entityManager: EntityManager
+    aiState: AiState 
 
     constructor(input: WarnEnemyActionInput) {
         this.aiId = input.aiId
@@ -493,7 +493,7 @@ export class WarnEnemy implements IAiAction {
         this.waitTime = input.waitTime
         this.warnDistance = input.warnDistance
         this.attackDistance = input.attackDistance
-        this.entityManager = input.entityManager
+        this.aiState = input.aiState
     }
 
     public executeAction(): void {
@@ -530,7 +530,7 @@ export class WarnEnemy implements IAiAction {
     private setEnemy(): void {
         this.shouldLoop = false
         const enemyComponent: IAiEnemyInfo = { entityId: this.aiId, enemyId: this.enemyId, lastAttackTime: 0 }
-        this.entityManager.setEnemyComponent(this.aiId, enemyComponent)
+        setEnemyComponent(this.aiState, enemyComponent)
     }
 }
 
@@ -629,8 +629,7 @@ export class GotoStartPointOnDistanceAction implements IAiAction {
         this.distance = distance
     }
     executeAction(): void {
-        const entityManager = this.aiState.getEntityManager();
-        const startPoint = entityManager.getPositionsComponents(this.aiId)?.startPoint
+        const startPoint = getPositionsComponents(this.aiState, this.aiId)?.startPoint
         const startWayPoint = typeof startPoint !== 'undefined' ? this.aiState.getWaynet().waypoints.get(startPoint) : undefined
         let pointVec: revmp.Vec3 | undefined = undefined;
 
@@ -645,7 +644,7 @@ export class GotoStartPointOnDistanceAction implements IAiAction {
         }
 
         if (typeof pointVec !== 'undefined' && typeof startPoint !== 'undefined' && getDistanceToPoint(this.aiId, pointVec) > this.distance) {
-            const actionsComponent = entityManager.getActionsComponent(this.aiId)
+            const actionsComponent = getActionsComponent(this.aiState,this.aiId)
             if (typeof actionsComponent !== 'undefined') {
                 this.setActionWhenUndefined(actionsComponent, new GotoPoint(this.aiId, this.aiState, startPoint, "S_RUNL"))
             }

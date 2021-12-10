@@ -1,6 +1,7 @@
 
 import { AiState } from "./aiState";
 import { AiWorldStateEventHandler } from "./aiWorldStateEventHandler";
+import { setAttackEventComponent } from "./commonAiStateFunctions";
 
 export class AiEventHandler {
     private aiState: AiState
@@ -13,12 +14,9 @@ export class AiEventHandler {
 
 
     public initEventHandler(): void {
-        const entityManager = this.aiState.getEntityManager();
-
         revmp.on("attacked", (attacker, target, userEvent) => {
-            entityManager.setAttackEventComponent(target,{entityId: target, isUnderAttack: true, attackedBy: attacker})
+            setAttackEventComponent(this.aiState,{entityId: target, isUnderAttack: true, attackedBy: attacker})
             this.worldStateEventHandler.onAttacked(attacker, target)
-
         })
     }
 

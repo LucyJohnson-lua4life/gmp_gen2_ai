@@ -11,7 +11,7 @@
  * @field lastHour: the last hour where the daily routine was checked
  * @field lastMinute: the last minute where the daily routine was checked
  */
-export interface iAiDailyRoutineInfo {
+export interface IAiDailyRoutineInfo {
     entityId: number,
     startHour: number,
     startMinute: number,

@@ -6,6 +6,7 @@ import { AiState } from '../../aiStates/aiState';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues} from './templates/defaultDescriptionTemplate';
 import { TripleQuickAttack } from '../actions/fightActions';
 import { gotoStartPoint, setActionWhenUndefined, setAttackerToEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
+import { getActionHistoryComponent, getActionsComponent, getEnemyComponent, setActionHistoryComponent } from '../../../aiScripts/aiStates/commonAiStateFunctions';
 
 export class HeavyCrimminalDescription implements IActionDescription {
     entityId: number
@@ -46,8 +47,8 @@ export class HeavyCrimminalDescription implements IActionDescription {
 
     private describeAttackAction(template: IDefaultDescriptionTemplateValues) {
         const pauseTime = 500
-        const actionsComponent = template.aiState.getEntityManager().getActionsComponent(template.aiId)
-        const enemyId = template.aiState.getEntityManager().getEnemyComponent(template.aiId)?.enemyId
+        const actionsComponent = getActionsComponent(template.aiState, template.aiId)
+        const enemyId = getEnemyComponent(template.aiState, template.aiId)?.enemyId
         if (typeof enemyId !== 'undefined') {
            setActionWhenUndefined(actionsComponent, new TripleQuickAttack(template.aiId, enemyId, this.attackRange, pauseTime))
         }
@@ -56,8 +57,8 @@ export class HeavyCrimminalDescription implements IActionDescription {
     private describeRoamingAction(template: IDefaultDescriptionTemplateValues) {
         //do nothing
         const random = Math.floor(Math.random() * (30 - 15 + 1)) + 15;
-        const actionHistory = template.aiState.getEntityManager().getActionHistoryComponent(template.aiId) ?? { entityId: template.aiId }
-        const actionsComponent = template.aiState.getEntityManager().getActionsComponent(template.aiId)
+        const actionHistory = getActionHistoryComponent(template.aiState, template.aiId) ?? { entityId: template.aiId }
+        const actionsComponent = getActionsComponent(template.aiState, template.aiId)
         const lastRoamingTime = actionHistory?.lastRoamingTime ?? 0
         const currentTime = Date.now()
         const isNoActionRunning = typeof actionsComponent?.nextAction === 'undefined'
@@ -68,7 +69,7 @@ export class HeavyCrimminalDescription implements IActionDescription {
             revmp.addOverlay(this.entityId, "HumanS_Relaxed.mds")
             setActionWhenUndefined(actionsComponent, new GotoPoint(template.aiId, template.aiState, targetPoint, "S_WALKL"))
             actionHistory.lastRoamingTime = currentTime
-            template.aiState.getEntityManager().setActionHistoryComponent(template.aiId, actionHistory)
+            setActionHistoryComponent(template.aiState, actionHistory)
         }
         else if (isNoActionRunning && !isAniPlaying(template.aiId, "S_LGUARD")) {
             revmp.setCombatState(this.entityId, { weaponMode: revmp.WeaponMode.None })

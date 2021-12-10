@@ -6,6 +6,7 @@ import { NpcActionUtils } from "../../../aiFunctions/npcActionUtils"
 import { IAiAction } from "../../../aiEntities/iAiAction"
 import { clearAction, setActionWhenUndefined } from "./commonDefaultTemplateDescriptionFunctions"
 import { isOpponentinAiAngleRange } from "../../../aiStates/aiStatePatterns/commonAiStatePatterns"
+import { deleteEnemyComponent, getActionHistoryComponent, getActionsComponent, getAttackEventComponent, getEnemyComponent, setActionHistoryComponent } from "../../../../aiScripts/aiStates/commonAiStateFunctions"
 
 const DEFAULT_ATTACK_RANGE = 300
 const DEFAULT_WARN_RANGE = 500
@@ -29,11 +30,10 @@ export interface IDefaultDescriptionTemplateValues {
 
 export function describeGeneralRoutine(values: IDefaultDescriptionTemplateValues): void {
     const npcActionUtils = new NpcActionUtils(values.aiState)
-    const entityManager = values.aiState.getEntityManager()
-    const enemyId = entityManager.getEnemyComponent(values.aiId)?.enemyId ?? -1
+    const enemyId = getEnemyComponent(values.aiState, values.aiId)?.enemyId ?? -1
     const nearestChar = getNearestCharacterRangeMapping(values.aiId, npcActionUtils)
-    const actionsComponent = values.aiState.getEntityManager().getActionsComponent(values.aiId)
-    const attackEvent = entityManager.getAttackEventComponent(values.aiId) ?? {isUnderAttack: false, attackedBy: -1}
+    const actionsComponent = getActionsComponent(values.aiState, values.aiId)
+    const attackEvent = getAttackEventComponent(values.aiState, values.aiId) ?? {isUnderAttack: false, attackedBy: -1}
 
     if (attackEvent.isUnderAttack) {
         values.onAiIsAttacked(values)
@@ -44,7 +44,7 @@ export function describeGeneralRoutine(values: IDefaultDescriptionTemplateValues
         removeAllAnimations(values.aiId)
     }
     else if(enemyId !== -1 && !isExisting(enemyId)){
-        entityManager.deleteEnemyComponent(values.aiId)
+        deleteEnemyComponent(values.aiState, values.aiId)
         clearAction(actionsComponent)
         values.onEnemyDisconnected(values)
     }
@@ -62,7 +62,7 @@ export function describeGeneralRoutine(values: IDefaultDescriptionTemplateValues
         }
         else if (isAlive(enemyId) === false) {
             clearAction(actionsComponent)
-            entityManager.deleteEnemyComponent(values.aiId)
+            deleteEnemyComponent(values.aiState, values.aiId)
             values.onAiEnemyDies(values)
         }
     }
@@ -77,8 +77,7 @@ export function describeGeneralRoutine(values: IDefaultDescriptionTemplateValues
 }
 
 function describeFightMode(values: IDefaultDescriptionTemplateValues, enemyId: number, rangeToEnemy: number): void {
-    const entityManager = values.aiState.getEntityManager();
-    const actionsComponent = entityManager?.getActionsComponent(values.aiId);
+    const actionsComponent = getActionsComponent(values.aiState, values.aiId);
     if (hasMeleeWeapon(values.aiId)) {
         revmp.drawMeleeWeapon(values.aiId)
     }
@@ -87,7 +86,7 @@ function describeFightMode(values: IDefaultDescriptionTemplateValues, enemyId: n
         setActionWhenUndefined(actionsComponent, new RunToTargetAction(values.aiId, enemyId))
     }
     else if (rangeToEnemy > (values.chaseRange ?? DEFAULT_CHASE_RANGE)) {
-        entityManager.deleteEnemyComponent(values.aiId)
+        deleteEnemyComponent(values.aiState, values.aiId)
         clearAction(actionsComponent)
         values.onEnemyOutOfRange(values)
     }
@@ -99,9 +98,8 @@ function describeFightMode(values: IDefaultDescriptionTemplateValues, enemyId: n
    
 }
 function describeFightMovements(values: IDefaultDescriptionTemplateValues, enemyId: number, rangeToEnemy: number): void {
-    const entityManager = values.aiState.getEntityManager()
-    const actionsComponent = entityManager.getActionsComponent(values.aiId)
-    const historyComponent = entityManager.getActionHistoryComponent(values.aiId) ?? { entityId: values.aiId }
+    const actionsComponent = getActionsComponent(values.aiState, values.aiId)
+    const historyComponent = getActionHistoryComponent(values.aiState, values.aiId) ?? { entityId: values.aiId }
     const lastAttackTime = historyComponent.lastAttackTime ?? 0
     const currentTime = Date.now()
     const isOpponentInFrontOfAi = isOpponentinAiAngleRange(values.aiId, enemyId)
@@ -109,7 +107,7 @@ function describeFightMovements(values: IDefaultDescriptionTemplateValues, enemy
     if (isOpponentInFrontOfAi && currentTime - lastAttackTime > (values.attackFrequency ?? DEFAULT_ATTACK_FREQUENCY)) {
         values.onAiAttacks(values)
         historyComponent.lastAttackTime = currentTime
-        entityManager.setActionHistoryComponent(values.aiId, historyComponent)
+        setActionHistoryComponent(values.aiState, historyComponent)
     }
     else if (rangeToEnemy < 150) {
         setActionWhenUndefined(actionsComponent, new ParadeWithPause(values.aiId, 200))

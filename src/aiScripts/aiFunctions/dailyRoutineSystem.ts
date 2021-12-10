@@ -1,5 +1,6 @@
-import { EntityManager } from "../aiStates/entityManager";
-import { iAiDailyRoutineInfo } from "../aiEntities/components/iAiDailyRoutineInfo";
+import { IAiDailyRoutineInfo } from "../aiEntities/components/iAiDailyRoutineInfo";
+import { AiState } from "../aiStates/aiState";
+import { getDailyRoutineComponent, setDailyRoutineComponent } from "../aiStates/commonAiStateFunctions";
 
 /**
  * @interface DrTargetTime
@@ -34,9 +35,9 @@ export interface DrCurrentTime {
  * Handles all functionalities about daily routines of the monster ai.
  */
 export class DailyRoutineSystem {
-    private entityManager: EntityManager;
-    constructor(state: EntityManager) {
-        this.entityManager = state;
+    private aiState: AiState;
+    constructor(state: AiState) {
+        this.aiState = state;
     }
 
     /**
@@ -63,16 +64,16 @@ export class DailyRoutineSystem {
     }
 
     private updateEntityLastHourAndMinute(playerid: number, currentTime: DrCurrentTime) {
-        const dailyRoutineComponent: iAiDailyRoutineInfo | undefined = this.entityManager.getDailyRoutineComponent(playerid);
+        const dailyRoutineComponent: IAiDailyRoutineInfo | undefined = getDailyRoutineComponent(this.aiState, playerid);
         if (typeof dailyRoutineComponent !== 'undefined') {
             dailyRoutineComponent.lastHour = currentTime.hour;
             dailyRoutineComponent.lastMinute = currentTime.minute;
-            this.entityManager.setDailyRoutineComponent(playerid, dailyRoutineComponent);
+            setDailyRoutineComponent(this.aiState, dailyRoutineComponent);
         }
     }
 
     private updateEntityDrInfo(playerid: number, targetTime: DrTargetTime, currentTime: DrCurrentTime) {
-        this.entityManager.setDailyRoutineComponent(playerid, {
+        setDailyRoutineComponent(this.aiState, {
             entityId: playerid,
             startHour: targetTime.startHour,
             startMinute: targetTime.startMinute,
@@ -84,7 +85,7 @@ export class DailyRoutineSystem {
     }
 
     private isFirstOverlapWithTargetTime(playerid: number, currentTime: DrCurrentTime, targetTime: DrTargetTime):boolean {
-        const lastTime: iAiDailyRoutineInfo|undefined = this.entityManager.getDailyRoutineComponent(playerid)
+        const lastTime: IAiDailyRoutineInfo|undefined = getDailyRoutineComponent(this.aiState, playerid)
         if(typeof lastTime !== 'undefined'){
         return (typeof lastTime.startHour === 'undefined')
             || ((lastTime.startHour !== targetTime.startHour || lastTime.startMinute !== targetTime.startMinute)

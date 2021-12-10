@@ -6,6 +6,7 @@ import { getNpcForInstance } from '../aiEntities/npcs/npcEntityUtils';
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
 import { AiStateFunctions } from '../aiStates/aiStateFunctions';
 import { AiState } from './aiState';
+import { getActionDescriptionComponent, getActionsComponent, getNpcStateComponent, getPositionsComponents, getRespawnComponent, setRespawnComponent } from './commonAiStateFunctions';
 
 /**
  * Represents the loop that iterates through each npc state and executes the next actions for each npc.
@@ -53,7 +54,7 @@ export class AiUpdateLoop {
     }
 
     public updateAi(aiId: number) {
-        const actionsComponent:IActionComponent | undefined = this.aiState.getEntityManager().getActionsComponent(aiId);
+        const actionsComponent:IActionComponent | undefined = getActionsComponent(this.aiState, aiId);
 
         if (typeof actionsComponent !== 'undefined') {
             const nextAction:IAiAction|undefined = actionsComponent.nextAction
@@ -67,17 +68,17 @@ export class AiUpdateLoop {
 
         //register if dead
         if(revmp.getHealth(aiId).current <= 0 && revmp.isBot(aiId) ){
-            const respawnInfo = this.aiState.getEntityManager().getRespawnComponent(aiId)
+            const respawnInfo = getRespawnComponent(this.aiState, aiId)
             if(typeof respawnInfo !== 'undefined' && respawnInfo.deathTime === -1){
                 respawnInfo.deathTime = Date.now()
-                this.aiState.getEntityManager().setRespawnComponent(aiId, respawnInfo)
+                setRespawnComponent(this.aiState, respawnInfo)
             }
         }
 
     }
 
     public readDescription(aiId: number) {
-        const descriptionComponent: IAiActionDescriptions | undefined = this.aiState.getEntityManager().getActionDescriptionComponent(aiId);
+        const descriptionComponent: IAiActionDescriptions | undefined = getActionDescriptionComponent(this.aiState,aiId);
 
         // remove action list restriction
         if (typeof descriptionComponent !== 'undefined' && this.isEntityUpdateable(aiId)) {
@@ -88,7 +89,7 @@ export class AiUpdateLoop {
 
     public respawnDeadNpcs(){
         revmp.characters.forEach(charId =>{
-            const respawnComponent = this.aiState.getEntityManager().getRespawnComponent(charId)
+            const respawnComponent = getRespawnComponent(this.aiState, charId)
             if(typeof respawnComponent !== 'undefined' && respawnComponent.deathTime !== -1 && Date.now() > respawnComponent.deathTime + (respawnComponent.respawnTime*1000) && revmp.isBot(charId)){
                 // respawn npc and set state
                 this.respawnNpc(charId)
@@ -97,8 +98,8 @@ export class AiUpdateLoop {
     }
 
     private respawnNpc(aiId: number) {
-        const lastPosition = this.aiState.getEntityManager().getPositionsComponents(aiId)
-        const lastNpcInstance = this.aiState.getEntityManager().getNpcStateComponent(aiId)?.npcInstance
+        const lastPosition = getPositionsComponents(this.aiState, aiId)
+        const lastNpcInstance = getNpcStateComponent(this.aiState, aiId)?.npcInstance
         this.aiState.unregisterBot(aiId)
         revmp.destroyCharacter(aiId)
         if (typeof lastNpcInstance !== 'undefined' && typeof lastPosition !== 'undefined') {
