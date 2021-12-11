@@ -1,4 +1,4 @@
-import { IActionComponent } from "../../aiEntities/components/iActionsComponent"
+import { IAiAction } from "src/aiScripts/aiEntities/iAiAction"
 import { IAiActionDescriptions } from "../../aiEntities/components/iAiActionDescriptions"
 import { IAiActionHistory } from "../../aiEntities/components/iAiActionHistory"
 import { IAiAttackEventInfo } from "../../aiEntities/components/iAiAttackEventInfo"
@@ -22,12 +22,18 @@ export function setDailyRoutineComponent(aiState: AiState, component: IAiDailyRo
     aiState.dailyRoutineComponents.set(component.entityId, component)
 }
 
-export function getActionsComponent(aiState: AiState, entityId: number): IActionComponent | undefined {
+export function getActionsComponent(aiState: AiState, entityId: number): IAiAction | undefined {
     return aiState.actionsComponents.get(entityId);
 }
 
-export function setActionsComponent(aiState: AiState, component: IActionComponent) {
-    aiState.actionsComponents.set(component.entityId, component)
+export function setActionsComponentIfUndefined(aiState: AiState, component: IAiAction) {
+    if(typeof aiState.actionsComponents.get(component.aiId) === 'undefined'){
+        aiState.actionsComponents.set(component.aiId, component)
+    }
+}
+
+export function deleteActionsComponent(aiState: AiState, aiid: number) {
+    aiState.actionsComponents.delete(aiid)
 }
 
 export function getActionDescriptionComponent(aiState: AiState, entityId: number): IAiActionDescriptions | undefined {
@@ -94,7 +100,6 @@ export function setNpcTagsComponent(aiState: AiState, component: IAiNpcTags) {
 export function insertBot(aiState: AiState, npc: IAiNpc): void {
     const stateInfo: IAiNpcStatus = { entityId: npc.id, isDead: false, isUnconscious: false, npcInstance: npc.npcInstance }
     const respawnInfo: IAiRespawnInfo = { entityId: npc.id, respawnTime: npc.respawnTime, deathTime: -1 }
-    const actionInfo: IActionComponent = { entityId: npc.id }
     const positionInfo: IAiPosition = { entityId: npc.id, currentPosX: 0, currentPosY: 0, currentPosZ: 0, lastPosX: 0, lastPosY: 0, lastPosZ: 0, lastPosUpdate: 0, startWorld: npc.startWorld, startPoint: npc.startPoint }
     const actionDescription: IAiActionDescriptions = { entityId: npc.id, descriptions: npc.actionDescriptions }
     const actionHistory: IAiActionHistory = { entityId: npc.id, lastAttackTime: 0 }
@@ -103,7 +108,6 @@ export function insertBot(aiState: AiState, npc: IAiNpc): void {
 
     setNpcStateComponent(aiState, stateInfo)
     setRespawnComponent(aiState, respawnInfo)
-    setActionsComponent(aiState, actionInfo)
     setPositionsComponent(aiState, positionInfo)
     setActionDescriptionComponent(aiState, actionDescription)
     setActionHistoryComponent(aiState, actionHistory)

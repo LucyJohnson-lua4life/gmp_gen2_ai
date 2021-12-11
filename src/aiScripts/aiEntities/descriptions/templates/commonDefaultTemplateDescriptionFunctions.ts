@@ -1,4 +1,4 @@
-import { getActionsComponent, getAttackEventComponent, getEnemyComponent, getPositionsComponents, getWaynet, setAttackEventComponent, setEnemyComponent } from "../../../aiStates/aiStateFunctions/commonAiStateFunctions"
+import { deleteActionsComponent, getActionsComponent, getAttackEventComponent, getEnemyComponent, getPositionsComponents, getWaynet, setActionsComponentIfUndefined, setAttackEventComponent, setEnemyComponent } from "../../../aiStates/aiStateFunctions/commonAiStateFunctions"
 import { getDistanceToPoint, hasMeleeWeapon } from "../../../aiFunctions/aiUtils"
 import { GotoPoint, WarnEnemy, WarnEnemyActionInput } from "../../actions/commonActions"
 import { IActionComponent } from "../../components/iActionsComponent"
@@ -16,11 +16,11 @@ export function warnEnemy(values: IDefaultDescriptionTemplateValues, warnableEne
         aiState: values.aiState 
     }
 
-    if (typeof actionsComponent !== 'undefined' && !(actionsComponent.nextAction instanceof WarnEnemy)) {
-        clearAction(actionsComponent)
-        setActionWhenUndefined(actionsComponent, new WarnEnemy(warnInput))
-        revmp.drawMeleeWeapon(values.aiId)
+    if (typeof actionsComponent !== 'undefined' && !(actionsComponent instanceof WarnEnemy)) {
+        deleteActionsComponent(values.aiState, values.aiId)
     }
+    setActionsComponentIfUndefined(values.aiState, new WarnEnemy(warnInput))
+    revmp.drawMeleeWeapon(values.aiId)
 }
 
 export function setAttackerToEnemy(values: IDefaultDescriptionTemplateValues){
@@ -48,25 +48,11 @@ export function gotoStartPoint(values: IDefaultDescriptionTemplateValues) {
     }
 
     if (typeof pointVec !== 'undefined' && typeof startPoint !== 'undefined') {
-        const actionsComponent = getActionsComponent(values.aiState, values.aiId)
-        if (typeof actionsComponent !== 'undefined') {
-            setActionWhenUndefined(actionsComponent, new GotoPoint(values.aiId, values.aiState, startPoint, "S_RUNL"))
-            if(hasMeleeWeapon(values.aiId)){
-                revmp.putWeaponAway(values.aiId)
-            }
+        setActionsComponentIfUndefined(values.aiState, new GotoPoint(values.aiId, values.aiState, startPoint, "S_RUNL"))
+        if(hasMeleeWeapon(values.aiId)){
+            revmp.putWeaponAway(values.aiId)
         }
     }
 }
 
-export function clearAction(actionsComponent: IActionComponent | undefined): void {
-    if (typeof actionsComponent !== 'undefined') {
-        actionsComponent.nextAction = undefined
-    }
-}
-
-export function setActionWhenUndefined(actionComponent: IActionComponent | undefined, action: IAiAction | undefined) {
-    if (typeof actionComponent !== 'undefined' && typeof action !== 'undefined' && typeof actionComponent.nextAction === 'undefined') {
-        actionComponent.nextAction = action
-    }
-}
 

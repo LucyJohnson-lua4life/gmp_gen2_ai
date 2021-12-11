@@ -9,7 +9,7 @@ import { IWaynet, Waypoint } from "../../waynet/iwaynet";
 import { IAiEnemyInfo } from "../components/iAiEnemyInfo";
 import { IActionComponent } from "../components/iActionsComponent";
 import { isOpponentinAiAngleRange } from "../../aiStates/aiStateFunctions/commonAiStateQueries";
-import { getActionsComponent, getPositionsComponents, getWaynet, setEnemyComponent } from "../../aiStates/aiStateFunctions/commonAiStateFunctions";
+import { getActionsComponent, getPositionsComponents, getWaynet, setActionsComponentIfUndefined, setEnemyComponent } from "../../aiStates/aiStateFunctions/commonAiStateFunctions";
 
 export class SForwardAttackAction implements IAiAction {
     aiId: number
@@ -644,15 +644,7 @@ export class GotoStartPointOnDistanceAction implements IAiAction {
         }
 
         if (typeof pointVec !== 'undefined' && typeof startPoint !== 'undefined' && getDistanceToPoint(this.aiId, pointVec) > this.distance) {
-            const actionsComponent = getActionsComponent(this.aiState,this.aiId)
-            if (typeof actionsComponent !== 'undefined') {
-                this.setActionWhenUndefined(actionsComponent, new GotoPoint(this.aiId, this.aiState, startPoint, "S_RUNL"))
-            }
-        }
-    }
-    private setActionWhenUndefined(actionComponent: IActionComponent | undefined, action: IAiAction | undefined) {
-        if (typeof actionComponent !== 'undefined' && typeof action !== 'undefined' && typeof actionComponent.nextAction === 'undefined') {
-            actionComponent.nextAction = action
+            setActionsComponentIfUndefined(this.aiState, new GotoPoint(this.aiId, this.aiState, startPoint, "S_RUNL"))
         }
     }
 

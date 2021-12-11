@@ -13,6 +13,7 @@ import { Waynet } from "../waynet/waynet";
 import { IWorldEventState } from "./waynetRegistries/iWorldEventState";
 import { WaynetRegistry } from "./waynetRegistries/waynetRegistry";
 import { IAiActionDescriptions } from "../aiEntities/components/iAiActionDescriptions";
+import { IAiAction } from "../aiEntities/iAiAction";
 const worldNames: Array<string> = ["NEWWORLD\\NEWWORLD.ZEN", "OLDWORLD\\OLDWORLD.ZEN", "ADDON\\ADDONWORLD.ZEN"]
 /** Entry point to access the all ai related state.*/
 export class AiState {
@@ -31,7 +32,7 @@ export class AiState {
     waynetRegistry: WaynetRegistry;
     //entity based state
     dailyRoutineComponents: Map<number, IAiDailyRoutineInfo>;
-    actionsComponents: Map<number, IActionComponent>;
+    actionsComponents: Map<number, IAiAction>;
     actionDescriptionComponents: Map<number, IAiActionDescriptions>;
     positionsComponents: Map<number, IAiPosition>;
     npcStateComponents: Map<number, IAiNpcStatus>;

@@ -5,8 +5,8 @@ import { GotoPoint } from "../actions/commonActions";
 import { AiState } from '../../aiStates/aiState';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues} from './templates/defaultDescriptionTemplate';
 import { TripleQuickAttack } from '../actions/fightActions';
-import { gotoStartPoint, setActionWhenUndefined, setAttackerToEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
-import { getActionHistoryComponent, getActionsComponent, getEnemyComponent, getWaynetRegistry, setActionHistoryComponent } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
+import { gotoStartPoint, setAttackerToEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
+import { getActionHistoryComponent, getActionsComponent, getEnemyComponent, getWaynetRegistry, setActionHistoryComponent, setActionsComponentIfUndefined } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
 
 export class HeavyCrimminalDescription implements IActionDescription {
     entityId: number
@@ -47,10 +47,9 @@ export class HeavyCrimminalDescription implements IActionDescription {
 
     private describeAttackAction(template: IDefaultDescriptionTemplateValues) {
         const pauseTime = 500
-        const actionsComponent = getActionsComponent(template.aiState, template.aiId)
         const enemyId = getEnemyComponent(template.aiState, template.aiId)?.enemyId
         if (typeof enemyId !== 'undefined') {
-           setActionWhenUndefined(actionsComponent, new TripleQuickAttack(template.aiId, enemyId, this.attackRange, pauseTime))
+           setActionsComponentIfUndefined(template.aiState, new TripleQuickAttack(template.aiId, enemyId, this.attackRange, pauseTime))
         }
     }
 
@@ -61,13 +60,13 @@ export class HeavyCrimminalDescription implements IActionDescription {
         const actionsComponent = getActionsComponent(template.aiState, template.aiId)
         const lastRoamingTime = actionHistory?.lastRoamingTime ?? 0
         const currentTime = Date.now()
-        const isNoActionRunning = typeof actionsComponent?.nextAction === 'undefined'
+        const isNoActionRunning = typeof actionsComponent === 'undefined'
 
         if (isNoActionRunning && currentTime > lastRoamingTime + 30000) {
             getWaynetRegistry(template.aiState).unregisterCrimminal(template.aiId)
             const targetPoint = getWaynetRegistry(template.aiState).registerCrimminalAndGetPoint(template.aiId)
             revmp.addOverlay(this.entityId, "HumanS_Relaxed.mds")
-            setActionWhenUndefined(actionsComponent, new GotoPoint(template.aiId, template.aiState, targetPoint, "S_WALKL"))
+            setActionsComponentIfUndefined(template.aiState, new GotoPoint(template.aiId, template.aiState, targetPoint, "S_WALKL"))
             actionHistory.lastRoamingTime = currentTime
             setActionHistoryComponent(template.aiState, actionHistory)
         }

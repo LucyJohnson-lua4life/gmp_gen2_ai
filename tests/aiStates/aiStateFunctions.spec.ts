@@ -1,9 +1,9 @@
 import { instance, mock, when } from "ts-mockito";
 import { StubAiNpc } from '../stubAiNpc';
 import { IAiNpc } from "../../src/aiScripts/aiEntities/iAiNpc";
-import { spawnNpc} from "../../src/aiScripts/aiStates/spawnFunctions";
+import { spawnNpc} from "../../src/aiScripts/aiStates/aiStateFunctions/spawnFunctions";
 import { AiState } from "../../src/aiScripts/aiStates/aiState";
-import { getAllBots } from "../../src/aiScripts/aiStates/aiStateFunctions";
+import { getAllBots } from "../../src/aiScripts/aiStates/aiStateFunctions/commonAiStateFunctions";
 
 
 // all revmp API calls made in this unit test are mocked globally
