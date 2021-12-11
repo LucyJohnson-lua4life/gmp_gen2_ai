@@ -2,7 +2,8 @@ import { IAiPosition } from "../../aiEntities/components/iAiPosition";
 import { IAiNpc } from "../../aiEntities/iAiNpc";
 import { AiState } from "../aiState";
 import { getWaynetPointAngle, setPlayerAngle } from "../../aiFunctions/aiUtils";
-import { getPositionsComponents, getWaynet, registerBot, setPositionsComponent } from "./commonAiStateFunctions";
+import { getNpcStateComponent, getPositionsComponents, getWaynet, registerBot, setPositionsComponent, unregisterBot } from "./commonAiStateFunctions";
+import { getNpcForInstance } from "../../../aiScripts/aiEntities/npcs/npcEntityUtils";
 
 interface PointCoordinates {
     x: number,
@@ -39,6 +40,20 @@ export function spawnNpc(aiState: AiState, npc: IAiNpc, pointName: string, world
         position.currentPosY = npcPosition.y
         position.currentPosZ = npcPosition.z
         setPositionsComponent(aiState, position)
+    }
+}
+
+export function respawnNpc(aiState:AiState, aiId: number, world: string) {
+    const lastPosition = getPositionsComponents(aiState, aiId)
+    const lastNpcInstance = getNpcStateComponent(aiState, aiId)?.npcInstance
+    unregisterBot(aiState, aiId)
+    revmp.destroyCharacter(aiId)
+    if (typeof lastNpcInstance !== 'undefined' && typeof lastPosition !== 'undefined') {
+        //TODO: extend getNpc for state
+        //todo: fix this
+        const spawnPoint = typeof lastPosition.startPoint !== 'undefined' ? lastPosition.startPoint : "HAFEN"
+        const spawnWorld = typeof lastPosition.startWorld !== 'undefined' ? lastPosition.startWorld : world
+        spawnNpc(aiState, getNpcForInstance(lastNpcInstance), spawnPoint, spawnWorld)
     }
 }
 
