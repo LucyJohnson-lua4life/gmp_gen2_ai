@@ -5,7 +5,7 @@ import { AiState } from '../../aiStates/aiState';
 import { ForwardAttackWithPause} from '../actions/fightActions';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './templates/defaultDescriptionTemplate';
 import { gotoStartPoint, setActionWhenUndefined, setAttackerToEnemy, warnEnemy} from './templates/commonDefaultTemplateDescriptionFunctions';
-import { getActionHistoryComponent, getActionsComponent, getEnemyComponent, setActionHistoryComponent } from '../../../aiScripts/aiStates/commonAiStateFunctions';
+import { getActionHistoryComponent, getActionsComponent, getEnemyComponent, getWaynetRegistry, setActionHistoryComponent } from '../../../aiScripts/aiStates/commonAiStateFunctions';
 
 export class TownZombieDescription implements IActionDescription {
     entityId: number
@@ -58,8 +58,8 @@ export class TownZombieDescription implements IActionDescription {
         const isNoActionRunning = typeof actionsComponent?.nextAction === 'undefined'
 
         if (isNoActionRunning && currentTime > lastRoamingTime + random*60000) {
-            template.aiState.getWaynetRegistry().unregisterTownie(template.aiId)
-            const targetPoint = template.aiState.getWaynetRegistry().registerTownieAndGetPoint(template.aiId)
+            getWaynetRegistry(template.aiState).unregisterTownie(template.aiId)
+            const targetPoint = getWaynetRegistry(template.aiState).registerTownieAndGetPoint(template.aiId)
             setActionWhenUndefined(actionsComponent, new GotoPoint(template.aiId, template.aiState, targetPoint, "S_WALKL"))
             actionHistory.lastRoamingTime = currentTime
             setActionHistoryComponent(template.aiState, actionHistory)

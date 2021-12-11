@@ -8,20 +8,18 @@ import { IAiNpcStatus } from "../aiEntities/components/iAiNpcStatus";
 import { IAiNpcTags } from "../aiEntities/components/iAiNpcTags";
 import { IAiRespawnInfo } from "../aiEntities/components/iAiRespawnInfo";
 import { IAiEnemyInfo } from "../aiEntities/components/iAiEnemyInfo";
-import { IAiNpc } from "../aiEntities/iAiNpc";
 import { IWaynet } from "../waynet/iwaynet";
 import { Waynet } from "../waynet/waynet";
 import { IWorldEventState } from "./waynetRegistries/iWorldEventState";
 import { WaynetRegistry } from "./waynetRegistries/waynetRegistry";
 import { IAiActionDescriptions } from "../aiEntities/components/iAiActionDescriptions";
-import { deleteBot, insertBot } from "./commonAiStateFunctions";
 const worldNames: Array<string> = ["NEWWORLD\\NEWWORLD.ZEN", "OLDWORLD\\OLDWORLD.ZEN", "ADDON\\ADDONWORLD.ZEN"]
 /** Entry point to access the all ai related state.*/
 export class AiState {
-    private waynet: IWaynet
-    private allBots: Array<number>;
-    private allPlayer: Array<number>;
-    private worldEventState: IWorldEventState
+    waynet: IWaynet
+    allBots: Array<number>;
+    allPlayer: Array<number>;
+    worldEventState: IWorldEventState
 
     /*
       map of all character positions,
@@ -29,22 +27,19 @@ export class AiState {
       the second key is a checksum that determines all players that are in the same area
       the check sum maps to a key of all playerids that are in the check sums area
       */
-     characterInPositionAreas: Map<string, Map<number, Array<number>>>;
-    private waynetRegistry: WaynetRegistry;
-
-
+    characterInPositionAreas: Map<string, Map<number, Array<number>>>;
+    waynetRegistry: WaynetRegistry;
     //entity based state
-
-   dailyRoutineComponents:Map<number, IAiDailyRoutineInfo>;
-   actionsComponents:Map<number, IActionComponent>;
-   actionDescriptionComponents: Map<number, IAiActionDescriptions>;
-   positionsComponents:Map<number, IAiPosition>;
-   npcStateComponents:Map<number, IAiNpcStatus>;
-   respawnComponents:Map<number, IAiRespawnInfo>;
-   enemyComponents: Map<number, IAiEnemyInfo>;
-   actionHistoryComponents: Map<number, IAiActionHistory>;
-   attackEventComponents: Map<number, IAiAttackEventInfo>;
-   npcTagsComponent: Map<number, IAiNpcTags>;
+    dailyRoutineComponents: Map<number, IAiDailyRoutineInfo>;
+    actionsComponents: Map<number, IActionComponent>;
+    actionDescriptionComponents: Map<number, IAiActionDescriptions>;
+    positionsComponents: Map<number, IAiPosition>;
+    npcStateComponents: Map<number, IAiNpcStatus>;
+    respawnComponents: Map<number, IAiRespawnInfo>;
+    enemyComponents: Map<number, IAiEnemyInfo>;
+    actionHistoryComponents: Map<number, IAiActionHistory>;
+    attackEventComponents: Map<number, IAiAttackEventInfo>;
+    npcTagsComponent: Map<number, IAiNpcTags>;
 
     constructor(wpPath: string, fpPath: string) {
         this.waynet = new Waynet(wpPath, fpPath)
@@ -53,7 +48,7 @@ export class AiState {
         this.allBots = []
         this.allPlayer = []
         this.waynetRegistry = new WaynetRegistry()
-        this.worldEventState = {influenceOfTheGods: 50, khorinisState: 0, bigFarmState: 0, lastStateUpdate: Date.now()}
+        this.worldEventState = { influenceOfTheGods: 50, khorinisState: 0, bigFarmState: 0, lastStateUpdate: Date.now() }
 
         this.dailyRoutineComponents = new Map()
         this.actionsComponents = new Map()
@@ -65,47 +60,6 @@ export class AiState {
         this.actionHistoryComponents = new Map()
         this.attackEventComponents = new Map()
         this.npcTagsComponent = new Map()
-    }
-
-    public getWaynet(): IWaynet {
-        return this.waynet
-    }
-
-    public getWaynetRegistry(): WaynetRegistry {
-        return this.waynetRegistry
-    }
-
-    public getCharacterInPositionAreas(): Map<string, Map<number, Array<number>>> {
-        return this.characterInPositionAreas
-    }
-    public getAllBots(): Array<number> {
-        return this.allBots
-    }
-
-    registerBot(npc: IAiNpc): void {
-        this.allBots.push(npc.id)
-        insertBot(this, npc)
-    }
-
-    unregisterBot(npcId: number) {
-        this.allBots = this.allBots.filter(id => id !== npcId)
-        deleteBot(this, npcId)
-
-        for (let worldName of this.characterInPositionAreas.keys()) {
-            const areaHashes: Iterable<number> | undefined = this.characterInPositionAreas.get(worldName)?.keys()
-            if (typeof areaHashes !== 'undefined') {
-                for (let areaHash of areaHashes) {
-                    const nearbyNpcs = this.characterInPositionAreas.get(worldName)?.get(areaHash)
-                    if (typeof nearbyNpcs !== 'undefined') {
-                        this.characterInPositionAreas.get(worldName)?.set(areaHash, nearbyNpcs.filter(nearbyId => nearbyId !== npcId))
-                    }
-                }
-            }
-        }
-    }
-
-    public getWorldEventState(): IWorldEventState{
-        return this.worldEventState
     }
 
 }

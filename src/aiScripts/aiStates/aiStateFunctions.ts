@@ -2,7 +2,7 @@ import { IAiPosition } from "../aiEntities/components/iAiPosition";
 import { IAiNpc } from "../aiEntities/iAiNpc";
 import { AiState } from "./aiState";
 import { getWaynetPointAngle, setPlayerAngle } from "../aiFunctions/aiUtils";
-import { getPositionsComponents, setPositionsComponent } from "./commonAiStateFunctions";
+import { getPositionsComponents, getWaynet, registerBot, setPositionsComponent } from "./commonAiStateFunctions";
 
 interface PointCoordinates {
     x: number,
@@ -19,7 +19,7 @@ export class AiStateFunctions {
     }
 
     public spawnNpcByCoordinates(npc: IAiNpc, x: number, y: number, z: number, world: string): void {
-        this.aiState.registerBot(npc)
+        registerBot(this.aiState, npc)
         revmp.setPosition(npc.id, [x, y, z]);
         const position: IAiPosition | undefined = getPositionsComponents(this.aiState, npc.id)
         if (typeof position !== 'undefined') {
@@ -34,7 +34,7 @@ export class AiStateFunctions {
         const npcPosition = this.getPointCoordinateValues(pointName)
         npc.startPoint = pointName
         npc.startWorld = world
-        this.aiState.registerBot(npc)
+        registerBot(this.aiState, npc)
         revmp.setPosition(npc.id, [npcPosition.x, npcPosition.y, npcPosition.z]);
         const spawnAngle = getWaynetPointAngle(npcPosition.x, npcPosition.z, npcPosition.dirX,  npcPosition.dirZ)
         setPlayerAngle(npc.id, spawnAngle)
@@ -49,7 +49,7 @@ export class AiStateFunctions {
     }
 
     private getPointCoordinateValues(pointName: string): PointCoordinates {
-        const waynet = this.aiState.getWaynet()
+        const waynet = getWaynet(this.aiState)
         const foundFreepoint = waynet.freepoints.find(x => x.fpName === pointName)
         if (typeof foundFreepoint !== 'undefined') {
             return { x: foundFreepoint.x, y: foundFreepoint.y, z: foundFreepoint.z, dirX: foundFreepoint.rotX, dirZ: foundFreepoint.rotZ }

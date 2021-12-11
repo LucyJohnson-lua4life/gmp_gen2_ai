@@ -9,7 +9,7 @@ import { IWaynet, Waypoint } from "../../waynet/iwaynet";
 import { IAiEnemyInfo } from "../components/iAiEnemyInfo";
 import { IActionComponent } from "../components/iActionsComponent";
 import { isOpponentinAiAngleRange } from "../../aiStates/aiStatePatterns/commonAiStatePatterns";
-import { getActionsComponent, getPositionsComponents, setEnemyComponent } from "../../../aiScripts/aiStates/commonAiStateFunctions";
+import { getActionsComponent, getPositionsComponents, getWaynet, setEnemyComponent } from "../../../aiScripts/aiStates/commonAiStateFunctions";
 
 export class SForwardAttackAction implements IAiAction {
     aiId: number
@@ -388,7 +388,7 @@ export class GotoPoint implements IAiAction {
         this.aiState = aiState
         this.walkAni = walkAni
 
-        const waynet: IWaynet = this.aiState.getWaynet()
+        const waynet: IWaynet = getWaynet(this.aiState)
         const newestPos: revmp.Vec3 = revmp.getPosition(this.aiId).position
         this.aiPos = getPositionsComponents(this.aiState, this.aiId)
 
@@ -630,11 +630,11 @@ export class GotoStartPointOnDistanceAction implements IAiAction {
     }
     executeAction(): void {
         const startPoint = getPositionsComponents(this.aiState, this.aiId)?.startPoint
-        const startWayPoint = typeof startPoint !== 'undefined' ? this.aiState.getWaynet().waypoints.get(startPoint) : undefined
+        const startWayPoint = typeof startPoint !== 'undefined' ? getWaynet(this.aiState).waypoints.get(startPoint) : undefined
         let pointVec: revmp.Vec3 | undefined = undefined;
 
         if (typeof startWayPoint === 'undefined') {
-            const startFreepoint = this.aiState.getWaynet().freepoints.find(fp => fp.fpName === startPoint)
+            const startFreepoint = getWaynet(this.aiState).freepoints.find(fp => fp.fpName === startPoint)
             if (typeof startFreepoint !== 'undefined') {
                 pointVec = [startFreepoint.x, startFreepoint.y, startFreepoint.z]
             }

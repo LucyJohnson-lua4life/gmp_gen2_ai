@@ -1,10 +1,10 @@
 import { ArmorInstances, initArmorInstances } from "./aiScripts/aiEntities/equipment/armors";
 import { initWeaponInstances, WeaponInstances } from "./aiScripts/aiEntities/equipment/weapons";
-import { getPlayerAngle } from "./aiScripts/aiFunctions/aiUtils";
 import { initAiState } from "./aiScripts/aiInit";
 import { AiState } from "./aiScripts/aiStates/aiState";
 import { AiStateFunctions } from "./aiScripts/aiStates/aiStateFunctions";
 import { updateWorldAcordingToState } from "./aiScripts/aiStates/aiWorldStateInterpreter";
+import { getWorldEventState } from "./aiScripts/aiStates/commonAiStateFunctions";
 import { revive } from "./serverComponents/damageCalculation";
 
 let aiState: AiState;
@@ -84,7 +84,7 @@ function debugCommands(entity: revmp.Entity, msg: string) {
     }
 
     else if (command === "/ws") {
-        const state = aiState.getWorldEventState()
+        const state = getWorldEventState(aiState)
         revmp.sendChatMessage(entity, "influence of gods: " + state.influenceOfTheGods)
         revmp.sendChatMessage(entity, "khorinis state: " + state.khorinisState)
         revmp.sendChatMessage(entity, "bigfarm state: " + state.bigFarmState)
@@ -93,11 +93,11 @@ function debugCommands(entity: revmp.Entity, msg: string) {
 
     else if (command === "/setig") {
         const input = parseInt(words[1])
-        aiState.getWorldEventState().influenceOfTheGods = input
+        getWorldEventState(aiState).influenceOfTheGods = input
     }
     else if (command === "/setks") {
         const input = parseInt(words[1])
-        aiState.getWorldEventState().khorinisState = input
+        getWorldEventState(aiState).khorinisState = input
     }
     else if (command === "/update") {
         updateWorldAcordingToState(aiState, new AiStateFunctions(aiState))

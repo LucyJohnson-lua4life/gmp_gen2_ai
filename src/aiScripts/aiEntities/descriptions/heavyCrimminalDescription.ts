@@ -6,7 +6,7 @@ import { AiState } from '../../aiStates/aiState';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues} from './templates/defaultDescriptionTemplate';
 import { TripleQuickAttack } from '../actions/fightActions';
 import { gotoStartPoint, setActionWhenUndefined, setAttackerToEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
-import { getActionHistoryComponent, getActionsComponent, getEnemyComponent, setActionHistoryComponent } from '../../../aiScripts/aiStates/commonAiStateFunctions';
+import { getActionHistoryComponent, getActionsComponent, getEnemyComponent, getWaynetRegistry, setActionHistoryComponent } from '../../../aiScripts/aiStates/commonAiStateFunctions';
 
 export class HeavyCrimminalDescription implements IActionDescription {
     entityId: number
@@ -64,8 +64,8 @@ export class HeavyCrimminalDescription implements IActionDescription {
         const isNoActionRunning = typeof actionsComponent?.nextAction === 'undefined'
 
         if (isNoActionRunning && currentTime > lastRoamingTime + 30000) {
-            template.aiState.getWaynetRegistry().unregisterCrimminal(template.aiId)
-            const targetPoint = template.aiState.getWaynetRegistry().registerCrimminalAndGetPoint(template.aiId)
+            getWaynetRegistry(template.aiState).unregisterCrimminal(template.aiId)
+            const targetPoint = getWaynetRegistry(template.aiState).registerCrimminalAndGetPoint(template.aiId)
             revmp.addOverlay(this.entityId, "HumanS_Relaxed.mds")
             setActionWhenUndefined(actionsComponent, new GotoPoint(template.aiId, template.aiState, targetPoint, "S_WALKL"))
             actionHistory.lastRoamingTime = currentTime

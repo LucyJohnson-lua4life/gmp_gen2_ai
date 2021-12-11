@@ -1,4 +1,5 @@
 import { AiState } from "../aiStates/aiState";
+import { getCharacterInPositionAreas } from "../aiStates/commonAiStateFunctions";
 import { getDistance } from "./aiUtils";
 
 
@@ -27,7 +28,7 @@ export class NpcActionUtils {
      * @param z the z value of the point, for which nearby npc ids should be found
      */
     public getNearbyNpcs(world: string, x: number, y: number, z: number): Array<number> {
-        const worldPositionMap = this.aiState.getCharacterInPositionAreas().get(world);
+        const worldPositionMap = getCharacterInPositionAreas(this.aiState).get(world);
         const deepCopyOfNearbyNpcs: Array<number> = []
         if (typeof worldPositionMap !== 'undefined') {
             const nearbyNpcs = worldPositionMap.get(this.calculatePositionCheckSum(x, y, z));
@@ -44,7 +45,7 @@ export class NpcActionUtils {
      //TODO: world should be replaced with a world id
      */
     public getNearestCharacter(characterId: number, world: string): number {
-        const worldPositionMap = this.aiState.getCharacterInPositionAreas().get(world);
+        const worldPositionMap = getCharacterInPositionAreas(this.aiState).get(world);
         let nearestDist = 9999999
         let nearestChar = -1
         if (typeof worldPositionMap !== 'undefined' && revmp.valid(characterId)) {

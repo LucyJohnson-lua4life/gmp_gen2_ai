@@ -9,7 +9,10 @@ import { IAiNpcTags } from "../aiEntities/components/iAiNpcTags"
 import { IAiPosition } from "../aiEntities/components/iAiPosition"
 import { IAiRespawnInfo } from "../aiEntities/components/iAiRespawnInfo"
 import { IAiNpc } from "../aiEntities/iAiNpc"
+import { IWaynet } from "../waynet/iwaynet"
 import { AiState } from "./aiState"
+import { IWorldEventState } from "./waynetRegistries/iWorldEventState"
+import { WaynetRegistry } from "./waynetRegistries/waynetRegistry"
 
 export function getDailyRoutineComponent(aiState: AiState, entityId: number): IAiDailyRoutineInfo | undefined {
     return aiState.dailyRoutineComponents.get(entityId);
@@ -115,4 +118,45 @@ export function deleteBot(aiState: AiState, npcId: number): void {
     aiState.positionsComponents.delete(npcId)
     aiState.actionDescriptionComponents.delete(npcId)
     aiState.enemyComponents.delete(npcId)
+}
+
+export function getWaynet(aiState: AiState): IWaynet {
+    return aiState.waynet
+}
+
+export function getWaynetRegistry(aiState: AiState): WaynetRegistry {
+    return aiState.waynetRegistry
+}
+
+export function getCharacterInPositionAreas(aiState: AiState): Map<string, Map<number, Array<number>>> {
+    return aiState.characterInPositionAreas
+}
+export function getAllBots(aiState: AiState): Array<number> {
+    return aiState.allBots
+}
+
+export function registerBot(aiState: AiState, npc: IAiNpc): void {
+    aiState.allBots.push(npc.id)
+    insertBot(aiState, npc)
+}
+
+export function unregisterBot(aiState: AiState, npcId: number) {
+    aiState.allBots = aiState.allBots.filter(id => id !== npcId)
+    deleteBot(aiState, npcId)
+
+    for (let worldName of aiState.characterInPositionAreas.keys()) {
+        const areaHashes: Iterable<number> | undefined = aiState.characterInPositionAreas.get(worldName)?.keys()
+        if (typeof areaHashes !== 'undefined') {
+            for (let areaHash of areaHashes) {
+                const nearbyNpcs = aiState.characterInPositionAreas.get(worldName)?.get(areaHash)
+                if (typeof nearbyNpcs !== 'undefined') {
+                    aiState.characterInPositionAreas.get(worldName)?.set(areaHash, nearbyNpcs.filter(nearbyId => nearbyId !== npcId))
+                }
+            }
+        }
+    }
+}
+
+export function getWorldEventState(aiState: AiState): IWorldEventState {
+    return aiState.worldEventState
 }

@@ -1,4 +1,4 @@
-import { getActionsComponent, getAttackEventComponent, getEnemyComponent, getPositionsComponents, setAttackEventComponent, setEnemyComponent } from "../../../../aiScripts/aiStates/commonAiStateFunctions"
+import { getActionsComponent, getAttackEventComponent, getEnemyComponent, getPositionsComponents, getWaynet, setAttackEventComponent, setEnemyComponent } from "../../../../aiScripts/aiStates/commonAiStateFunctions"
 import { getDistanceToPoint, hasMeleeWeapon } from "../../../aiFunctions/aiUtils"
 import { GotoPoint, WarnEnemy, WarnEnemyActionInput } from "../../actions/commonActions"
 import { IActionComponent } from "../../components/iActionsComponent"
@@ -34,11 +34,11 @@ export function setAttackerToEnemy(values: IDefaultDescriptionTemplateValues){
 
 export function gotoStartPoint(values: IDefaultDescriptionTemplateValues) {
     const startPoint = getPositionsComponents(values.aiState, values.aiId)?.startPoint
-    const startWayPoint = typeof startPoint !== 'undefined' ? values.aiState.getWaynet().waypoints.get(startPoint) : undefined
+    const startWayPoint = typeof startPoint !== 'undefined' ? getWaynet(values.aiState).waypoints.get(startPoint) : undefined
     let pointVec: revmp.Vec3 | undefined = undefined;
 
     if (typeof startWayPoint === 'undefined') {
-        const startFreepoint = values.aiState.getWaynet().freepoints.find(fp => fp.fpName === startPoint)
+        const startFreepoint = getWaynet(values.aiState).freepoints.find(fp => fp.fpName === startPoint)
         if (typeof startFreepoint !== 'undefined') {
             pointVec = [startFreepoint.x, startFreepoint.y, startFreepoint.z]
         }

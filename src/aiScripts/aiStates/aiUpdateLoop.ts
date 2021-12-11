@@ -6,7 +6,7 @@ import { getNpcForInstance } from '../aiEntities/npcs/npcEntityUtils';
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
 import { AiStateFunctions } from '../aiStates/aiStateFunctions';
 import { AiState } from './aiState';
-import { getActionDescriptionComponent, getActionsComponent, getNpcStateComponent, getPositionsComponents, getRespawnComponent, setRespawnComponent } from './commonAiStateFunctions';
+import { getActionDescriptionComponent, getActionsComponent, getAllBots, getCharacterInPositionAreas, getNpcStateComponent, getPositionsComponents, getRespawnComponent, setRespawnComponent, unregisterBot } from './commonAiStateFunctions';
 
 /**
  * Represents the loop that iterates through each npc state and executes the next actions for each npc.
@@ -26,8 +26,8 @@ export class AiUpdateLoop {
     }
 
     public updateAll() {
-        this.aiState.getCharacterInPositionAreas().set(this.world, new Map<number, Array<number>>())
-        const allPositions: Map<number, Array<number>>|undefined = this.aiState.getCharacterInPositionAreas().get(this.world)
+        getCharacterInPositionAreas(this.aiState).set(this.world, new Map<number, Array<number>>())
+        const allPositions: Map<number, Array<number>>|undefined = getCharacterInPositionAreas(this.aiState).get(this.world)
         // update positions for each character
         if(typeof allPositions !== 'undefined'){
 
@@ -46,11 +46,11 @@ export class AiUpdateLoop {
 
         this.readDescriptions()
         this.respawnDeadNpcs()
-        this.aiState.getAllBots().forEach((aiId) => this.updateAi(aiId))
+        getAllBots(this.aiState).forEach((aiId) => this.updateAi(aiId))
     }
 
     public readDescriptions() {
-        this.aiState.getAllBots().forEach((aiId) => this.readDescription(aiId))
+        getAllBots(this.aiState).forEach((aiId) => this.readDescription(aiId))
     }
 
     public updateAi(aiId: number) {
@@ -100,7 +100,7 @@ export class AiUpdateLoop {
     private respawnNpc(aiId: number) {
         const lastPosition = getPositionsComponents(this.aiState, aiId)
         const lastNpcInstance = getNpcStateComponent(this.aiState, aiId)?.npcInstance
-        this.aiState.unregisterBot(aiId)
+        unregisterBot(this.aiState, aiId)
         revmp.destroyCharacter(aiId)
         if (typeof lastNpcInstance !== 'undefined' && typeof lastPosition !== 'undefined') {
             //TODO: extend getNpc for state

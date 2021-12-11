@@ -17,6 +17,7 @@ import { LIVES_IN_TOWN_TAG } from "./aiEntities/components/iAiNpcTags"
 import { CitizenFemale } from "./aiEntities/npcs/citizenFemale"
 import { CitizenMale } from "./aiEntities/npcs/citizenMale"
 import { HolyEnforcer } from "./aiEntities/npcs/holyEnforcer"
+import { getWaynetRegistry } from "./aiStates/commonAiStateFunctions"
 
 export function initNewWorldNpcs(aiState: AiState): void {
 
@@ -614,24 +615,24 @@ export function initNewWorldNpcs(aiState: AiState): void {
 
   for (let i = 0; i < 5; i++) {
     const crimminal = new HeavyCrimminal()
-    const spawnPoint = aiState.getWaynetRegistry().registerCrimminalAndGetPoint(crimminal.id)
+    const spawnPoint = getWaynetRegistry(aiState).registerCrimminalAndGetPoint(crimminal.id)
     aiStateFunctions.spawnNpc(crimminal, spawnPoint, world);
   }
   for (let i = 0; i < 3; i++) {
     const robber = new RoamingRobber()
-    const spawnPoint = aiState.getWaynetRegistry().registerCrimminalAndGetPoint(robber.id)
+    const spawnPoint = getWaynetRegistry(aiState).registerCrimminalAndGetPoint(robber.id)
     aiStateFunctions.spawnNpc(robber, spawnPoint, world);
   }
 
   for (let i = 0; i < 15; i++) {
     const citizen = new CitizenMale([LIVES_IN_TOWN_TAG])
-    const spawnPoint = aiState.getWaynetRegistry().registerTownieAndGetPoint(citizen.id)
+    const spawnPoint = getWaynetRegistry(aiState).registerTownieAndGetPoint(citizen.id)
     aiStateFunctions.spawnNpc(citizen, spawnPoint, world);
   }
 
   for (let i = 0; i < 15; i++) {
     const citizen = new CitizenFemale([LIVES_IN_TOWN_TAG])
-    const spawnPoint = aiState.getWaynetRegistry().registerTownieAndGetPoint(citizen.id)
+    const spawnPoint = getWaynetRegistry(aiState).registerTownieAndGetPoint(citizen.id)
     aiStateFunctions.spawnNpc(citizen, spawnPoint, world);
   }
 

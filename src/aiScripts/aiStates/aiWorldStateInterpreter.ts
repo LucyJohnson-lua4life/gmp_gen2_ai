@@ -6,7 +6,7 @@ import { FarmerMale } from "../aiEntities/npcs/farmerMale";
 import { Zombie } from "../aiEntities/npcs/zombie";
 import { AiState } from "./aiState";
 import { AiStateFunctions } from "./aiStateFunctions";
-import { getNpcTagsComponent } from "./commonAiStateFunctions";
+import { getNpcTagsComponent, getWaynetRegistry, getWorldEventState, unregisterBot } from "./commonAiStateFunctions";
 
 const world = "NEWWORLD\\NEWWORLD.ZEN"
 export function updateWorldAcordingToState(aiState: AiState, aiStateFunctions: AiStateFunctions) {
@@ -14,9 +14,9 @@ export function updateWorldAcordingToState(aiState: AiState, aiStateFunctions: A
 }
 
 function updateCity(aiState: AiState, aiStateFunctions: AiStateFunctions): void {
-  const worldState = aiState.getWorldEventState()
+  const worldState = getWorldEventState(aiState)
   removeCharactersByTag(aiState, LIVES_IN_TOWN_TAG)
-  aiState.getWaynetRegistry().resetTownieRegistry()
+  getWaynetRegistry(aiState).resetTownieRegistry()
 
   if (worldState.influenceOfTheGods >= 10) {
 
@@ -41,7 +41,7 @@ function updateCity(aiState: AiState, aiStateFunctions: AiStateFunctions): void 
 function removeCharactersByTag(aiState: AiState, tag: string) {
   revmp.characters.forEach(characterId => {
     if (getNpcTagsComponent(aiState, characterId)?.tags?.get(tag) === true ?? false) {
-      aiState.unregisterBot(characterId)
+      unregisterBot(aiState, characterId)
       revmp.destroyCharacter(characterId)
     }
   })
@@ -59,13 +59,13 @@ function getTownLeaderId(): number {
 function spawnCitizensInKhorinis(aiState: AiState, aiStateFunctions: AiStateFunctions) {
   for (let i = 0; i < 15; i++) {
     const citizen = new CitizenMale([LIVES_IN_TOWN_TAG])
-    const spawnPoint = aiState.getWaynetRegistry().registerTownieAndGetPoint(citizen.id)
+    const spawnPoint = getWaynetRegistry(aiState).registerTownieAndGetPoint(citizen.id)
     aiStateFunctions.spawnNpc(citizen, spawnPoint, world);
   }
 
   for (let i = 0; i < 15; i++) {
     const citizen = new CitizenFemale([LIVES_IN_TOWN_TAG])
-    const spawnPoint = aiState.getWaynetRegistry().registerTownieAndGetPoint(citizen.id)
+    const spawnPoint = getWaynetRegistry(aiState).registerTownieAndGetPoint(citizen.id)
     aiStateFunctions.spawnNpc(citizen, spawnPoint, world);
   }
 }
@@ -73,20 +73,20 @@ function spawnCitizensInKhorinis(aiState: AiState, aiStateFunctions: AiStateFunc
 function spawnFarmersInKhorinis(aiState: AiState, aiStateFunctions: AiStateFunctions) {
   for (let i = 0; i < 15; i++) {
     const citizen = new FarmerMale([LIVES_IN_TOWN_TAG])
-    const spawnPoint = aiState.getWaynetRegistry().registerTownieAndGetPoint(citizen.id)
+    const spawnPoint = getWaynetRegistry(aiState).registerTownieAndGetPoint(citizen.id)
     aiStateFunctions.spawnNpc(citizen, spawnPoint, world);
   }
 
   for (let i = 0; i < 15; i++) {
     const citizen = new FarmerFemale([LIVES_IN_TOWN_TAG])
-    const spawnPoint = aiState.getWaynetRegistry().registerTownieAndGetPoint(citizen.id)
+    const spawnPoint = getWaynetRegistry(aiState).registerTownieAndGetPoint(citizen.id)
     aiStateFunctions.spawnNpc(citizen, spawnPoint, world);
   }
 }
 function spawnZombiesInKhorinis(aiState: AiState, aiStateFunctions: AiStateFunctions) {
   for (let i = 0; i < 40; i++) {
     const citizen = new Zombie([LIVES_IN_TOWN_TAG])
-    const spawnPoint = aiState.getWaynetRegistry().registerTownieAndGetPoint(citizen.id)
+    const spawnPoint = getWaynetRegistry(aiState).registerTownieAndGetPoint(citizen.id)
     aiStateFunctions.spawnNpc(citizen, spawnPoint, world);
   }
 

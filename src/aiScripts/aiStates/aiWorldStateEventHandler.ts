@@ -1,5 +1,6 @@
 
 import { AiState } from "./aiState";
+import { getWorldEventState } from "./commonAiStateFunctions";
 
 export class AiWorldStateEventHandler {
     private aiState: AiState
@@ -13,7 +14,7 @@ export class AiWorldStateEventHandler {
         if(revmp.getName(target).name === 'Town Leader'){
             if(revmp.getHealth(target).current <= 0){
                 revmp.sendChatMessage(revmp.players, "The town leader was defeated.")
-                this.aiState.getWorldEventState().influenceOfTheGods -= 10
+                getWorldEventState(this.aiState).influenceOfTheGods -= 10
             }
 
         }

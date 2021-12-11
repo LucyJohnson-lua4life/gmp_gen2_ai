@@ -1,5 +1,6 @@
 import { NpcActionUtils } from '../../src/aiScripts/aiFunctions/npcActionUtils';
 import { AiState } from '../../src/aiScripts/aiStates/aiState';
+import { getCharacterInPositionAreas } from '../../src/aiScripts/aiStates/commonAiStateFunctions';
 
 const worldName = "NEWWORLD\\NEWWORLD.ZEN"
 const AITargetDistance = 2500;
@@ -21,11 +22,11 @@ test('Should only return npc ids that are in the same 2500x2500x2500 distance se
 })
 
 function addNpcByChecksum(aiState:AiState, checksum:number, npcid:number){
-    const npclist = aiState.getCharacterInPositionAreas()?.get(worldName)?.get(checksum);
+    const npclist = getCharacterInPositionAreas(aiState)?.get(worldName)?.get(checksum);
     if(typeof npclist === 'undefined'){
-        aiState.getCharacterInPositionAreas()?.get(worldName)?.set(checksum, []);
+        getCharacterInPositionAreas(aiState)?.get(worldName)?.set(checksum, []);
     }
-    aiState.getCharacterInPositionAreas()?.get(worldName)?.get(checksum)?.push(npcid);
+    getCharacterInPositionAreas(aiState)?.get(worldName)?.get(checksum)?.push(npcid);
 }
 
 function calculatePositionCheckSum(x:number, y:number, z:number){
