@@ -1,7 +1,7 @@
 
 import { AiState } from "./aiState";
 import { AiWorldStateEventHandler } from "./aiWorldStateEventHandler";
-import { setAttackEventComponent } from "./aiStateFunctions";
+import { setAttackEventComponent } from "./aiStateFunctions/commonAiStateFunctions";
 
 export class AiEventHandler {
     private aiState: AiState

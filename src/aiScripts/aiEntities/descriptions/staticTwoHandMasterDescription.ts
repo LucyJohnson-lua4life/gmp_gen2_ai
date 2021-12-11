@@ -3,7 +3,7 @@ import { AiState } from '../../aiStates/aiState';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues} from './templates/defaultDescriptionTemplate';
 import { ForwardAttackWithPause} from '../actions/fightActions';
 import { gotoStartPoint, setActionWhenUndefined, setAttackerToEnemy, warnEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
-import { getActionsComponent, getEnemyComponent } from '../../aiStates/aiStateFunctions';
+import { getActionsComponent, getEnemyComponent } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
 
 export class StaticTwoHandMaster implements IActionDescription {
     entityId: number

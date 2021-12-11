@@ -1,6 +1,6 @@
 import { IAiDailyRoutineInfo } from "../aiEntities/components/iAiDailyRoutineInfo";
 import { AiState } from "../aiStates/aiState";
-import { getDailyRoutineComponent, setDailyRoutineComponent } from "../aiStates/aiStateFunctions";
+import { getDailyRoutineComponent, setDailyRoutineComponent } from "../aiStates/aiStateFunctions/commonAiStateFunctions";
 
 /**
  * @interface DrTargetTime

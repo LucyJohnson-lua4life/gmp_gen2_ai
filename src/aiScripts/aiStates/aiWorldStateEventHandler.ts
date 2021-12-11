@@ -1,6 +1,6 @@
 
 import { AiState } from "./aiState";
-import { getWorldEventState } from "./aiStateFunctions";
+import { getWorldEventState } from "./aiStateFunctions/commonAiStateFunctions";
 
 export class AiWorldStateEventHandler {
     private aiState: AiState

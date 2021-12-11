@@ -1,5 +1,5 @@
 import { AiState } from "../../../aiScripts/aiStates/aiState"
-import { setEnemyComponent } from "../../aiStates/aiStateFunctions"
+import { setEnemyComponent } from "../../aiStates/aiStateFunctions/commonAiStateFunctions"
 import { getCombatStateBasedAni, getDistance, getNecessaryAngleToWatchTarget, hasMeleeWeapon, isAniPlaying, setPlayerAngle } from "../../aiFunctions/aiUtils"
 import { IAiEnemyInfo } from "../components/iAiEnemyInfo"
 import { IAiAction } from "../iAiAction"

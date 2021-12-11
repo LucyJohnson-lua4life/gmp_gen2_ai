@@ -1,8 +1,8 @@
-import { IAiPosition } from "../aiEntities/components/iAiPosition";
-import { IAiNpc } from "../aiEntities/iAiNpc";
-import { AiState } from "./aiState";
-import { getWaynetPointAngle, setPlayerAngle } from "../aiFunctions/aiUtils";
-import { getPositionsComponents, getWaynet, registerBot, setPositionsComponent } from "./aiStateFunctions";
+import { IAiPosition } from "../../aiEntities/components/iAiPosition";
+import { IAiNpc } from "../../aiEntities/iAiNpc";
+import { AiState } from "../aiState";
+import { getWaynetPointAngle, setPlayerAngle } from "../../aiFunctions/aiUtils";
+import { getPositionsComponents, getWaynet, registerBot, setPositionsComponent } from "./commonAiStateFunctions";
 
 interface PointCoordinates {
     x: number,

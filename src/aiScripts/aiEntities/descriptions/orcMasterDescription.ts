@@ -4,7 +4,7 @@ import { AiState } from '../../aiStates/aiState';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues} from './templates/defaultDescriptionTemplate';
 import { TripleQuickAttack } from '../actions/fightActions';
 import { gotoStartPoint, setActionWhenUndefined, setAttackerToEnemy, warnEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
-import { getActionsComponent, getEnemyComponent } from '../../aiStates/aiStateFunctions';
+import { getActionsComponent, getEnemyComponent } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
 
 export class OrcMasterDescription implements IActionDescription {
     entityId: number

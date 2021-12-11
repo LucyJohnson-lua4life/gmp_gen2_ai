@@ -8,7 +8,7 @@ import { IActionComponent } from '.././components/iActionsComponent';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './templates/defaultDescriptionTemplate';
 import { TripleQuickAttack } from '../actions/fightActions';
 import { gotoStartPoint, setActionWhenUndefined, setAttackerToEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
-import { getActionHistoryComponent, getActionsComponent, getEnemyComponent, getWaynetRegistry, setActionHistoryComponent } from '../../aiStates/aiStateFunctions';
+import { getActionHistoryComponent, getActionsComponent, getEnemyComponent, getWaynetRegistry, setActionHistoryComponent } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
 
 export class RoamingRobberDescription implements IActionDescription {
     entityId: number

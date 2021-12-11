@@ -5,7 +5,7 @@ import { ForwardAttackWithPause} from '../actions/fightActions';
 import { gotoStartPoint, setActionWhenUndefined, setAttackerToEnemy, warnEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
 import { EnforcePrayerAction } from '../actions/paladinActions';
 import { IActionComponent } from '../components/iActionsComponent';
-import { getActionsComponent, getEnemyComponent } from '../../aiStates/aiStateFunctions';
+import { getActionsComponent, getEnemyComponent } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
 
 export class HolyEnforcerDescription implements IActionDescription {
     entityId: number

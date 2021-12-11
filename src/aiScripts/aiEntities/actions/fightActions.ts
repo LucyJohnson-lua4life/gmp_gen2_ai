@@ -1,4 +1,4 @@
-import { isOpponentinAiAngleRange } from "../../aiStates/aiStatePatterns/commonAiStatePatterns"
+import { isOpponentinAiAngleRange } from "../../aiStates/aiStateFunctions/commonAiStateQueries"
 import {isTargetInFrontOfEntity, getCombatStateBasedAni, getDistance} from "../../aiFunctions/aiUtils"
 import { IAiAction} from "../iAiAction"
 
