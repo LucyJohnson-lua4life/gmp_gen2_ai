@@ -8,7 +8,7 @@ import { AiState } from "../../aiStates/aiState";
 import { IWaynet, Waypoint } from "../../waynet/iwaynet";
 import { IAiEnemyInfo } from "../components/iAiEnemyInfo";
 import { isOpponentinAiAngleRange } from "../../aiStates/aiStateFunctions/commonAiStateQueries";
-import { getAiAction, getPositionsComponents, getWaynet, setAiActionIfUndefined, setEnemyComponent } from "../../aiStates/aiStateFunctions/commonAiStateFunctions";
+import { getAiAction, getAiPosition, getWaynet, setAiActionIfUndefined, setAiEnemyInfo } from "../../aiStates/aiStateFunctions/commonAiStateFunctions";
 
 export class SForwardAttackAction implements IAiAction {
     aiId: number
@@ -253,7 +253,7 @@ export class ThreatenPlayerAction implements IAiAction {
     private setEnemy(): void {
         this.shouldLoop = false
         const enemyComponent: IAiEnemyInfo = { entityId: this.aiId, enemyId: this.targetId, lastAttackTime: 0 }
-        setEnemyComponent(this.aiState, enemyComponent)
+        setAiEnemyInfo(this.aiState, enemyComponent)
     }
 
     private sendMessageToNearbyPlayers(message: string): void {
@@ -389,7 +389,7 @@ export class GotoPoint implements IAiAction {
 
         const waynet: IWaynet = getWaynet(this.aiState)
         const newestPos: revmp.Vec3 = revmp.getPosition(this.aiId).position
-        this.aiPos = getPositionsComponents(this.aiState, this.aiId)
+        this.aiPos = getAiPosition(this.aiState, this.aiId)
 
         let nearestWp: Waypoint | undefined;
         if (typeof this.aiPos !== 'undefined') {
@@ -529,7 +529,7 @@ export class WarnEnemy implements IAiAction {
     private setEnemy(): void {
         this.shouldLoop = false
         const enemyComponent: IAiEnemyInfo = { entityId: this.aiId, enemyId: this.enemyId, lastAttackTime: 0 }
-        setEnemyComponent(this.aiState, enemyComponent)
+        setAiEnemyInfo(this.aiState, enemyComponent)
     }
 }
 
@@ -628,7 +628,7 @@ export class GotoStartPointOnDistanceAction implements IAiAction {
         this.distance = distance
     }
     executeAction(): void {
-        const startPoint = getPositionsComponents(this.aiState, this.aiId)?.startPoint
+        const startPoint = getAiPosition(this.aiState, this.aiId)?.startPoint
         const startWayPoint = typeof startPoint !== 'undefined' ? getWaynet(this.aiState).waypoints.get(startPoint) : undefined
         let pointVec: revmp.Vec3 | undefined = undefined;
 

@@ -6,7 +6,7 @@ import { FarmerMale } from "../aiEntities/npcs/farmerMale";
 import { Zombie } from "../aiEntities/npcs/zombie";
 import { AiState } from "./aiState";
 import { spawnNpc } from "./aiStateFunctions/spawnFunctions";
-import { getNpcTagsComponent, getWaynetRegistry, getWorldEventState, unregisterBot } from "./aiStateFunctions/commonAiStateFunctions";
+import { getAiNpcTags, getWaynetRegistry, getWorldEventState, unregisterBot } from "./aiStateFunctions/commonAiStateFunctions";
 
 const world = "NEWWORLD\\NEWWORLD.ZEN"
 export function updateWorldAcordingToState(aiState: AiState) {
@@ -40,7 +40,7 @@ function updateCity(aiState: AiState): void {
 
 function removeCharactersByTag(aiState: AiState, tag: string) {
   revmp.characters.forEach(characterId => {
-    if (getNpcTagsComponent(aiState, characterId)?.tags?.get(tag) === true ?? false) {
+    if (getAiNpcTags(aiState, characterId)?.tags?.get(tag) === true ?? false) {
       unregisterBot(aiState, characterId)
       revmp.destroyCharacter(characterId)
     }

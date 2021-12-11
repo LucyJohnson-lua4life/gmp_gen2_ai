@@ -14,87 +14,87 @@ import { AiState } from "../aiState"
 import { IWorldEventState } from "../waynetRegistries/iWorldEventState"
 import { WaynetRegistry } from "../waynetRegistries/waynetRegistry"
 
-export function getDailyRoutineComponent(aiState: AiState, entityId: number): IAiDailyRoutineInfo | undefined {
-    return aiState.dailyRoutineComponents.get(entityId);
+export function getAiDailyRoutineInfo(aiState: AiState, entityId: number): IAiDailyRoutineInfo | undefined {
+    return aiState.aiDailyRoutineInfos.get(entityId);
 }
 
-export function setDailyRoutineComponent(aiState: AiState, component: IAiDailyRoutineInfo) {
-    aiState.dailyRoutineComponents.set(component.entityId, component)
+export function setAiDailyRoutineInfo(aiState: AiState, component: IAiDailyRoutineInfo) {
+    aiState.aiDailyRoutineInfos.set(component.entityId, component)
 }
 
 export function getAiAction(aiState: AiState, entityId: number): IAiAction | undefined {
-    return aiState.currentActions.get(entityId);
+    return aiState.aiActions.get(entityId);
 }
 
 export function setAiActionIfUndefined(aiState: AiState, component: IAiAction) {
-    if(typeof aiState.currentActions.get(component.aiId) === 'undefined'){
-        aiState.currentActions.set(component.aiId, component)
+    if(typeof aiState.aiActions.get(component.aiId) === 'undefined'){
+        aiState.aiActions.set(component.aiId, component)
     }
 }
 
 export function deleteAiAction(aiState: AiState, aiid: number) {
-    aiState.currentActions.delete(aiid)
+    aiState.aiActions.delete(aiid)
 }
 
-export function getActionDescriptionComponent(aiState: AiState, entityId: number): IAiActionDescriptions | undefined {
-    return aiState.actionDescriptionComponents.get(entityId);
+export function getAiActionDescriptions(aiState: AiState, entityId: number): IAiActionDescriptions | undefined {
+    return aiState.aiActionsDescriptions.get(entityId);
 }
 
-export function setActionDescriptionComponent(aiState: AiState, component: IAiActionDescriptions) {
-    aiState.actionDescriptionComponents.set(component.entityId, component)
+export function setAiActionDescriptions(aiState: AiState, component: IAiActionDescriptions) {
+    aiState.aiActionsDescriptions.set(component.entityId, component)
 }
 
-export function getPositionsComponents(aiState: AiState, entityId: number): IAiPosition | undefined {
-    return aiState.positionsComponents.get(entityId);
+export function getAiPosition(aiState: AiState, entityId: number): IAiPosition | undefined {
+    return aiState.aiPositions.get(entityId);
 }
 
-export function setPositionsComponent(aiState: AiState, component: IAiPosition) {
-    aiState.positionsComponents.set(component.entityId, component)
+export function setAiPosition(aiState: AiState, component: IAiPosition) {
+    aiState.aiPositions.set(component.entityId, component)
 }
 
-export function getNpcStateComponent(aiState: AiState, entityId: number): IAiNpcStatus | undefined {
-    return aiState.npcStateComponents.get(entityId);
+export function getAiNpcStatus(aiState: AiState, entityId: number): IAiNpcStatus | undefined {
+    return aiState.aiNpcStatus.get(entityId);
 }
-export function setNpcStateComponent(aiState: AiState, component: IAiNpcStatus) {
-    aiState.npcStateComponents.set(component.entityId, component)
-}
-
-export function getRespawnComponent(aiState: AiState, entityId: number): IAiRespawnInfo | undefined {
-    return aiState.respawnComponents.get(entityId);
+export function setAiNpcStatus(aiState: AiState, component: IAiNpcStatus) {
+    aiState.aiNpcStatus.set(component.entityId, component)
 }
 
-export function setRespawnComponent(aiState: AiState, component: IAiRespawnInfo) {
-    aiState.respawnComponents.set(component.entityId, component)
+export function getAiRespawnInfo(aiState: AiState, entityId: number): IAiRespawnInfo | undefined {
+    return aiState.aiRespawnInfos.get(entityId);
 }
 
-export function getEnemyComponent(aiState: AiState, entityId: number): IAiEnemyInfo | undefined {
-    return aiState.enemyComponents.get(entityId);
+export function setAiRespawnInfo(aiState: AiState, component: IAiRespawnInfo) {
+    aiState.aiRespawnInfos.set(component.entityId, component)
 }
 
-export function setEnemyComponent(aiState: AiState, component: IAiEnemyInfo) {
-    aiState.enemyComponents.set(component.entityId, component)
-}
-export function deleteEnemyComponent(aiState: AiState, entityId: number) {
-    aiState.enemyComponents.delete(entityId)
+export function getAiEnemyInfo(aiState: AiState, entityId: number): IAiEnemyInfo | undefined {
+    return aiState.aiEnemyInfos.get(entityId);
 }
 
-export function getActionHistoryComponent(aiState: AiState, entityId: number): IAiActionHistory | undefined {
-    return aiState.actionHistoryComponents.get(entityId);
+export function setAiEnemyInfo(aiState: AiState, component: IAiEnemyInfo) {
+    aiState.aiEnemyInfos.set(component.entityId, component)
 }
-export function setActionHistoryComponent(aiState: AiState, component: IAiActionHistory) {
-    aiState.actionHistoryComponents.set(component.entityId, component)
+export function deleteAiEnemyInfo(aiState: AiState, entityId: number) {
+    aiState.aiEnemyInfos.delete(entityId)
 }
-export function getAttackEventComponent(aiState: AiState, entityId: number): IAiAttackEventInfo | undefined {
-    return aiState.attackEventComponents.get(entityId);
+
+export function getAiActionHistory(aiState: AiState, entityId: number): IAiActionHistory | undefined {
+    return aiState.aiActionsHistories.get(entityId);
 }
-export function setAttackEventComponent(aiState: AiState, component: IAiAttackEventInfo) {
-    aiState.attackEventComponents.set(component.entityId, component)
+export function setAiActionHistory(aiState: AiState, component: IAiActionHistory) {
+    aiState.aiActionsHistories.set(component.entityId, component)
 }
-export function getNpcTagsComponent(aiState: AiState, entityId: number): IAiNpcTags | undefined {
-    return aiState.npcTagsComponent.get(entityId);
+export function getAiAttackEventInfo(aiState: AiState, entityId: number): IAiAttackEventInfo | undefined {
+    return aiState.aiAttackEventInfos.get(entityId);
 }
-export function setNpcTagsComponent(aiState: AiState, component: IAiNpcTags) {
-    aiState.npcTagsComponent.set(component.entityId, component)
+export function setAiAttackEventInfo(aiState: AiState, component: IAiAttackEventInfo) {
+    aiState.aiAttackEventInfos.set(component.entityId, component)
+}
+export function getAiNpcTags(aiState: AiState, entityId: number): IAiNpcTags | undefined {
+    return aiState.aiNpcTags.get(entityId);
+}
+export function setAiNpcTags(aiState: AiState, component: IAiNpcTags) {
+    aiState.aiNpcTags.set(component.entityId, component)
 }
 
 export function insertBot(aiState: AiState, npc: IAiNpc): void {
@@ -106,22 +106,22 @@ export function insertBot(aiState: AiState, npc: IAiNpc): void {
     const attackEvent: IAiAttackEventInfo = { entityId: npc.id, isUnderAttack: false, attackedBy: -1 }
     const npcTags: IAiNpcTags = { entityId: npc.id, tags: npc.aiTags }
 
-    setNpcStateComponent(aiState, stateInfo)
-    setRespawnComponent(aiState, respawnInfo)
-    setPositionsComponent(aiState, positionInfo)
-    setActionDescriptionComponent(aiState, actionDescription)
-    setActionHistoryComponent(aiState, actionHistory)
-    setAttackEventComponent(aiState, attackEvent)
-    setNpcTagsComponent(aiState, npcTags)
+    setAiNpcStatus(aiState, stateInfo)
+    setAiRespawnInfo(aiState, respawnInfo)
+    setAiPosition(aiState, positionInfo)
+    setAiActionDescriptions(aiState, actionDescription)
+    setAiActionHistory(aiState, actionHistory)
+    setAiAttackEventInfo(aiState, attackEvent)
+    setAiNpcTags(aiState, npcTags)
 }
 
 export function deleteBot(aiState: AiState, npcId: number): void {
-    aiState.npcStateComponents.delete(npcId)
-    aiState.respawnComponents.delete(npcId)
-    aiState.currentActions.delete(npcId)
-    aiState.positionsComponents.delete(npcId)
-    aiState.actionDescriptionComponents.delete(npcId)
-    aiState.enemyComponents.delete(npcId)
+    aiState.aiNpcStatus.delete(npcId)
+    aiState.aiRespawnInfos.delete(npcId)
+    aiState.aiActions.delete(npcId)
+    aiState.aiPositions.delete(npcId)
+    aiState.aiActionsDescriptions.delete(npcId)
+    aiState.aiEnemyInfos.delete(npcId)
 }
 
 export function getWaynet(aiState: AiState): IWaynet {

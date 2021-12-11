@@ -2,7 +2,7 @@ import { IAiPosition } from "../../aiEntities/components/iAiPosition";
 import { IAiNpc } from "../../aiEntities/iAiNpc";
 import { AiState } from "../aiState";
 import { getWaynetPointAngle, setPlayerAngle } from "../../aiFunctions/aiUtils";
-import { getNpcStateComponent, getPositionsComponents, getWaynet, registerBot, setPositionsComponent, unregisterBot } from "./commonAiStateFunctions";
+import { getAiNpcStatus, getAiPosition, getWaynet, registerBot, setAiPosition, unregisterBot } from "./commonAiStateFunctions";
 import { getNpcForInstance } from "../../../aiScripts/aiEntities/npcs/npcEntityUtils";
 
 interface PointCoordinates {
@@ -16,12 +16,12 @@ interface PointCoordinates {
 export function spawnNpcByCoordinates(aiState: AiState, npc: IAiNpc, x: number, y: number, z: number, world: string): void {
     registerBot(aiState, npc)
     revmp.setPosition(npc.id, [x, y, z]);
-    const position: IAiPosition | undefined = getPositionsComponents(aiState, npc.id)
+    const position: IAiPosition | undefined = getAiPosition(aiState, npc.id)
     if (typeof position !== 'undefined') {
         position.currentPosX = x
         position.currentPosY = y
         position.currentPosZ = z
-        setPositionsComponent(aiState, position)
+        setAiPosition(aiState, position)
     }
 }
 
@@ -34,18 +34,18 @@ export function spawnNpc(aiState: AiState, npc: IAiNpc, pointName: string, world
     const spawnAngle = getWaynetPointAngle(npcPosition.x, npcPosition.z, npcPosition.dirX, npcPosition.dirZ)
     setPlayerAngle(npc.id, spawnAngle)
 
-    const position: IAiPosition | undefined = getPositionsComponents(aiState, npc.id)
+    const position: IAiPosition | undefined = getAiPosition(aiState, npc.id)
     if (typeof position !== 'undefined') {
         position.currentPosX = npcPosition.x
         position.currentPosY = npcPosition.y
         position.currentPosZ = npcPosition.z
-        setPositionsComponent(aiState, position)
+        setAiPosition(aiState, position)
     }
 }
 
 export function respawnNpc(aiState:AiState, aiId: number, world: string) {
-    const lastPosition = getPositionsComponents(aiState, aiId)
-    const lastNpcInstance = getNpcStateComponent(aiState, aiId)?.npcInstance
+    const lastPosition = getAiPosition(aiState, aiId)
+    const lastNpcInstance = getAiNpcStatus(aiState, aiId)?.npcInstance
     unregisterBot(aiState, aiId)
     revmp.destroyCharacter(aiId)
     if (typeof lastNpcInstance !== 'undefined' && typeof lastPosition !== 'undefined') {

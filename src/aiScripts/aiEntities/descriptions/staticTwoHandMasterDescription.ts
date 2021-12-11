@@ -3,7 +3,7 @@ import { AiState } from '../../aiStates/aiState';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues} from './templates/defaultDescriptionTemplate';
 import { ForwardAttackWithPause} from '../actions/fightActions';
 import { gotoStartPoint, setAttackerToEnemy, warnEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
-import { getAiAction, getEnemyComponent, setAiActionIfUndefined } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
+import { getAiAction, getAiEnemyInfo, setAiActionIfUndefined } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
 
 export class StaticTwoHandMaster implements IActionDescription {
     entityId: number
@@ -40,7 +40,7 @@ export class StaticTwoHandMaster implements IActionDescription {
 
     private describeAttackAction(template: IDefaultDescriptionTemplateValues) {
         const pauseTime = 500
-        const enemyId = getEnemyComponent(template.aiState, template.aiId)?.enemyId
+        const enemyId = getAiEnemyInfo(template.aiState, template.aiId)?.enemyId
         if (typeof enemyId !== 'undefined') {
             setAiActionIfUndefined(template.aiState, new ForwardAttackWithPause(template.aiId, enemyId, this.attackRange, pauseTime))
         }

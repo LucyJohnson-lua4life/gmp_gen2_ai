@@ -1,6 +1,6 @@
 import { IAiDailyRoutineInfo } from "../aiEntities/components/iAiDailyRoutineInfo";
 import { AiState } from "../aiStates/aiState";
-import { getDailyRoutineComponent, setDailyRoutineComponent } from "../aiStates/aiStateFunctions/commonAiStateFunctions";
+import { getAiDailyRoutineInfo, setAiDailyRoutineInfo } from "../aiStates/aiStateFunctions/commonAiStateFunctions";
 
 /**
  * @interface DrTargetTime
@@ -64,16 +64,16 @@ export class DailyRoutineSystem {
     }
 
     private updateEntityLastHourAndMinute(playerid: number, currentTime: DrCurrentTime) {
-        const dailyRoutineComponent: IAiDailyRoutineInfo | undefined = getDailyRoutineComponent(this.aiState, playerid);
+        const dailyRoutineComponent: IAiDailyRoutineInfo | undefined = getAiDailyRoutineInfo(this.aiState, playerid);
         if (typeof dailyRoutineComponent !== 'undefined') {
             dailyRoutineComponent.lastHour = currentTime.hour;
             dailyRoutineComponent.lastMinute = currentTime.minute;
-            setDailyRoutineComponent(this.aiState, dailyRoutineComponent);
+            setAiDailyRoutineInfo(this.aiState, dailyRoutineComponent);
         }
     }
 
     private updateEntityDrInfo(playerid: number, targetTime: DrTargetTime, currentTime: DrCurrentTime) {
-        setDailyRoutineComponent(this.aiState, {
+        setAiDailyRoutineInfo(this.aiState, {
             entityId: playerid,
             startHour: targetTime.startHour,
             startMinute: targetTime.startMinute,
@@ -85,7 +85,7 @@ export class DailyRoutineSystem {
     }
 
     private isFirstOverlapWithTargetTime(playerid: number, currentTime: DrCurrentTime, targetTime: DrTargetTime):boolean {
-        const lastTime: IAiDailyRoutineInfo|undefined = getDailyRoutineComponent(this.aiState, playerid)
+        const lastTime: IAiDailyRoutineInfo|undefined = getAiDailyRoutineInfo(this.aiState, playerid)
         if(typeof lastTime !== 'undefined'){
         return (typeof lastTime.startHour === 'undefined')
             || ((lastTime.startHour !== targetTime.startHour || lastTime.startMinute !== targetTime.startMinute)

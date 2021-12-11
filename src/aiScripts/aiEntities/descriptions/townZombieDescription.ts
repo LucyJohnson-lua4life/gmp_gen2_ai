@@ -5,7 +5,7 @@ import { AiState } from '../../aiStates/aiState';
 import { ForwardAttackWithPause} from '../actions/fightActions';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './templates/defaultDescriptionTemplate';
 import { gotoStartPoint, setAttackerToEnemy, warnEnemy} from './templates/commonDefaultTemplateDescriptionFunctions';
-import { getActionHistoryComponent, getAiAction, getEnemyComponent, getWaynetRegistry, setActionHistoryComponent, setAiActionIfUndefined } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
+import { getAiActionHistory, getAiAction, getAiEnemyInfo, getWaynetRegistry, setAiActionHistory, setAiActionIfUndefined } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
 
 export class TownZombieDescription implements IActionDescription {
     entityId: number
@@ -42,7 +42,7 @@ export class TownZombieDescription implements IActionDescription {
 
     private describeAttackAction(template: IDefaultDescriptionTemplateValues) {
         const pauseTime = 500
-        const enemyId = getEnemyComponent(template.aiState, template.aiId)?.enemyId
+        const enemyId = getAiEnemyInfo(template.aiState, template.aiId)?.enemyId
         if (typeof enemyId !== 'undefined') {
             setAiActionIfUndefined(template.aiState, new ForwardAttackWithPause(template.aiId, enemyId, this.attackRange, pauseTime))
         }
@@ -50,7 +50,7 @@ export class TownZombieDescription implements IActionDescription {
 
     private describeRoamingAction(template: IDefaultDescriptionTemplateValues) {
         const random = Math.floor(Math.random() * (30 - 15 + 1)) + 15;
-        const actionHistory = getActionHistoryComponent(template.aiState, template.aiId) ?? { entityId: template.aiId }
+        const actionHistory = getAiActionHistory(template.aiState, template.aiId) ?? { entityId: template.aiId }
         const currentAction = getAiAction(template.aiState, template.aiId)
         const lastRoamingTime = actionHistory?.lastRoamingTime ?? 0
         const currentTime = Date.now()
@@ -61,7 +61,7 @@ export class TownZombieDescription implements IActionDescription {
             const targetPoint = getWaynetRegistry(template.aiState).registerTownieAndGetPoint(template.aiId)
             setAiActionIfUndefined(template.aiState, new GotoPoint(template.aiId, template.aiState, targetPoint, "S_WALKL"))
             actionHistory.lastRoamingTime = currentTime
-            setActionHistoryComponent(template.aiState, actionHistory)
+            setAiActionHistory(template.aiState, actionHistory)
         }
         else if (isNoActionRunning) {
             revmp.setCombatState(this.entityId, { weaponMode: revmp.WeaponMode.None })

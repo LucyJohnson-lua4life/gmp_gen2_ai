@@ -1,5 +1,5 @@
 import { AiState } from "../../../aiScripts/aiStates/aiState"
-import { setEnemyComponent } from "../../aiStates/aiStateFunctions/commonAiStateFunctions"
+import { setAiEnemyInfo } from "../../aiStates/aiStateFunctions/commonAiStateFunctions"
 import { getCombatStateBasedAni, getDistance, getNecessaryAngleToWatchTarget, hasMeleeWeapon, isAniPlaying, setPlayerAngle } from "../../aiFunctions/aiUtils"
 import { IAiEnemyInfo } from "../components/iAiEnemyInfo"
 import { IAiAction } from "../iAiAction"
@@ -125,7 +125,7 @@ export class EnforcePrayerAction implements IAiAction {
     private setEnemy(): void {
         this.shouldLoop = false
         const enemyComponent: IAiEnemyInfo = { entityId: this.aiId, enemyId: this.targetId, lastAttackTime: 0 }
-        setEnemyComponent(this.aiState, enemyComponent)
+        setAiEnemyInfo(this.aiState, enemyComponent)
     }
 
     private isTargetPraying(): boolean {

@@ -3,7 +3,7 @@ import { IAiAction } from '../aiEntities/iAiAction';
 import { IActionDescription } from '../aiEntities/iActionDescription';
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
 import { AiState } from './aiState';
-import { deleteAiAction, getActionDescriptionComponent, getAiAction, getAllBots, getCharacterInPositionAreas, getRespawnComponent, setRespawnComponent} from './aiStateFunctions/commonAiStateFunctions';
+import { deleteAiAction, getAiActionDescriptions, getAiAction, getAllBots, getCharacterInPositionAreas, getAiRespawnInfo, setAiRespawnInfo} from './aiStateFunctions/commonAiStateFunctions';
 import { respawnNpc} from './aiStateFunctions/spawnFunctions';
 
 /**
@@ -77,16 +77,16 @@ export class AiUpdateLoop {
 
     private registerDeadNpc(aiId: number){
         if (revmp.getHealth(aiId).current <= 0 && revmp.isBot(aiId)) {
-            const respawnInfo = getRespawnComponent(this.aiState, aiId)
+            const respawnInfo = getAiRespawnInfo(this.aiState, aiId)
             if (typeof respawnInfo !== 'undefined' && respawnInfo.deathTime === -1) {
                 respawnInfo.deathTime = Date.now()
-                setRespawnComponent(this.aiState, respawnInfo)
+                setAiRespawnInfo(this.aiState, respawnInfo)
             }
         }
     }
 
     private readDescription(aiId: number) {
-        const descriptionComponent: IAiActionDescriptions | undefined = getActionDescriptionComponent(this.aiState, aiId);
+        const descriptionComponent: IAiActionDescriptions | undefined = getAiActionDescriptions(this.aiState, aiId);
 
         // remove action list restriction
         if (typeof descriptionComponent !== 'undefined' && this.isEntityUpdateable(aiId)) {
@@ -97,7 +97,7 @@ export class AiUpdateLoop {
 
     private respawnDeadNpcs() {
         revmp.characters.forEach(charId => {
-            const respawnInfo = getRespawnComponent(this.aiState, charId)
+            const respawnInfo = getAiRespawnInfo(this.aiState, charId)
             if (typeof respawnInfo !== 'undefined' && respawnInfo.deathTime !== -1 && Date.now() > respawnInfo.deathTime + (respawnInfo.respawnTime * 1000) && revmp.isBot(charId)) {
                 // respawn npc and set state
                 respawnNpc(this.aiState, charId, this.world)

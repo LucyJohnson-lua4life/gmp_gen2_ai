@@ -5,7 +5,7 @@ import { AiState } from "../../../aiStates/aiState"
 import { NpcActionUtils } from "../../../aiFunctions/npcActionUtils"
 import { IAiAction } from "../../../aiEntities/iAiAction"
 import { isOpponentinAiAngleRange } from "../../../aiStates/aiStateFunctions/commonAiStateQueries"
-import { deleteAiAction, deleteEnemyComponent, getActionHistoryComponent, getAiAction, getAttackEventComponent, getEnemyComponent, setActionHistoryComponent, setAiActionIfUndefined } from "../../../aiStates/aiStateFunctions/commonAiStateFunctions"
+import { deleteAiAction, deleteAiEnemyInfo, getAiActionHistory, getAiAction, getAiAttackEventInfo, getAiEnemyInfo, setAiActionHistory, setAiActionIfUndefined } from "../../../aiStates/aiStateFunctions/commonAiStateFunctions"
 
 const DEFAULT_ATTACK_RANGE = 300
 const DEFAULT_WARN_RANGE = 500
@@ -29,10 +29,10 @@ export interface IDefaultDescriptionTemplateValues {
 
 export function describeGeneralRoutine(values: IDefaultDescriptionTemplateValues): void {
     const npcActionUtils = new NpcActionUtils(values.aiState)
-    const enemyId = getEnemyComponent(values.aiState, values.aiId)?.enemyId ?? -1
+    const enemyId = getAiEnemyInfo(values.aiState, values.aiId)?.enemyId ?? -1
     const nearestChar = getNearestCharacterRangeMapping(values.aiId, npcActionUtils)
     const currentAction = getAiAction(values.aiState, values.aiId)
-    const attackEvent = getAttackEventComponent(values.aiState, values.aiId) ?? {isUnderAttack: false, attackedBy: -1}
+    const attackEvent = getAiAttackEventInfo(values.aiState, values.aiId) ?? {isUnderAttack: false, attackedBy: -1}
 
     if (attackEvent.isUnderAttack) {
         values.onAiIsAttacked(values)
@@ -43,7 +43,7 @@ export function describeGeneralRoutine(values: IDefaultDescriptionTemplateValues
         removeAllAnimations(values.aiId)
     }
     else if(enemyId !== -1 && !isExisting(enemyId)){
-        deleteEnemyComponent(values.aiState, values.aiId)
+        deleteAiEnemyInfo(values.aiState, values.aiId)
         deleteAiAction(values.aiState, values.aiId)
         values.onEnemyDisconnected(values)
     }
@@ -60,7 +60,7 @@ export function describeGeneralRoutine(values: IDefaultDescriptionTemplateValues
         }
         else if (isAlive(enemyId) === false) {
             deleteAiAction(values.aiState, values.aiId)
-            deleteEnemyComponent(values.aiState, values.aiId)
+            deleteAiEnemyInfo(values.aiState, values.aiId)
             values.onAiEnemyDies(values)
         }
     }
@@ -84,7 +84,7 @@ function describeFightMode(values: IDefaultDescriptionTemplateValues, enemyId: n
         setAiActionIfUndefined(values.aiState, new RunToTargetAction(values.aiId, enemyId))
     }
     else if (rangeToEnemy > (values.chaseRange ?? DEFAULT_CHASE_RANGE)) {
-        deleteEnemyComponent(values.aiState, values.aiId)
+        deleteAiEnemyInfo(values.aiState, values.aiId)
         deleteAiAction(values.aiState, values.aiId)
         values.onEnemyOutOfRange(values)
     }
@@ -96,7 +96,7 @@ function describeFightMode(values: IDefaultDescriptionTemplateValues, enemyId: n
    
 }
 function describeFightMovements(values: IDefaultDescriptionTemplateValues, enemyId: number, rangeToEnemy: number): void {
-    const historyComponent = getActionHistoryComponent(values.aiState, values.aiId) ?? { entityId: values.aiId }
+    const historyComponent = getAiActionHistory(values.aiState, values.aiId) ?? { entityId: values.aiId }
     const lastAttackTime = historyComponent.lastAttackTime ?? 0
     const currentTime = Date.now()
     const isOpponentInFrontOfAi = isOpponentinAiAngleRange(values.aiId, enemyId)
@@ -104,7 +104,7 @@ function describeFightMovements(values: IDefaultDescriptionTemplateValues, enemy
     if (isOpponentInFrontOfAi && currentTime - lastAttackTime > (values.attackFrequency ?? DEFAULT_ATTACK_FREQUENCY)) {
         values.onAiAttacks(values)
         historyComponent.lastAttackTime = currentTime
-        setActionHistoryComponent(values.aiState, historyComponent)
+        setAiActionHistory(values.aiState, historyComponent)
     }
     else if (rangeToEnemy < 150) {
         setAiActionIfUndefined(values.aiState, new ParadeWithPause(values.aiId, 200))

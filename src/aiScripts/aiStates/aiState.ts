@@ -30,16 +30,16 @@ export class AiState {
     characterInPositionAreas: Map<string, Map<number, Array<number>>>;
     waynetRegistry: WaynetRegistry;
     //entity based state
-    dailyRoutineComponents: Map<number, IAiDailyRoutineInfo>;
-    currentActions: Map<number, IAiAction>;
-    actionDescriptionComponents: Map<number, IAiActionDescriptions>;
-    positionsComponents: Map<number, IAiPosition>;
-    npcStateComponents: Map<number, IAiNpcStatus>;
-    respawnComponents: Map<number, IAiRespawnInfo>;
-    enemyComponents: Map<number, IAiEnemyInfo>;
-    actionHistoryComponents: Map<number, IAiActionHistory>;
-    attackEventComponents: Map<number, IAiAttackEventInfo>;
-    npcTagsComponent: Map<number, IAiNpcTags>;
+    aiDailyRoutineInfos: Map<number, IAiDailyRoutineInfo>;
+    aiActions: Map<number, IAiAction>;
+    aiActionsDescriptions: Map<number, IAiActionDescriptions>;
+    aiPositions: Map<number, IAiPosition>;
+    aiNpcStatus: Map<number, IAiNpcStatus>;
+    aiRespawnInfos: Map<number, IAiRespawnInfo>;
+    aiEnemyInfos: Map<number, IAiEnemyInfo>;
+    aiActionsHistories: Map<number, IAiActionHistory>;
+    aiAttackEventInfos: Map<number, IAiAttackEventInfo>;
+    aiNpcTags: Map<number, IAiNpcTags>;
 
     constructor(wpPath: string, fpPath: string) {
         this.waynet = new Waynet(wpPath, fpPath)
@@ -50,16 +50,16 @@ export class AiState {
         this.waynetRegistry = new WaynetRegistry()
         this.worldEventState = { influenceOfTheGods: 50, khorinisState: 0, bigFarmState: 0, lastStateUpdate: Date.now() }
 
-        this.dailyRoutineComponents = new Map()
-        this.currentActions = new Map()
-        this.actionDescriptionComponents = new Map()
-        this.positionsComponents = new Map()
-        this.npcStateComponents = new Map()
-        this.respawnComponents = new Map()
-        this.enemyComponents = new Map()
-        this.actionHistoryComponents = new Map()
-        this.attackEventComponents = new Map()
-        this.npcTagsComponent = new Map()
+        this.aiDailyRoutineInfos = new Map()
+        this.aiActions = new Map()
+        this.aiActionsDescriptions = new Map()
+        this.aiPositions = new Map()
+        this.aiNpcStatus = new Map()
+        this.aiRespawnInfos = new Map()
+        this.aiEnemyInfos = new Map()
+        this.aiActionsHistories = new Map()
+        this.aiAttackEventInfos = new Map()
+        this.aiNpcTags = new Map()
     }
 
 }

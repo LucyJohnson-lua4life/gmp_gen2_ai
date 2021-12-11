@@ -4,7 +4,7 @@ import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './tem
 import { ForwardAttackWithPause } from '../actions/fightActions';
 import { gotoStartPoint, setAttackerToEnemy, warnEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
 import { EnforcePrayerAction } from '../actions/paladinActions';
-import { deleteAiAction, getAiAction, getEnemyComponent, setAiActionIfUndefined } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
+import { deleteAiAction, getAiAction, getAiEnemyInfo, setAiActionIfUndefined } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
 
 export class HolyEnforcerDescription implements IActionDescription {
     entityId: number
@@ -43,7 +43,7 @@ export class HolyEnforcerDescription implements IActionDescription {
 
     private describeAttackAction(template: IDefaultDescriptionTemplateValues) {
         const pauseTime = 500
-        const enemyId = getEnemyComponent(template.aiState, template.aiId)?.enemyId
+        const enemyId = getAiEnemyInfo(template.aiState, template.aiId)?.enemyId
         if (typeof enemyId !== 'undefined') {
             setAiActionIfUndefined(template.aiState, new ForwardAttackWithPause(template.aiId, enemyId, this.attackRange, pauseTime))
         }

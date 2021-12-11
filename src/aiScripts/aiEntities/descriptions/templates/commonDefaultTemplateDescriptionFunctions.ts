@@ -1,4 +1,4 @@
-import { deleteAiAction, getAiAction, getAttackEventComponent, getEnemyComponent, getPositionsComponents, getWaynet, setAiActionIfUndefined, setAttackEventComponent, setEnemyComponent } from "../../../aiStates/aiStateFunctions/commonAiStateFunctions"
+import { deleteAiAction, getAiAction, getAiAttackEventInfo, getAiEnemyInfo, getAiPosition, getWaynet, setAiActionIfUndefined, setAiAttackEventInfo, setAiEnemyInfo } from "../../../aiStates/aiStateFunctions/commonAiStateFunctions"
 import { hasMeleeWeapon } from "../../../aiFunctions/aiUtils"
 import { GotoPoint, WarnEnemy, WarnEnemyActionInput } from "../../actions/commonActions"
 import { IDefaultDescriptionTemplateValues } from "./defaultDescriptionTemplate"
@@ -22,16 +22,16 @@ export function warnEnemy(values: IDefaultDescriptionTemplateValues, warnableEne
 }
 
 export function setAttackerToEnemy(values: IDefaultDescriptionTemplateValues){
-    const attackEvent = getAttackEventComponent(values.aiState, values.aiId) ?? {isUnderAttack: false, attackedBy: -1}
-        const enemyId = getEnemyComponent(values.aiState, values.aiId)?.enemyId ?? -1
+    const attackEvent = getAiAttackEventInfo(values.aiState, values.aiId) ?? {isUnderAttack: false, attackedBy: -1}
+        const enemyId = getAiEnemyInfo(values.aiState, values.aiId)?.enemyId ?? -1
         if (enemyId === -1) {
-            setEnemyComponent(values.aiState, { entityId: values.aiId, enemyId: attackEvent.attackedBy, lastAttackTime: 0 })
+            setAiEnemyInfo(values.aiState, { entityId: values.aiId, enemyId: attackEvent.attackedBy, lastAttackTime: 0 })
         }
-        setAttackEventComponent(values.aiState, {entityId: values.aiId, isUnderAttack: false, attackedBy: -1})
+        setAiAttackEventInfo(values.aiState, {entityId: values.aiId, isUnderAttack: false, attackedBy: -1})
 }
 
 export function gotoStartPoint(values: IDefaultDescriptionTemplateValues) {
-    const startPoint = getPositionsComponents(values.aiState, values.aiId)?.startPoint
+    const startPoint = getAiPosition(values.aiState, values.aiId)?.startPoint
     const startWayPoint = typeof startPoint !== 'undefined' ? getWaynet(values.aiState).waypoints.get(startPoint) : undefined
     let pointVec: revmp.Vec3 | undefined = undefined;
 

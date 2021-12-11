@@ -5,7 +5,7 @@ import { ForwardAttackWithPause } from '../actions/fightActions';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './templates/defaultDescriptionTemplate';
 import { gotoStartPoint, setAttackerToEnemy, warnEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
 import { isAniPlaying } from '../../aiFunctions/aiUtils';
-import { getAiAction, getEnemyComponent, setAiActionIfUndefined } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
+import { getAiAction, getAiEnemyInfo, setAiActionIfUndefined } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
 
 export class DefaultMonsterDescription implements IActionDescription {
     entityId: number
@@ -43,7 +43,7 @@ export class DefaultMonsterDescription implements IActionDescription {
 
     private describeAttackAction(values: IDefaultDescriptionTemplateValues) {
         const pauseTime = 500
-        const enemyId = getEnemyComponent(values.aiState, values.aiId)?.enemyId
+        const enemyId = getAiEnemyInfo(values.aiState, values.aiId)?.enemyId
         if (typeof enemyId !== 'undefined') {
             setAiActionIfUndefined(values.aiState, new ForwardAttackWithPause(values.aiId, enemyId, this.attackRange, pauseTime))
         }
