@@ -5,7 +5,7 @@ import { AiState } from '../../aiStates/aiState';
 import { ForwardAttackWithPause} from '../actions/fightActions';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './templates/defaultDescriptionTemplate';
 import { gotoStartPoint, setAttackerToEnemy, warnEnemy} from './templates/commonDefaultTemplateDescriptionFunctions';
-import { getActionHistoryComponent, getActionsComponent, getEnemyComponent, getWaynetRegistry, setActionHistoryComponent, setActionsComponentIfUndefined } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
+import { getActionHistoryComponent, getAiAction, getEnemyComponent, getWaynetRegistry, setActionHistoryComponent, setAiActionIfUndefined } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
 
 export class TownZombieDescription implements IActionDescription {
     entityId: number
@@ -44,22 +44,22 @@ export class TownZombieDescription implements IActionDescription {
         const pauseTime = 500
         const enemyId = getEnemyComponent(template.aiState, template.aiId)?.enemyId
         if (typeof enemyId !== 'undefined') {
-            setActionsComponentIfUndefined(template.aiState, new ForwardAttackWithPause(template.aiId, enemyId, this.attackRange, pauseTime))
+            setAiActionIfUndefined(template.aiState, new ForwardAttackWithPause(template.aiId, enemyId, this.attackRange, pauseTime))
         }
     }
 
     private describeRoamingAction(template: IDefaultDescriptionTemplateValues) {
         const random = Math.floor(Math.random() * (30 - 15 + 1)) + 15;
         const actionHistory = getActionHistoryComponent(template.aiState, template.aiId) ?? { entityId: template.aiId }
-        const actionsComponent = getActionsComponent(template.aiState, template.aiId)
+        const currentAction = getAiAction(template.aiState, template.aiId)
         const lastRoamingTime = actionHistory?.lastRoamingTime ?? 0
         const currentTime = Date.now()
-        const isNoActionRunning = typeof actionsComponent === 'undefined'
+        const isNoActionRunning = typeof currentAction === 'undefined'
 
         if (isNoActionRunning && currentTime > lastRoamingTime + random*60000) {
             getWaynetRegistry(template.aiState).unregisterTownie(template.aiId)
             const targetPoint = getWaynetRegistry(template.aiState).registerTownieAndGetPoint(template.aiId)
-            setActionsComponentIfUndefined(template.aiState, new GotoPoint(template.aiId, template.aiState, targetPoint, "S_WALKL"))
+            setAiActionIfUndefined(template.aiState, new GotoPoint(template.aiId, template.aiState, targetPoint, "S_WALKL"))
             actionHistory.lastRoamingTime = currentTime
             setActionHistoryComponent(template.aiState, actionHistory)
         }

@@ -4,8 +4,7 @@ import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './tem
 import { ForwardAttackWithPause } from '../actions/fightActions';
 import { gotoStartPoint, setAttackerToEnemy, warnEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
 import { EnforcePrayerAction } from '../actions/paladinActions';
-import { IActionComponent } from '../components/iActionsComponent';
-import { deleteActionsComponent, getActionsComponent, getEnemyComponent, setActionsComponentIfUndefined } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
+import { deleteAiAction, getAiAction, getEnemyComponent, setAiActionIfUndefined } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
 
 export class HolyEnforcerDescription implements IActionDescription {
     entityId: number
@@ -46,19 +45,19 @@ export class HolyEnforcerDescription implements IActionDescription {
         const pauseTime = 500
         const enemyId = getEnemyComponent(template.aiState, template.aiId)?.enemyId
         if (typeof enemyId !== 'undefined') {
-            setActionsComponentIfUndefined(template.aiState, new ForwardAttackWithPause(template.aiId, enemyId, this.attackRange, pauseTime))
+            setAiActionIfUndefined(template.aiState, new ForwardAttackWithPause(template.aiId, enemyId, this.attackRange, pauseTime))
         }
     }
 
     private threatenEnemy(template: IDefaultDescriptionTemplateValues, warnableEnemyId: number) {
-        const actionsComponent = getActionsComponent(template.aiState, template.aiId)
+        const currentAction = getAiAction(template.aiState, template.aiId)
 
-        if (typeof actionsComponent !== 'undefined' && !(actionsComponent instanceof EnforcePrayerAction)) {
-            deleteActionsComponent(template.aiState, template.aiId)
+        if (typeof currentAction !== 'undefined' && !(currentAction instanceof EnforcePrayerAction)) {
+            deleteAiAction(template.aiState, template.aiId)
         }
 
         if(Date.now() > this.lastPrayerTime + 180000){
-            setActionsComponentIfUndefined(template.aiState, new EnforcePrayerAction(template.aiState, template.aiId, warnableEnemyId, 200, 20000))
+            setAiActionIfUndefined(template.aiState, new EnforcePrayerAction(template.aiState, template.aiId, warnableEnemyId, 200, 20000))
             this.lastPrayerTime = Date.now()
         }
     }

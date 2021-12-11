@@ -22,18 +22,18 @@ export function setDailyRoutineComponent(aiState: AiState, component: IAiDailyRo
     aiState.dailyRoutineComponents.set(component.entityId, component)
 }
 
-export function getActionsComponent(aiState: AiState, entityId: number): IAiAction | undefined {
-    return aiState.actionsComponents.get(entityId);
+export function getAiAction(aiState: AiState, entityId: number): IAiAction | undefined {
+    return aiState.currentActions.get(entityId);
 }
 
-export function setActionsComponentIfUndefined(aiState: AiState, component: IAiAction) {
-    if(typeof aiState.actionsComponents.get(component.aiId) === 'undefined'){
-        aiState.actionsComponents.set(component.aiId, component)
+export function setAiActionIfUndefined(aiState: AiState, component: IAiAction) {
+    if(typeof aiState.currentActions.get(component.aiId) === 'undefined'){
+        aiState.currentActions.set(component.aiId, component)
     }
 }
 
-export function deleteActionsComponent(aiState: AiState, aiid: number) {
-    aiState.actionsComponents.delete(aiid)
+export function deleteAiAction(aiState: AiState, aiid: number) {
+    aiState.currentActions.delete(aiid)
 }
 
 export function getActionDescriptionComponent(aiState: AiState, entityId: number): IAiActionDescriptions | undefined {
@@ -118,7 +118,7 @@ export function insertBot(aiState: AiState, npc: IAiNpc): void {
 export function deleteBot(aiState: AiState, npcId: number): void {
     aiState.npcStateComponents.delete(npcId)
     aiState.respawnComponents.delete(npcId)
-    aiState.actionsComponents.delete(npcId)
+    aiState.currentActions.delete(npcId)
     aiState.positionsComponents.delete(npcId)
     aiState.actionDescriptionComponents.delete(npcId)
     aiState.enemyComponents.delete(npcId)

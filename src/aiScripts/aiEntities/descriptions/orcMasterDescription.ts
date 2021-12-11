@@ -4,7 +4,7 @@ import { AiState } from '../../aiStates/aiState';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues} from './templates/defaultDescriptionTemplate';
 import { TripleQuickAttack } from '../actions/fightActions';
 import { gotoStartPoint, setAttackerToEnemy, warnEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
-import { getActionsComponent, getEnemyComponent, setActionsComponentIfUndefined } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
+import { getAiAction, getEnemyComponent, setAiActionIfUndefined } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
 
 export class OrcMasterDescription implements IActionDescription {
     entityId: number
@@ -43,7 +43,7 @@ export class OrcMasterDescription implements IActionDescription {
         const pauseTime = 500
         const enemyId = getEnemyComponent(template.aiState, template.aiId)?.enemyId
         if (typeof enemyId !== 'undefined') {
-            setActionsComponentIfUndefined(template.aiState, new TripleQuickAttack(template.aiId, enemyId, this.attackRange, pauseTime))
+            setAiActionIfUndefined(template.aiState, new TripleQuickAttack(template.aiId, enemyId, this.attackRange, pauseTime))
         }
     }
 

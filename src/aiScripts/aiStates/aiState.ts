@@ -1,5 +1,4 @@
 
-import { IActionComponent } from "../aiEntities/components/iActionsComponent";
 import { IAiActionHistory } from "../aiEntities/components/iAiActionHistory";
 import { IAiAttackEventInfo } from "../aiEntities/components/iAiAttackEventInfo";
 import { IAiDailyRoutineInfo } from "../aiEntities/components/iAiDailyRoutineInfo";
@@ -32,7 +31,7 @@ export class AiState {
     waynetRegistry: WaynetRegistry;
     //entity based state
     dailyRoutineComponents: Map<number, IAiDailyRoutineInfo>;
-    actionsComponents: Map<number, IAiAction>;
+    currentActions: Map<number, IAiAction>;
     actionDescriptionComponents: Map<number, IAiActionDescriptions>;
     positionsComponents: Map<number, IAiPosition>;
     npcStateComponents: Map<number, IAiNpcStatus>;
@@ -52,7 +51,7 @@ export class AiState {
         this.worldEventState = { influenceOfTheGods: 50, khorinisState: 0, bigFarmState: 0, lastStateUpdate: Date.now() }
 
         this.dailyRoutineComponents = new Map()
-        this.actionsComponents = new Map()
+        this.currentActions = new Map()
         this.actionDescriptionComponents = new Map()
         this.positionsComponents = new Map()
         this.npcStateComponents = new Map()

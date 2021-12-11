@@ -1,11 +1,10 @@
-import { IActionComponent } from '../aiEntities/components/iActionsComponent';
 import { IAiActionDescriptions } from '../aiEntities/components/iAiActionDescriptions';
 import { IAiAction } from '../aiEntities/iAiAction';
 import { IActionDescription } from '../aiEntities/iActionDescription';
 import { getNpcForInstance } from '../aiEntities/npcs/npcEntityUtils';
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
 import { AiState } from './aiState';
-import { deleteActionsComponent, getActionDescriptionComponent, getActionsComponent, getAllBots, getCharacterInPositionAreas, getNpcStateComponent, getPositionsComponents, getRespawnComponent, setRespawnComponent, unregisterBot } from './aiStateFunctions/commonAiStateFunctions';
+import { deleteAiAction, getActionDescriptionComponent, getAiAction, getAllBots, getCharacterInPositionAreas, getNpcStateComponent, getPositionsComponents, getRespawnComponent, setRespawnComponent, unregisterBot } from './aiStateFunctions/commonAiStateFunctions';
 import { spawnNpc } from './aiStateFunctions/spawnFunctions';
 
 /**
@@ -52,13 +51,13 @@ export class AiUpdateLoop {
     }
 
     public updateAi(aiId: number) {
-        const currentAction:IAiAction | undefined = getActionsComponent(this.aiState, aiId);
+        const currentAction:IAiAction | undefined = getAiAction(this.aiState, aiId);
 
         if (typeof currentAction !== 'undefined') {
             if (this.isEntityUpdateable(aiId)){
                 currentAction.executeAction()
                 if(currentAction.shouldLoop === false){
-                    deleteActionsComponent(this.aiState, aiId)
+                    deleteAiAction(this.aiState, aiId)
                 }
             }
         }

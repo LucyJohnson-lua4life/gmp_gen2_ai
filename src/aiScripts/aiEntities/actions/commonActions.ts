@@ -7,9 +7,8 @@ import { IAiPosition } from "../components/iAiPosition";
 import { AiState } from "../../aiStates/aiState";
 import { IWaynet, Waypoint } from "../../waynet/iwaynet";
 import { IAiEnemyInfo } from "../components/iAiEnemyInfo";
-import { IActionComponent } from "../components/iActionsComponent";
 import { isOpponentinAiAngleRange } from "../../aiStates/aiStateFunctions/commonAiStateQueries";
-import { getActionsComponent, getPositionsComponents, getWaynet, setActionsComponentIfUndefined, setEnemyComponent } from "../../aiStates/aiStateFunctions/commonAiStateFunctions";
+import { getAiAction, getPositionsComponents, getWaynet, setAiActionIfUndefined, setEnemyComponent } from "../../aiStates/aiStateFunctions/commonAiStateFunctions";
 
 export class SForwardAttackAction implements IAiAction {
     aiId: number
@@ -644,7 +643,7 @@ export class GotoStartPointOnDistanceAction implements IAiAction {
         }
 
         if (typeof pointVec !== 'undefined' && typeof startPoint !== 'undefined' && getDistanceToPoint(this.aiId, pointVec) > this.distance) {
-            setActionsComponentIfUndefined(this.aiState, new GotoPoint(this.aiId, this.aiState, startPoint, "S_RUNL"))
+            setAiActionIfUndefined(this.aiState, new GotoPoint(this.aiId, this.aiState, startPoint, "S_RUNL"))
         }
     }
 

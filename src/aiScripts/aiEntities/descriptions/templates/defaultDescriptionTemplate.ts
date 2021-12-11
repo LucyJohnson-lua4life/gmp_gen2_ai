@@ -5,7 +5,7 @@ import { AiState } from "../../../aiStates/aiState"
 import { NpcActionUtils } from "../../../aiFunctions/npcActionUtils"
 import { IAiAction } from "../../../aiEntities/iAiAction"
 import { isOpponentinAiAngleRange } from "../../../aiStates/aiStateFunctions/commonAiStateQueries"
-import { deleteActionsComponent, deleteEnemyComponent, getActionHistoryComponent, getActionsComponent, getAttackEventComponent, getEnemyComponent, setActionHistoryComponent, setActionsComponentIfUndefined } from "../../../aiStates/aiStateFunctions/commonAiStateFunctions"
+import { deleteAiAction, deleteEnemyComponent, getActionHistoryComponent, getAiAction, getAttackEventComponent, getEnemyComponent, setActionHistoryComponent, setAiActionIfUndefined } from "../../../aiStates/aiStateFunctions/commonAiStateFunctions"
 
 const DEFAULT_ATTACK_RANGE = 300
 const DEFAULT_WARN_RANGE = 500
@@ -31,7 +31,7 @@ export function describeGeneralRoutine(values: IDefaultDescriptionTemplateValues
     const npcActionUtils = new NpcActionUtils(values.aiState)
     const enemyId = getEnemyComponent(values.aiState, values.aiId)?.enemyId ?? -1
     const nearestChar = getNearestCharacterRangeMapping(values.aiId, npcActionUtils)
-    const actionsComponent = getActionsComponent(values.aiState, values.aiId)
+    const currentAction = getAiAction(values.aiState, values.aiId)
     const attackEvent = getAttackEventComponent(values.aiState, values.aiId) ?? {isUnderAttack: false, attackedBy: -1}
 
     if (attackEvent.isUnderAttack) {
@@ -39,27 +39,27 @@ export function describeGeneralRoutine(values: IDefaultDescriptionTemplateValues
     }
 
     if (!isAlive(values.aiId)) {
-        deleteActionsComponent(values.aiState, values.aiId)
+        deleteAiAction(values.aiState, values.aiId)
         removeAllAnimations(values.aiId)
     }
     else if(enemyId !== -1 && !isExisting(enemyId)){
         deleteEnemyComponent(values.aiState, values.aiId)
-        deleteActionsComponent(values.aiState, values.aiId)
+        deleteAiAction(values.aiState, values.aiId)
         values.onEnemyDisconnected(values)
     }
     else if (isExisting(enemyId)) {
         const range = getDistance(values.aiId, enemyId)
 
         //is triggered when npc is attacked and not fighting mode yet e.g when warning
-        if (typeof actionsComponent !== 'undefined' && !isFightAction(actionsComponent)) {
-            deleteActionsComponent(values.aiState, values.aiId)
+        if (typeof currentAction !== 'undefined' && !isFightAction(currentAction)) {
+            deleteAiAction(values.aiState, values.aiId)
         }
 
         if (range < (values.chaseRange ?? DEFAULT_CHASE_RANGE) && isAlive(enemyId)) {
             describeFightMode(values, enemyId, range)
         }
         else if (isAlive(enemyId) === false) {
-            deleteActionsComponent(values.aiState, values.aiId)
+            deleteAiAction(values.aiState, values.aiId)
             deleteEnemyComponent(values.aiState, values.aiId)
             values.onAiEnemyDies(values)
         }
@@ -75,24 +75,24 @@ export function describeGeneralRoutine(values: IDefaultDescriptionTemplateValues
 }
 
 function describeFightMode(values: IDefaultDescriptionTemplateValues, enemyId: number, rangeToEnemy: number): void {
-    const actionsComponent = getActionsComponent(values.aiState, values.aiId);
+    const currentAction = getAiAction(values.aiState, values.aiId);
     if (hasMeleeWeapon(values.aiId)) {
         revmp.drawMeleeWeapon(values.aiId)
     }
 
     if (rangeToEnemy > (values.attackRange ?? DEFAULT_ATTACK_RANGE)) {
-        setActionsComponentIfUndefined(values.aiState, new RunToTargetAction(values.aiId, enemyId))
+        setAiActionIfUndefined(values.aiState, new RunToTargetAction(values.aiId, enemyId))
     }
     else if (rangeToEnemy > (values.chaseRange ?? DEFAULT_CHASE_RANGE)) {
         deleteEnemyComponent(values.aiState, values.aiId)
-        deleteActionsComponent(values.aiState, values.aiId)
+        deleteAiAction(values.aiState, values.aiId)
         values.onEnemyOutOfRange(values)
     }
-    else if (typeof actionsComponent === 'undefined') {
+    else if (typeof currentAction === 'undefined') {
         describeFightMovements(values, enemyId, rangeToEnemy)
     }
 
-    setActionsComponentIfUndefined(values.aiState, new TurnToTargetAction(values.aiId, enemyId))
+    setAiActionIfUndefined(values.aiState, new TurnToTargetAction(values.aiId, enemyId))
    
 }
 function describeFightMovements(values: IDefaultDescriptionTemplateValues, enemyId: number, rangeToEnemy: number): void {
@@ -107,26 +107,26 @@ function describeFightMovements(values: IDefaultDescriptionTemplateValues, enemy
         setActionHistoryComponent(values.aiState, historyComponent)
     }
     else if (rangeToEnemy < 150) {
-        setActionsComponentIfUndefined(values.aiState, new ParadeWithPause(values.aiId, 200))
+        setAiActionIfUndefined(values.aiState, new ParadeWithPause(values.aiId, 200))
     }
     else {
         const random = Math.floor(Math.random() * 10);
         if (random <= 1 && isOpponentInFrontOfAi) {
-            setActionsComponentIfUndefined(values.aiState, new ParadeWithPause(values.aiId, 200))
+            setAiActionIfUndefined(values.aiState, new ParadeWithPause(values.aiId, 200))
         }
         else if (random <= 7 && isOpponentInFrontOfAi) {
             if (getNecessaryAngleToWatchTarget(values.aiId, enemyId) > 180) {
-                setActionsComponentIfUndefined(values.aiState, new StrafeRightWithPause(values.aiId, 400))
+                setAiActionIfUndefined(values.aiState, new StrafeRightWithPause(values.aiId, 400))
             }
             else {
-                setActionsComponentIfUndefined(values.aiState, new StrafeLeftWithPause(values.aiId, 400))
+                setAiActionIfUndefined(values.aiState, new StrafeLeftWithPause(values.aiId, 400))
             }
         }
         else if (random <= 10 && isOpponentInFrontOfAi) {
-            setActionsComponentIfUndefined(values.aiState, new WaitAction(values.aiId, 200))
+            setAiActionIfUndefined(values.aiState, new WaitAction(values.aiId, 200))
         }
         else {
-            setActionsComponentIfUndefined(values.aiState, new TurnToTargetAction(values.aiId, enemyId))
+            setAiActionIfUndefined(values.aiState, new TurnToTargetAction(values.aiId, enemyId))
         }
     }
 }

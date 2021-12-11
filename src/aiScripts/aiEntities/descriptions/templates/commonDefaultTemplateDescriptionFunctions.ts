@@ -1,12 +1,10 @@
-import { deleteActionsComponent, getActionsComponent, getAttackEventComponent, getEnemyComponent, getPositionsComponents, getWaynet, setActionsComponentIfUndefined, setAttackEventComponent, setEnemyComponent } from "../../../aiStates/aiStateFunctions/commonAiStateFunctions"
-import { getDistanceToPoint, hasMeleeWeapon } from "../../../aiFunctions/aiUtils"
+import { deleteAiAction, getAiAction, getAttackEventComponent, getEnemyComponent, getPositionsComponents, getWaynet, setAiActionIfUndefined, setAttackEventComponent, setEnemyComponent } from "../../../aiStates/aiStateFunctions/commonAiStateFunctions"
+import { hasMeleeWeapon } from "../../../aiFunctions/aiUtils"
 import { GotoPoint, WarnEnemy, WarnEnemyActionInput } from "../../actions/commonActions"
-import { IActionComponent } from "../../components/iActionsComponent"
-import { IAiAction } from "../../iAiAction"
 import { IDefaultDescriptionTemplateValues } from "./defaultDescriptionTemplate"
 
 export function warnEnemy(values: IDefaultDescriptionTemplateValues, warnableEnemyId: number) {
-    const actionsComponent = getActionsComponent(values.aiState, values.aiId)
+    const currentAction = getAiAction(values.aiState, values.aiId)
     const warnInput: WarnEnemyActionInput = {
         aiId: values.aiId,
         enemyId: warnableEnemyId,
@@ -16,10 +14,10 @@ export function warnEnemy(values: IDefaultDescriptionTemplateValues, warnableEne
         aiState: values.aiState 
     }
 
-    if (typeof actionsComponent !== 'undefined' && !(actionsComponent instanceof WarnEnemy)) {
-        deleteActionsComponent(values.aiState, values.aiId)
+    if (typeof currentAction !== 'undefined' && !(currentAction instanceof WarnEnemy)) {
+        deleteAiAction(values.aiState, values.aiId)
     }
-    setActionsComponentIfUndefined(values.aiState, new WarnEnemy(warnInput))
+    setAiActionIfUndefined(values.aiState, new WarnEnemy(warnInput))
     revmp.drawMeleeWeapon(values.aiId)
 }
 
@@ -48,7 +46,7 @@ export function gotoStartPoint(values: IDefaultDescriptionTemplateValues) {
     }
 
     if (typeof pointVec !== 'undefined' && typeof startPoint !== 'undefined') {
-        setActionsComponentIfUndefined(values.aiState, new GotoPoint(values.aiId, values.aiState, startPoint, "S_RUNL"))
+        setAiActionIfUndefined(values.aiState, new GotoPoint(values.aiId, values.aiState, startPoint, "S_RUNL"))
         if(hasMeleeWeapon(values.aiId)){
             revmp.putWeaponAway(values.aiId)
         }

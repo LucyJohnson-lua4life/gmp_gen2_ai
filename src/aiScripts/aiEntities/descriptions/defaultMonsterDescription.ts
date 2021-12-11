@@ -5,7 +5,7 @@ import { ForwardAttackWithPause } from '../actions/fightActions';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './templates/defaultDescriptionTemplate';
 import { gotoStartPoint, setAttackerToEnemy, warnEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
 import { isAniPlaying } from '../../aiFunctions/aiUtils';
-import { getActionsComponent, getEnemyComponent, setActionsComponentIfUndefined } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
+import { getAiAction, getEnemyComponent, setAiActionIfUndefined } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
 
 export class DefaultMonsterDescription implements IActionDescription {
     entityId: number
@@ -45,12 +45,12 @@ export class DefaultMonsterDescription implements IActionDescription {
         const pauseTime = 500
         const enemyId = getEnemyComponent(values.aiState, values.aiId)?.enemyId
         if (typeof enemyId !== 'undefined') {
-            setActionsComponentIfUndefined(values.aiState, new ForwardAttackWithPause(values.aiId, enemyId, this.attackRange, pauseTime))
+            setAiActionIfUndefined(values.aiState, new ForwardAttackWithPause(values.aiId, enemyId, this.attackRange, pauseTime))
         }
     }
     private describeEatRoutine(values: IDefaultDescriptionTemplateValues): void {
-        const actionsComponent = getActionsComponent(values.aiState, values.aiId)
-        if (typeof actionsComponent !== 'undefined') {
+        const currentAction = getAiAction(values.aiState, values.aiId)
+        if (typeof currentAction !== 'undefined') {
             if (!isAniPlaying(values.aiId, "S_EAT")) {
                 revmp.startAnimation(values.aiId, "S_EAT")
             }
