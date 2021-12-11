@@ -3,6 +3,7 @@ import { StubAiNpc } from '../stubAiNpc';
 import { IAiNpc } from "../../src/aiScripts/aiEntities/iAiNpc";
 import { AiStateFunctions} from "../../src/aiScripts/aiStates/aiStateFunctions";
 import { AiState } from "../../src/aiScripts/aiStates/aiState";
+import { getAllBots } from "../../src/aiScripts/aiStates/commonAiStateFunctions";
 
 
 // all revmp API calls made in this unit test are mocked globally
@@ -21,7 +22,7 @@ test('SpawnNpc should register the created npc into the AIState.', () => {
     when(npcMock.id).thenReturn(npcId)
 
     const npc = instance(npcMock)
-    expect(aiState.getAllBots().indexOf(npcId)).toEqual(-1)
+    expect(getAllBots(aiState).indexOf(npcId)).toEqual(-1)
     aiStateFunctions.spawnNpc(npc,"WP_TEST","WORLD_TEST")
-    expect(aiState.getAllBots().indexOf(npcId)).toBeGreaterThan(-1)
+    expect(getAllBots(aiState).indexOf(npcId)).toBeGreaterThan(-1)
 })
