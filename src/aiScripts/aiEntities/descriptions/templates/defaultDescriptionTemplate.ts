@@ -6,7 +6,7 @@ import { NpcActionUtils } from "../../../aiFunctions/npcActionUtils"
 import { IAiAction } from "../../../aiEntities/iAiAction"
 import { clearAction, setActionWhenUndefined } from "./commonDefaultTemplateDescriptionFunctions"
 import { isOpponentinAiAngleRange } from "../../../aiStates/aiStatePatterns/commonAiStatePatterns"
-import { deleteEnemyComponent, getActionHistoryComponent, getActionsComponent, getAttackEventComponent, getEnemyComponent, setActionHistoryComponent } from "../../../../aiScripts/aiStates/commonAiStateFunctions"
+import { deleteEnemyComponent, getActionHistoryComponent, getActionsComponent, getAttackEventComponent, getEnemyComponent, setActionHistoryComponent } from "../../../aiStates/aiStateFunctions"
 
 const DEFAULT_ATTACK_RANGE = 300
 const DEFAULT_WARN_RANGE = 500

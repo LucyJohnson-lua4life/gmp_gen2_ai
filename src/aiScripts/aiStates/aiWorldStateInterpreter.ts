@@ -5,8 +5,8 @@ import { FarmerFemale } from "../aiEntities/npcs/farmerFemale";
 import { FarmerMale } from "../aiEntities/npcs/farmerMale";
 import { Zombie } from "../aiEntities/npcs/zombie";
 import { AiState } from "./aiState";
-import { spawnNpc } from "./aiStateFunctions";
-import { getNpcTagsComponent, getWaynetRegistry, getWorldEventState, unregisterBot } from "./commonAiStateFunctions";
+import { spawnNpc } from "./spawnFunctions";
+import { getNpcTagsComponent, getWaynetRegistry, getWorldEventState, unregisterBot } from "./aiStateFunctions";
 
 const world = "NEWWORLD\\NEWWORLD.ZEN"
 export function updateWorldAcordingToState(aiState: AiState) {

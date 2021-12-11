@@ -9,7 +9,7 @@ import { IWaynet, Waypoint } from "../../waynet/iwaynet";
 import { IAiEnemyInfo } from "../components/iAiEnemyInfo";
 import { IActionComponent } from "../components/iActionsComponent";
 import { isOpponentinAiAngleRange } from "../../aiStates/aiStatePatterns/commonAiStatePatterns";
-import { getActionsComponent, getPositionsComponents, getWaynet, setEnemyComponent } from "../../../aiScripts/aiStates/commonAiStateFunctions";
+import { getActionsComponent, getPositionsComponents, getWaynet, setEnemyComponent } from "../../aiStates/aiStateFunctions";
 
 export class SForwardAttackAction implements IAiAction {
     aiId: number

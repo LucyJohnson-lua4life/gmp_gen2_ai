@@ -1,4 +1,4 @@
-import { getActionsComponent, getAttackEventComponent, getEnemyComponent, getPositionsComponents, getWaynet, setAttackEventComponent, setEnemyComponent } from "../../../../aiScripts/aiStates/commonAiStateFunctions"
+import { getActionsComponent, getAttackEventComponent, getEnemyComponent, getPositionsComponents, getWaynet, setAttackEventComponent, setEnemyComponent } from "../../../aiStates/aiStateFunctions"
 import { getDistanceToPoint, hasMeleeWeapon } from "../../../aiFunctions/aiUtils"
 import { GotoPoint, WarnEnemy, WarnEnemyActionInput } from "../../actions/commonActions"
 import { IActionComponent } from "../../components/iActionsComponent"

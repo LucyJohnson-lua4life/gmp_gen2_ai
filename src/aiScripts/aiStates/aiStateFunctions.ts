@@ -1,57 +1,162 @@
-import { IAiPosition } from "../aiEntities/components/iAiPosition";
-import { IAiNpc } from "../aiEntities/iAiNpc";
-import { AiState } from "./aiState";
-import { getWaynetPointAngle, setPlayerAngle } from "../aiFunctions/aiUtils";
-import { getPositionsComponents, getWaynet, registerBot, setPositionsComponent } from "./commonAiStateFunctions";
+import { IActionComponent } from "../aiEntities/components/iActionsComponent"
+import { IAiActionDescriptions } from "../aiEntities/components/iAiActionDescriptions"
+import { IAiActionHistory } from "../aiEntities/components/iAiActionHistory"
+import { IAiAttackEventInfo } from "../aiEntities/components/iAiAttackEventInfo"
+import { IAiDailyRoutineInfo } from "../aiEntities/components/iAiDailyRoutineInfo"
+import { IAiEnemyInfo } from "../aiEntities/components/iAiEnemyInfo"
+import { IAiNpcStatus } from "../aiEntities/components/iAiNpcStatus"
+import { IAiNpcTags } from "../aiEntities/components/iAiNpcTags"
+import { IAiPosition } from "../aiEntities/components/iAiPosition"
+import { IAiRespawnInfo } from "../aiEntities/components/iAiRespawnInfo"
+import { IAiNpc } from "../aiEntities/iAiNpc"
+import { IWaynet } from "../waynet/iwaynet"
+import { AiState } from "./aiState"
+import { IWorldEventState } from "./waynetRegistries/iWorldEventState"
+import { WaynetRegistry } from "./waynetRegistries/waynetRegistry"
 
-interface PointCoordinates {
-    x: number,
-    y: number,
-    z: number,
-    dirX: number,
-    dirZ: number
+export function getDailyRoutineComponent(aiState: AiState, entityId: number): IAiDailyRoutineInfo | undefined {
+    return aiState.dailyRoutineComponents.get(entityId);
 }
 
-export function spawnNpcByCoordinates(aiState: AiState, npc: IAiNpc, x: number, y: number, z: number, world: string): void {
-    registerBot(aiState, npc)
-    revmp.setPosition(npc.id, [x, y, z]);
-    const position: IAiPosition | undefined = getPositionsComponents(aiState, npc.id)
-    if (typeof position !== 'undefined') {
-        position.currentPosX = x
-        position.currentPosY = y
-        position.currentPosZ = z
-        setPositionsComponent(aiState, position)
+export function setDailyRoutineComponent(aiState: AiState, component: IAiDailyRoutineInfo) {
+    aiState.dailyRoutineComponents.set(component.entityId, component)
+}
+
+export function getActionsComponent(aiState: AiState, entityId: number): IActionComponent | undefined {
+    return aiState.actionsComponents.get(entityId);
+}
+
+export function setActionsComponent(aiState: AiState, component: IActionComponent) {
+    aiState.actionsComponents.set(component.entityId, component)
+}
+
+export function getActionDescriptionComponent(aiState: AiState, entityId: number): IAiActionDescriptions | undefined {
+    return aiState.actionDescriptionComponents.get(entityId);
+}
+
+export function setActionDescriptionComponent(aiState: AiState, component: IAiActionDescriptions) {
+    aiState.actionDescriptionComponents.set(component.entityId, component)
+}
+
+export function getPositionsComponents(aiState: AiState, entityId: number): IAiPosition | undefined {
+    return aiState.positionsComponents.get(entityId);
+}
+
+export function setPositionsComponent(aiState: AiState, component: IAiPosition) {
+    aiState.positionsComponents.set(component.entityId, component)
+}
+
+export function getNpcStateComponent(aiState: AiState, entityId: number): IAiNpcStatus | undefined {
+    return aiState.npcStateComponents.get(entityId);
+}
+export function setNpcStateComponent(aiState: AiState, component: IAiNpcStatus) {
+    aiState.npcStateComponents.set(component.entityId, component)
+}
+
+export function getRespawnComponent(aiState: AiState, entityId: number): IAiRespawnInfo | undefined {
+    return aiState.respawnComponents.get(entityId);
+}
+
+export function setRespawnComponent(aiState: AiState, component: IAiRespawnInfo) {
+    aiState.respawnComponents.set(component.entityId, component)
+}
+
+export function getEnemyComponent(aiState: AiState, entityId: number): IAiEnemyInfo | undefined {
+    return aiState.enemyComponents.get(entityId);
+}
+
+export function setEnemyComponent(aiState: AiState, component: IAiEnemyInfo) {
+    aiState.enemyComponents.set(component.entityId, component)
+}
+export function deleteEnemyComponent(aiState: AiState, entityId: number) {
+    aiState.enemyComponents.delete(entityId)
+}
+
+export function getActionHistoryComponent(aiState: AiState, entityId: number): IAiActionHistory | undefined {
+    return aiState.actionHistoryComponents.get(entityId);
+}
+export function setActionHistoryComponent(aiState: AiState, component: IAiActionHistory) {
+    aiState.actionHistoryComponents.set(component.entityId, component)
+}
+export function getAttackEventComponent(aiState: AiState, entityId: number): IAiAttackEventInfo | undefined {
+    return aiState.attackEventComponents.get(entityId);
+}
+export function setAttackEventComponent(aiState: AiState, component: IAiAttackEventInfo) {
+    aiState.attackEventComponents.set(component.entityId, component)
+}
+export function getNpcTagsComponent(aiState: AiState, entityId: number): IAiNpcTags | undefined {
+    return aiState.npcTagsComponent.get(entityId);
+}
+export function setNpcTagsComponent(aiState: AiState, component: IAiNpcTags) {
+    aiState.npcTagsComponent.set(component.entityId, component)
+}
+
+export function insertBot(aiState: AiState, npc: IAiNpc): void {
+    const stateInfo: IAiNpcStatus = { entityId: npc.id, isDead: false, isUnconscious: false, npcInstance: npc.npcInstance }
+    const respawnInfo: IAiRespawnInfo = { entityId: npc.id, respawnTime: npc.respawnTime, deathTime: -1 }
+    const actionInfo: IActionComponent = { entityId: npc.id }
+    const positionInfo: IAiPosition = { entityId: npc.id, currentPosX: 0, currentPosY: 0, currentPosZ: 0, lastPosX: 0, lastPosY: 0, lastPosZ: 0, lastPosUpdate: 0, startWorld: npc.startWorld, startPoint: npc.startPoint }
+    const actionDescription: IAiActionDescriptions = { entityId: npc.id, descriptions: npc.actionDescriptions }
+    const actionHistory: IAiActionHistory = { entityId: npc.id, lastAttackTime: 0 }
+    const attackEvent: IAiAttackEventInfo = { entityId: npc.id, isUnderAttack: false, attackedBy: -1 }
+    const npcTags: IAiNpcTags = { entityId: npc.id, tags: npc.aiTags }
+
+    setNpcStateComponent(aiState, stateInfo)
+    setRespawnComponent(aiState, respawnInfo)
+    setActionsComponent(aiState, actionInfo)
+    setPositionsComponent(aiState, positionInfo)
+    setActionDescriptionComponent(aiState, actionDescription)
+    setActionHistoryComponent(aiState, actionHistory)
+    setAttackEventComponent(aiState, attackEvent)
+    setNpcTagsComponent(aiState, npcTags)
+}
+
+export function deleteBot(aiState: AiState, npcId: number): void {
+    aiState.npcStateComponents.delete(npcId)
+    aiState.respawnComponents.delete(npcId)
+    aiState.actionsComponents.delete(npcId)
+    aiState.positionsComponents.delete(npcId)
+    aiState.actionDescriptionComponents.delete(npcId)
+    aiState.enemyComponents.delete(npcId)
+}
+
+export function getWaynet(aiState: AiState): IWaynet {
+    return aiState.waynet
+}
+
+export function getWaynetRegistry(aiState: AiState): WaynetRegistry {
+    return aiState.waynetRegistry
+}
+
+export function getCharacterInPositionAreas(aiState: AiState): Map<string, Map<number, Array<number>>> {
+    return aiState.characterInPositionAreas
+}
+export function getAllBots(aiState: AiState): Array<number> {
+    return aiState.allBots
+}
+
+export function registerBot(aiState: AiState, npc: IAiNpc): void {
+    aiState.allBots.push(npc.id)
+    insertBot(aiState, npc)
+}
+
+export function unregisterBot(aiState: AiState, npcId: number) {
+    aiState.allBots = aiState.allBots.filter(id => id !== npcId)
+    deleteBot(aiState, npcId)
+
+    for (let worldName of aiState.characterInPositionAreas.keys()) {
+        const areaHashes: Iterable<number> | undefined = aiState.characterInPositionAreas.get(worldName)?.keys()
+        if (typeof areaHashes !== 'undefined') {
+            for (let areaHash of areaHashes) {
+                const nearbyNpcs = aiState.characterInPositionAreas.get(worldName)?.get(areaHash)
+                if (typeof nearbyNpcs !== 'undefined') {
+                    aiState.characterInPositionAreas.get(worldName)?.set(areaHash, nearbyNpcs.filter(nearbyId => nearbyId !== npcId))
+                }
+            }
+        }
     }
 }
 
-export function spawnNpc(aiState: AiState, npc: IAiNpc, pointName: string, world: string): void {
-    const npcPosition = getPointCoordinateValues(aiState, pointName)
-    npc.startPoint = pointName
-    npc.startWorld = world
-    registerBot(aiState, npc)
-    revmp.setPosition(npc.id, [npcPosition.x, npcPosition.y, npcPosition.z]);
-    const spawnAngle = getWaynetPointAngle(npcPosition.x, npcPosition.z, npcPosition.dirX, npcPosition.dirZ)
-    setPlayerAngle(npc.id, spawnAngle)
-
-    const position: IAiPosition | undefined = getPositionsComponents(aiState, npc.id)
-    if (typeof position !== 'undefined') {
-        position.currentPosX = npcPosition.x
-        position.currentPosY = npcPosition.y
-        position.currentPosZ = npcPosition.z
-        setPositionsComponent(aiState, position)
-    }
-}
-
-function getPointCoordinateValues(aiState: AiState, pointName: string): PointCoordinates {
-    const waynet = getWaynet(aiState)
-    const foundFreepoint = waynet.freepoints.find(x => x.fpName === pointName)
-    if (typeof foundFreepoint !== 'undefined') {
-        return { x: foundFreepoint.x, y: foundFreepoint.y, z: foundFreepoint.z, dirX: foundFreepoint.rotX, dirZ: foundFreepoint.rotZ }
-    }
-    const foundWaypoint = Array.from(waynet.waypoints.values()).find(wp => wp.wpName === pointName)
-    if (typeof foundWaypoint !== 'undefined') {
-        return { x: foundWaypoint.x, y: foundWaypoint.y, z: foundWaypoint.z, dirX: foundWaypoint.rotX, dirZ: foundWaypoint.rotZ }
-    }
-    console.log("Error: for the given point no coordinates where found! Default coordinates will be provided")
-    return { x: 0, y: 0, z: 0, dirX: 0, dirZ: 0 }
+export function getWorldEventState(aiState: AiState): IWorldEventState {
+    return aiState.worldEventState
 }

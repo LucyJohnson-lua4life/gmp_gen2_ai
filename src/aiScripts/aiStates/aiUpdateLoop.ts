@@ -5,8 +5,8 @@ import { IActionDescription } from '../aiEntities/iActionDescription';
 import { getNpcForInstance } from '../aiEntities/npcs/npcEntityUtils';
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
 import { AiState } from './aiState';
-import { getActionDescriptionComponent, getActionsComponent, getAllBots, getCharacterInPositionAreas, getNpcStateComponent, getPositionsComponents, getRespawnComponent, setRespawnComponent, unregisterBot } from './commonAiStateFunctions';
-import { spawnNpc } from './aiStateFunctions';
+import { getActionDescriptionComponent, getActionsComponent, getAllBots, getCharacterInPositionAreas, getNpcStateComponent, getPositionsComponents, getRespawnComponent, setRespawnComponent, unregisterBot } from './aiStateFunctions';
+import { spawnNpc } from './spawnFunctions';
 
 /**
  * Represents the loop that iterates through each npc state and executes the next actions for each npc.

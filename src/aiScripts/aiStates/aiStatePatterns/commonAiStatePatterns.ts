@@ -1,7 +1,7 @@
 import { getNecessaryAngleToWatchTarget, getDistance, isTargetInFrontOfEntity } from "../../aiFunctions/aiUtils";
 import { NpcActionUtils } from "../../aiFunctions/npcActionUtils";
 import { AiState } from "../aiState";
-import { getEnemyComponent } from "../commonAiStateFunctions";
+import { getEnemyComponent } from "../aiStateFunctions";
 
 export function playerEnemyExists(aiId: number, aiState: AiState): boolean {
     const enemyId = getEnemyComponent(aiState, aiId)?.enemyId ?? -1

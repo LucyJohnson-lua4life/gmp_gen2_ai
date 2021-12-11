@@ -1,5 +1,5 @@
 
-import { spawnNpc } from "./aiStates/aiStateFunctions"
+import { spawnNpc } from "./aiStates/spawnFunctions"
 import { Wolf } from "./aiEntities/npcs/wolf"
 import { Scavenger } from "./aiEntities/npcs/scavenger"
 import { Shadowbeast } from "./aiEntities/npcs/shadowbeast"
@@ -17,7 +17,7 @@ import { LIVES_IN_TOWN_TAG } from "./aiEntities/components/iAiNpcTags"
 import { CitizenFemale } from "./aiEntities/npcs/citizenFemale"
 import { CitizenMale } from "./aiEntities/npcs/citizenMale"
 import { HolyEnforcer } from "./aiEntities/npcs/holyEnforcer"
-import { getWaynetRegistry } from "./aiStates/commonAiStateFunctions"
+import { getWaynetRegistry } from "./aiStates/aiStateFunctions"
 
 export function initNewWorldNpcs(aiState: AiState): void {
 

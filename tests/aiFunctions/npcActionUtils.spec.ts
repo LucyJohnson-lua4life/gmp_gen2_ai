@@ -1,6 +1,6 @@
 import { NpcActionUtils } from '../../src/aiScripts/aiFunctions/npcActionUtils';
 import { AiState } from '../../src/aiScripts/aiStates/aiState';
-import { getCharacterInPositionAreas } from '../../src/aiScripts/aiStates/commonAiStateFunctions';
+import { getCharacterInPositionAreas } from '../../src/aiScripts/aiStates/aiStateFunctions';
 
 const worldName = "NEWWORLD\\NEWWORLD.ZEN"
 const AITargetDistance = 2500;

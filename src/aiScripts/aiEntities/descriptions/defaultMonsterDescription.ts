@@ -5,7 +5,7 @@ import { ForwardAttackWithPause } from '../actions/fightActions';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './templates/defaultDescriptionTemplate';
 import { gotoStartPoint, setActionWhenUndefined, setAttackerToEnemy, warnEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
 import { isAniPlaying } from '../../aiFunctions/aiUtils';
-import { getActionsComponent, getEnemyComponent } from '../../../aiScripts/aiStates/commonAiStateFunctions';
+import { getActionsComponent, getEnemyComponent } from '../../aiStates/aiStateFunctions';
 
 export class DefaultMonsterDescription implements IActionDescription {
     entityId: number

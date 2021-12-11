@@ -3,7 +3,7 @@ import { initWeaponInstances, WeaponInstances } from "./aiScripts/aiEntities/equ
 import { initAiState } from "./aiScripts/aiInit";
 import { AiState } from "./aiScripts/aiStates/aiState";
 import { updateWorldAcordingToState } from "./aiScripts/aiStates/aiWorldStateInterpreter";
-import { getWorldEventState } from "./aiScripts/aiStates/commonAiStateFunctions";
+import { getWorldEventState } from "./aiScripts/aiStates/aiStateFunctions";
 import { revive } from "./serverComponents/damageCalculation";
 
 let aiState: AiState;

@@ -6,7 +6,7 @@ import { AiState } from '../../aiStates/aiState';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues} from './templates/defaultDescriptionTemplate';
 import { TripleQuickAttack } from '../actions/fightActions';
 import { gotoStartPoint, setActionWhenUndefined, setAttackerToEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
-import { getActionHistoryComponent, getActionsComponent, getEnemyComponent, getWaynetRegistry, setActionHistoryComponent } from '../../../aiScripts/aiStates/commonAiStateFunctions';
+import { getActionHistoryComponent, getActionsComponent, getEnemyComponent, getWaynetRegistry, setActionHistoryComponent } from '../../aiStates/aiStateFunctions';
 
 export class HeavyCrimminalDescription implements IActionDescription {
     entityId: number

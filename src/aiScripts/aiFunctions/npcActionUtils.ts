@@ -1,5 +1,5 @@
 import { AiState } from "../aiStates/aiState";
-import { getCharacterInPositionAreas } from "../aiStates/commonAiStateFunctions";
+import { getCharacterInPositionAreas } from "../aiStates/aiStateFunctions";
 import { getDistance } from "./aiUtils";
 
 

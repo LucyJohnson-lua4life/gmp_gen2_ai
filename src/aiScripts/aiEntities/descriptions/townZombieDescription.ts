@@ -5,7 +5,7 @@ import { AiState } from '../../aiStates/aiState';
 import { ForwardAttackWithPause} from '../actions/fightActions';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './templates/defaultDescriptionTemplate';
 import { gotoStartPoint, setActionWhenUndefined, setAttackerToEnemy, warnEnemy} from './templates/commonDefaultTemplateDescriptionFunctions';
-import { getActionHistoryComponent, getActionsComponent, getEnemyComponent, getWaynetRegistry, setActionHistoryComponent } from '../../../aiScripts/aiStates/commonAiStateFunctions';
+import { getActionHistoryComponent, getActionsComponent, getEnemyComponent, getWaynetRegistry, setActionHistoryComponent } from '../../aiStates/aiStateFunctions';
 
 export class TownZombieDescription implements IActionDescription {
     entityId: number
