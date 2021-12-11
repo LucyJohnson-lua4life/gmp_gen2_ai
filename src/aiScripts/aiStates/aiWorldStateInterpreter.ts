@@ -5,15 +5,15 @@ import { FarmerFemale } from "../aiEntities/npcs/farmerFemale";
 import { FarmerMale } from "../aiEntities/npcs/farmerMale";
 import { Zombie } from "../aiEntities/npcs/zombie";
 import { AiState } from "./aiState";
-import { AiStateFunctions } from "./aiStateFunctions";
+import { spawnNpc } from "./aiStateFunctions";
 import { getNpcTagsComponent, getWaynetRegistry, getWorldEventState, unregisterBot } from "./commonAiStateFunctions";
 
 const world = "NEWWORLD\\NEWWORLD.ZEN"
-export function updateWorldAcordingToState(aiState: AiState, aiStateFunctions: AiStateFunctions) {
-  updateCity(aiState, aiStateFunctions)
+export function updateWorldAcordingToState(aiState: AiState) {
+  updateCity(aiState)
 }
 
-function updateCity(aiState: AiState, aiStateFunctions: AiStateFunctions): void {
+function updateCity(aiState: AiState): void {
   const worldState = getWorldEventState(aiState)
   removeCharactersByTag(aiState, LIVES_IN_TOWN_TAG)
   getWaynetRegistry(aiState).resetTownieRegistry()
@@ -21,18 +21,18 @@ function updateCity(aiState: AiState, aiStateFunctions: AiStateFunctions): void 
   if (worldState.influenceOfTheGods >= 10) {
 
     if (worldState.khorinisState === 0) {
-      spawnFarmersInKhorinis(aiState, aiStateFunctions)
+      spawnFarmersInKhorinis(aiState)
       worldState.khorinisState = 1
 
     }
     else if (worldState.khorinisState !== 0) {
-      spawnCitizensInKhorinis(aiState, aiStateFunctions)
+      spawnCitizensInKhorinis(aiState)
       worldState.khorinisState = 0
     }
   }
 
   else if (worldState.influenceOfTheGods < 10) {
-    spawnZombiesInKhorinis(aiState, aiStateFunctions)
+    spawnZombiesInKhorinis(aiState)
     worldState.khorinisState = 2
   }
 
@@ -56,38 +56,38 @@ function getTownLeaderId(): number {
   return revmp.characters.find(id => revmp.getName(id).name === "Town Leader") ?? -1
 }
 
-function spawnCitizensInKhorinis(aiState: AiState, aiStateFunctions: AiStateFunctions) {
+function spawnCitizensInKhorinis(aiState: AiState) {
   for (let i = 0; i < 15; i++) {
     const citizen = new CitizenMale([LIVES_IN_TOWN_TAG])
     const spawnPoint = getWaynetRegistry(aiState).registerTownieAndGetPoint(citizen.id)
-    aiStateFunctions.spawnNpc(citizen, spawnPoint, world);
+    spawnNpc(aiState,citizen, spawnPoint, world);
   }
 
   for (let i = 0; i < 15; i++) {
     const citizen = new CitizenFemale([LIVES_IN_TOWN_TAG])
     const spawnPoint = getWaynetRegistry(aiState).registerTownieAndGetPoint(citizen.id)
-    aiStateFunctions.spawnNpc(citizen, spawnPoint, world);
+    spawnNpc(aiState,citizen, spawnPoint, world);
   }
 }
 
-function spawnFarmersInKhorinis(aiState: AiState, aiStateFunctions: AiStateFunctions) {
+function spawnFarmersInKhorinis(aiState: AiState) {
   for (let i = 0; i < 15; i++) {
     const citizen = new FarmerMale([LIVES_IN_TOWN_TAG])
     const spawnPoint = getWaynetRegistry(aiState).registerTownieAndGetPoint(citizen.id)
-    aiStateFunctions.spawnNpc(citizen, spawnPoint, world);
+    spawnNpc(aiState,citizen, spawnPoint, world);
   }
 
   for (let i = 0; i < 15; i++) {
     const citizen = new FarmerFemale([LIVES_IN_TOWN_TAG])
     const spawnPoint = getWaynetRegistry(aiState).registerTownieAndGetPoint(citizen.id)
-    aiStateFunctions.spawnNpc(citizen, spawnPoint, world);
+    spawnNpc(aiState,citizen, spawnPoint, world);
   }
 }
-function spawnZombiesInKhorinis(aiState: AiState, aiStateFunctions: AiStateFunctions) {
+function spawnZombiesInKhorinis(aiState: AiState) {
   for (let i = 0; i < 40; i++) {
     const citizen = new Zombie([LIVES_IN_TOWN_TAG])
     const spawnPoint = getWaynetRegistry(aiState).registerTownieAndGetPoint(citizen.id)
-    aiStateFunctions.spawnNpc(citizen, spawnPoint, world);
+    spawnNpc(aiState,citizen, spawnPoint, world);
   }
 
 }

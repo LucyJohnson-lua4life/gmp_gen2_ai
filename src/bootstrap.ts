@@ -2,7 +2,6 @@ import { ArmorInstances, initArmorInstances } from "./aiScripts/aiEntities/equip
 import { initWeaponInstances, WeaponInstances } from "./aiScripts/aiEntities/equipment/weapons";
 import { initAiState } from "./aiScripts/aiInit";
 import { AiState } from "./aiScripts/aiStates/aiState";
-import { AiStateFunctions } from "./aiScripts/aiStates/aiStateFunctions";
 import { updateWorldAcordingToState } from "./aiScripts/aiStates/aiWorldStateInterpreter";
 import { getWorldEventState } from "./aiScripts/aiStates/commonAiStateFunctions";
 import { revive } from "./serverComponents/damageCalculation";
@@ -100,7 +99,7 @@ function debugCommands(entity: revmp.Entity, msg: string) {
         getWorldEventState(aiState).khorinisState = input
     }
     else if (command === "/update") {
-        updateWorldAcordingToState(aiState, new AiStateFunctions(aiState))
+        updateWorldAcordingToState(aiState)
     }
     else if (command === "/pray") {
         revmp.startAnimation(entity, "S_PRAY")

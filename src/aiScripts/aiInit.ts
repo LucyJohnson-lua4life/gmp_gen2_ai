@@ -1,9 +1,6 @@
 
-import { OrcElite } from "./aiEntities/npcs/orcElite";
-import { Wolf } from "./aiEntities/npcs/wolf"
 import { AiEventHandler } from "./aiStates/aiEventHandler";
 import { AiState } from "./aiStates/aiState";
-import { AiStateFunctions } from "./aiStates/aiStateFunctions";
 import { AiUpdateLoop } from "./aiStates/aiUpdateLoop";
 import { AiWorldStateEventHandler } from "./aiStates/aiWorldStateEventHandler";
 import { initNewWorldNpcs } from "./initNewWorldNpcs";
@@ -15,7 +12,6 @@ export function initAiState(): AiState {
     // this could confuse users
     const aiState = new AiState('./dist/aiScripts/newworld.wp', './dist/aiScripts/newworld.fp')
     const updateLoop = new AiUpdateLoop(aiState)
-    const aiStateFunctions = new AiStateFunctions(aiState)
     const worldStateEventHandler = new AiWorldStateEventHandler(aiState)
     const aiEventHandler = new AiEventHandler(aiState, worldStateEventHandler)
 

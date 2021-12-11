@@ -4,9 +4,9 @@ import { IAiAction } from '../aiEntities/iAiAction';
 import { IActionDescription } from '../aiEntities/iActionDescription';
 import { getNpcForInstance } from '../aiEntities/npcs/npcEntityUtils';
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
-import { AiStateFunctions } from '../aiStates/aiStateFunctions';
 import { AiState } from './aiState';
 import { getActionDescriptionComponent, getActionsComponent, getAllBots, getCharacterInPositionAreas, getNpcStateComponent, getPositionsComponents, getRespawnComponent, setRespawnComponent, unregisterBot } from './commonAiStateFunctions';
+import { spawnNpc } from './aiStateFunctions';
 
 /**
  * Represents the loop that iterates through each npc state and executes the next actions for each npc.
@@ -17,12 +17,10 @@ export class AiUpdateLoop {
     private world = "NEWWORLD\\NEWWORLD.ZEN"
     private aiState: AiState;
     private npcActionUtils: NpcActionUtils
-    private aiStateFunctions: AiStateFunctions
 
     constructor(aiState: AiState) {
         this.aiState = aiState;
         this.npcActionUtils = new NpcActionUtils(aiState)
-        this.aiStateFunctions = new AiStateFunctions(aiState)
     }
 
     public updateAll() {
@@ -107,7 +105,7 @@ export class AiUpdateLoop {
             //todo: fix this
             const spawnPoint = typeof lastPosition.startPoint !== 'undefined' ? lastPosition.startPoint : "HAFEN"
             const spawnWorld = typeof lastPosition.startWorld !== 'undefined' ? lastPosition.startWorld : this.world
-            this.aiStateFunctions.spawnNpc(getNpcForInstance(lastNpcInstance), spawnPoint, spawnWorld)
+            spawnNpc(this.aiState,getNpcForInstance(lastNpcInstance), spawnPoint, spawnWorld)
         }
     }
 
