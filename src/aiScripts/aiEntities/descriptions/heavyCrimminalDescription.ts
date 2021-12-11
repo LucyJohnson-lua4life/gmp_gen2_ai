@@ -21,11 +21,11 @@ export class HeavyCrimminalDescription implements IActionDescription {
 
     describeAction(aiState: AiState): void {
         if (revmp.valid(this.entityId)) {
-            this.describeGeneralRoutine(aiState)
+            this.describeDefaultRoutine(aiState)
         }
     }
 
-    private describeGeneralRoutine(aiState: AiState): void {
+    private describeDefaultRoutine(aiState: AiState): void {
         const template: IDefaultDescriptionTemplateValues = {
             aiId: this.entityId,
             aiState: aiState,
