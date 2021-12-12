@@ -18,6 +18,7 @@ import { CitizenFemale } from "./aiEntities/npcs/citizenFemale"
 import { CitizenMale } from "./aiEntities/npcs/citizenMale"
 import { HolyEnforcer } from "./aiEntities/npcs/holyEnforcer"
 import { getWaynetRegistry } from "./aiStates/aiStateFunctions/commonAiStateFunctions"
+import { TrollDescription } from "./aiEntities/descriptions/trollDescriptions"
 
 export function initNewWorldNpcs(aiState: AiState): void {
 
@@ -634,6 +635,6 @@ export function initNewWorldNpcs(aiState: AiState): void {
     spawnNpc(aiState,citizen, spawnPoint, world);
   }
 
-  let pal = new HolyEnforcer([LIVES_IN_TOWN_TAG])
+  let pal = new Troll()
     spawnNpc(aiState,pal, "HAFEN", world);
 }

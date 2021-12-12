@@ -3,6 +3,7 @@ import { IActionDescription } from "../iActionDescription";
 import { DefaultMonsterDescription } from "../descriptions/defaultMonsterDescription";
 import { IAiNpc } from "../iAiNpc";
 import { getTrollInstance, INSTANCE_TROLL} from "./npcInits";
+import { TrollDescription } from "../descriptions/trollDescriptions";
 
 export class Troll implements IAiNpc {
     enemyIds: number[];
@@ -32,7 +33,7 @@ export class Troll implements IAiNpc {
         this.enemyIds = [];
         this.friendIds = [];
         this.respawnTime = 10;
-        this.actionDescriptions = [new DefaultMonsterDescription(this.id)]
+        this.actionDescriptions = [new TrollDescription(this.id)]
         this.aiTags = new Map();
 
         this.lastPosUpdate = 0

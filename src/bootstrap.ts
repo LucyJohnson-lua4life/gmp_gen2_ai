@@ -12,7 +12,7 @@ revmp.name = "Revmp Adventures";
 revmp.description = "The best adventure experience.";
 
 revmp.on("init", () => {
-    
+
     const world = revmp.createWorld({
         zen: "NEWWORLD/NEWWORLD.ZEN",
         //startpoint: "NW_CITY_HABOUR_02_B",
@@ -30,13 +30,13 @@ revmp.on("init", () => {
 
 revmp.on("entityCreated", (entity: revmp.Entity) => {
 
-    if(revmp.isPlayer(entity)){
+    if (revmp.isPlayer(entity)) {
         revmp.addItem(entity, WeaponInstances.dragonHunterBlade, 1);
         revmp.addItem(entity, ArmorInstances.dragonHunterArmor, 1);
         revmp.equipItem(entity, WeaponInstances.dragonHunterBlade)
         revmp.equipItem(entity, ArmorInstances.dragonHunterArmor)
-        revmp.setAttributes(entity, {strength: 100, oneHanded: 100})
-        revmp.setHealth(entity, {current: 2100, max: 2100})
+        revmp.setAttributes(entity, { strength: 100, oneHanded: 100 })
+        revmp.setHealth(entity, { current: 2100, max: 2100 })
         revmp.addOverlay(entity, "Humans_1hST2.MDS")
         revmp.sendChatMessage(entity, 'type /healme to get back to full health')
     }
@@ -53,7 +53,7 @@ function debugCommands(entity: revmp.Entity, msg: string) {
     }
     if (command === "/sendsomething") {
         revmp.sendChatMessage(entity, 'testo')
-    } 
+    }
     else if (command === "/revive") {
         revive(entity);
     }
@@ -104,6 +104,14 @@ function debugCommands(entity: revmp.Entity, msg: string) {
     else if (command === "/pray") {
         revmp.startAnimation(entity, "S_PRAY")
     }
+
+    else if (command === "/sev") {
+        revmp.sendChatMessage(entity, "start sending....")
+        revmp.emit("myevent", entity)
+    }
+    else if (command === "/fall"){
+        revmp.startAnimation(entity, "T_STAND_2_" + "S_FALLB")
+    }
 }
 
 
@@ -113,3 +121,9 @@ revmp.on("chatCommand", (entity, msg) => {
     debugCommands(entity, msg)
 });
 
+
+revmp.on("myevent", (entity) => {
+    if (typeof entity === 'number') {
+        revmp.sendChatMessage(entity, "you send a custom event")
+    }
+});

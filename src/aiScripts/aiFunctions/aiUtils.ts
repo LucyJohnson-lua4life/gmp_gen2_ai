@@ -125,9 +125,11 @@ export function getPlayerAngle(entityId: number) {
  * @param ani name of the animation.
  */
 export function isAniPlaying(entity: revmp.Entity, ani: string) {
-    return revmp.getAnimations(entity)
-        .activeAnis.find(a => a.ani.name === ani && !a.isFadingOut) !== undefined;
+    return revmp
+        .getAnimations(entity)
+        .activeAnis.find((a) => a.ani.name.includes(ani) && !a.isFadingOut) !== undefined
 }
+
 /**
  * Sets the angle of the entity.
  * @param entityId id of the entity for which the angle should be set.

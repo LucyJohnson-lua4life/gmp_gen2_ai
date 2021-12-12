@@ -121,7 +121,7 @@ function isRangedAttack(attacker: revmp.Entity) {
 }
 
 function isHuman(entity: revmp.Entity) {
-return revmp.getGuild(entity).guild <= revmp.GuildType.SeperatorHum;
+    return revmp.getGuild(entity).guild <= revmp.GuildType.SeperatorHum;
 }
 
 function canParadeAttack(
@@ -189,7 +189,8 @@ function damageCalculation(attacker: revmp.Entity, target: revmp.Entity) {
     ) {
         dropUnconscious(target, a);
         return;
-    } else*/ if (currentHealth === 0) {
+    } else*/ 
+    if (currentHealth === 0) {
         dropDead(target, a);
         return;
     }
@@ -201,8 +202,11 @@ function damageCalculation(attacker: revmp.Entity, target: revmp.Entity) {
             revmp.startAnimation(target, "T_STUMBLE");
         }
     }
+
     revmp.setHealth(target, { current: currentHealth });
 }
+
+
 
 revmp.on("attacked", (attacker, target, userEvent) => {
     if (userEvent) {
@@ -226,6 +230,63 @@ revmp.on("attacked", (attacker, target, userEvent) => {
 
     // TODO: hit effect & sound
     damageCalculation(attacker, target);
+});
+
+function stunAttackDamageCalculation(attacker: revmp.Entity, target: revmp.Entity) {
+    const damage = getDrawnWeaponDamage(attacker, target);
+    const damageDealt = Math.max(5, damage);
+    const currentHealth = Math.max(
+        0,
+        revmp.getHealth(target).current - damageDealt
+    );
+
+    const targetPos = revmp.getPosition(target).position;
+    const attackerPos = revmp.getPosition(attacker).position;
+    const a = angle(targetPos[0], targetPos[2], attackerPos[0], attackerPos[2]);
+    /*if (
+        (currentHealth === 0 || currentHealth === 1) &&
+        isHuman(attacker) &&
+        isHuman(target)
+        // TODO: check weapon lethality
+    ) {
+        dropUnconscious(target, a);
+        return;
+    } else*/ 
+    if (currentHealth === 0) {
+        dropDead(target, a);
+        return;
+    }
+
+    if (revmp.isPlayer(target)) {
+        if(!isAnimationPlaying(target, "S_FALLB")){
+            revmp.startAnimation(target, "S_FALLB")
+        }
+    }
+
+    revmp.setHealth(target, { current: currentHealth });
+}
+revmp.on("stunAttack", (attacker, target) => {
+    if (typeof attacker === 'number' && typeof target === 'number') {
+        // TODO: anti cheat, check if attacker is attacking too often
+        // TODO: check rotation.
+        // TODO: check focus
+        if (isMeleeAttack(attacker)) {
+            // TODO: check melee range.
+        } else {
+            // TODO: check ranged range.
+        }
+
+        if (canParadeAttack(attacker, target)) {
+            if (revmp.isPlayer(target)) {
+                // TODO: anti cheat, check if target is blocking too often
+            }
+            // TODO: parade effect & parade sound
+            return;
+        }
+
+        // TODO: hit effect & sound
+        stunAttackDamageCalculation(attacker, target);
+    }
 });
 
 export function dropUnconscious(entity: revmp.Entity, angle?: number): void {
@@ -299,4 +360,10 @@ export function revive(entity: revmp.Entity): void {
     if (revmp.isPlayer(entity)) {
         //revmp.addMovementController(entity);
     }
+}
+
+function isAnimationPlaying(entity: revmp.Entity, ani: string) {
+    return revmp
+        .getAnimations(entity)
+        .activeAnis.find((a) => a.ani.name.includes(ani) && !a.isFadingOut) !== undefined
 }
