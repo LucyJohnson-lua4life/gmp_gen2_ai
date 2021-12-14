@@ -48,7 +48,7 @@ export class AiState {
         this.allBots = []
         this.allPlayer = []
         this.waynetRegistry = new WaynetRegistry()
-        this.worldEventState = { influenceOfTheGods: 50, khorinisState: 0, bigFarmState: 0, lastStateUpdate: Date.now() }
+        this.worldEventState = { lastStateUpdate: Date.now(), khorinisState: new Map()}
 
         this.aiDailyRoutineInfos = new Map()
         this.aiActions = new Map()

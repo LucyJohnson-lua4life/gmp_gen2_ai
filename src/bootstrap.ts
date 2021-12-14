@@ -5,6 +5,7 @@ import { AiState } from "./aiScripts/aiStates/aiState";
 import { updateWorldAcordingToState } from "./aiScripts/aiStates/aiWorldStateInterpreter";
 import { getWorldEventState } from "./aiScripts/aiStates/aiStateFunctions/commonAiStateFunctions";
 import { revive } from "./serverComponents/damageCalculation";
+import { KHORINIS_FRACTION } from "./aiScripts/aiStates/waynetRegistries/iWorldEventState";
 
 let aiState: AiState;
 
@@ -84,19 +85,23 @@ function debugCommands(entity: revmp.Entity, msg: string) {
 
     else if (command === "/ws") {
         const state = getWorldEventState(aiState)
-        revmp.sendChatMessage(entity, "influence of gods: " + state.influenceOfTheGods)
-        revmp.sendChatMessage(entity, "khorinis state: " + state.khorinisState)
-        revmp.sendChatMessage(entity, "bigfarm state: " + state.bigFarmState)
+        revmp.sendChatMessage(entity, "paladins: " + (state.khorinisState?.get(KHORINIS_FRACTION.PALADIN) ?? 0))
+        revmp.sendChatMessage(entity, "mercenaries: " + (state.khorinisState?.get(KHORINIS_FRACTION.MERCENARY) ?? 0))
+        revmp.sendChatMessage(entity, "beliar: " + (state.khorinisState?.get(KHORINIS_FRACTION.BELIAR) ?? 0))
         revmp.sendChatMessage(entity, "last update: " + state.lastStateUpdate)
     }
 
-    else if (command === "/setig") {
+    else if (command === "/setpal") {
         const input = parseInt(words[1])
-        getWorldEventState(aiState).influenceOfTheGods = input
+        getWorldEventState(aiState).khorinisState.set(KHORINIS_FRACTION.PALADIN,input) 
     }
-    else if (command === "/setks") {
+    else if (command === "/setmerc") {
         const input = parseInt(words[1])
-        getWorldEventState(aiState).khorinisState = input
+        getWorldEventState(aiState).khorinisState.set(KHORINIS_FRACTION.MERCENARY,input) 
+    }
+    else if (command === "/setbel") {
+        const input = parseInt(words[1])
+        getWorldEventState(aiState).khorinisState.set(KHORINIS_FRACTION.BELIAR,input) 
     }
     else if (command === "/update") {
         updateWorldAcordingToState(aiState)
