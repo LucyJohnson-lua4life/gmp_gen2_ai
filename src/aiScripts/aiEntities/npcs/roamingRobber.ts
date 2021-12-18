@@ -26,6 +26,7 @@ export class RoamingRobber implements IAiNpc {
     startPoint:string|undefined;
     startWorld:string|undefined;
     npcInstance:string;
+    dialogues: Map<string, string>;
 
 
     constructor() {
@@ -46,6 +47,7 @@ export class RoamingRobber implements IAiNpc {
         this.currentPosY = 0
         this.currentPosZ = 0
         this.npcInstance = INSTANCE_ROAMING_ROBBER
+        this.dialogues = new Map()
 
         revmp.addOverlay(this.id, "Humans_1hST1.MDS")
         //revmp.setAttributes(this.id, {oneHanded: 100})

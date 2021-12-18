@@ -192,3 +192,14 @@ export function isAlive(id: number): boolean {
 export function hasMeleeWeapon(entityId: number): boolean {
     return revmp.valid(revmp.getEquipment(entityId).meleeWeapon)
 }
+
+export function sendChatMessageInRange(aiId: number, range:number, msg: string):void{
+
+    revmp.players.forEach(playerInRange => {
+        if(getDistance(aiId, playerInRange) < range){
+            revmp.sendChatMessage(playerInRange, msg)
+        }
+    })
+
+
+}

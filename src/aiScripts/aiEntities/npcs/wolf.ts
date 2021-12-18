@@ -22,6 +22,7 @@ export class Wolf implements IAiNpc {
     startPoint:string|undefined;
     startWorld:string|undefined;
     npcInstance:string;
+    dialogues: Map<string, string>;
 
 
     constructor() {
@@ -42,6 +43,7 @@ export class Wolf implements IAiNpc {
         this.currentPosY = 0
         this.currentPosZ = 0
         this.npcInstance = INSTANCE_WOLF
+        this.dialogues = new Map()
     }
 
 }

@@ -85,8 +85,6 @@ export class NpcActionUtils {
         return Math.sqrt(x * x + y * y + z * z);
     }
 
-
-
     /**
      * Returns the checksum that determines if entities are located in the same sector,
      * based on their positions.

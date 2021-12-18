@@ -12,13 +12,10 @@ import { Warg } from "./aiEntities/npcs/warg"
 import { AiState } from "./aiStates/aiState"
 import { HeavyCrimminal } from "./aiEntities/npcs/heavyCrimminal"
 import { RoamingRobber } from "./aiEntities/npcs/roamingRobber"
-import { PaladinLeader } from "./aiEntities/npcs/paladinLeader"
 import { LIVES_IN_TOWN_TAG } from "./aiEntities/components/iAiNpcTags"
 import { CitizenFemale } from "./aiEntities/npcs/citizenFemale"
 import { CitizenMale } from "./aiEntities/npcs/citizenMale"
-import { HolyEnforcer } from "./aiEntities/npcs/holyEnforcer"
 import { getWaynetRegistry } from "./aiStates/aiStateFunctions/commonAiStateFunctions"
-import { TrollDescription } from "./aiEntities/descriptions/trollDescriptions"
 
 export function initNewWorldNpcs(aiState: AiState): void {
 

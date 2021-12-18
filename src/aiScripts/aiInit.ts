@@ -1,4 +1,5 @@
 
+import { AiDialogueHandler } from "./aiStates/aiDialogueHandler";
 import { AiEventHandler } from "./aiStates/aiEventHandler";
 import { AiState } from "./aiStates/aiState";
 import { AiUpdateLoop } from "./aiStates/aiUpdateLoop";
@@ -13,7 +14,8 @@ export function initAiState(): AiState {
     const aiState = new AiState('./dist/aiScripts/newworld.wp', './dist/aiScripts/newworld.fp')
     const updateLoop = new AiUpdateLoop(aiState)
     const worldStateEventHandler = new AiWorldStateEventHandler(aiState)
-    const aiEventHandler = new AiEventHandler(aiState, worldStateEventHandler)
+    const dialogueHandler = new AiDialogueHandler(aiState)
+    const aiEventHandler = new AiEventHandler(aiState, worldStateEventHandler, dialogueHandler)
 
 
     aiEventHandler.initEventHandler()

@@ -25,6 +25,7 @@ export class CitizenMale implements IAiNpc {
     startPoint:string|undefined;
     startWorld:string|undefined;
     npcInstance:string;
+    dialogues: Map<string, string>;
 
 
     constructor(tags: Array<string>) {
@@ -49,6 +50,8 @@ export class CitizenMale implements IAiNpc {
         this.currentPosY = 0
         this.currentPosZ = 0
         this.npcInstance = INSTANCE_HEAVY_CRIMMINAL
+        this.dialogues = new Map()
+        this.initDialogues(this.dialogues)
 
         revmp.addOverlay(this.id, "Humans_1hST1.MDS")
         //revmp.setAttributes(this.id, {oneHanded: 100})
@@ -56,5 +59,10 @@ export class CitizenMale implements IAiNpc {
         revmp.addItem(this.id, ArmorInstances.vlkMaleArmor, 1);
         revmp.equipItem(this.id, WeaponInstances.nobleSword)
         revmp.equipItem(this.id, ArmorInstances.vlkMaleArmor)
+    }
+
+    private initDialogues(currentMap:Map<string,string>):void{
+        currentMap.set("", "Hey whats up?")
+        currentMap.set("secret", "Oh you know the code word...")
     }
 }

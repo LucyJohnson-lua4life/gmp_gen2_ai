@@ -1,4 +1,4 @@
-import { getNecessaryAngleToWatchTarget, getDistance, isTargetInFrontOfEntity } from "../../aiFunctions/aiUtils";
+import { getDistance, isTargetInFrontOfEntity } from "../../aiFunctions/aiUtils";
 import { NpcActionUtils } from "../../aiFunctions/npcActionUtils";
 import { AiState } from "../aiState";
 import { getAiEnemyInfo } from "./commonAiStateFunctions";

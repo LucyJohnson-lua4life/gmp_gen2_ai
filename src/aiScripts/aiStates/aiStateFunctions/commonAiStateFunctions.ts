@@ -1,3 +1,4 @@
+import { IAiDialogue } from "src/aiScripts/aiEntities/components/iAiDialogue"
 import { IAiAction } from "src/aiScripts/aiEntities/iAiAction"
 import { IAiActionDescriptions } from "../../aiEntities/components/iAiActionDescriptions"
 import { IAiActionHistory } from "../../aiEntities/components/iAiActionHistory"
@@ -97,6 +98,13 @@ export function setAiNpcTags(aiState: AiState, component: IAiNpcTags) {
     aiState.aiNpcTags.set(component.entityId, component)
 }
 
+export function getAiDialogue(aiState: AiState, entityId: number): IAiDialogue | undefined {
+    return aiState.aiDialogues.get(entityId);
+}
+export function setAiDialouge(aiState: AiState, component: IAiDialogue) {
+    aiState.aiDialogues.set(component.entityId, component)
+}
+
 export function insertBot(aiState: AiState, npc: IAiNpc): void {
     const stateInfo: IAiNpcStatus = { entityId: npc.id, isDead: false, isUnconscious: false, npcInstance: npc.npcInstance }
     const respawnInfo: IAiRespawnInfo = { entityId: npc.id, respawnTime: npc.respawnTime, deathTime: -1 }
@@ -105,6 +113,7 @@ export function insertBot(aiState: AiState, npc: IAiNpc): void {
     const actionHistory: IAiActionHistory = { entityId: npc.id, lastAttackTime: 0 }
     const attackEvent: IAiAttackEventInfo = { entityId: npc.id, isUnderAttack: false, attackedBy: -1 }
     const npcTags: IAiNpcTags = { entityId: npc.id, tags: npc.aiTags }
+    const npcDialogue: IAiDialogue = {entityId: npc.id, dialogues: npc.dialogues}
 
     setAiNpcStatus(aiState, stateInfo)
     setAiRespawnInfo(aiState, respawnInfo)
@@ -113,15 +122,21 @@ export function insertBot(aiState: AiState, npc: IAiNpc): void {
     setAiActionHistory(aiState, actionHistory)
     setAiAttackEventInfo(aiState, attackEvent)
     setAiNpcTags(aiState, npcTags)
+    setAiDialouge(aiState, npcDialogue)
 }
 
 export function deleteBot(aiState: AiState, npcId: number): void {
+    aiState.aiDailyRoutineInfos.delete(npcId)
+    aiState.aiActions.delete(npcId)
+    aiState.aiActionsDescriptions.delete(npcId)
+    aiState.aiPositions.delete(npcId)
     aiState.aiNpcStatus.delete(npcId)
     aiState.aiRespawnInfos.delete(npcId)
-    aiState.aiActions.delete(npcId)
-    aiState.aiPositions.delete(npcId)
-    aiState.aiActionsDescriptions.delete(npcId)
     aiState.aiEnemyInfos.delete(npcId)
+    aiState.aiNpcTags.delete(npcId)
+    aiState.aiDialogues.delete(npcId)
+    aiState.aiAttackEventInfos.delete(npcId)
+    aiState.aiActionsHistories.delete(npcId)
 }
 
 export function getWaynet(aiState: AiState): IWaynet {

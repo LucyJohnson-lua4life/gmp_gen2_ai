@@ -26,7 +26,7 @@ export class UndeadOrc implements IAiNpc {
     startPoint:string|undefined;
     startWorld:string|undefined;
     npcInstance:string;
-
+    dialogues: Map<string, string>;
 
     constructor() {
         this.id = revmp.createBot(getUndeadOrcInstance());
@@ -48,6 +48,7 @@ export class UndeadOrc implements IAiNpc {
         this.npcInstance = INSTANCE_ORC_UNDEAD
         revmp.addItem(this.id, WeaponInstances.eliteOrcSword, 1);
         revmp.equipItem(this.id, WeaponInstances.eliteOrcSword)
+        this.dialogues = new Map()
         //revmp.setAttributes(this.id, { twoHanded: 100 })
     }
 }

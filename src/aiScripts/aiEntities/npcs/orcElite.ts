@@ -25,6 +25,7 @@ export class OrcElite implements IAiNpc {
     startPoint:string|undefined;
     startWorld:string|undefined;
     npcInstance:string;
+    dialogues: Map<string, string>;
 
 
     constructor() {
@@ -45,6 +46,7 @@ export class OrcElite implements IAiNpc {
         this.currentPosY = 0
         this.currentPosZ = 0
         this.npcInstance = INSTANCE_ORC_ELITE
+        this.dialogues = new Map()
         revmp.addItem(this.id, WeaponInstances.eliteOrcSword, 1);
         revmp.equipItem(this.id, WeaponInstances.eliteOrcSword)
         revmp.setAttributes(this.id, { twoHanded: 100 })

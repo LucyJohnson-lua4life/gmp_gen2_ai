@@ -13,6 +13,7 @@ import { IWorldEventState } from "./waynetRegistries/iWorldEventState";
 import { WaynetRegistry } from "./waynetRegistries/waynetRegistry";
 import { IAiActionDescriptions } from "../aiEntities/components/iAiActionDescriptions";
 import { IAiAction } from "../aiEntities/iAiAction";
+import { IAiDialogue } from "../aiEntities/components/iAiDialogue";
 const worldNames: Array<string> = ["NEWWORLD\\NEWWORLD.ZEN", "OLDWORLD\\OLDWORLD.ZEN", "ADDON\\ADDONWORLD.ZEN"]
 /** Entry point to access the all ai related state.*/
 export class AiState {
@@ -40,6 +41,7 @@ export class AiState {
     aiActionsHistories: Map<number, IAiActionHistory>;
     aiAttackEventInfos: Map<number, IAiAttackEventInfo>;
     aiNpcTags: Map<number, IAiNpcTags>;
+    aiDialogues: Map<number,IAiDialogue>;
 
     constructor(wpPath: string, fpPath: string) {
         this.waynet = new Waynet(wpPath, fpPath)
@@ -60,6 +62,7 @@ export class AiState {
         this.aiActionsHistories = new Map()
         this.aiAttackEventInfos = new Map()
         this.aiNpcTags = new Map()
+        this.aiDialogues = new Map()
     }
 
 }

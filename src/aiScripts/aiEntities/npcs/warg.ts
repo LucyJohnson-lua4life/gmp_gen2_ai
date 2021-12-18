@@ -23,6 +23,7 @@ export class Warg implements IAiNpc {
     startPoint:string|undefined;
     startWorld:string|undefined;
     npcInstance:string;
+    dialogues: Map<string, string>;
 
 
     constructor() {
@@ -43,6 +44,7 @@ export class Warg implements IAiNpc {
         this.currentPosY = 0
         this.currentPosZ = 0
         this.npcInstance = INSTANCE_WARG
+        this.dialogues = new Map()
     }
 
 }

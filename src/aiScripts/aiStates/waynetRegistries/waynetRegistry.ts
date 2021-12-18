@@ -24,7 +24,6 @@ export class WaynetRegistry {
         this.crimminalRegistry = new CrimminalWaynetRegistry()
     }
 
-
     public registerTownieAndGetPoint(npcId: number): string{
         return this.townieRegistry.registerAndGetRandomPoint(npcId)
     }
@@ -35,6 +34,5 @@ export class WaynetRegistry {
     public resetTownieRegistry(){
         this.townieRegistry = new TownWaynetRegistry()
     }
-
 
 }
