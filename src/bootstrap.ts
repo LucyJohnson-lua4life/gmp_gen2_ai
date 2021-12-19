@@ -6,7 +6,6 @@ import { updateWorldAcordingToState } from "./aiScripts/aiStates/aiWorldStateInt
 import { getWorldEventState } from "./aiScripts/aiStates/aiStateFunctions/commonAiStateFunctions";
 import { revive } from "./serverComponents/damageCalculation";
 import { KHORINIS_FRACTION } from "./aiScripts/aiStates/waynetRegistries/iWorldEventState";
-import { isEntityFacingTarget } from "./aiScripts/aiFunctions/aiUtils";
 
 let aiState: AiState;
 
@@ -121,11 +120,6 @@ function debugCommands(entity: revmp.Entity, msg: string) {
     else if (command === "/id"){
         const focusid = revmp.getFocus(entity).focus
         revmp.sendChatMessage(entity, "id: " + focusid)
-    }
-    else if(command === "/angle"){
-        const input = parseInt(words[1])
-        const angle = isEntityFacingTarget(entity, input)
-        revmp.sendChatMessage(entity, "angle: " + angle)
     }
 }
 
