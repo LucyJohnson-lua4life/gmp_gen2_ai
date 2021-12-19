@@ -64,13 +64,31 @@ export function getNecessaryAngleToWatchTarget(entityId1: number, entityId2: num
 }
 
 export function isTargetInFrontOfEntity(entityId: number, targetId: number): boolean {
-    const rra = revmp.getRotation(entityId);
-    const rrb = revmp.getRotation(targetId);
-    const q = new THREE.Quaternion(rra.rotation[0], rra.rotation[1], rra.rotation[2], rra.rotation[3]);
-    const q2 = new THREE.Quaternion(rrb.rotation[0], rrb.rotation[1], rrb.rotation[2], rrb.rotation[3]);
-    const angle = q.angleTo(q2)
+    /*
+    const entityRotation = revmp.getRotation(entityId);
+    const targetRotation = revmp.getRotation(targetId);
+    const entityQuat = new THREE.Quaternion(entityRotation.rotation[0], entityRotation.rotation[1], entityRotation.rotation[2], entityRotation.rotation[3]);
+    const targetQuat = new THREE.Quaternion(targetRotation.rotation[0], targetRotation.rotation[1], targetRotation.rotation[2], targetRotation.rotation[3]);
+    const angle = entityQuat.angleTo(targetQuat)
 
-    return angle < 3.2 && angle > 2.7
+    return angle < 3.2 && angle > 2.9
+    */
+    return isEntityFacingTarget(entityId, targetId) < 0.2
+}
+
+
+export function isEntityFacingTarget(entityId: number, targetId: number): number {
+    const entityRevRotation = revmp.getRotation(entityId).rotation
+    const entityQuat = new THREE.Quaternion(entityRevRotation[0], entityRevRotation[1], entityRevRotation[2],entityRevRotation[3])
+    
+    // for some reason gl-matrix creates a different quat for euler than THREE.js, gl-matrix returns the desired quat so we use that one
+    const compareRoation = quat.create();
+    quat.fromEuler(compareRoation, 0, getNecessaryAngleToWatchTarget(entityId, targetId), 0);
+    // convert the gl-matrix quat to three.js to use angleto function
+    const targetQuat = new THREE.Quaternion(compareRoation[0],compareRoation[1],compareRoation[2],compareRoation[3])
+
+    return entityQuat.angleTo(targetQuat)
+
 }
 
 

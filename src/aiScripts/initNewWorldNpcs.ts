@@ -632,6 +632,6 @@ export function initNewWorldNpcs(aiState: AiState): void {
     spawnNpc(aiState,citizen, spawnPoint, world);
   }
 
-  let pal = new Troll()
+  let pal = new OrcElite()
     spawnNpc(aiState,pal, "HAFEN", world);
 }
