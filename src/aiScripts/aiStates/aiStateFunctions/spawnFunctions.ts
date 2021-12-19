@@ -1,7 +1,7 @@
 import { IAiPosition } from "../../aiEntities/components/iAiPosition";
 import { IAiNpc } from "../../aiEntities/iAiNpc";
 import { AiState } from "../aiState";
-import { getWaynetPointAngle, setPlayerAngle } from "../../aiFunctions/aiUtils";
+import { getWaynetPointRadiansAngle, setPlayerAngle } from "../../aiFunctions/aiUtils";
 import { getAiNpcStatus, getAiPosition, getWaynet, registerBot, setAiPosition, unregisterBot } from "./commonAiStateFunctions";
 import { getNpcForInstance } from "../../../aiScripts/aiEntities/npcs/npcEntityUtils";
 
@@ -31,7 +31,7 @@ export function spawnNpc(aiState: AiState, npc: IAiNpc, pointName: string, world
     npc.startWorld = world
     registerBot(aiState, npc)
     revmp.setPosition(npc.id, [npcPosition.x, npcPosition.y, npcPosition.z]);
-    const spawnAngle = getWaynetPointAngle(npcPosition.x, npcPosition.z, npcPosition.dirX, npcPosition.dirZ)
+    const spawnAngle = getWaynetPointRadiansAngle(npcPosition.x, npcPosition.z, npcPosition.dirX, npcPosition.dirZ)
     setPlayerAngle(npc.id, spawnAngle)
 
     const position: IAiPosition | undefined = getAiPosition(aiState, npc.id)

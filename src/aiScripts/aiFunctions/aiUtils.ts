@@ -1,5 +1,3 @@
-
-import { quat, vec3 } from "gl-matrix";
 import * as THREE from 'three';
 // https://stackoverflow.com/a/9614122/10637905
 /**
@@ -9,7 +7,7 @@ import * as THREE from 'three';
  * @param x2 x-value of the second 2D point
  * @param y2 y-value of the second 2D point
  */
-export function getAngleToPoint(x1: number, y1: number, x2: number, y2: number): number {
+export function getRadiansAngleToPoint(x1: number, y1: number, x2: number, y2: number): number {
     const dy = y2 - y1;
     const dx = x2 - x1;
     let theta = Math.atan2(dy, dx); // range (-PI, PI]
@@ -21,10 +19,11 @@ export function getAngleToPoint(x1: number, y1: number, x2: number, y2: number):
     if (theta < 90) {
         theta += 360;
     }
-    return theta - 90; // Idk why Gothic needs -90
+    const angleInDegrees = theta - 90; // Idk why Gothic needs -90
+    return angleInDegrees * (Math.PI / 180)
 }
 
-export function getWaynetPointAngle(playerX: number, playerZ: number, waynetPointDirX: number, waynetPointDirY: number): number {
+export function getWaynetPointRadiansAngle(playerX: number, playerZ: number, waynetPointDirX: number, waynetPointDirY: number): number {
     const x1 = playerX
     const x2 = playerX + waynetPointDirX
     const y1 = playerZ
@@ -48,32 +47,29 @@ export function getWaynetPointAngle(playerX: number, playerZ: number, waynetPoin
     else if (x > 0 && y < 0) {
         angle = 360 - angle
     }
-    return angle
+    return angle * (Math.PI/180)
 }
 
 
 /**
- * Returns the the angle that is necessary so that npc1 looks to npc2
+ * Returns the the angle that is necessary so that npc1 looks to npc2 in radians.
  * @param entityId1 id of the first npc
  * @param entityId2 id of the second npc
  */
 export function getNecessaryAngleToWatchTarget(entityId1: number, entityId2: number): number {
     const position1 = revmp.getPosition(entityId1).position;
     const position2 = revmp.getPosition(entityId2).position;
-    return getAngleToPoint(position1[0], position1[2], position2[0], position2[2])
+    return getRadiansAngleToPoint(position1[0], position1[2], position2[0], position2[2])
 }
 
 export function isTargetInFrontOfEntity(entityId: number, targetId: number): boolean {
     const entityRevRotation = revmp.getRotation(entityId).rotation
     const entityQuat = new THREE.Quaternion(entityRevRotation[0], entityRevRotation[1], entityRevRotation[2], entityRevRotation[3])
 
-    // for some reason gl-matrix creates a different quat for euler than THREE.js, gl-matrix returns the desired quat so we use that one
-    const compareRoation = quat.create();
-    quat.fromEuler(compareRoation, 0, getNecessaryAngleToWatchTarget(entityId, targetId), 0);
-    // convert the gl-matrix quat to three.js to use angleto function
-    const targetQuat = new THREE.Quaternion(compareRoation[0], compareRoation[1], compareRoation[2], compareRoation[3])
+    const compareQuat = new THREE.Quaternion()
+    compareQuat.setFromEuler(new THREE.Euler(0, getNecessaryAngleToWatchTarget(entityId, targetId),0, 'XYZ'))
 
-    return entityQuat.angleTo(targetQuat) < 0.2
+    return entityQuat.angleTo(compareQuat) < 0.2
 }
 
 
@@ -85,7 +81,12 @@ export function isTargetInFrontOfEntity(entityId: number, targetId: number): boo
 export function getDistance(entityId1: number, entityId2: number) {
     const position1 = revmp.getPosition(entityId1).position;
     const position2 = revmp.getPosition(entityId2).position;
-    return vec3.distance(position1, position2);
+
+    const x = position1[0] - position2[0]
+    const y = position1[1] - position2[1]
+    const z = position1[2] - position2[2]
+
+    return Math.sqrt((x * x) + (y * y) + (z * z));
 }
 
 /**
@@ -95,7 +96,10 @@ export function getDistance(entityId1: number, entityId2: number) {
  */
 export function getDistanceToPoint(entityId: number, point: revmp.Vec3) {
     const characterPosition = revmp.getPosition(entityId).position;
-    return vec3.distance(point, characterPosition);
+    const x = characterPosition[0] - point[0]
+    const y = characterPosition[1] - point[1]
+    const z = characterPosition[2] - point[2]
+    return Math.sqrt((x * x) + (y * y) + (z * z));
 }
 
 /**
@@ -139,9 +143,9 @@ export function isAniPlaying(entity: revmp.Entity, ani: string) {
  * @param angle the angle to which the entity should be set.
  */
 export function setPlayerAngle(entityId: number, angle: number) {
-    const rot = quat.create();
-    quat.fromEuler(rot, 0, angle, 0);
-    revmp.setRotation(entityId, rot);
+    let rot = new THREE.Quaternion()
+    rot = rot.setFromEuler(new THREE.Euler(0,angle,0,'XYZ'))
+    revmp.setRotation(entityId, [rot.x, rot.y, rot.z, rot.w]);
 }
 
 /**

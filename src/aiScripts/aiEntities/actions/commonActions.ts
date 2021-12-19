@@ -1,7 +1,7 @@
 
 
 import { IAiAction } from "../iAiAction";
-import { setPlayerAngle, getCombatStateBasedAni, getAngleToPoint, getDistance, isAniPlaying, getWaynetPointAngle, getDistanceToPoint, isTargetInFrontOfEntity, getNecessaryAngleToWatchTarget } from "../../aiFunctions/aiUtils";
+import { setPlayerAngle, getCombatStateBasedAni, getRadiansAngleToPoint, getDistance, isAniPlaying, getWaynetPointRadiansAngle, getDistanceToPoint, isTargetInFrontOfEntity, getNecessaryAngleToWatchTarget } from "../../aiFunctions/aiUtils";
 import { gotoPosition, getDistance as getPointDistance } from "../../waynet/positionFunctions";
 import { IAiPosition } from "../components/iAiPosition";
 import { AiState } from "../../aiStates/aiState";
@@ -360,7 +360,7 @@ export class GotoPosition implements IAiAction {
         }
         else {
             //todo: this stuff is wrong, remove it or analyse it
-            const y = getWaynetPointAngle(pos[0], pos[2], this.targetX, this.targetZ)
+            const y = getWaynetPointRadiansAngle(pos[0], pos[2], this.targetX, this.targetZ)
             setPlayerAngle(this.aiId, y)
             revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
         }
@@ -440,7 +440,7 @@ export class GotoPoint implements IAiAction {
                 this.routeIndex++
             }
             else {
-                const y = getAngleToPoint(newPos[0], newPos[2], wpToVisit.x, wpToVisit.z)
+                const y = getRadiansAngleToPoint(newPos[0], newPos[2], wpToVisit.x, wpToVisit.z)
                 setPlayerAngle(this.aiId, y)
                 revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, this.walkAni))
             }
@@ -454,7 +454,7 @@ export class GotoPoint implements IAiAction {
             if (typeof this.wayroute !== 'undefined' && this.routeIndex === this.wayroute.length) {
                 const targetWp = this.wayroute[this.wayroute.length - 1]
                 const playerPos = revmp.getPosition(this.aiId).position
-                const spawnAngle = getWaynetPointAngle(playerPos[0], playerPos[2], targetWp.rotX, targetWp.rotZ)
+                const spawnAngle = getWaynetPointRadiansAngle(playerPos[0], playerPos[2], targetWp.rotX, targetWp.rotZ)
                 setPlayerAngle(this.aiId, spawnAngle)
             }
 

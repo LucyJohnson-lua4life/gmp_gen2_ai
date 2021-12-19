@@ -15,8 +15,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "gl-matrix": "^3.3.0",
-    "heap-js": "^2.1.4",
     "three": "^0.130.1"
   },
   "devDependencies": {
@@ -35,6 +33,6 @@
     "ts-jest": "^26.5.1",
     "ts-mockito": "^2.6.1",
     "tslib": "^2.3.1",
-    "typescript": "^4.1.5"
+    "typescript": "^4.5.4"
   }
 }
