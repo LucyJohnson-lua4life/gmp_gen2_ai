@@ -6,6 +6,7 @@ import { updateWorldAcordingToState } from "./aiScripts/aiStates/aiWorldStateInt
 import { getWorldEventState } from "./aiScripts/aiStates/aiStateFunctions/commonAiStateFunctions";
 import { revive } from "./serverComponents/damageCalculation";
 import { KHORINIS_FRACTION } from "./aiScripts/aiStates/waynetRegistries/iWorldEventState";
+import { initWorldItems, respawnPlants } from "./serverComponents/worldItems";
 
 let aiState: AiState;
 
@@ -23,6 +24,9 @@ revmp.on("init", () => {
     });
     initWeaponInstances()
     initArmorInstances()
+    initWorldItems()
+    //const itemId = revmp.addItem(revmp.worlds[0], WeaponInstances.dragonHunterBlade, { amount: 1, position: [0,0,0] })
+
 
 
     aiState = initAiState()
@@ -120,6 +124,12 @@ function debugCommands(entity: revmp.Entity, msg: string) {
     else if (command === "/id"){
         const focusid = revmp.getFocus(entity).focus
         revmp.sendChatMessage(entity, "id: " + focusid)
+    }
+    else if (command === "/resp"){
+        respawnPlants()
+    }
+    else if(command === "/blu"){
+        const itemId = revmp.addItem(revmp.worlds[0], WeaponInstances.dragonHunterBlade, { amount: 1, position: [0,0,0] })
     }
 }
 
