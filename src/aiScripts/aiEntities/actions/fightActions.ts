@@ -1,4 +1,4 @@
-import { isOpponentinAiAngleRange } from "../../aiStates/aiStatePatterns/commonAiStatePatterns"
+import { isOpponentinAiAngleRange } from "../../aiStates/aiStateFunctions/commonAiStateQueries"
 import {isTargetInFrontOfEntity, getCombatStateBasedAni, getDistance} from "../../aiFunctions/aiUtils"
 import { IAiAction} from "../iAiAction"
 
@@ -138,6 +138,91 @@ export class ForwardAttackWithPause implements IAiAction {
             const isEntityInEnemyAngleRange = isOpponentinAiAngleRange(this.aiId, this.victimId)
             if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && isEntityInEnemyAngleRange) {
                 revmp.attack(this.aiId, this.victimId);
+            }
+        }
+    }
+
+}
+
+export class FreeAttackWithPause implements IAiAction {
+    aiId: number
+    shouldLoop: boolean
+    victimId: number
+    necessaryDistance: number
+    pauseTime: number
+    startTime: number | undefined
+    ani: string
+
+    constructor(aiId: number, victimId: number, necessaryDistance: number, pauseTime: number, ani:string) {
+        this.aiId = aiId
+        this.shouldLoop = true
+        this.victimId = victimId
+        this.necessaryDistance = necessaryDistance
+        this.pauseTime = pauseTime
+        this.ani = ani
+    }
+
+
+    public executeAction(): void {
+        if (typeof this.startTime === 'undefined') {
+            this.startTime = Date.now()
+            this.attack()
+        }
+
+        if (Date.now() > this.startTime + this.pauseTime) {
+            this.shouldLoop = false
+        }
+    }
+
+    private attack(): void {
+        if (revmp.valid(this.victimId)) {
+            revmp.startAnimation(this.aiId, this.ani)
+            const isEntityInEnemyAngleRange = isOpponentinAiAngleRange(this.aiId, this.victimId)
+            if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && isEntityInEnemyAngleRange) {
+                revmp.attack(this.aiId, this.victimId);
+            }
+        }
+    }
+}
+
+
+export class StunAttackWithPause implements IAiAction {
+    aiId: number
+    shouldLoop: boolean
+    victimId: number
+    necessaryDistance: number
+    pauseTime: number
+    startTime: number | undefined
+    ani: string
+
+    constructor(aiId: number, victimId: number, necessaryDistance: number, pauseTime: number, ani:string) {
+        this.aiId = aiId
+        this.shouldLoop = true
+        this.victimId = victimId
+        this.necessaryDistance = necessaryDistance
+        this.pauseTime = pauseTime
+        this.ani = ani
+    }
+
+
+    public executeAction(): void {
+        if (typeof this.startTime === 'undefined') {
+            this.startTime = Date.now()
+            this.attack()
+        }
+
+        if (Date.now() > this.startTime + this.pauseTime) {
+            this.shouldLoop = false
+        }
+    }
+
+    private attack(): void {
+        if (revmp.valid(this.victimId)) {
+            revmp.startAnimation(this.aiId, this.ani)
+            const isEntityInEnemyAngleRange = isOpponentinAiAngleRange(this.aiId, this.victimId)
+            if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && isEntityInEnemyAngleRange) {
+                //revmp.attack(this.aiId, this.victimId);
+                revmp.emit("stunAttack", this.aiId, this.victimId)
             }
         }
     }

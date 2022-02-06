@@ -25,6 +25,7 @@ export class HeavyCrimminal implements IAiNpc {
     startPoint:string|undefined;
     startWorld:string|undefined;
     npcInstance:string;
+    dialogues: Map<string, string>;
 
 
     constructor() {
@@ -45,6 +46,7 @@ export class HeavyCrimminal implements IAiNpc {
         this.currentPosY = 0
         this.currentPosZ = 0
         this.npcInstance = INSTANCE_HEAVY_CRIMMINAL
+        this.dialogues = new Map()
 
         revmp.addOverlay(this.id, "Humans_1hST2.MDS")
         revmp.setAttributes(this.id, {oneHanded: 100})

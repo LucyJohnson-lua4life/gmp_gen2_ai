@@ -22,6 +22,7 @@ export class StubAiNpc implements IAiNpc {
     startPoint: string | undefined;
     startWorld: string | undefined;
     npcInstance: string;
+    aiTags: Map<string, boolean>;
     constructor(id: number) {
         this.id = id
         this.isDead = false
@@ -42,6 +43,7 @@ export class StubAiNpc implements IAiNpc {
         this.startPoint = "HAFEN"
         this.startWorld = "NEWWORLD\\NEWWORLD.ZEN"
         this.npcInstance = ""
+        this.aiTags = new Map()
     }
     addAction(action: IAiAction) {
         this.nextActions.push(action)

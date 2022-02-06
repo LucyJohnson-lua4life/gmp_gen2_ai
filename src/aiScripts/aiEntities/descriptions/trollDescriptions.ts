@@ -1,13 +1,12 @@
+import { isAniPlaying } from "../../../aiScripts/aiFunctions/aiUtils"
+import { AiState } from "../../../aiScripts/aiStates/aiState"
+import { getAiEnemyInfo, setAiActionIfUndefined, getAiAction } from "../../../aiScripts/aiStates/aiStateFunctions/commonAiStateFunctions"
+import { ForwardAttackWithPause, FreeAttackWithPause, StunAttackWithPause } from "../actions/fightActions"
+import { IActionDescription } from "../iActionDescription"
+import { gotoStartPoint, warnEnemy, setAttackerToEnemy } from "./templates/commonDefaultTemplateDescriptionFunctions"
+import { IDefaultDescriptionTemplateValues, describeGeneralRoutine } from "./templates/defaultDescriptionTemplate"
 
-import { IActionDescription } from './iActionDescription';
-import { AiState } from '../../aiStates/aiState';
-import { ForwardAttackWithPause } from '../actions/fightActions';
-import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './templates/defaultDescriptionTemplate';
-import { gotoStartPoint, setAttackerToEnemy, warnEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
-import { isAniPlaying } from '../../aiFunctions/aiUtils';
-import { getAiAction, getAiEnemyInfo, setAiActionIfUndefined } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
-
-export class DefaultMonsterDescription implements IActionDescription {
+export class TrollDescription implements IActionDescription {
     entityId: number
     lastAttackTime: number
     attackRange: number
@@ -15,7 +14,7 @@ export class DefaultMonsterDescription implements IActionDescription {
     constructor(id: number) {
         this.entityId = id
         this.lastAttackTime = 0
-        this.attackRange = 300
+        this.attackRange = 700 
     }
 
     describeAction(aiState: AiState): void {
@@ -29,6 +28,7 @@ export class DefaultMonsterDescription implements IActionDescription {
             aiId: this.entityId,
             aiState: aiState,
             attackRange: this.attackRange,
+            attackFrequency: 5000,
             onAiAttacks: this.describeAttackAction.bind(this),
             onIdle: this.describeEatRoutine.bind(this),
             onAiEnemyDies: gotoStartPoint,
@@ -45,7 +45,13 @@ export class DefaultMonsterDescription implements IActionDescription {
         const pauseTime = 500
         const enemyId = getAiEnemyInfo(values.aiState, values.aiId)?.enemyId
         if (typeof enemyId !== 'undefined') {
-            setAiActionIfUndefined(values.aiState, new ForwardAttackWithPause(values.aiId, enemyId, this.attackRange, pauseTime))
+            const random = Math.floor(Math.random() * 3);
+            if(random === 0){
+                setAiActionIfUndefined(values.aiState, new StunAttackWithPause(values.aiId, enemyId, this.attackRange, pauseTime, "T_FISTATTACKMOVE"))
+            }
+            else{
+                setAiActionIfUndefined(values.aiState, new FreeAttackWithPause(values.aiId, enemyId, this.attackRange, pauseTime, "T_FISTATTACKMOVE"))
+            }
         }
     }
     private describeEatRoutine(values: IDefaultDescriptionTemplateValues): void {

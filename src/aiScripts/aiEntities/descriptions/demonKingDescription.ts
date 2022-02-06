@@ -10,7 +10,6 @@ import {
 } from "../actions/commonActions";
 import { NpcActionUtils } from '../../aiFunctions/npcActionUtils';
 import { AiState } from '../../aiStates/aiState';
-import { IActionComponent } from '../components/iActionsComponent';
 
 export class DemonKingDescription implements IActionDescription {
     entityId: number

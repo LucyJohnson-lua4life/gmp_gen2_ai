@@ -1,21 +1,20 @@
 import { ArmorInstances, initArmorInstances } from "./aiScripts/aiEntities/equipment/armors";
 import { initWeaponInstances, WeaponInstances } from "./aiScripts/aiEntities/equipment/weapons";
-import { getPlayerAngle } from "./aiScripts/aiFunctions/aiUtils";
 import { initAiState } from "./aiScripts/aiInit";
 import { AiState } from "./aiScripts/aiStates/aiState";
-import { AiStateFunctions } from "./aiScripts/aiStates/aiStateFunctions";
 import { updateWorldAcordingToState } from "./aiScripts/aiStates/aiWorldStateInterpreter";
-import { EntityManager } from "./aiScripts/aiStates/entityManager";
+import { getWorldEventState } from "./aiScripts/aiStates/aiStateFunctions/commonAiStateFunctions";
 import { revive } from "./serverComponents/damageCalculation";
+import { KHORINIS_FRACTION } from "./aiScripts/aiStates/waynetRegistries/iWorldEventState";
+import { initWorldItems, respawnPlants } from "./serverComponents/worldItems";
 
-let entityManager:EntityManager|undefined;
 let aiState: AiState;
 
 revmp.name = "Revmp Adventures";
 revmp.description = "The best adventure experience.";
 
 revmp.on("init", () => {
-    
+
     const world = revmp.createWorld({
         zen: "NEWWORLD/NEWWORLD.ZEN",
         //startpoint: "NW_CITY_HABOUR_02_B",
@@ -25,22 +24,24 @@ revmp.on("init", () => {
     });
     initWeaponInstances()
     initArmorInstances()
+    //initWorldItems()
+    //const itemId = revmp.addItem(revmp.worlds[0], WeaponInstances.dragonHunterBlade, { amount: 1, position: [0,0,0] })
+
 
 
     aiState = initAiState()
-    entityManager = aiState.getEntityManager()
 
 });
 
 revmp.on("entityCreated", (entity: revmp.Entity) => {
 
-    if(revmp.isPlayer(entity)){
+    if (revmp.isPlayer(entity)) {
         revmp.addItem(entity, WeaponInstances.dragonHunterBlade, 1);
         revmp.addItem(entity, ArmorInstances.dragonHunterArmor, 1);
         revmp.equipItem(entity, WeaponInstances.dragonHunterBlade)
         revmp.equipItem(entity, ArmorInstances.dragonHunterArmor)
-        revmp.setAttributes(entity, {strength: 100, oneHanded: 100})
-        revmp.setHealth(entity, {current: 2100, max: 2100})
+        revmp.setAttributes(entity, { strength: 100, oneHanded: 100 })
+        revmp.setHealth(entity, { current: 2100, max: 2100 })
         revmp.addOverlay(entity, "Humans_1hST2.MDS")
         revmp.sendChatMessage(entity, 'type /healme to get back to full health')
     }
@@ -57,7 +58,7 @@ function debugCommands(entity: revmp.Entity, msg: string) {
     }
     if (command === "/sendsomething") {
         revmp.sendChatMessage(entity, 'testo')
-    } 
+    }
     else if (command === "/revive") {
         revive(entity);
     }
@@ -87,26 +88,52 @@ function debugCommands(entity: revmp.Entity, msg: string) {
     }
 
     else if (command === "/ws") {
-        const state = aiState.getWorldEventState()
-        revmp.sendChatMessage(entity, "influence of gods: " + state.influenceOfTheGods)
-        revmp.sendChatMessage(entity, "khorinis state: " + state.khorinisState)
-        revmp.sendChatMessage(entity, "bigfarm state: " + state.bigFarmState)
+        const state = getWorldEventState(aiState)
+        revmp.sendChatMessage(entity, "paladins: " + (state.khorinisState?.get(KHORINIS_FRACTION.PALADIN) ?? 0))
+        revmp.sendChatMessage(entity, "mercenaries: " + (state.khorinisState?.get(KHORINIS_FRACTION.MERCENARY) ?? 0))
+        revmp.sendChatMessage(entity, "beliar: " + (state.khorinisState?.get(KHORINIS_FRACTION.BELIAR) ?? 0))
         revmp.sendChatMessage(entity, "last update: " + state.lastStateUpdate)
     }
 
-    else if (command === "/setig") {
+    else if (command === "/setpal") {
         const input = parseInt(words[1])
-        aiState.getWorldEventState().influenceOfTheGods = input
+        getWorldEventState(aiState).khorinisState.set(KHORINIS_FRACTION.PALADIN,input) 
     }
-    else if (command === "/setks") {
+    else if (command === "/setmerc") {
         const input = parseInt(words[1])
-        aiState.getWorldEventState().khorinisState = input
+        getWorldEventState(aiState).khorinisState.set(KHORINIS_FRACTION.MERCENARY,input) 
+    }
+    else if (command === "/setbel") {
+        const input = parseInt(words[1])
+        getWorldEventState(aiState).khorinisState.set(KHORINIS_FRACTION.BELIAR,input) 
     }
     else if (command === "/update") {
-        updateWorldAcordingToState(aiState, new AiStateFunctions(aiState))
+        updateWorldAcordingToState(aiState)
     }
     else if (command === "/pray") {
         revmp.startAnimation(entity, "S_PRAY")
+    }
+
+    else if (command === "/sev") {
+        revmp.sendChatMessage(entity, "start sending....")
+        revmp.emit("myevent", entity)
+    }
+    else if (command === "/fall"){
+        revmp.startAnimation(entity, "T_STAND_2_" + "S_FALLB")
+    }
+    else if (command === "/id"){
+        const focusid = revmp.getFocus(entity).focus
+        revmp.sendChatMessage(entity, "id: " + focusid)
+    }
+    else if (command === "/resp"){
+        respawnPlants()
+    }
+    else if(command === "/oneitem"){
+        const itemId = revmp.addItem(revmp.worlds[0], WeaponInstances.dragonHunterBlade, { amount: 1, position: [0,0,0] })
+    }
+
+    else if(command === "/moreitems"){
+        const itemId = revmp.addItem(revmp.worlds[0], WeaponInstances.dragonHunterBlade, { amount: 5, position: [200,200,200] })
     }
 }
 
@@ -117,3 +144,9 @@ revmp.on("chatCommand", (entity, msg) => {
     debugCommands(entity, msg)
 });
 
+
+revmp.on("myevent", (entity) => {
+    if (typeof entity === 'number') {
+        revmp.sendChatMessage(entity, "you send a custom event")
+    }
+});

@@ -1,6 +1,6 @@
 
 /**
- * @interface IDrInfoComponent
+ * @interface iAiDailyRoutineInfo
  * Contains information about the daily routine of and entity. E.g when the current daily routine started, or when it will end.
  * 
  * @field entityId: id of the entity for which the daily routine information should be checked
@@ -11,7 +11,7 @@
  * @field lastHour: the last hour where the daily routine was checked
  * @field lastMinute: the last minute where the daily routine was checked
  */
-export interface IDrInfoComponent {
+export interface IAiDailyRoutineInfo {
     entityId: number,
     startHour: number,
     startMinute: number,

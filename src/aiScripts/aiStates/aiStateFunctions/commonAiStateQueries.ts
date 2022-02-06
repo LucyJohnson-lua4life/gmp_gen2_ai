@@ -1,9 +1,10 @@
-import { getNecessaryAngleToWatchTarget, getDistance, isTargetInFrontOfEntity } from "../../aiFunctions/aiUtils";
+import { getDistance, isTargetInFrontOfEntity } from "../../aiFunctions/aiUtils";
 import { NpcActionUtils } from "../../aiFunctions/npcActionUtils";
 import { AiState } from "../aiState";
+import { getAiEnemyInfo } from "./commonAiStateFunctions";
 
 export function playerEnemyExists(aiId: number, aiState: AiState): boolean {
-    const enemyId = aiState.getEntityManager().getEnemyComponent(aiId)?.enemyId ?? -1
+    const enemyId = getAiEnemyInfo(aiState, aiId)?.enemyId ?? -1
     return enemyId >= 0 && revmp.valid(enemyId) && revmp.isPlayer(enemyId)
 }
 

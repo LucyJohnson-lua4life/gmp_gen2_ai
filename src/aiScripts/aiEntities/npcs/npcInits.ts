@@ -257,7 +257,7 @@ export function getOrcEliteInstance(): revmp.BotTemplate {
             headMesh: "Orc_HeadWarrior"
         },
         meleeAttack: {
-            edge: 100,
+            edge: 0,
             range: 20
         },
         protection: {
@@ -267,7 +267,7 @@ export function getOrcEliteInstance(): revmp.BotTemplate {
             fly: 100,
         },
         attributes: {
-            strength: 15,
+            strength: 50,
             twoHanded: 100
         },
         guild: revmp.GuildType.Orc

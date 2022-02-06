@@ -7,6 +7,7 @@ export interface IAiNpc extends IPlayer{
     respawnTime: number,
     actionDescriptions: Array<IActionDescription>,
     aiTags: Map<string, boolean>,
+    dialogues: Map<string, string>,
     lastPosUpdate:number,
     lastPosX:number,
     lastPosY:number,

@@ -1,6 +1,6 @@
 
 /**
- * @interface IPositionComponent
+ * @interface IAiPosition
  * Contains position information of an entity.
  * 
  * @field lastPosUpdate last time when the position was checked in milliseconds
@@ -13,7 +13,7 @@
  * @field startPoint start waypoint/freepoint
  * @field startWorld start world
  * */
-export interface IPositionComponent {
+export interface IAiPosition {
     entityId:number,
     lastPosUpdate:number,
     lastPosX:number,

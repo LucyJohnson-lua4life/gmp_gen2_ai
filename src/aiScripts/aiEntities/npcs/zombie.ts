@@ -22,6 +22,7 @@ export class Zombie implements IAiNpc {
     startPoint:string|undefined;
     startWorld:string|undefined;
     npcInstance:string;
+    dialogues: Map<string, string>;
 
 
     constructor(tags: Array<string>) {
@@ -43,6 +44,7 @@ export class Zombie implements IAiNpc {
         this.currentPosY = 0
         this.currentPosZ = 0
         this.npcInstance = INSTANCE_WOLF
+        this.dialogues = new Map()
     }
 
 }

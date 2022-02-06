@@ -1,46 +1,42 @@
-import { getDistanceToPoint, hasMeleeWeapon } from "../../../aiFunctions/aiUtils"
+import { deleteAiAction, getAiAction, getAiAttackEventInfo, getAiEnemyInfo, getAiPosition, getWaynet, setAiActionIfUndefined, setAiAttackEventInfo, setAiEnemyInfo } from "../../../aiStates/aiStateFunctions/commonAiStateFunctions"
+import { hasMeleeWeapon } from "../../../aiFunctions/aiUtils"
 import { GotoPoint, WarnEnemy, WarnEnemyActionInput } from "../../actions/commonActions"
-import { IActionComponent } from "../../components/iActionsComponent"
-import { IAiAction } from "../../iAiAction"
 import { IDefaultDescriptionTemplateValues } from "./defaultDescriptionTemplate"
 
 export function warnEnemy(values: IDefaultDescriptionTemplateValues, warnableEnemyId: number) {
-    const entityManager = values.aiState.getEntityManager()
-    const actionsComponent = entityManager.getActionsComponent(values.aiId)
+    const currentAction = getAiAction(values.aiState, values.aiId)
     const warnInput: WarnEnemyActionInput = {
         aiId: values.aiId,
         enemyId: warnableEnemyId,
         waitTime: 3000,
         warnDistance: 400,
         attackDistance: 0,
-        entityManager: entityManager
+        aiState: values.aiState 
     }
 
-    if (typeof actionsComponent !== 'undefined' && !(actionsComponent.nextAction instanceof WarnEnemy)) {
-        clearAction(actionsComponent)
-        setActionWhenUndefined(actionsComponent, new WarnEnemy(warnInput))
-        revmp.drawMeleeWeapon(values.aiId)
+    if (typeof currentAction !== 'undefined' && !(currentAction instanceof WarnEnemy)) {
+        deleteAiAction(values.aiState, values.aiId)
     }
+    setAiActionIfUndefined(values.aiState, new WarnEnemy(warnInput))
+    revmp.drawMeleeWeapon(values.aiId)
 }
 
 export function setAttackerToEnemy(values: IDefaultDescriptionTemplateValues){
-    const entityManager = values.aiState.getEntityManager()
-    const attackEvent = entityManager.getAttackEventComponent(values.aiId) ?? {isUnderAttack: false, attackedBy: -1}
-        const enemyId = entityManager.getEnemyComponent(values.aiId)?.enemyId ?? -1
+    const attackEvent = getAiAttackEventInfo(values.aiState, values.aiId) ?? {isUnderAttack: false, attackedBy: -1}
+        const enemyId = getAiEnemyInfo(values.aiState, values.aiId)?.enemyId ?? -1
         if (enemyId === -1) {
-            entityManager.setEnemyComponent(values.aiId, { entityId: values.aiId, enemyId: attackEvent.attackedBy, lastAttackTime: 0 })
+            setAiEnemyInfo(values.aiState, { entityId: values.aiId, enemyId: attackEvent.attackedBy, lastAttackTime: 0 })
         }
-        entityManager.setAttackEventComponent(values.aiId, {isUnderAttack: false, attackedBy: -1})
+        setAiAttackEventInfo(values.aiState, {entityId: values.aiId, isUnderAttack: false, attackedBy: -1})
 }
 
 export function gotoStartPoint(values: IDefaultDescriptionTemplateValues) {
-    const entityManager = values.aiState.getEntityManager();
-    const startPoint = entityManager.getPositionsComponents(values.aiId)?.startPoint
-    const startWayPoint = typeof startPoint !== 'undefined' ? values.aiState.getWaynet().waypoints.get(startPoint) : undefined
+    const startPoint = getAiPosition(values.aiState, values.aiId)?.startPoint
+    const startWayPoint = typeof startPoint !== 'undefined' ? getWaynet(values.aiState).waypoints.get(startPoint) : undefined
     let pointVec: revmp.Vec3 | undefined = undefined;
 
     if (typeof startWayPoint === 'undefined') {
-        const startFreepoint = values.aiState.getWaynet().freepoints.find(fp => fp.fpName === startPoint)
+        const startFreepoint = getWaynet(values.aiState).freepoints.find(fp => fp.fpName === startPoint)
         if (typeof startFreepoint !== 'undefined') {
             pointVec = [startFreepoint.x, startFreepoint.y, startFreepoint.z]
         }
@@ -50,25 +46,11 @@ export function gotoStartPoint(values: IDefaultDescriptionTemplateValues) {
     }
 
     if (typeof pointVec !== 'undefined' && typeof startPoint !== 'undefined') {
-        const actionsComponent = entityManager.getActionsComponent(values.aiId)
-        if (typeof actionsComponent !== 'undefined') {
-            setActionWhenUndefined(actionsComponent, new GotoPoint(values.aiId, values.aiState, startPoint, "S_RUNL"))
-            if(hasMeleeWeapon(values.aiId)){
-                revmp.putWeaponAway(values.aiId)
-            }
+        setAiActionIfUndefined(values.aiState, new GotoPoint(values.aiId, values.aiState, startPoint, "S_RUNL"))
+        if(hasMeleeWeapon(values.aiId)){
+            revmp.putWeaponAway(values.aiId)
         }
     }
 }
 
-export function clearAction(actionsComponent: IActionComponent | undefined): void {
-    if (typeof actionsComponent !== 'undefined') {
-        actionsComponent.nextAction = undefined
-    }
-}
-
-export function setActionWhenUndefined(actionComponent: IActionComponent | undefined, action: IAiAction | undefined) {
-    if (typeof actionComponent !== 'undefined' && typeof action !== 'undefined' && typeof actionComponent.nextAction === 'undefined') {
-        actionComponent.nextAction = action
-    }
-}
 

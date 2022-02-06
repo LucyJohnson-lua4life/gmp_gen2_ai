@@ -25,6 +25,7 @@ export class OrcWarrior implements IAiNpc {
     startPoint:string|undefined;
     startWorld:string|undefined;
     npcInstance:string;
+    dialogues: Map<string, string>;
 
 
     constructor() {
@@ -45,6 +46,7 @@ export class OrcWarrior implements IAiNpc {
         this.currentPosY = 0
         this.currentPosZ = 0
         this.npcInstance = INSTANCE_ORC_WARRIOR
+        this.dialogues = new Map()
     }
 
 }

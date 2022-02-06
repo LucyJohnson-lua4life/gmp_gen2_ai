@@ -24,6 +24,7 @@ export class FarmerFemale implements IAiNpc {
     startPoint:string|undefined;
     startWorld:string|undefined;
     npcInstance:string;
+    dialogues: Map<string, string>;
 
 
     constructor(tags: Array<string>) {
@@ -48,6 +49,7 @@ export class FarmerFemale implements IAiNpc {
         this.currentPosY = 0
         this.currentPosZ = 0
         this.npcInstance = INSTANCE_FARMER_FEMALE 
+        this.dialogues = new Map()
 
         revmp.addOverlay(this.id, "Humans_1hST1.MDS")
         //revmp.setAttributes(this.id, {oneHanded: 100})

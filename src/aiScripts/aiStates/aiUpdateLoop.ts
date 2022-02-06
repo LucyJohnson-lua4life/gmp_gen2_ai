@@ -1,11 +1,10 @@
-import { IActionComponent } from '../aiEntities/components/iActionsComponent';
-import { IActionDescriptionComponent } from '../aiEntities/components/iActionDescriptionComponent';
+import { IAiActionDescriptions } from '../aiEntities/components/iAiActionDescriptions';
 import { IAiAction } from '../aiEntities/iAiAction';
 import { IActionDescription } from '../aiEntities/iActionDescription';
-import { getNpcForInstance } from '../aiEntities/npcs/npcEntityUtils';
 import { NpcActionUtils } from '../aiFunctions/npcActionUtils';
-import { AiStateFunctions } from '../aiStates/aiStateFunctions';
 import { AiState } from './aiState';
+import { deleteAiAction, getAiActionDescriptions, getAiAction, getAllBots, getCharacterInPositionAreas, getAiRespawnInfo, setAiRespawnInfo} from './aiStateFunctions/commonAiStateFunctions';
+import { respawnNpc} from './aiStateFunctions/spawnFunctions';
 
 /**
  * Represents the loop that iterates through each npc state and executes the next actions for each npc.
@@ -16,68 +15,78 @@ export class AiUpdateLoop {
     private world = "NEWWORLD\\NEWWORLD.ZEN"
     private aiState: AiState;
     private npcActionUtils: NpcActionUtils
-    private aiStateFunctions: AiStateFunctions
 
     constructor(aiState: AiState) {
         this.aiState = aiState;
         this.npcActionUtils = new NpcActionUtils(aiState)
-        this.aiStateFunctions = new AiStateFunctions(aiState)
     }
 
     public updateAll() {
-        this.aiState.getCharacterInPositionAreas().set(this.world, new Map<number, Array<number>>())
-        const allPositions: Map<number, Array<number>>|undefined = this.aiState.getCharacterInPositionAreas().get(this.world)
-        // update positions for each character
-        if(typeof allPositions !== 'undefined'){
-
-        revmp.characters.forEach(charId =>{
-            const pos = revmp.getPosition(charId).position
-            const checksum = this.npcActionUtils.calculatePositionCheckSum(pos[0], pos[1], pos[2])
-            const playerOfChecksum = allPositions.get(checksum)
-            if(allPositions.has(checksum) && typeof playerOfChecksum !== 'undefined'){
-                playerOfChecksum.push(charId)
-            }
-            else{
-                allPositions.set(checksum, [charId])
-            }})
-
-        }
-
+        this.updatePositions()
         this.readDescriptions()
         this.respawnDeadNpcs()
-        this.aiState.getAllBots().forEach((aiId) => this.updateAi(aiId))
+        this.executeAllAiActions()
+        this.registerAllDeadNpc()
     }
 
-    public readDescriptions() {
-        this.aiState.getAllBots().forEach((aiId) => this.readDescription(aiId))
+    private executeAllAiActions() {
+        getAllBots(this.aiState).forEach((aiId) => this.executeAiAction(aiId))
     }
 
-    public updateAi(aiId: number) {
-        const actionsComponent:IActionComponent | undefined = this.aiState.getEntityManager().getActionsComponent(aiId);
+    private registerAllDeadNpc() {
+        getAllBots(this.aiState).forEach((aiId) => this.registerDeadNpc(aiId))
+    }
 
-        if (typeof actionsComponent !== 'undefined') {
-            const nextAction:IAiAction|undefined = actionsComponent.nextAction
-            if (typeof nextAction !== 'undefined' && this.isEntityUpdateable(aiId)){
-                nextAction.executeAction()
-                if(nextAction.shouldLoop === false){
-                    actionsComponent.nextAction = undefined
+    private updatePositions() {
+        getCharacterInPositionAreas(this.aiState).set(this.world, new Map<number, Array<number>>())
+        const allPositions: Map<number, Array<number>> | undefined = getCharacterInPositionAreas(this.aiState).get(this.world)
+        // update positions for each character
+        if (typeof allPositions !== 'undefined') {
+
+            revmp.characters.forEach(charId => {
+                const pos = revmp.getPosition(charId).position
+                const checksum = this.npcActionUtils.calculatePositionCheckSum(pos[0], pos[1], pos[2])
+                const playerOfChecksum = allPositions.get(checksum)
+                if (allPositions.has(checksum) && typeof playerOfChecksum !== 'undefined') {
+                    playerOfChecksum.push(charId)
+                }
+                else {
+                    allPositions.set(checksum, [charId])
+                }
+            })
+
+        }
+    }
+
+    private readDescriptions() {
+        getAllBots(this.aiState).forEach((aiId) => this.readDescription(aiId))
+    }
+
+    private executeAiAction(aiId: number) {
+        const currentAction: IAiAction | undefined = getAiAction(this.aiState, aiId);
+
+        if (typeof currentAction !== 'undefined') {
+            if (this.isEntityUpdateable(aiId)) {
+                currentAction.executeAction()
+                if (currentAction.shouldLoop === false) {
+                    deleteAiAction(this.aiState, aiId)
                 }
             }
         }
-
-        //register if dead
-        if(revmp.getHealth(aiId).current <= 0 && revmp.isBot(aiId) ){
-            const respawnInfo = this.aiState.getEntityManager().getRespawnComponent(aiId)
-            if(typeof respawnInfo !== 'undefined' && respawnInfo.deathTime === -1){
-                respawnInfo.deathTime = Date.now()
-                this.aiState.getEntityManager().setRespawnComponent(aiId, respawnInfo)
-            }
-        }
-
     }
 
-    public readDescription(aiId: number) {
-        const descriptionComponent: IActionDescriptionComponent | undefined = this.aiState.getEntityManager().getActionDescriptionComponent(aiId);
+    private registerDeadNpc(aiId: number){
+        if (revmp.getHealth(aiId).current <= 0 && revmp.isBot(aiId)) {
+            const respawnInfo = getAiRespawnInfo(this.aiState, aiId)
+            if (typeof respawnInfo !== 'undefined' && respawnInfo.deathTime === -1) {
+                respawnInfo.deathTime = Date.now()
+                setAiRespawnInfo(this.aiState, respawnInfo)
+            }
+        }
+    }
+
+    private readDescription(aiId: number) {
+        const descriptionComponent: IAiActionDescriptions | undefined = getAiActionDescriptions(this.aiState, aiId);
 
         // remove action list restriction
         if (typeof descriptionComponent !== 'undefined' && this.isEntityUpdateable(aiId)) {
@@ -86,31 +95,17 @@ export class AiUpdateLoop {
         }
     }
 
-    public respawnDeadNpcs(){
-        revmp.characters.forEach(charId =>{
-            const respawnComponent = this.aiState.getEntityManager().getRespawnComponent(charId)
-            if(typeof respawnComponent !== 'undefined' && respawnComponent.deathTime !== -1 && Date.now() > respawnComponent.deathTime + (respawnComponent.respawnTime*1000) && revmp.isBot(charId)){
+    private respawnDeadNpcs() {
+        revmp.characters.forEach(charId => {
+            const respawnInfo = getAiRespawnInfo(this.aiState, charId)
+            if (typeof respawnInfo !== 'undefined' && respawnInfo.deathTime !== -1 && Date.now() > respawnInfo.deathTime + (respawnInfo.respawnTime * 1000) && revmp.isBot(charId)) {
                 // respawn npc and set state
-                this.respawnNpc(charId)
+                respawnNpc(this.aiState, charId, this.world)
             }
         })
     }
 
-    private respawnNpc(aiId: number) {
-        const lastPosition = this.aiState.getEntityManager().getPositionsComponents(aiId)
-        const lastNpcInstance = this.aiState.getEntityManager().getNpcStateComponent(aiId)?.npcInstance
-        this.aiState.unregisterBot(aiId)
-        revmp.destroyCharacter(aiId)
-        if (typeof lastNpcInstance !== 'undefined' && typeof lastPosition !== 'undefined') {
-            //TODO: extend getNpc for state
-            //todo: fix this
-            const spawnPoint = typeof lastPosition.startPoint !== 'undefined' ? lastPosition.startPoint : "HAFEN"
-            const spawnWorld = typeof lastPosition.startWorld !== 'undefined' ? lastPosition.startWorld : this.world
-            this.aiStateFunctions.spawnNpc(getNpcForInstance(lastNpcInstance), spawnPoint, spawnWorld)
-        }
-    }
-
-    private isEntityUpdateable(entityId: number){
+    private isEntityUpdateable(entityId: number) {
         return revmp.getHealth(entityId).current > 0 && revmp.isCharacter(entityId)
     }
 
