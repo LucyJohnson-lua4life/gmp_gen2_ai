@@ -24,7 +24,7 @@ revmp.on("init", () => {
     });
     initWeaponInstances()
     initArmorInstances()
-    initWorldItems()
+    //initWorldItems()
     //const itemId = revmp.addItem(revmp.worlds[0], WeaponInstances.dragonHunterBlade, { amount: 1, position: [0,0,0] })
 
 
@@ -128,8 +128,12 @@ function debugCommands(entity: revmp.Entity, msg: string) {
     else if (command === "/resp"){
         respawnPlants()
     }
-    else if(command === "/blu"){
+    else if(command === "/oneitem"){
         const itemId = revmp.addItem(revmp.worlds[0], WeaponInstances.dragonHunterBlade, { amount: 1, position: [0,0,0] })
+    }
+
+    else if(command === "/moreitems"){
+        const itemId = revmp.addItem(revmp.worlds[0], WeaponInstances.dragonHunterBlade, { amount: 5, position: [200,200,200] })
     }
 }
 
