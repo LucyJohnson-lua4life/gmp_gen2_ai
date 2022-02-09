@@ -41,6 +41,7 @@ export class HeavyCrimminalDescription implements IActionDescription {
         describeGeneralRoutine(template)
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     private describeOnInWarnRange(template: IDefaultDescriptionTemplateValues, warnableEnemyId: number){
 
     }
