@@ -51,7 +51,7 @@ export class FarmerFemale implements IAiNpc {
         this.npcInstance = INSTANCE_FARMER_FEMALE 
         this.dialogues = new Map()
 
-        revmp.addOverlay(this.id, "Humans_1hST1.MDS")
+        revmp.addMdsOverlay(this.id, "Humans_1hST1.MDS")
         //revmp.setAttributes(this.id, {oneHanded: 100})
         revmp.addItem(this.id, WeaponInstances.nobleSword, 1);
         revmp.addItem(this.id, ArmorInstances.farmFemaleArmor, 1);

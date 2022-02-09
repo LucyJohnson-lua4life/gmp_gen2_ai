@@ -1,4 +1,3 @@
-import { isAniPlaying } from "../../../aiScripts/aiFunctions/aiUtils"
 import { AiState } from "../../../aiScripts/aiStates/aiState"
 import { getAiEnemyInfo, setAiActionIfUndefined, getAiAction } from "../../../aiScripts/aiStates/aiStateFunctions/commonAiStateFunctions"
 import { ForwardAttackWithPause, FreeAttackWithPause, StunAttackWithPause } from "../actions/fightActions"
@@ -57,7 +56,7 @@ export class TrollDescription implements IActionDescription {
     private describeEatRoutine(values: IDefaultDescriptionTemplateValues): void {
         const currentAction = getAiAction(values.aiState, values.aiId)
         if (typeof currentAction !== 'undefined') {
-            if (!isAniPlaying(values.aiId, "S_EAT")) {
+            if (!revmp.isAnimationActive(values.aiId, "S_EAT") && revmp.hasAnimation(values.aiId, "S_EAT")) {
                 revmp.startAnimation(values.aiId, "S_EAT")
             }
         }

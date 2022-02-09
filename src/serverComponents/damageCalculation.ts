@@ -20,8 +20,8 @@ function isSimilarAniPlaying(
 ): boolean {
     return (
         revmp
-            .getAnimations(entity)
-            .activeAnis.find((a) => a.ani.name.includes(ani)) !== undefined
+            .getModel(entity)
+            .activeAnis.find((a) => a?.ani?.name?.toUpperCase().includes(ani.toUpperCase())) !== undefined
     );
 }
 
@@ -129,7 +129,7 @@ function canParadeAttack(
     target: revmp.Entity
 ): boolean {
     // TODO: check if damage typ is fly, which is unblockable
-    if (!revmp.hasAnimations(target) || isRangedAttack(attacker)) {
+    if (!revmp.hasModel(target) || isRangedAttack(attacker)) {
         return false;
     }
 
@@ -258,7 +258,7 @@ function stunAttackDamageCalculation(attacker: revmp.Entity, target: revmp.Entit
     }
 
     if (revmp.isPlayer(target)) {
-        if(!isAnimationPlaying(target, "S_FALLB")){
+        if(!revmp.isAnimationActive(target, "S_FALLB")){
             revmp.startAnimation(target, "S_FALLB")
         }
     }
@@ -360,10 +360,4 @@ export function revive(entity: revmp.Entity): void {
     if (revmp.isPlayer(entity)) {
         //revmp.addMovementController(entity);
     }
-}
-
-function isAnimationPlaying(entity: revmp.Entity, ani: string) {
-    return revmp
-        .getAnimations(entity)
-        .activeAnis.find((a) => a.ani.name.includes(ani) && !a.isFadingOut) !== undefined
 }

@@ -1,7 +1,7 @@
 
 
 import { IAiAction } from "../iAiAction";
-import { setPlayerAngle, getCombatStateBasedAni, getRadiansAngleToPoint, getDistance, isAniPlaying, getWaynetPointRadiansAngle, getDistanceToPoint, isTargetInFrontOfEntity, getNecessaryAngleToWatchTarget } from "../../aiFunctions/aiUtils";
+import { setPlayerAngle, getCombatStateBasedAni, getRadiansAngleToPoint, getDistance, getWaynetPointRadiansAngle, getDistanceToPoint, isTargetInFrontOfEntity, getNecessaryAngleToWatchTarget } from "../../aiFunctions/aiUtils";
 import { gotoPosition, getDistance as getPointDistance } from "../../waynet/positionFunctions";
 import { IAiPosition } from "../components/iAiPosition";
 import { AiState } from "../../aiStates/aiState";
@@ -185,7 +185,7 @@ export class RunToTargetAction implements IAiAction {
         if (revmp.valid(this.targetId)) {
             const y = getNecessaryAngleToWatchTarget(this.aiId, this.targetId)
             setPlayerAngle(this.aiId, y)
-            if (!isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))) {
+            if (!revmp.isAnimationActive(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))) {
                 revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
             }
 
@@ -232,7 +232,7 @@ export class ThreatenPlayerAction implements IAiAction {
                 this.timesWarned++
             }
 
-            if (!isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL")) && distance > this.chaseDistance) {
+            if (!revmp.isAnimationActive(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL")) && distance > this.chaseDistance) {
                 revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
             }
             else if (distance < this.chaseDistance) {
@@ -277,7 +277,7 @@ export class RunForward implements IAiAction {
     }
 
     public executeAction(): void {
-        if (!isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))) {
+        if (!revmp.isAnimationActive(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))) {
             revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
         }
     }
@@ -293,7 +293,7 @@ export class SRunStrafeLeft implements IAiAction {
     }
 
     public executeAction(): void {
-        if (!isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "T_RUNSTRAFEL"))) {
+        if (!revmp.isAnimationActive(this.aiId, getCombatStateBasedAni(this.aiId, "T_RUNSTRAFEL"))) {
             revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "T_RUNSTRAFEL"))
         }
     }
@@ -309,7 +309,7 @@ export class SRunStrafeRight implements IAiAction {
     }
 
     public executeAction(): void {
-        if (!isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "T_RUNSTRAFER"))) {
+        if (!revmp.isAnimationActive(this.aiId, getCombatStateBasedAni(this.aiId, "T_RUNSTRAFER"))) {
             revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "T_RUNSTRAFER"))
         }
     }
@@ -325,7 +325,7 @@ export class SRunParadeJump implements IAiAction {
     }
 
     public executeAction(): void {
-        if (!isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "T_PARADEJUMPB"))) {
+        if (!revmp.isAnimationActive(this.aiId, getCombatStateBasedAni(this.aiId, "T_PARADEJUMPB"))) {
             revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "T_PARADEJUMPB"))
         }
     }
@@ -353,7 +353,7 @@ export class GotoPosition implements IAiAction {
         gotoPosition(this.npcPosition, this.targetX, this.targetY, this.targetZ)
         const pos: revmp.Vec3 = revmp.getPosition(this.aiId).position
         if (getPointDistance(pos[0], pos[1], pos[2], this.targetX, this.targetY, this.targetZ) < 100) {
-            if (isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))) {
+            if (revmp.isAnimationActive(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))) {
                 revmp.stopAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
             }
             this.shouldLoop = false
@@ -442,11 +442,16 @@ export class GotoPoint implements IAiAction {
             else {
                 const y = getRadiansAngleToPoint(newPos[0], newPos[2], wpToVisit.x, wpToVisit.z)
                 setPlayerAngle(this.aiId, y)
-                revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, this.walkAni))
+                // TODO: look into revmp if this is a bug. Without spamming
+                // the animation the bots don't move. But this is not good
+                // for the networking performance.
+                //if (!revmp.isAnimationActive(this.aiId, getCombatStateBasedAni(this.aiId, this.walkAni))) {
+                    revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, this.walkAni))
+                //}
             }
         }
         else {
-            if (isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, this.walkAni))) {
+            if (revmp.isAnimationActive(this.aiId, getCombatStateBasedAni(this.aiId, this.walkAni))) {
                 revmp.stopAnimation(this.aiId, getCombatStateBasedAni(this.aiId, this.walkAni))
             }
             this.shouldLoop = false
@@ -552,7 +557,7 @@ export class PlayAnimationForDuration implements IAiAction {
         if (typeof this.startTime === 'undefined') {
             this.startTime = Date.now()
         }
-        if (!isAniPlaying(this.aiId, this.animationName)) {
+        if (!revmp.isAnimationActive(this.aiId, this.animationName)) {
             revmp.startAnimation(this.aiId, this.animationName)
         }
         if (Date.now() > this.startTime + this.duration) {

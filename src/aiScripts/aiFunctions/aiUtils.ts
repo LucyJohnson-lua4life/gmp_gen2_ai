@@ -127,17 +127,6 @@ export function getPlayerAngle(entityId: number) {
 }
 
 /**
- * Returns true if the given entity plays the given animation, otherwise false.
- * @param entity entity for which the animation should be checked.
- * @param ani name of the animation.
- */
-export function isAniPlaying(entity: revmp.Entity, ani: string) {
-    return revmp
-        .getAnimations(entity)
-        .activeAnis.find((a) => a.ani.name.includes(ani) && !a.isFadingOut) !== undefined
-}
-
-/**
  * Sets the angle of the entity.
  * @param entityId id of the entity for which the angle should be set.
  * @param angle the angle to which the entity should be set.
@@ -186,9 +175,10 @@ export function isAttackable(entityId: number) {
 }
 
 export function removeAllAnimations(entityId: number): void {
-    revmp.getAnimations(entityId).activeAnis
-        .map(ani => ani.ani.name)
-        .forEach(aniName => revmp.stopAnimation(entityId, aniName))
+    revmp.getModel(entityId).activeAnis
+        .map(ani => ani?.ani.name)
+        .filter(aniName => typeof aniName === typeof 'string')
+        .forEach(aniName => revmp.stopAnimation(entityId, aniName!)) // ! is necessary because ts can't detect previous filter.
 }
 
 

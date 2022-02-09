@@ -1,6 +1,6 @@
 import { AiState } from "../../../aiScripts/aiStates/aiState"
 import { setAiEnemyInfo } from "../../aiStates/aiStateFunctions/commonAiStateFunctions"
-import { getCombatStateBasedAni, getDistance, getNecessaryAngleToWatchTarget, hasMeleeWeapon, isAniPlaying, setPlayerAngle } from "../../aiFunctions/aiUtils"
+import { getCombatStateBasedAni, getDistance, getNecessaryAngleToWatchTarget, hasMeleeWeapon, setPlayerAngle } from "../../aiFunctions/aiUtils"
 import { IAiEnemyInfo } from "../components/iAiEnemyInfo"
 import { IAiAction } from "../iAiAction"
 
@@ -69,7 +69,7 @@ export class EnforcePrayerAction implements IAiAction {
                 this.prayStage++
             }
 
-            if (!isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL")) && distance > this.chaseDistance) {
+            if (!revmp.isAnimationActive(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL")) && distance > this.chaseDistance) {
                 revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
             }
             else if (distance < this.chaseDistance) {
@@ -106,7 +106,7 @@ export class EnforcePrayerAction implements IAiAction {
                 this.timesWarned++
             }
 
-            if (!isAniPlaying(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL")) && distance > this.chaseDistance) {
+            if (!revmp.isAnimationActive(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL")) && distance > this.chaseDistance) {
                 revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
             }
             else if (distance < this.chaseDistance) {
@@ -129,9 +129,7 @@ export class EnforcePrayerAction implements IAiAction {
     }
 
     private isTargetPraying(): boolean {
-        return revmp
-            .getAnimations(this.targetId)
-            .activeAnis.find((a) => a.ani.name.includes("S_PRAY")) !== undefined
+        return revmp.isAnimationActive(this.targetId, "S_PRAY");
     }
 
     private sendMessageToNearbyPlayers(message: string): void {
