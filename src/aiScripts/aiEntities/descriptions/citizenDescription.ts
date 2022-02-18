@@ -1,5 +1,4 @@
 import { IActionDescription } from './iActionDescription';
-import { isAniPlaying } from "../../aiFunctions/aiUtils";
 import {GotoPoint} from "../actions/commonActions";
 import { AiState } from '../../aiStates/aiState';
 import { ForwardAttackWithPause} from '../actions/fightActions';
@@ -67,7 +66,7 @@ export class CitizenDescription implements IActionDescription {
             actionHistory.lastRoamingTime = currentTime
             setAiActionHistory(template.aiState, actionHistory)
         }
-        else if (isNoActionRunning && !isAniPlaying(template.aiId, "S_LGUARD")) {
+        else if (isNoActionRunning && !revmp.isAnimationActive(template.aiId, "S_LGUARD")) {
             revmp.setCombatState(this.entityId, { weaponMode: revmp.WeaponMode.None })
             revmp.startAnimation(template.aiId, "S_LGUARD")
         }

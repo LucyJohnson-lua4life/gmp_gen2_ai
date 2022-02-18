@@ -49,7 +49,7 @@ export class DemonKing implements IAiNpc {
         this.npcInstance = INSTANCE_DEMON_KING
         this.dialogues = new Map()
 
-        revmp.addOverlay(this.id, "Humans_2hST2.MDS")
+        revmp.addMdsOverlay(this.id, "Humans_2hST2.MDS")
         //revmp.setAttributes(this.id, {oneHanded: 100})
         revmp.addItem(this.id, WeaponInstances.eliteOrcSword, 1);
         revmp.addItem(this.id, ArmorInstances.darkArmor, 1);

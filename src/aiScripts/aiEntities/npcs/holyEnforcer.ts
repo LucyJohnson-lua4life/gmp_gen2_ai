@@ -53,8 +53,8 @@ export class HolyEnforcer implements IAiNpc {
         this.npcInstance = INSTANCE_HOLY_ENFORCER
         this.dialogues = new Map()
 
-        revmp.addOverlay(this.id, "Humans_2hST2.MDS")
-        revmp.addOverlay(this.id, "Humans_1hST2.MDS")
+        revmp.addMdsOverlay(this.id, "Humans_2hST2.MDS")
+        revmp.addMdsOverlay(this.id, "Humans_1hST2.MDS")
         //revmp.setAttributes(this.id, {oneHanded: 100})
         revmp.addItem(this.id, WeaponInstances.flamberge, 1);
         revmp.addItem(this.id, ArmorInstances.heavyPaladinArmor, 1);

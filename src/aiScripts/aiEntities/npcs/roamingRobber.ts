@@ -49,7 +49,7 @@ export class RoamingRobber implements IAiNpc {
         this.npcInstance = INSTANCE_ROAMING_ROBBER
         this.dialogues = new Map()
 
-        revmp.addOverlay(this.id, "Humans_1hST1.MDS")
+        revmp.addMdsOverlay(this.id, "Humans_1hST1.MDS")
         //revmp.setAttributes(this.id, {oneHanded: 100})
         revmp.addItem(this.id, WeaponInstances.nobleSword, 1);
         revmp.addItem(this.id, ArmorInstances.banditArmor, 1);

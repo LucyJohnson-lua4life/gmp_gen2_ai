@@ -9,5 +9,5 @@ export interface IAiNpcTags {
     tags: Map<string, boolean>
 }
 
-export const LIVES_IN_TOWN_TAG : string = "lives in town"
+export const LIVES_IN_TOWN_TAG  = "lives in town"
 

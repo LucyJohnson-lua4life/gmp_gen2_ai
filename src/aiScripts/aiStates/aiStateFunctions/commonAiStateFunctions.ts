@@ -163,10 +163,10 @@ export function unregisterBot(aiState: AiState, npcId: number) {
     aiState.allBots = aiState.allBots.filter(id => id !== npcId)
     deleteBot(aiState, npcId)
 
-    for (let worldName of aiState.characterInPositionAreas.keys()) {
+    for (const worldName of aiState.characterInPositionAreas.keys()) {
         const areaHashes: Iterable<number> | undefined = aiState.characterInPositionAreas.get(worldName)?.keys()
         if (typeof areaHashes !== 'undefined') {
-            for (let areaHash of areaHashes) {
+            for (const areaHash of areaHashes) {
                 const nearbyNpcs = aiState.characterInPositionAreas.get(worldName)?.get(areaHash)
                 if (typeof nearbyNpcs !== 'undefined') {
                     aiState.characterInPositionAreas.get(worldName)?.set(areaHash, nearbyNpcs.filter(nearbyId => nearbyId !== npcId))

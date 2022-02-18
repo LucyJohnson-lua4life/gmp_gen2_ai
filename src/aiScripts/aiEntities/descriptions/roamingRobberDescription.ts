@@ -1,7 +1,6 @@
 
 
 import { IActionDescription } from './iActionDescription';
-import { isAniPlaying} from "../../aiFunctions/aiUtils";
 import {GotoPoint, ThreatenPlayerAction} from "../actions/commonActions";
 import { AiState } from '../../aiStates/aiState';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './templates/defaultDescriptionTemplate';
@@ -63,12 +62,12 @@ export class RoamingRobberDescription implements IActionDescription {
         if (isNoActionRunning && currentTime > lastRoamingTime + 30000) {
             getWaynetRegistry(template.aiState).unregisterTownie(template.aiId)
             const targetPoint = getWaynetRegistry(template.aiState).registerTownieAndGetPoint(template.aiId)
-            revmp.addOverlay(this.entityId, "HumanS_Relaxed.mds")
+            revmp.addMdsOverlay(this.entityId, "HumanS_Relaxed.mds")
             setAiActionIfUndefined(template.aiState, new GotoPoint(template.aiId, template.aiState, targetPoint, "S_WALKL"))
             actionHistory.lastRoamingTime = currentTime
             setAiActionHistory(template.aiState, actionHistory)
         }
-        else if (isNoActionRunning && !isAniPlaying(template.aiId, "S_LGUARD")) {
+        else if (isNoActionRunning && !revmp.isAnimationActive(template.aiId, "S_LGUARD")) {
             revmp.setCombatState(this.entityId, { weaponMode: revmp.WeaponMode.None })
             revmp.startAnimation(template.aiId, "S_LGUARD")
         }

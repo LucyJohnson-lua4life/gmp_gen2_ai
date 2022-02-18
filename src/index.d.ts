@@ -1,4 +1,4 @@
-// Revmp server 0.12.0
+// Revmp server 0.13.0
 declare namespace revmp {
   /**
    * A number representing an entity.
@@ -285,7 +285,7 @@ declare namespace revmp {
   }
 
   ///////////////////////////////////
-  // Functions
+  // Entity functions
   ///////////////////////////////////
 
   /**
@@ -318,13 +318,6 @@ declare namespace revmp {
    * @throws Will throw if instance contains, instance is not a WorldInstance or instance doesn't exists.
    */
   export function createWorld(template: WorldTemplate): Entity;
-
-  /**
-   * Load waynet from vdfs.
-   * @param world 
-   * @throws Will throw if entity is invalid or not a world or if waynet couldn't be loaded.
-   */
-  export function loadWaynet(world: Entity): void;
 
   export interface BotTemplate {
     world?: Entity;
@@ -419,24 +412,111 @@ declare namespace revmp {
    */
   export function destroyVob(entity: Entity): void;
 
+  // Note: An entity can be one or more of the following types.
   /**
-   * Calls 'shutdown' event, disconnects all clients and stops program execution.
+   * A player entity may have the following components:
+   * Name, Position, Rotation, Scale, Model, Health, Mana, Attributes,
+   * MeleeAttack, Protection, Visual, VisualBody, Effect, CombatState,
+   * Homeworld, Inventory, Equipment, Focus, NetworkClient, NetworkSync
+   * and MovementController.
+   * @param entity
    */
-  export function shutdown(): void;
+  export function isPlayer(entity: Entity): boolean;
 
   /**
-   * Sends a chat message to the specified player or an array of players
-   * which is more efficient.
-   * @param player
-   * @param message
-   * @param color Defaults to [255, 255, 255, 255]
-   * @throws Will throw if entity is not valid or not a player.
-   */
-  export function sendChatMessage(
-    player: Entity | Entity[],
-    message: string,
-    color?: [number, number, number, number?]
-  ): void;
+    * A bot entity may have the following components:
+    * Name, Position, Rotation, Scale, Model, Health, Mana, Attributes,
+    * MeleeAttack, Protection, Visual, VisualBody, Effect, CombatState,
+    * Homeworld, Inventory and Equipment.
+    * @param entity
+    */
+  export function isBot(entity: Entity): boolean;
+ 
+  /**
+    * A character entity may have the following components:
+    * Name, Position, Rotation, Scale, Model, Health, Mana, Attributes,
+    * MeleeAttack, Protection, Visual, VisualBody, Effect, CombatState,
+    * Homeworld, Inventory and Equipment.
+    * @param entity
+    */
+  export function isCharacter(entity: Entity): boolean;
+ 
+  /**
+    * A vob entity may have the following components:
+    * Homeworld, Position, Rotation and Visual.
+    * @param entity
+    */
+  export function isVob(entity: Entity): boolean;
+ 
+  /**
+    * A world entity may have the following components:
+    * Name, Inventory, Time, Zen, WorldEntities and Waynet.
+    * TODO: Weather, WorldSync.
+    * @param entity
+    */
+  export function isWorld(entity: Entity): boolean;
+ 
+  /**
+    * A waypoint entity may have the following components:
+    * Name, Homeworld, Position, Rotation and Waypoint.
+    * @param entity
+    */
+  export function isWaypoint(entity: Entity): boolean;
+ 
+  /**
+    * A freepoint entity may have the following components:
+    * Name, Homeworld, Position, Rotation.
+    * @param entity
+    */
+  export function isFreepoint(entity: Entity): boolean;
+ 
+  /**
+    * A item entity may have the following components:
+    * ItemInstance and Countable
+    * @param entity
+    */
+  export function isItem(entity: Entity): boolean;
+ 
+  /**
+    * A item entity may have the following components:
+    * ItemInstance, Countable, Position, Rotation and Homeworld.
+    * @param entity
+    */
+  export function isWorldItem(entity: Entity): boolean;
+ 
+  /**
+    * A item instance entity may have no specific components.
+    * @param entity
+    */
+  export function isItemInstance(entity: Entity): boolean;
+ 
+  /**
+    * A melee weapon item entity may have the following components:
+    * Instance, Countable, Name, MeleeAttack, Visual, ItemMisc,
+    * Description and Effect.
+    * @param entity
+    */
+  export function isMeleeWeaponItem(entity: Entity): boolean;
+ 
+  /**
+    * A armor item entity may have the following components:
+    * Instance, Countable, Name, Protection, Visual, VisualChange,
+    * ItemMisc, Description and Effect.
+    * @param entity
+    */
+  export function isArmorItem(entity: Entity): boolean;
+ 
+   /**
+    * A consumable item entity may have the following components:
+    * Instance, Countable, Name, Visual, Scheme, ItemMisc, Description
+    * and Effect.
+    * @param entity
+    */
+  export function isConsumableItem(entity: Entity): boolean;
+
+  ///////////////////////////////////
+  // Inventory functions
+  ///////////////////////////////////
 
   /**
    * Checks if entity has an item with the specified instance in his inventory.
@@ -488,8 +568,6 @@ declare namespace revmp {
 
   export function equipped(entity: Entity, instance: string | Entity): boolean;
 
-  // TODO: getDrawnWeapon?
-
   /**
    * Drops the item into the world.
    * If the amount is larger than actually available, everything will be
@@ -520,37 +598,15 @@ declare namespace revmp {
    */
   export function clearInventory(entity: Entity): void;
 
+  ///////////////////////////////////
+  // Combat functions
+  ///////////////////////////////////
+
   export function drawMeleeWeapon(entity: Entity): void;
 
   export function drawRangedWeapon(entity: Entity): void;
 
   export function putWeaponAway(entity: Entity): void;
-
-  /**
-   * Adds a case sensitive overlay to an entity with an Animations component.
-   * Does nothing if entity already has the overlay.
-   * @param entity
-   * @param overlay
-   * @throws Will throw if entity is not valid or entity doesn't have Animations component.
-   */
-  export function addOverlay(entity: Entity, overlay: string): void;
-
-  /**
-   * Removes a case sensitive overlay to an entity with an Animations component.
-   * Does nothing if entity doesn't have the overlay.
-   * @throws Will throw if entity is not valid or entity doesn't have Animations component.
-   * @param entity
-   * @param overlay
-   */
-  export function removeOverlay(entity: Entity, overlay: string): void;
-
-  /**
-   * Removes all overlays from an entity with an Animations component.
-   * @throws Will throw if entity is not valid or entity doesn't have Animations component.
-   * @param entity
-   * @param overlay
-   */
-  export function clearOverlays(entity: Entity): void;
 
   /**
    * Creates an attack with the attacker's drawn weapon to hit target.
@@ -565,20 +621,100 @@ declare namespace revmp {
    */
   export function attack(attacker: Entity, target: Entity): void;
 
+  // TODO: getDrawnWeapon?
+
+  ///////////////////////////////////
+  // Animation functions
+  ///////////////////////////////////
+
+  /**
+   * Adds a modelscript overlay to an entity with an Model component.
+   * The overlay is converted to uppercase by default.
+   * Does nothing if entity already has the overlay.
+   * @param entity
+   * @param overlay
+   * @throws Will throw if entity is not valid or entity doesn't have Model component.
+   */
+  export function addMdsOverlay(entity: Entity, overlay: string): void;
+
+  /**
+   * Removes a modelscript overlay to an entity with an Model component.
+   * The overlay is converted to uppercase by default.
+   * Does nothing if entity doesn't have the overlay.
+   * @throws Will throw if entity is not valid or entity doesn't have Model component.
+   * @param entity
+   * @param overlay
+   */
+  export function removeMdsOverlay(entity: Entity, overlay: string): void;
+
+  /**
+   * Removes all modelscript overlays from an entity with an Model component.
+   * @throws Will throw if entity is not valid or entity doesn't have Model component.
+   * @param entity
+   * @param overlay
+   */
+  export function clearMdsOverlays(entity: Entity): void;
+
+  /**
+   * Returns true if animation exists in any model prototype. Case-insensitive.
+   * @param entity 
+   * @param ani 
+   */
+  export function hasAnimation(entity: Entity, ani: string): boolean;
+
+  /**
+   * Return true if animation is currently active. Case-insensitive.
+   * @param entity 
+   * @param ani 
+   */
+  export function isAnimationActive(entity: Entity, ani: string): boolean;
+
+  /**
+   * Returns animation or undefined if entity doesn't have it.
+   * Case-insensitive.
+   * @param entity 
+   * @param ani 
+   */
+  export function getAnimationByName(entity: Entity, ani: string): Animation|undefined;
+
+  /**
+   * Starts animation. Case-insensitive.
+   * Note: Currently the server doesn't have any animation system. Starting an
+   * animation for a player will send a notification to the client. Only after
+   * the client sended a response the server can observe if the animation is
+   * active or not.
+   * For bots the first slot of activeAni from Model stores the last started
+   * animation. It's not possible to observe any active animations for bots.
+   * @throws Will throw if animation doesn't exists in any model prototype.
+   * @param entity 
+   * @param ani 
+   */
   export function startAnimation(entity: Entity, ani: string): void;
 
+  /**
+   * Stops animation. Case-insensitive.
+   * @throws Will throw if animation doesn't exists in any model prototype.
+   * @param entity 
+   * @param ani 
+   */
   export function stopAnimation(entity: Entity, ani: string): void;
 
+  /**
+   * Fade out animation. Case-insensitive.
+   * @throws Will throw if animation doesn't exists in any model prototype.
+   * @param entity 
+   * @param ani 
+   */
   export function fadeOutAnimation(entity: Entity, ani: string): void;
 
   //export function playSound(entity: Entity, sound: string): void
 
   //export function playEffect(entity: Entity, effect: string): void
 
-  //export function changePlayerWorld(entity: Entity, world: string|Entity): void
+  //export function changePlayerWorld(entity: Entity, world: string|Entity, position?: Vec3): void
 
   ///////////////////////////////////
-  // Events
+  // Event functions
   ///////////////////////////////////
 
   /**
@@ -981,7 +1117,7 @@ declare namespace revmp {
   ): () => void;
 
   ///////////////////////////////////
-  // Getter and Setter
+  // Component functions
   ///////////////////////////////////
 
   export interface Position {
@@ -1249,31 +1385,72 @@ declare namespace revmp {
 
   export function hasInventory(entity: Entity): boolean;
 
-  export interface Ani {
+  export interface Animation {
+    type: number; // TODO: enum
+    layer: number;
     name: string;
-    //layer: number;
+    alias: string;
+    next: string;
+    dir: number; // TODO: enum
+    fps: number;
+    blendInSpeed: number;
+    blendOutSpeed: number;
+    firstFrame: number;
+    lastFrame: number;
+    speed: number;
   }
 
   export interface ActiveAni {
-    ani: Ani;
+    ani: Animation;
+
+    /**
+     * True if ani is fading out.
+     */
     isFadingOut: boolean;
   }
 
-  export interface Animations {
-    activeAnis: [
-      ActiveAni,
-      ActiveAni,
-      ActiveAni,
-      ActiveAni,
-      ActiveAni,
-      ActiveAni
-    ];
-    overlays: string[];
+  export interface ModelPrototype {
+    /**
+     * Mds name
+     */
+    name: string;
+
+    /**
+     * Contains all animations.
+     */
+    animations: Map<string, Animation>;
   }
 
-  export function getAnimations(entity: Entity): Animations;
+  export interface Model {
+    /**
+     * List of animations. 6 animations can be played in parallel if they are
+     * on different layers.
+     */
+    activeAnis: [
+      ActiveAni?,
+      ActiveAni?,
+      ActiveAni?,
+      ActiveAni?,
+      ActiveAni?,
+      ActiveAni?
+    ];
 
-  export function hasAnimations(entity: Entity): boolean;
+    /**
+     * Modelscript overlays.
+     * Note: all overlays are in uppercase.
+     */
+    overlays: string[];
+
+    /**
+     * Modelscript prototypes. Contains all available animations.
+     * The first prototyp is the visual and all others are mds overlays.
+     */
+    prototypes: ModelPrototype[];
+  }
+
+  export function getModel(entity: Entity): Model;
+
+  export function hasModel(entity: Entity): boolean;
 
   /**
    * Contains the current character or world item in focus.
@@ -1412,8 +1589,19 @@ declare namespace revmp {
   export function hasWaypoint(entity: Entity): boolean;
   
   export interface ItemMisc {
+    /**
+     * Gothic item categories.
+     */
     category: ItemCategory;
+
+    /**
+     * Gothic item materials.
+     */
     material: Material;
+
+    /**
+     * Gothic item value in gold.
+     */
     value: number;
   }
 
@@ -1432,16 +1620,57 @@ declare namespace revmp {
   export function getWorldEntities(entity: Entity): WorldEntities;
 
   export function hasWorldEntities(entity: Entity): boolean;
-      
+
   export interface NetworkClient {
+    /**
+     * Unique identifier generated by the network.
+     */
     guid: BigInt;
+
+    /**
+     * Ip address.
+     */
     ip: string;
+
+    /**
+     * Last received tick from the client.
+     */
     tick: number;
+
+    /**
+     * Last ping or -1 if there's none avalaible yet.
+     */
+    ping: number;
+
+    /**
+     * Average ping or -1 if there's none avalaible yet.
+     */
+    averagePing: number;
   }
 
   export function getNetworkClient(entity: Entity): NetworkClient;
 
   export function hasNetworkClient(entity: Entity): boolean;
+
+  export interface NetworkSync {
+    /**
+     * After the client connects, the server sends all necessary initial data.
+     * As soon as the client has loaded the world, worldLoaded becomes true and
+     * the client begins to synchronize its state. 
+     */
+    worldLoaded: boolean;
+
+    /**
+     * Contains every bot that is synced by this client.
+     * The position is synchronized, which depends on the gothic animations,
+     * collisions and physics. 
+     */
+    botSync: Entity[];
+  }
+
+  export function getNetworkSync(entity: Entity): NetworkSync;
+
+  export function hasNetworkSync(entity: Entity): boolean;
 
   //export enum WeatherType {
   //    Normal = 0,
@@ -1475,110 +1704,51 @@ declare namespace revmp {
 
   export function hasMovementController(entity: Entity): boolean;
 
-  // Note: An entity can be one or more of the following types.
-  /**
-   * A player entity may have the following components:
-   * Name, Position, Rotation, Scale, Animations, Health, Mana, Attributes,
-   * MeleeAttack, Protection, Visual, VisualBody, Effect, CombatState,
-   * Homeworld, Inventory, Equipment, Focus, NetworkClient
-   * and MovementController.
-   * @param entity
-   */
-  export function isPlayer(entity: Entity): boolean;
+  ///////////////////////////////////
+  // Misc functions
+  ///////////////////////////////////
 
   /**
-   * A bot entity may have the following components:
-   * Name, Position, Rotation, Scale, Animations, Health, Mana, Attributes,
-   * MeleeAttack, Protection, Visual, VisualBody, Effect, CombatState,
-   * Homeworld, Inventory and Equipment.
-   * @param entity
+   * Calls 'shutdown' event, disconnects all clients and stops program execution.
    */
-  export function isBot(entity: Entity): boolean;
+  export function shutdown(exitCode: number): void;
 
   /**
-   * A character entity may have the following components:
-   * Name, Position, Rotation, Scale, Animations, Health, Mana, Attributes,
-   * MeleeAttack, Protection, Visual, VisualBody, Effect, CombatState,
-   * Homeworld, Inventory and Equipment.
-   * @param entity
+   * Load waynet from vdfs.
+   * @param world 
+   * @throws Will throw if entity is invalid or not a world or if waynet couldn't be loaded.
    */
-  export function isCharacter(entity: Entity): boolean;
+  export function loadWaynet(world: Entity): void;
+
+   /**
+    * Sends a chat message to the specified player or an array of players
+    * which is more efficient.
+    * @param player
+    * @param message
+    * @param color Defaults to [255, 255, 255, 255]
+    * @throws Will throw if entity is not valid or not a player.
+    */
+  export function sendChatMessage(
+     player: Entity | Entity[],
+     message: string,
+     color?: [number, number, number, number?]
+   ): void;
+
+  export function logTrace(...data: any[]): void;
+
+  export function logDebug(...data: any[]): void;
+
+  export function logInfo(...data: any[]): void;
+
+  export function logWarn(...data: any[]): void;
+
+  export function logError(...data: any[]): void;
+
+  export function logCritical(...data: any[]): void;
 
   /**
-   * A vob entity may have the following components:
-   * Homeworld, Position, Rotation and Visual.
-   * @param entity
-   */
-  export function isVob(entity: Entity): boolean;
-
-  /**
-   * A world entity may have the following components:
-   * Name, Inventory, Time, Zen, WorldEntities and Waynet.
-   * TODO: Weather, WorldSync.
-   * @param entity
-   */
-  export function isWorld(entity: Entity): boolean;
-
-  /**
-   * A waypoint entity may have the following components:
-   * Name, Homeworld, Position, Rotation and Waypoint.
-   * @param entity
-   */
-  export function isWaypoint(entity: Entity): boolean;
-
-  /**
-   * A freepoint entity may have the following components:
-   * Name, Homeworld, Position, Rotation.
-   * @param entity
-   */
-   export function isFreepoint(entity: Entity): boolean;
-
-  /**
-   * A item entity may have the following components:
-   * ItemInstance and Countable
-   * @param entity
-   */
-  export function isItem(entity: Entity): boolean;
-
-  /**
-   * A item entity may have the following components:
-   * ItemInstance, Countable, Position, Rotation and Homeworld.
-   * @param entity
-   */
-  export function isWorldItem(entity: Entity): boolean;
-
-  /**
-   * A item instance entity may have no specific components.
-   * @param entity
-   */
-  export function isItemInstance(entity: Entity): boolean;
-
-  /**
-   * A melee weapon item entity may have the following components:
-   * Instance, Countable, Name, MeleeAttack, Visual, ItemMisc,
-   * Description and Effect.
-   * @param entity
-   */
-  export function isMeleeWeaponItem(entity: Entity): boolean;
-
-  /**
-   * A armor item entity may have the following components:
-   * Instance, Countable, Name, Protection, Visual, VisualChange,
-   * ItemMisc, Description and Effect.
-   * @param entity
-   */
-  export function isArmorItem(entity: Entity): boolean;
-
-  /**
-   * A consumable item entity may have the following components:
-   * Instance, Countable, Name, Visual, Scheme, ItemMisc, Description
-   * and Effect.
-   * @param entity
-   */
-  export function isConsumableItem(entity: Entity): boolean;
-
-  /**
-   * A invalid entity which is not the same as 0.
+   * A invalid entity.
+   * Note: This is not the same as 0.
    */
   export const nullEntity: Entity;
 
@@ -1588,7 +1758,7 @@ declare namespace revmp {
   export const version: string;
 
   /**
-   * Revmp client version.
+   * Required Revmp client version.
    */
   export const clientVersion: string;
 
@@ -1613,9 +1783,9 @@ declare namespace revmp {
   export const maxPlayers: number;
 
   /**
-   * Log level. Possible values: "trace", "debug", "info", "warn", "error", "critical", "off".
+   * Log level.
    */
-  export let logLevel: string;
+  export let logLevel: "trace"|"debug"|"info"|"warn"|"error"|"critical"|"off";
 
   /**
    * Range in which entities are streamend to the players.

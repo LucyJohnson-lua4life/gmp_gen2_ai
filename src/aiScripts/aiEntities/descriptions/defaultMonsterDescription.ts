@@ -4,7 +4,6 @@ import { AiState } from '../../aiStates/aiState';
 import { ForwardAttackWithPause } from '../actions/fightActions';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './templates/defaultDescriptionTemplate';
 import { gotoStartPoint, setAttackerToEnemy, warnEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
-import { isAniPlaying } from '../../aiFunctions/aiUtils';
 import { getAiAction, getAiEnemyInfo, setAiActionIfUndefined } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
 
 export class DefaultMonsterDescription implements IActionDescription {
@@ -51,7 +50,7 @@ export class DefaultMonsterDescription implements IActionDescription {
     private describeEatRoutine(values: IDefaultDescriptionTemplateValues): void {
         const currentAction = getAiAction(values.aiState, values.aiId)
         if (typeof currentAction !== 'undefined') {
-            if (!isAniPlaying(values.aiId, "S_EAT")) {
+            if (!revmp.isAnimationActive(values.aiId, "S_EAT") && revmp.hasAnimation(values.aiId, "S_EAT")) {
                 revmp.startAnimation(values.aiId, "S_EAT")
             }
         }

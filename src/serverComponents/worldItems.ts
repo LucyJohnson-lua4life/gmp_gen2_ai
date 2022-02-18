@@ -1,6 +1,6 @@
 import { WeaponInstances } from "../aiScripts/aiEntities/equipment/weapons"
 
-let ITEM_SPOTS: Map<number, revmp.Vec3> = new Map() 
+const ITEM_SPOTS: Map<number, revmp.Vec3> = new Map() 
 
 // city1 forrest
 ITEM_SPOTS.set(1, [6546.0053710938, 608.80023193359, -9247.3466796875])

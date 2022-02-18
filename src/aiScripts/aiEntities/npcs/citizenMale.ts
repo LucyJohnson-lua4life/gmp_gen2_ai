@@ -53,7 +53,7 @@ export class CitizenMale implements IAiNpc {
         this.dialogues = new Map()
         this.initDialogues(this.dialogues)
 
-        revmp.addOverlay(this.id, "Humans_1hST1.MDS")
+        revmp.addMdsOverlay(this.id, "Humans_1hST1.mds")
         //revmp.setAttributes(this.id, {oneHanded: 100})
         revmp.addItem(this.id, WeaponInstances.nobleSword, 1);
         revmp.addItem(this.id, ArmorInstances.vlkMaleArmor, 1);

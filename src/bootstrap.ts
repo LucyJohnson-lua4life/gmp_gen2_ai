@@ -42,7 +42,7 @@ revmp.on("entityCreated", (entity: revmp.Entity) => {
         revmp.equipItem(entity, ArmorInstances.dragonHunterArmor)
         revmp.setAttributes(entity, { strength: 100, oneHanded: 100 })
         revmp.setHealth(entity, { current: 2100, max: 2100 })
-        revmp.addOverlay(entity, "Humans_1hST2.MDS")
+        revmp.addMdsOverlay(entity, "Humans_1hST2.MDS")
         revmp.sendChatMessage(entity, 'type /healme to get back to full health')
     }
 
