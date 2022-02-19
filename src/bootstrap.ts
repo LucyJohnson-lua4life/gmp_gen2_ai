@@ -24,7 +24,7 @@ revmp.on("init", () => {
     });
     initWeaponInstances()
     initArmorInstances()
-    //initWorldItems()
+    initWorldItems()
     //const itemId = revmp.addItem(revmp.worlds[0], WeaponInstances.dragonHunterBlade, { amount: 1, position: [0,0,0] })
 
 
