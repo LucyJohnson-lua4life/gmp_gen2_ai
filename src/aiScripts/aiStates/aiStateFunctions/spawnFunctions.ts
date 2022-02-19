@@ -31,8 +31,10 @@ export function spawnNpc(aiState: AiState, npc: IAiNpc, pointName: string, world
     npc.startWorld = world
     registerBot(aiState, npc)
     revmp.setPosition(npc.id, [npcPosition.x, npcPosition.y, npcPosition.z]);
-    const spawnAngle = getWaynetPointRadiansAngle(npcPosition.x, npcPosition.z, npcPosition.dirX, npcPosition.dirZ)
-    setPlayerAngle(npc.id, spawnAngle)
+    //const spawnAngle = getWaynetPointRadiansAngle(npcPosition.x, npcPosition.z, npcPosition.dirX, npcPosition.dirZ)
+    //setPlayerAngle(npc.id, spawnAngle)
+
+    revmp.setRotation(npc.id, getRotationForPointName(aiState, pointName));
 
     const position: IAiPosition | undefined = getAiPosition(aiState, npc.id)
     if (typeof position !== 'undefined') {
@@ -67,6 +69,20 @@ function getPointCoordinateValues(aiState: AiState, pointName: string): PointCoo
     if (typeof foundWaypoint !== 'undefined') {
         return { x: foundWaypoint.x, y: foundWaypoint.y, z: foundWaypoint.z, dirX: foundWaypoint.rotX, dirZ: foundWaypoint.rotZ }
     }
-    console.log("Error: for the given point no coordinates where found! Default coordinates will be provided")
+    console.log("Error: for the given point: ",pointName," no coordinates where found! Default coordinates will be provided")
     return { x: 0, y: 0, z: 0, dirX: 0, dirZ: 0 }
+}
+
+function getRotationForPointName(aiState: AiState, pointName: string): revmp.Quat {
+    const waynet = getWaynet(aiState)
+    const foundFreepoint = waynet.freepoints.find(x => x.fpName === pointName)
+    if (typeof foundFreepoint !== 'undefined' && typeof foundFreepoint.rotation !== 'undefined') {
+        return foundFreepoint.rotation 
+    }
+    const foundWaypoint = Array.from(waynet.waypoints.values()).find(wp => wp.wpName === pointName)
+    if (typeof foundWaypoint !== 'undefined' && typeof foundWaypoint.rotation !== 'undefined') {
+        return foundWaypoint.rotation
+    }
+    console.log("Error: for the given point: ",pointName," no rotation where found! Default rotation will be provided")
+    return [0,0,0,0]
 }

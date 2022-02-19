@@ -6,10 +6,7 @@ export class CrimminalWaynetRegistry {
     private availablePoints = [
         "NW_CITY_TO_LIGHTHOUSE_16",
         "NW_TO_PASS_01",
-        "NW_FARM2_TO_TAVERN_RANGERBANDITS_01",
-        "NW_BIGMILL_FARM3_RANGERBANDITS_02",
         "NW_FLEEDMT_KAP3",
-        "NW_FARM4_WOOD_RANGERBANDITS_02",
         "NW_FARM4_WOOD_MONSTER_N_5",
         "NW_FARM3_PATH_14",
         "NW_TROLLAREA_PATH_57",

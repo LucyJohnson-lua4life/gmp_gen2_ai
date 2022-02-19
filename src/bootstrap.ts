@@ -28,8 +28,9 @@ revmp.on("init", () => {
     //const itemId = revmp.addItem(revmp.worlds[0], WeaponInstances.dragonHunterBlade, { amount: 1, position: [0,0,0] })
 
 
-
-    aiState = initAiState()
+    revmp.loadWaynet(world)
+    const waynet = revmp.getWaynet(world)
+    aiState = initAiState(waynet)
 
 });
 

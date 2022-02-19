@@ -90,11 +90,7 @@ export class TownWaynetRegistry {
         "FP_SMALLTALK_CITY_PALCAMP_11",
         "FP_SMALLTALK_CITY_PALCAMP_12",
         "FP_SMALLTALK_CITY_PALCAMP_13",
-        "FP_SMALLTALK_CITY_PALCAMP_14",
-        "FP_CITY_TAVERN_01",
-        "FP_CITY_TAVERN_02",
-        "FP_CITY_TAVERN_03",
-        "FP_CITY_TAVERN_04"
+        "FP_SMALLTALK_CITY_PALCAMP_14"
     ]
 
     constructor() {

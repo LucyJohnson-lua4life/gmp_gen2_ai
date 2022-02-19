@@ -639,7 +639,6 @@ export function initWorldItems():void{
     Array.from(ITEM_SPOTS.keys()).forEach( spotId=> {
         const itemId = revmp.addItem(revmp.worlds[0], WeaponInstances.dragonHunterBlade, { amount: 1, position: ITEM_SPOTS.get(spotId)})
         ITEM_ID_TO_SPOT_ID.set(itemId, spotId)
-        console.log("item-added at: ", ITEM_SPOTS.get(spotId))
     })
 }
 
@@ -648,7 +647,6 @@ export function respawnPlants():void {
     EMPTY_SPOTS.forEach(spotId => {
         const itemId = revmp.addItem(revmp.worlds[0], WeaponInstances.dragonHunterBlade, { amount: 1, position: ITEM_SPOTS.get(spotId) })
         ITEM_ID_TO_SPOT_ID.set(itemId, spotId)
-        console.log("respawned something at pos: ",itemId, ITEM_SPOTS.get(spotId))
     })
     EMPTY_SPOTS = []
 }

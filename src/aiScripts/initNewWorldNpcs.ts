@@ -131,7 +131,6 @@ export function initNewWorldNpcs(aiState: AiState): void {
   spawnNpc(aiState,new Wolf(), "NW_BIGFARM_LAKE_MONSTER_01_01", world);
   spawnNpc(aiState,new Lurker(), "NW_BIGFARM_LAKE_MONSTER_02_01", world);
   spawnNpc(aiState,new Wolf(), "NW_BIGFARM_LAKE_MONSTER_03_01", world);
-  spawnNpc(aiState,new Lurker(), "NW_LAKE_GREG_TREASURE_01", world); //3538
 
   spawnNpc(aiState,new OrcElite(), "NW_FARM4_WOOD_MONSTER_01", world);
   spawnNpc(aiState,new Warg(), "NW_FARM4_WOOD_MONSTER_01", world);

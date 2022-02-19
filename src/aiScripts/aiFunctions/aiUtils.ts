@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { Waynet } from '../waynet/waynet';
 // https://stackoverflow.com/a/9614122/10637905
 /**
  * Returns the angle from two points. Or in relationship with npc's it describes the angle the npc1 needs to look to npc2.

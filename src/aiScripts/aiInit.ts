@@ -8,10 +8,10 @@ import { initNewWorldNpcs } from "./initNewWorldNpcs";
 
 
 
-export function initAiState(): AiState {
+export function initAiState(waynet?: revmp.Waynet): AiState {
     // fixme: the wp/fp files are not automatically copied into the dist folder 
     // this could confuse users
-    const aiState = new AiState('./dist/aiScripts/newworld.wp', './dist/aiScripts/newworld.fp')
+    const aiState = new AiState('./dist/aiScripts/newworld.wp', './dist/aiScripts/newworld.fp', waynet)
     const updateLoop = new AiUpdateLoop(aiState)
     const worldStateEventHandler = new AiWorldStateEventHandler(aiState)
     const dialogueHandler = new AiDialogueHandler(aiState)

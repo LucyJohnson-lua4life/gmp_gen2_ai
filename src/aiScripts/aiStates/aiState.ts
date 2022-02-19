@@ -43,8 +43,8 @@ export class AiState {
     aiNpcTags: Map<number, IAiNpcTags>;
     aiDialogues: Map<number,IAiDialogue>;
 
-    constructor(wpPath: string, fpPath: string) {
-        this.waynet = new Waynet(wpPath, fpPath)
+    constructor(wpPath: string, fpPath: string, waynet?: revmp.Waynet) {
+        this.waynet = new Waynet(wpPath, fpPath, waynet)
         this.characterInPositionAreas = new Map()
         worldNames.forEach(name => this.characterInPositionAreas.set(name, new Map()))
         this.allBots = []
