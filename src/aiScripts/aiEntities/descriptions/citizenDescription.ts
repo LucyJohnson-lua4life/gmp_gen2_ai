@@ -4,7 +4,7 @@ import { AiState } from '../../aiStates/aiState';
 import { ForwardAttackWithPause} from '../actions/fightActions';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './templates/defaultDescriptionTemplate';
 import { gotoStartPoint, setAttackerToEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
-import { getAiActionHistory, getAiAction, getAiEnemyInfo, getWaynetRegistry, setAiActionHistory, setAiActionIfUndefined } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
+import { getAiActionHistory, getAiAction, getAiEnemyInfo, getWaynetRegistry, setAiActionHistory, setAiActionIfUndefined, deleteAiAction } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
 
 export class CitizenDescription implements IActionDescription {
     entityId: number
@@ -57,16 +57,16 @@ export class CitizenDescription implements IActionDescription {
         const currentAction = getAiAction(template.aiState, template.aiId)
         const lastRoamingTime = actionHistory?.lastRoamingTime ?? 0
         const currentTime = Date.now()
-        const isNoActionRunning = typeof currentAction === 'undefined'
+        const isRoaming = currentAction instanceof GotoPoint
 
-        if (isNoActionRunning && currentTime > lastRoamingTime + random*60000) {
+        if (currentTime > lastRoamingTime + random*60000) {
             getWaynetRegistry(template.aiState).unregisterTownie(template.aiId)
             const targetPoint = getWaynetRegistry(template.aiState).registerTownieAndGetPoint(template.aiId)
             setAiActionIfUndefined(template.aiState, new GotoPoint(template.aiId, template.aiState, targetPoint, "S_WALKL"))
             actionHistory.lastRoamingTime = currentTime
             setAiActionHistory(template.aiState, actionHistory)
         }
-        else if (isNoActionRunning && !revmp.isAnimationActive(template.aiId, "S_LGUARD")) {
+        else if(!isRoaming){
             revmp.setCombatState(this.entityId, { weaponMode: revmp.WeaponMode.None })
             revmp.startAnimation(template.aiId, "S_LGUARD")
         }

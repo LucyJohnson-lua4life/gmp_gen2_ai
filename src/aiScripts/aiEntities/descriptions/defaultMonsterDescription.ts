@@ -48,13 +48,9 @@ export class DefaultMonsterDescription implements IActionDescription {
         }
     }
     private describeEatRoutine(values: IDefaultDescriptionTemplateValues): void {
-        const currentAction = getAiAction(values.aiState, values.aiId)
-        if (typeof currentAction !== 'undefined') {
-            if (!revmp.isAnimationActive(values.aiId, "S_EAT") && revmp.hasAnimation(values.aiId, "S_EAT")) {
-                revmp.startAnimation(values.aiId, "S_EAT")
-            }
+        if (!revmp.isAnimationActive(values.aiId, "S_EAT") && revmp.hasAnimation(values.aiId, "S_EAT")) {
+            revmp.startAnimation(values.aiId, "S_EAT")
         }
-
     }
 
 }

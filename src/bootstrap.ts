@@ -91,7 +91,7 @@ function debugCommands(entity: revmp.Entity, msg: string) {
     else if (command === "/healme") {
         const maxHealth = revmp.getHealth(entity).max
         revmp.setHealth(entity, { current: maxHealth, max: maxHealth })
-        revmp.startAnimation(entity, "T_STUMBLEB");
+        revmp.startAnimation(entity, "T_STUMBLE");
     }
 
     else if (command === "/v1") {

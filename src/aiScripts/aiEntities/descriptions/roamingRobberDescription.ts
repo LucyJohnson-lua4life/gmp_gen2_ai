@@ -57,9 +57,9 @@ export class RoamingRobberDescription implements IActionDescription {
         const currentAction = getAiAction(template.aiState, template.aiId)
         const lastRoamingTime = actionHistory?.lastRoamingTime ?? 0
         const currentTime = Date.now()
-        const isNoActionRunning = typeof currentAction === 'undefined'
+        const isRoaming = currentAction instanceof GotoPoint
 
-        if (isNoActionRunning && currentTime > lastRoamingTime + 30000) {
+        if (currentTime > lastRoamingTime + 30000) {
             getWaynetRegistry(template.aiState).unregisterTownie(template.aiId)
             const targetPoint = getWaynetRegistry(template.aiState).registerTownieAndGetPoint(template.aiId)
             revmp.addMdsOverlay(this.entityId, "HumanS_Relaxed.mds")
@@ -67,7 +67,7 @@ export class RoamingRobberDescription implements IActionDescription {
             actionHistory.lastRoamingTime = currentTime
             setAiActionHistory(template.aiState, actionHistory)
         }
-        else if (isNoActionRunning && !revmp.isAnimationActive(template.aiId, "S_LGUARD")) {
+        else if (!isRoaming) {
             revmp.setCombatState(this.entityId, { weaponMode: revmp.WeaponMode.None })
             revmp.startAnimation(template.aiId, "S_LGUARD")
         }
