@@ -1,4 +1,4 @@
-import { RunToTargetAction, TurnToTargetAction, WaitAction} from "../../actions/commonActions"
+import { RunToTargetAction, TurnToTargetAction, WaitAction } from "../../actions/commonActions"
 import { ParadeWithPause, StrafeRightWithPause, StrafeLeftWithPause, DoubleParadeWithPause, TripleQuickAttack, ForwardAttackWithPause } from "../../actions/fightActions"
 import { getNecessaryAngleToWatchTarget, getDistance, hasMeleeWeapon, isAlive, removeAllAnimations} from "../../../aiFunctions/aiUtils"
 import { AiState } from "../../../aiStates/aiState"
@@ -9,8 +9,8 @@ import { deleteAiAction, deleteAiEnemyInfo, getAiActionHistory, getAiAction, get
 
 const DEFAULT_ATTACK_RANGE = 300
 const DEFAULT_WARN_RANGE = 500
-const DEFAULT_CHASE_RANGE = 800 
-const DEFAULT_ATTACK_FREQUENCY = 2700 
+const DEFAULT_CHASE_RANGE = 800
+const DEFAULT_ATTACK_FREQUENCY = 2700
 export interface IDefaultDescriptionTemplateValues {
     aiId: number
     aiState: AiState
@@ -32,7 +32,7 @@ export function describeGeneralRoutine(values: IDefaultDescriptionTemplateValues
     const enemyId = getAiEnemyInfo(values.aiState, values.aiId)?.enemyId ?? -1
     const nearestChar = getNearestCharacterRangeMapping(values.aiId, npcActionUtils)
     const currentAction = getAiAction(values.aiState, values.aiId)
-    const attackEvent = getAiAttackEventInfo(values.aiState, values.aiId) ?? {isUnderAttack: false, attackedBy: -1}
+    const attackEvent = getAiAttackEventInfo(values.aiState, values.aiId) ?? { isUnderAttack: false, attackedBy: -1 }
 
     if (attackEvent.isUnderAttack) {
         values.onAiIsAttacked(values)
@@ -42,7 +42,7 @@ export function describeGeneralRoutine(values: IDefaultDescriptionTemplateValues
         deleteAiAction(values.aiState, values.aiId)
         removeAllAnimations(values.aiId)
     }
-    else if(enemyId !== -1 && !isExisting(enemyId)){
+    else if (enemyId !== -1 && !isExisting(enemyId)) {
         deleteAiEnemyInfo(values.aiState, values.aiId)
         deleteAiAction(values.aiState, values.aiId)
         values.onEnemyDisconnected(values)
@@ -50,7 +50,7 @@ export function describeGeneralRoutine(values: IDefaultDescriptionTemplateValues
     else if (isExisting(enemyId)) {
         const range = getDistance(values.aiId, enemyId)
 
-        //is triggered when npc is attacked and not fighting mode yet e.g when warning
+        //is triggered when npc is attacked and not in fighting mode e.g when warning
         if (typeof currentAction !== 'undefined' && !isFightAction(currentAction)) {
             deleteAiAction(values.aiState, values.aiId)
         }
@@ -93,7 +93,7 @@ function describeFightMode(values: IDefaultDescriptionTemplateValues, enemyId: n
     }
 
     setAiActionIfUndefined(values.aiState, new TurnToTargetAction(values.aiId, enemyId))
-   
+
 }
 function describeFightMovements(values: IDefaultDescriptionTemplateValues, enemyId: number, rangeToEnemy: number): void {
     const historyComponent = getAiActionHistory(values.aiState, values.aiId) ?? { entityId: values.aiId }
@@ -114,7 +114,7 @@ function describeFightMovements(values: IDefaultDescriptionTemplateValues, enemy
         if (random <= 1 && isOpponentInFrontOfAi) {
             setAiActionIfUndefined(values.aiState, new ParadeWithPause(values.aiId, 200))
         }
-        else if (random <= 7 && isOpponentInFrontOfAi) {
+        else if (random <= 6 && isOpponentInFrontOfAi) {
             if (getNecessaryAngleToWatchTarget(values.aiId, enemyId) > 180) {
                 setAiActionIfUndefined(values.aiState, new StrafeRightWithPause(values.aiId, 400))
             }
@@ -122,8 +122,8 @@ function describeFightMovements(values: IDefaultDescriptionTemplateValues, enemy
                 setAiActionIfUndefined(values.aiState, new StrafeLeftWithPause(values.aiId, 400))
             }
         }
-        else if (random <= 10 && isOpponentInFrontOfAi) {
-            setAiActionIfUndefined(values.aiState, new WaitAction(values.aiId, 200))
+        else if (random <= 9 && isOpponentInFrontOfAi) {
+            setAiActionIfUndefined(values.aiState, new ParadeWithPause(values.aiId, 900))
         }
         else {
             setAiActionIfUndefined(values.aiState, new TurnToTargetAction(values.aiId, enemyId))
@@ -154,6 +154,7 @@ function isFightAction(action: IAiAction | undefined) {
         || action instanceof StrafeRightWithPause
         || action instanceof ParadeWithPause
         || action instanceof DoubleParadeWithPause
+        || action instanceof WaitAction 
         || action instanceof ForwardAttackWithPause
         || action instanceof TripleQuickAttack)
 }

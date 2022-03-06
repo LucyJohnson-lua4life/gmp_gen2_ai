@@ -250,7 +250,7 @@ export function getOrcWarriorInstance(): revmp.BotTemplate {
 export function getOrcEliteInstance(): revmp.BotTemplate {
     return {
         name: "Orc Elite",
-        maxHealth: 1700,
+        maxHealth: 1200,
         visual: "Orc.mds",
         visualBody: {
             bodyMesh: "Orc_BodyElite",

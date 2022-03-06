@@ -2,6 +2,8 @@
 
 import { IAiAction } from "../iAiAction";
 import { setPlayerAngle, getCombatStateBasedAni, getRadiansAngleToPoint, getDistance, getWaynetPointRadiansAngle, getDistanceToPoint, isTargetInFrontOfEntity, getNecessaryAngleToWatchTarget } from "../../aiFunctions/aiUtils";
+
+import { getRotationForPointName} from "../../aiStates/aiStateFunctions/spawnFunctions"
 import { gotoPosition, getDistance as getPointDistance } from "../../waynet/positionFunctions";
 import { IAiPosition } from "../components/iAiPosition";
 import { AiState } from "../../aiStates/aiState";
@@ -457,10 +459,9 @@ export class GotoPoint implements IAiAction {
             this.shouldLoop = false
             //const y = getAngleToPoint(wpToVisit.x, wpToVisit.z, wpToVisit.x + wpToVisit.rotX, wpToVisit.z + wpToVisit.rotZ)
             if (typeof this.wayroute !== 'undefined' && this.routeIndex === this.wayroute.length) {
-                const targetWp = this.wayroute[this.wayroute.length - 1]
-                const playerPos = revmp.getPosition(this.aiId).position
-                const spawnAngle = getWaynetPointRadiansAngle(playerPos[0], playerPos[2], targetWp.rotX, targetWp.rotZ)
-                setPlayerAngle(this.aiId, spawnAngle)
+                if(typeof this.targetPoint !== 'undefined'){
+                    revmp.setRotation(this.aiId, getRotationForPointName(this.aiState, this.targetPoint))
+                }
             }
 
         }

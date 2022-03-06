@@ -70,9 +70,7 @@ export function readWaypointsMapFromRevmp(waynet: revmp.Waynet): Map<string, Way
 export function readFreepointsFromRevmp(waynet: revmp.Waynet): Array<Freepoint> {
     return waynet.freepoints.map(freepointId => {
         const name = revmp.getName(freepointId).name
-        console.log(name)
         const position = revmp.getPosition(freepointId).position
-        console.log(position[0])
         const rotation = revmp.getRotation(freepointId).rotation
         return { fpName: name, x: position[0], y: position[1], z: position[2], rotX: 0, rotZ: 0, rotation: rotation }
     })

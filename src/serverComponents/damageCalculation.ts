@@ -258,8 +258,15 @@ function stunAttackDamageCalculation(attacker: revmp.Entity, target: revmp.Entit
     }
 
     if (revmp.isPlayer(target)) {
-        if(!revmp.isAnimationActive(target, "S_FALLB")){
-            revmp.startAnimation(target, "S_FALLB")
+        //reset face when SetFaceAnimation is available
+        if(!revmp.isAnimationActive(target, "T_DEADB")){
+            revmp.startAnimation(target, "T_DEADB")
+            // do t_stumbleb to get rid of ugly face
+            setTimeout(() => {
+                if (revmp.valid(target)) {
+                revmp.startAnimation(target, "T_STUMBLEB");
+                }
+            }, 1250);
         }
     }
 

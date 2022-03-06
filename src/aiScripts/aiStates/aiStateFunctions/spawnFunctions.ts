@@ -1,7 +1,6 @@
 import { IAiPosition } from "../../aiEntities/components/iAiPosition";
 import { IAiNpc } from "../../aiEntities/iAiNpc";
 import { AiState } from "../aiState";
-import { getWaynetPointRadiansAngle, setPlayerAngle } from "../../aiFunctions/aiUtils";
 import { getAiNpcStatus, getAiPosition, getWaynet, registerBot, setAiPosition, unregisterBot } from "./commonAiStateFunctions";
 import { getNpcForInstance } from "../../../aiScripts/aiEntities/npcs/npcEntityUtils";
 
@@ -59,7 +58,7 @@ export function respawnNpc(aiState:AiState, aiId: number, world: string) {
     }
 }
 
-function getPointCoordinateValues(aiState: AiState, pointName: string): PointCoordinates {
+export function getPointCoordinateValues(aiState: AiState, pointName: string): PointCoordinates {
     const waynet = getWaynet(aiState)
     const foundFreepoint = waynet.freepoints.find(x => x.fpName === pointName)
     if (typeof foundFreepoint !== 'undefined') {
@@ -73,7 +72,7 @@ function getPointCoordinateValues(aiState: AiState, pointName: string): PointCoo
     return { x: 0, y: 0, z: 0, dirX: 0, dirZ: 0 }
 }
 
-function getRotationForPointName(aiState: AiState, pointName: string): revmp.Quat {
+export function getRotationForPointName(aiState: AiState, pointName: string): revmp.Quat {
     const waynet = getWaynet(aiState)
     const foundFreepoint = waynet.freepoints.find(x => x.fpName === pointName)
     if (typeof foundFreepoint !== 'undefined' && typeof foundFreepoint.rotation !== 'undefined') {

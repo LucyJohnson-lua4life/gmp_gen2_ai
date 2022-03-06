@@ -72,9 +72,26 @@ function debugCommands(entity: revmp.Entity, msg: string) {
         }
     }
 
+    else if (command === "/reset1") {
+        revmp.startAnimation(entity, "T_STUMBLEB")
+    }
+
+    else if (command === "/reset2") {
+        revmp.startAnimation(entity, "T_STUMBLE")
+    }
+
+    else if (command === "/reset3") {
+        revmp.startAnimation(entity, "T_SEARCH")
+    }
+
+    else if (command === "/reset4") {
+        revmp.startAnimation(entity, "T_IGETYOU")
+    }
+
     else if (command === "/healme") {
         const maxHealth = revmp.getHealth(entity).max
         revmp.setHealth(entity, { current: maxHealth, max: maxHealth })
+        revmp.startAnimation(entity, "T_STUMBLEB");
     }
 
     else if (command === "/v1") {
