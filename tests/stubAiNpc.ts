@@ -12,6 +12,7 @@ export class StubAiNpc implements IAiNpc {
     nextActions: Array<IAiAction>;
     aiFlags: Map<string, number | string>;
     actionDescriptions: IActionDescription[];
+    dialogues: Map<string, string>;
     lastPosUpdate: number;
     lastPosX: number;
     lastPosY: number;
@@ -33,6 +34,7 @@ export class StubAiNpc implements IAiNpc {
         this.nextActions = new Array<IAiAction>()
         this.aiFlags = new Map()
         this.actionDescriptions = []
+        this.dialogues = new Map()
         this.lastPosUpdate = 0
         this.lastPosX = 0
         this.lastPosY = 0
