@@ -147,11 +147,11 @@ function debugCommands(entity: revmp.Entity, msg: string) {
         respawnPlants()
     }
     else if(command === "/oneitem"){
-        const itemId = revmp.addItem(revmp.worlds[0], WeaponInstances.dragonHunterBlade, { amount: 1, position: [0,0,0] })
+        revmp.addItem(revmp.worlds[0], WeaponInstances.dragonHunterBlade, { amount: 1, position: [0,0,0] })
     }
 
     else if(command === "/moreitems"){
-        const itemId = revmp.addItem(revmp.worlds[0], WeaponInstances.dragonHunterBlade, { amount: 5, position: [200,200,200] })
+        revmp.addItem(revmp.worlds[0], WeaponInstances.dragonHunterBlade, { amount: 5, position: [200,200,200] })
     }
 }
 

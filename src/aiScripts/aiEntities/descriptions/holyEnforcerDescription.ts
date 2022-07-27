@@ -2,7 +2,7 @@ import { IActionDescription } from './iActionDescription';
 import { AiState } from '../../aiStates/aiState';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './templates/defaultDescriptionTemplate';
 import { ForwardAttackWithPause } from '../actions/fightActions';
-import { gotoStartPoint, setAttackerToEnemy, warnEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
+import { gotoStartPoint, setAttackerToEnemy} from './templates/commonDefaultTemplateDescriptionFunctions';
 import { EnforcePrayerAction } from '../actions/paladinActions';
 import { deleteAiAction, getAiAction, getAiEnemyInfo, setAiActionIfUndefined } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
 

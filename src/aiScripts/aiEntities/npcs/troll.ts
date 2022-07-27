@@ -1,6 +1,5 @@
 
 import { IActionDescription } from "../iActionDescription";
-import { DefaultMonsterDescription } from "../descriptions/defaultMonsterDescription";
 import { IAiNpc } from "../iAiNpc";
 import { getTrollInstance, INSTANCE_TROLL} from "./npcInits";
 import { TrollDescription } from "../descriptions/trollDescriptions";

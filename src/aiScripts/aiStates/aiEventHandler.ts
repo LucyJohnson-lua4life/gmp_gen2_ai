@@ -5,7 +5,7 @@ import { setAiAttackEventInfo } from "./aiStateFunctions/commonAiStateFunctions"
 import { AiDialogueHandler } from "./aiDialogueHandler";
 
 export class AiEventHandler {
-    private aiState: AiState
+    private readonly aiState: AiState
     private worldStateEventHandler: AiWorldStateEventHandler
     private dialogueHandler: AiDialogueHandler
 

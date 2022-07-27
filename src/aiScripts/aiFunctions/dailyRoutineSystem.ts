@@ -35,7 +35,7 @@ export interface DrCurrentTime {
  * Handles all functionalities about daily routines of the monster ai.
  */
 export class DailyRoutineSystem {
-    private aiState: AiState;
+    private readonly aiState: AiState;
     constructor(state: AiState) {
         this.aiState = state;
     }

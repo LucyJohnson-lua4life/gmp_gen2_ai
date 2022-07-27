@@ -2,11 +2,13 @@
  * Interface that represents the waynet. The waynet is a datastructure that connects nodes (waypoints) to create a
  * net on which the npc's can move along the edges (the paths/way).
  */
+import {Quaternion, Vector3} from "three";
+
 export interface IWaynet {
-    waypoints: Map<string, Waypoint>,
-    freepoints: Array<Freepoint>
+    waypoints: Map<string, Waypoint>;
+    freepoints: Map<string, Freepoint>;
     getWayroute(start: string, end: string): Array<Waypoint>
-    getNearestWaypoint(x: number, y: number, z: number): Waypoint|undefined
+    getNearestWaypoint(pos: Vector3): Waypoint|undefined
 }
 
 /**
@@ -16,12 +18,8 @@ export interface IWaynet {
  */
 export interface Freepoint {
     fpName: string,
-    x: number,
-    y: number,
-    z: number,
-    rotX: number,
-    rotZ: number,
-    rotation?: [number, number, number, number] | Float32Array
+    pos: Vector3,
+    rotation?: Quaternion
 }
 
 /**
@@ -30,13 +28,9 @@ export interface Freepoint {
  */
 export interface Waypoint {
     wpName: string,
-    x: number,
-    y: number,
-    z: number,
-    rotX: number,
-    rotZ: number
-    otherWps: Array<string>,
-    rotation?: [number, number, number, number] | Float32Array
+    pos: Vector3,
+    rotation?: Quaternion
+    otherWps: Array<string>
 }
 
 

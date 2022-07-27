@@ -1,16 +1,26 @@
 
 
 import { IAiAction } from "../iAiAction";
-import { setPlayerAngle, getCombatStateBasedAni, getRadiansAngleToPoint, getDistance, getWaynetPointRadiansAngle, getDistanceToPoint, isTargetInFrontOfEntity, getNecessaryAngleToWatchTarget } from "../../aiFunctions/aiUtils";
+import {
+    setPlayerAngle,
+    getCombatStateBasedAni,
+    getRadiansAngleToPoint,
+    getDistance,
+    getWaynetPointRadiansAngle,
+    getDistanceToPoint,
+    getNecessaryAngleToWatchTarget,
+    sendChatMessageInRange
+} from "../../aiFunctions/aiUtils";
 
 import { getRotationForPointName} from "../../aiStates/aiStateFunctions/spawnFunctions"
-import { gotoPosition, getDistance as getPointDistance } from "../../waynet/positionFunctions";
+import { gotoPosition } from "../../waynet/positionFunctions";
 import { IAiPosition } from "../components/iAiPosition";
 import { AiState } from "../../aiStates/aiState";
 import { IWaynet, Waypoint } from "../../waynet/iwaynet";
 import { IAiEnemyInfo } from "../components/iAiEnemyInfo";
 import { isOpponentinAiAngleRange } from "../../aiStates/aiStateFunctions/commonAiStateQueries";
-import { getAiAction, getAiPosition, getWaynet, setAiActionIfUndefined, setAiEnemyInfo } from "../../aiStates/aiStateFunctions/commonAiStateFunctions";
+import { getAiPosition, getWaynet, setAiActionIfUndefined, setAiEnemyInfo } from "../../aiStates/aiStateFunctions/commonAiStateFunctions";
+import {Vector3} from "three";
 
 export class SForwardAttackAction implements IAiAction {
     aiId: number
@@ -39,7 +49,7 @@ export class SForwardAttackAction implements IAiAction {
 
             /*
             let dangle = Math.abs(getPlayerAngle(this.aiId) - getAngleToTarget(this.aiId, this.victimId))
-    
+
             if (dangle > 180) {
                 dangle = Math.min(this.aiId, this.victimId)
             }
@@ -52,8 +62,8 @@ export class SForwardAttackAction implements IAiAction {
             console.log("att: " + angleToTarget)
             console.log("distance: " + getDistance(this.aiId, this.victimId))
             */
-            const isEntityInEnemyAngleRange = isOpponentinAiAngleRange(this.aiId, this.victimId)
-            if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && isEntityInEnemyAngleRange) {
+            if (getDistance(this.aiId, this.victimId) < this.necessaryDistance
+                && isOpponentinAiAngleRange(this.aiId, this.victimId)) {
                 revmp.attack(this.aiId, this.victimId);
             }
         }
@@ -87,8 +97,8 @@ export class SLeftAttackAction implements IAiAction {
             }, 900);
 
 
-            const isEntityInEnemyAngleRange = isOpponentinAiAngleRange(this.aiId, this.victimId)
-            if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && isEntityInEnemyAngleRange) {
+            if (getDistance(this.aiId, this.victimId) < this.necessaryDistance
+                && isOpponentinAiAngleRange(this.aiId, this.victimId)) {
                 revmp.attack(this.aiId, this.victimId);
             }
         }
@@ -120,8 +130,8 @@ export class SRightAttackAction implements IAiAction {
                 }
             }, 900);
 
-            const isEntityInEnemyAngleRange = isOpponentinAiAngleRange(this.aiId, this.victimId)
-            if (getDistance(this.aiId, this.victimId) < this.necessaryDistance && isEntityInEnemyAngleRange) {
+            if (getDistance(this.aiId, this.victimId) < this.necessaryDistance
+                && isOpponentinAiAngleRange(this.aiId, this.victimId)) {
                 revmp.attack(this.aiId, this.victimId);
             }
         }
@@ -221,7 +231,7 @@ export class ThreatenPlayerAction implements IAiAction {
     public executeAction(): void {
         if (typeof this.startTime === 'undefined') {
             this.startTime = Date.now()
-            this.sendMessageToNearbyPlayers(this.aiName + ": " + "Hey idiot! What was that stupid look of yours?")
+            sendChatMessageInRange(this.aiId, this.chaseDistance * 4, this.aiName + ": " + "Hey idiot! What was that stupid look of yours?")
             this.timesWarned++
         }
         if (revmp.valid(this.targetId) && Date.now() < this.startTime + this.waitTime) {
@@ -230,7 +240,7 @@ export class ThreatenPlayerAction implements IAiAction {
             const distance = getDistance(this.aiId, this.targetId)
 
             if (Date.now() > this.startTime + this.waitTime / 2 && this.timesWarned === 1) {
-                this.sendMessageToNearbyPlayers(this.aiName + ": " + "EY fuck face! I'm talking to YOU!")
+                sendChatMessageInRange(this.aiId, this.chaseDistance * 4, this.aiName + ": " + "EY fuck face! I'm talking to YOU!")
                 this.timesWarned++
             }
 
@@ -243,7 +253,7 @@ export class ThreatenPlayerAction implements IAiAction {
 
         }
         else if (Date.now() > this.startTime + this.waitTime) {
-            this.sendMessageToNearbyPlayers(this.aiName + ": " + "I've had enough. Let's teach you a lesson!")
+            sendChatMessageInRange(this.aiId, this.chaseDistance * 4, this.aiName + ": " + "I've had enough. Let's teach you a lesson!")
             this.shouldLoop = false
             this.setEnemy()
         }
@@ -256,16 +266,6 @@ export class ThreatenPlayerAction implements IAiAction {
         this.shouldLoop = false
         const enemyComponent: IAiEnemyInfo = { entityId: this.aiId, enemyId: this.targetId, lastAttackTime: 0 }
         setAiEnemyInfo(this.aiState, enemyComponent)
-    }
-
-    private sendMessageToNearbyPlayers(message: string): void {
-        revmp.players.forEach(player => {
-            const distance = getDistance(this.aiId, player)
-            if (distance < this.chaseDistance * 4) {
-                revmp.sendChatMessage(player, message)
-            }
-        })
-
     }
 }
 
@@ -337,24 +337,20 @@ export class GotoPosition implements IAiAction {
     aiId: number
     shouldLoop: boolean
     npcPosition: IAiPosition
-    targetX: number
-    targetY: number
-    targetZ: number
+    target: Vector3
 
-    constructor(npcPosition: IAiPosition, x: number, y: number, z: number) {
+    constructor(npcPosition: IAiPosition, target: Vector3) {
         this.aiId = npcPosition.entityId
         this.npcPosition = npcPosition
         this.shouldLoop = true
-        this.targetX = x
-        this.targetY = y
-        this.targetZ = z
+        this.target = target;
     }
 
 
     public executeAction(): void {
-        gotoPosition(this.npcPosition, this.targetX, this.targetY, this.targetZ)
-        const pos: revmp.Vec3 = revmp.getPosition(this.aiId).position
-        if (getPointDistance(pos[0], pos[1], pos[2], this.targetX, this.targetY, this.targetZ) < 100) {
+        gotoPosition(this.npcPosition, this.target)
+        const pos = new Vector3(...revmp.getPosition(this.aiId).position);
+        if (pos.distanceTo(this.target) < 100) {
             if (revmp.isAnimationActive(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))) {
                 revmp.stopAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
             }
@@ -362,7 +358,7 @@ export class GotoPosition implements IAiAction {
         }
         else {
             //todo: this stuff is wrong, remove it or analyse it
-            const y = getWaynetPointRadiansAngle(pos[0], pos[2], this.targetX, this.targetZ)
+            const y = getWaynetPointRadiansAngle(pos.x, pos.z, this.target.x, this.target.z)
             setPlayerAngle(this.aiId, y)
             revmp.startAnimation(this.aiId, getCombatStateBasedAni(this.aiId, "S_RUNL"))
         }
@@ -390,38 +386,32 @@ export class GotoPoint implements IAiAction {
         this.walkAni = walkAni
 
         const waynet: IWaynet = getWaynet(this.aiState)
-        const newestPos: revmp.Vec3 = revmp.getPosition(this.aiId).position
-        this.aiPos = getAiPosition(this.aiState, this.aiId)
+        const newestPos = new Vector3(...revmp.getPosition(this.aiId).position);
+        this.aiPos = getAiPosition(this.aiState, this.aiId);
 
         let nearestWp: Waypoint | undefined;
         if (typeof this.aiPos !== 'undefined') {
-            this.aiPos.currentPosX = newestPos[0]
-            this.aiPos.currentPosY = newestPos[1]
-            this.aiPos.currentPosZ = newestPos[2]
-            nearestWp = waynet.getNearestWaypoint(this.aiPos.currentPosX, this.aiPos.currentPosY, this.aiPos.currentPosZ)
+            this.aiPos.currentPos.copy(newestPos);
+            nearestWp = waynet.getNearestWaypoint(newestPos);
         }
 
-        this.startPoint = ""
-        if (typeof nearestWp !== 'undefined') {
-            this.startPoint = nearestWp.wpName
-        }
-
+        this.startPoint = nearestWp?.wpName ?? ""
 
         // if a freepoint is given, find nearest wp and calculate the route to the nearest wp
         // put freepoint to the wayroute as last destination
-        if (Array.from(waynet.waypoints.keys()).includes(targetWaypoint)) {
+        if (waynet.waypoints.has(targetWaypoint)) {
             this.targetPoint = targetWaypoint
             this.wayroute = waynet.getWayroute(this.startPoint, this.targetPoint)
         } else {
-            const targetFp = waynet.freepoints.find(fp => fp.fpName === targetWaypoint)
+            const targetFp = waynet.freepoints.get(targetWaypoint)
             if (typeof targetFp !== 'undefined') {
-                const nearestEndWp: Waypoint | undefined = waynet.getNearestWaypoint(targetFp.x, targetFp.y, targetFp.z)
+                const nearestEndWp: Waypoint | undefined = waynet.getNearestWaypoint(targetFp.pos)
                 let nearestEndWpName = ""
                 if (typeof nearestEndWp !== 'undefined') {
                     nearestEndWpName = nearestEndWp.wpName
                 }
                 this.wayroute = waynet.getWayroute(this.startPoint, nearestEndWpName)
-                const fpToWp: Waypoint = { wpName: "TMP_WAYPOINT", x: targetFp.x, y: targetFp.y, z: targetFp.z, rotX: targetFp.rotX, rotZ: targetFp.rotZ, otherWps: [nearestEndWpName] }
+                const fpToWp: Waypoint = { wpName: "TMP_WAYPOINT", pos: targetFp.pos.clone(), otherWps: [nearestEndWpName] }
 
                 this.wayroute.push(fpToWp)
             }
@@ -435,14 +425,15 @@ export class GotoPoint implements IAiAction {
     public executeAction(): void {
         if (typeof this.wayroute !== 'undefined' && typeof this.aiPos !== 'undefined' && this.routeIndex < this.wayroute.length) {
             const wpToVisit: Waypoint = this.wayroute[this.routeIndex]
-            gotoPosition(this.aiPos, wpToVisit.x, wpToVisit.y, wpToVisit.z)
+            gotoPosition(this.aiPos, wpToVisit.pos);
 
-            const newPos: revmp.Vec3 = revmp.getPosition(this.aiId).position
-            if (getPointDistance(newPos[0], newPos[1], newPos[2], wpToVisit.x, wpToVisit.y, wpToVisit.z) < 100) {
+            const newPos = new Vector3(...revmp.getPosition(this.aiId).position);
+            if (newPos.distanceTo(wpToVisit.pos) < 100) {
                 this.routeIndex++
             }
             else {
-                const y = getRadiansAngleToPoint(newPos[0], newPos[2], wpToVisit.x, wpToVisit.z)
+                // TODO: look into newPos.angleTo(wpToVisit.pos)
+                const y = getRadiansAngleToPoint(newPos.x, newPos.z, wpToVisit.pos.x, wpToVisit.pos.z)
                 setPlayerAngle(this.aiId, y)
                 // TODO: look into revmp if this is a bug. Without spamming
                 // the animation the bots don't move. But this is not good
@@ -460,7 +451,7 @@ export class GotoPoint implements IAiAction {
             //const y = getAngleToPoint(wpToVisit.x, wpToVisit.z, wpToVisit.x + wpToVisit.rotX, wpToVisit.z + wpToVisit.rotZ)
             if (typeof this.wayroute !== 'undefined' && this.routeIndex === this.wayroute.length) {
                 if(typeof this.targetPoint !== 'undefined'){
-                    revmp.setRotation(this.aiId, getRotationForPointName(this.aiState, this.targetPoint))
+                    revmp.setRotation(this.aiId, getRotationForPointName(this.aiState, this.targetPoint).toArray() as revmp.Quat)
                 }
             }
 
@@ -636,19 +627,21 @@ export class GotoStartPointOnDistanceAction implements IAiAction {
     executeAction(): void {
         const startPoint = getAiPosition(this.aiState, this.aiId)?.startPoint
         const startWayPoint = typeof startPoint !== 'undefined' ? getWaynet(this.aiState).waypoints.get(startPoint) : undefined
-        let pointVec: revmp.Vec3 | undefined = undefined;
+        let pointVec: Vector3 | undefined = undefined;
 
         if (typeof startWayPoint === 'undefined') {
-            const startFreepoint = getWaynet(this.aiState).freepoints.find(fp => fp.fpName === startPoint)
-            if (typeof startFreepoint !== 'undefined') {
-                pointVec = [startFreepoint.x, startFreepoint.y, startFreepoint.z]
+            if (startPoint !== undefined) {
+                const startFreepoint = getWaynet(this.aiState).freepoints.get(startPoint)
+                if (typeof startFreepoint !== 'undefined') {
+                    pointVec = startFreepoint.pos;
+                }
             }
         }
         else {
-            pointVec = [startWayPoint.x, startWayPoint.y, startWayPoint.z]
+            pointVec = startWayPoint.pos;
         }
 
-        if (typeof pointVec !== 'undefined' && typeof startPoint !== 'undefined' && getDistanceToPoint(this.aiId, pointVec) > this.distance) {
+        if (typeof pointVec !== 'undefined' && typeof startPoint !== 'undefined' && getDistanceToPoint(this.aiId, pointVec.toArray()) > this.distance) {
             setAiActionIfUndefined(this.aiState, new GotoPoint(this.aiId, this.aiState, startPoint, "S_RUNL"))
         }
     }

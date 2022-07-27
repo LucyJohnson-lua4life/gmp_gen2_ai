@@ -2,24 +2,15 @@ import { IAiPosition } from "../../aiEntities/components/iAiPosition";
 import { IAiNpc } from "../../aiEntities/iAiNpc";
 import { AiState } from "../aiState";
 import { getAiNpcStatus, getAiPosition, getWaynet, registerBot, setAiPosition, unregisterBot } from "./commonAiStateFunctions";
-import { getNpcForInstance } from "../../../aiScripts/aiEntities/npcs/npcEntityUtils";
-
-interface PointCoordinates {
-    x: number,
-    y: number,
-    z: number,
-    dirX: number,
-    dirZ: number
-}
+import { getNpcForInstance } from "../../aiEntities/npcs/npcEntityUtils";
+import {Quaternion, Vector3} from "three";
 
 export function spawnNpcByCoordinates(aiState: AiState, npc: IAiNpc, x: number, y: number, z: number, world: string): void {
     registerBot(aiState, npc)
     revmp.setPosition(npc.id, [x, y, z]);
     const position: IAiPosition | undefined = getAiPosition(aiState, npc.id)
     if (typeof position !== 'undefined') {
-        position.currentPosX = x
-        position.currentPosY = y
-        position.currentPosZ = z
+        position.currentPos = new Vector3(x, y, z);
         setAiPosition(aiState, position)
     }
 }
@@ -29,17 +20,15 @@ export function spawnNpc(aiState: AiState, npc: IAiNpc, pointName: string, world
     npc.startPoint = pointName
     npc.startWorld = world
     registerBot(aiState, npc)
-    revmp.setPosition(npc.id, [npcPosition.x, npcPosition.y, npcPosition.z]);
+    revmp.setPosition(npc.id, npcPosition.toArray());
     //const spawnAngle = getWaynetPointRadiansAngle(npcPosition.x, npcPosition.z, npcPosition.dirX, npcPosition.dirZ)
     //setPlayerAngle(npc.id, spawnAngle)
 
-    revmp.setRotation(npc.id, getRotationForPointName(aiState, pointName));
+    revmp.setRotation(npc.id, getRotationForPointName(aiState, pointName).toArray() as revmp.Quat);
 
     const position: IAiPosition | undefined = getAiPosition(aiState, npc.id)
     if (typeof position !== 'undefined') {
-        position.currentPosX = npcPosition.x
-        position.currentPosY = npcPosition.y
-        position.currentPosZ = npcPosition.z
+        position.currentPos.copy(npcPosition);
         setAiPosition(aiState, position)
     }
 }
@@ -58,30 +47,22 @@ export function respawnNpc(aiState:AiState, aiId: number, world: string) {
     }
 }
 
-export function getPointCoordinateValues(aiState: AiState, pointName: string): PointCoordinates {
+export function getPointCoordinateValues(aiState: AiState, pointName: string): Vector3 {
     const waynet = getWaynet(aiState)
-    const foundFreepoint = waynet.freepoints.find(x => x.fpName === pointName)
-    if (typeof foundFreepoint !== 'undefined') {
-        return { x: foundFreepoint.x, y: foundFreepoint.y, z: foundFreepoint.z, dirX: foundFreepoint.rotX, dirZ: foundFreepoint.rotZ }
+    const pos = waynet.freepoints.get(pointName)?.pos ?? waynet.waypoints.get(pointName)?.pos;
+    if (pos === undefined) {
+        console.error("Error: for the given point: ",pointName," no coordinates where found! Default coordinates will be provided")
+        return new Vector3();
     }
-    const foundWaypoint = Array.from(waynet.waypoints.values()).find(wp => wp.wpName === pointName)
-    if (typeof foundWaypoint !== 'undefined') {
-        return { x: foundWaypoint.x, y: foundWaypoint.y, z: foundWaypoint.z, dirX: foundWaypoint.rotX, dirZ: foundWaypoint.rotZ }
-    }
-    console.log("Error: for the given point: ",pointName," no coordinates where found! Default coordinates will be provided")
-    return { x: 0, y: 0, z: 0, dirX: 0, dirZ: 0 }
+    return pos;
 }
 
-export function getRotationForPointName(aiState: AiState, pointName: string): revmp.Quat {
-    const waynet = getWaynet(aiState)
-    const foundFreepoint = waynet.freepoints.find(x => x.fpName === pointName)
-    if (typeof foundFreepoint !== 'undefined' && typeof foundFreepoint.rotation !== 'undefined') {
-        return foundFreepoint.rotation 
+export function getRotationForPointName(aiState: AiState, pointName: string): Quaternion {
+    const waynet = getWaynet(aiState);
+    const rot = waynet.freepoints.get(pointName)?.rotation ?? waynet.waypoints.get(pointName)?.rotation;
+    if (rot === undefined) {
+        console.error("Error: for the given point: ",pointName," no rotation where found! Default rotation will be provided");
+        return new Quaternion();
     }
-    const foundWaypoint = Array.from(waynet.waypoints.values()).find(wp => wp.wpName === pointName)
-    if (typeof foundWaypoint !== 'undefined' && typeof foundWaypoint.rotation !== 'undefined') {
-        return foundWaypoint.rotation
-    }
-    console.log("Error: for the given point: ",pointName," no rotation where found! Default rotation will be provided")
-    return [0,0,0,0]
+    return rot;
 }

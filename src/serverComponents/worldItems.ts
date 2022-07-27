@@ -1,6 +1,6 @@
 import { WeaponInstances } from "../aiScripts/aiEntities/equipment/weapons"
 
-const ITEM_SPOTS: Map<number, revmp.Vec3> = new Map() 
+const ITEM_SPOTS: Map<number, revmp.Vec3> = new Map()
 
 // city1 forrest
 ITEM_SPOTS.set(1, [6546.0053710938, 608.80023193359, -9247.3466796875])
@@ -636,18 +636,18 @@ const ITEM_ID_TO_SPOT_ID: Map<revmp.Entity, number> = new Map()
 let EMPTY_SPOTS: Array<number> = []
 
 export function initWorldItems():void{
-    Array.from(ITEM_SPOTS.keys()).forEach( spotId=> {
+    for (const spotId of ITEM_SPOTS.keys()) {
         const itemId = revmp.addItem(revmp.worlds[0], WeaponInstances.dragonHunterBlade, { amount: 1, position: ITEM_SPOTS.get(spotId)})
         ITEM_ID_TO_SPOT_ID.set(itemId, spotId)
-    })
+    }
 }
 
 export function respawnPlants():void {
     console.log("empty: ", EMPTY_SPOTS.length)
-    EMPTY_SPOTS.forEach(spotId => {
+    for (const spotId of EMPTY_SPOTS.keys()) {
         const itemId = revmp.addItem(revmp.worlds[0], WeaponInstances.dragonHunterBlade, { amount: 1, position: ITEM_SPOTS.get(spotId) })
         ITEM_ID_TO_SPOT_ID.set(itemId, spotId)
-    })
+    }
     EMPTY_SPOTS = []
 }
 

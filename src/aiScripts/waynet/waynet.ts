@@ -1,5 +1,6 @@
 import * as waynetReader from './waynetReader';
-import { IWaynet, Freepoint, Waypoint } from './iwaynet';
+import {Freepoint, IWaynet, Waypoint} from './iwaynet';
+import {Vector3} from "three";
 
 /**
  * Represents a node in the waynet. It contains additional information about distances to other
@@ -21,15 +22,15 @@ interface NodeInfo extends Waypoint {
  */
 export class Waynet implements IWaynet {
     waypoints: Map<string, Waypoint>;
-    freepoints: Array<Freepoint>;
+    freepoints: Map<string, Freepoint>;
 
     constructor(waypointFile: string, freepointFile: string, waynet?: revmp.Waynet) {
         if (typeof waynet !== 'undefined') {
-            this.waypoints = waynetReader.readWaypointsMapFromRevmp(waynet)
+            this.waypoints = waynetReader.readWaypointsFromRevmp(waynet)
             this.freepoints = waynetReader.readFreepointsFromRevmp(waynet)
         }
         else {
-            this.waypoints = waynetReader.readWaypointsMap(waypointFile);
+            this.waypoints = waynetReader.readWaypoints(waypointFile);
             this.freepoints = waynetReader.readFreepoints(freepointFile);
         }
     }
@@ -56,11 +57,11 @@ export class Waynet implements IWaynet {
     /**
      * Returns the nearest waypoint for the given x,y,z coordinates
      */
-    public getNearestWaypoint(x: number, y: number, z: number): Waypoint | undefined {
+    public getNearestWaypoint(pos: Vector3): Waypoint | undefined {
         let shortestDistance = 999999999
         let nearestWaypoint: Waypoint | undefined;
         this.waypoints.forEach(wp => {
-            const tmpDist = this.getDistance(x, y, z, wp.x, wp.y, wp.z)
+            const tmpDist = wp.pos.distanceTo(pos)
 
             if (tmpDist < shortestDistance) {
                 shortestDistance = tmpDist
@@ -115,19 +116,14 @@ export class Waynet implements IWaynet {
     }
 
     private createNodeInfo(waypoint: Waypoint): NodeInfo {
-        const node: NodeInfo = {
-            x: waypoint.x,
-            y: waypoint.y,
-            z: waypoint.z,
-            rotX: waypoint.rotX,
-            rotZ: waypoint.rotZ,
+        return {
+            pos: waypoint.pos,
             wpName: waypoint.wpName,
             otherWps: waypoint.otherWps,
             distanceToStart: 0,
             distanceToEnd: 0,
             aproximateAbsDistance: 0
-        }
-        return node;
+        };
     }
 
     private getNextNodesToVisit(nodesToVisit: Map<string, NodeInfo>, routeNodes: Map<string, NodeInfo>, currentNode: NodeInfo, end: Waypoint): Map<string, NodeInfo> {
@@ -140,17 +136,17 @@ export class Waynet implements IWaynet {
             const neighborWp = this.waypoints.get(neighborWpName);
             if (typeof routeNodes.get(neighborWpName) === 'undefined' && typeof neighborWp !== 'undefined') {
                 const neighborNode:NodeInfo|undefined = nodesToVisit.get(neighborWpName);
-                const distanceToNeighbor = this.getDistance(currentNode.x, currentNode.y, currentNode.z, neighborWp.x, neighborWp.y, neighborWp.z);
+                const distanceToNeighbor = currentNode.pos.distanceTo(neighborWp.pos);
                 const distNodeToStart = currentNode.distanceToStart + distanceToNeighbor;
                 if (!this.neighborDistanceToStartIsGreater(neighborNode, distNodeToStart)) {
                     /*aproximate means, that we are measuring the distance straight between point a to b, without measuring the distances of the nodes in between
                       measuring the aproximate absolute distance is enough of an heuristic for us to decide which node to chose next*/
-                    const aproximateDistNodeToEnd = this.getDistance(end.x, end.y, end.z, neighborWp.x, neighborWp.y, neighborWp.z);
-                    const aproximateAbsDistance = distNodeToStart + aproximateDistNodeToEnd
+                    const aproximateDistNodeToEnd = end.pos.distanceTo(neighborWp.pos);
+                    const aproximateAbsDistance = distNodeToStart + aproximateDistNodeToEnd;
                     const newNodeToVisit = this.createNodeInfo(neighborWp);
                     newNodeToVisit.distanceToStart = distNodeToStart;
                     newNodeToVisit.aproximateAbsDistance = aproximateAbsDistance;
-                    result.set(neighborWpName, newNodeToVisit)
+                    result.set(neighborWpName, newNodeToVisit);
                 }
             }
         })
@@ -168,7 +164,7 @@ export class Waynet implements IWaynet {
         currentWp.otherWps.forEach(neighborWpName => {
             const neighborNode: NodeInfo|undefined = routeNodes.get(neighborWpName);
             if (typeof neighborNode !== 'undefined') {
-                const distance = this.getDistance(currentWp.x, currentWp.y, currentWp.z, neighborNode.x, neighborNode.y, neighborNode.z);
+                const distance = currentWp.pos.distanceTo(neighborNode.pos)
                 const currentRouteNode = routeNodes.get(currentWp.wpName)
                 const neighborRouteNode = routeNodes.get(neighborWpName)
 
@@ -191,14 +187,14 @@ export class Waynet implements IWaynet {
         let lowestDistance = 99999999;
         let closestWpToGoal: string | undefined;
         let closestNodeToGoal: NodeInfo | undefined;
-        Array.from(nodesToVisit.keys()).forEach(wpName => {
+        for (const wpName of nodesToVisit.keys()) {
             const nodeToVisit = nodesToVisit.get(wpName)
             if (typeof nodeToVisit !== 'undefined' && nodeToVisit.aproximateAbsDistance < lowestDistance) {
                 lowestDistance = nodeToVisit.aproximateAbsDistance;
                 closestWpToGoal = wpName;
                 closestNodeToGoal = nodesToVisit.get(wpName);
             }
-        });
+        }
 
         if (typeof closestWpToGoal !== 'undefined') {
             nodesToVisit.delete(closestWpToGoal);
@@ -206,14 +202,6 @@ export class Waynet implements IWaynet {
 
         return closestNodeToGoal;
     }
-
-    private getDistance(x1: number, y1: number, z1: number, x2: number, y2: number, z2: number) {
-        const x = x1 - x2;
-        const y = y1 - y2;
-        const z = z1 - z2;
-        return Math.sqrt((x * x) + (y * y) + (z * z));
-    }
-
 }
 
 

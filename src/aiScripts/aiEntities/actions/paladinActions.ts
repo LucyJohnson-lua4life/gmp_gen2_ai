@@ -1,6 +1,12 @@
-import { AiState } from "../../../aiScripts/aiStates/aiState"
+import { AiState } from "../../aiStates/aiState"
 import { setAiEnemyInfo } from "../../aiStates/aiStateFunctions/commonAiStateFunctions"
-import { getCombatStateBasedAni, getDistance, getNecessaryAngleToWatchTarget, hasMeleeWeapon, setPlayerAngle } from "../../aiFunctions/aiUtils"
+import {
+    getCombatStateBasedAni,
+    getDistance,
+    getNecessaryAngleToWatchTarget,
+    sendChatMessageInRange,
+    setPlayerAngle
+} from "../../aiFunctions/aiUtils"
 import { IAiEnemyInfo } from "../components/iAiEnemyInfo"
 import { IAiAction } from "../iAiAction"
 
@@ -47,8 +53,8 @@ export class EnforcePrayerAction implements IAiAction {
     private executePrayers(): void {
         if (typeof this.prayStartTime === 'undefined') {
             this.prayStartTime = Date.now()
-            this.sendMessageToNearbyPlayers(this.aiName + ": " + "Fantastic. Now hold my hand...")
-            this.sendMessageToNearbyPlayers(this.aiName + ": " + "Oh Innos Lord of Life!")
+            sendChatMessageInRange(this.aiId, this.chaseDistance * 4, this.aiName + ": " + "Fantastic. Now hold my hand...")
+            sendChatMessageInRange(this.aiId, this.chaseDistance * 4, this.aiName + ": " + "Oh Innos Lord of Life!")
             this.prayStage++
         }
         if (revmp.valid(this.targetId) && Date.now() < this.prayStartTime + this.prayTimeAbs) {
@@ -57,15 +63,15 @@ export class EnforcePrayerAction implements IAiAction {
             const distance = getDistance(this.aiId, this.targetId)
 
             if (Date.now() > this.prayStartTime + this.prayTimeAbs / 3 && this.prayStage === 1) {
-                this.sendMessageToNearbyPlayers(this.aiName + ": " + "Let thine flame burn strong!")
-                this.sendMessageToNearbyPlayers(this.aiName + ": " + "With this body so innocent...")
-                this.sendMessageToNearbyPlayers(this.aiName + ": " + "Let it withstand all temptations...")
+                sendChatMessageInRange(this.aiId, this.chaseDistance * 4, this.aiName + ": " + "Let thine flame burn strong!")
+                sendChatMessageInRange(this.aiId, this.chaseDistance * 4, this.aiName + ": " + "With this body so innocent...")
+                sendChatMessageInRange(this.aiId, this.chaseDistance * 4, this.aiName + ": " + "Let it withstand all temptations...")
                 this.prayStage++
             }
             else if (Date.now() > this.prayStartTime + (this.prayTimeAbs / 3) * 2 && this.prayStage === 2) {
-                this.sendMessageToNearbyPlayers(this.aiName + ": " + "Let it not lust for fleshly pleasure...")
-                this.sendMessageToNearbyPlayers(this.aiName + ": " + "But only for your love....")
-                this.sendMessageToNearbyPlayers(this.aiName + ": " + "Let us honour you and our sacred brothers!")
+                sendChatMessageInRange(this.aiId, this.chaseDistance * 4, this.aiName + ": " + "Let it not lust for fleshly pleasure...")
+                sendChatMessageInRange(this.aiId, this.chaseDistance * 4, this.aiName + ": " + "But only for your love....")
+                sendChatMessageInRange(this.aiId, this.chaseDistance * 4, this.aiName + ": " + "Let us honour you and our sacred brothers!")
                 this.prayStage++
             }
 
@@ -78,7 +84,7 @@ export class EnforcePrayerAction implements IAiAction {
 
         }
         else if (Date.now() > this.prayStartTime + this.prayTimeAbs) {
-            this.sendMessageToNearbyPlayers(this.aiName + ": " + "Because at the and we know it's you who will save us all.")
+            sendChatMessageInRange(this.aiId, this.chaseDistance * 4, this.aiName + ": " + "Because at the and we know it's you who will save us all.")
             this.shouldLoop = false
         }
 
@@ -87,8 +93,8 @@ export class EnforcePrayerAction implements IAiAction {
     private warnTarget(): void {
         if (typeof this.startTime === 'undefined') {
             this.startTime = Date.now()
-            this.sendMessageToNearbyPlayers(this.aiName + ": " + "Divine blessings to you, friend!")
-            this.sendMessageToNearbyPlayers(this.aiName + ": " + "Tell me, when was the last time you expressed your gratitude towoards our great Lord Innos?")
+            sendChatMessageInRange(this.aiId, this.chaseDistance * 4, this.aiName + ": " + "Divine blessings to you, friend!")
+            sendChatMessageInRange(this.aiId, this.chaseDistance * 4, this.aiName + ": " + "Tell me, when was the last time you expressed your gratitude towoards our great Lord Innos?")
             this.timesWarned++
         }
         if (revmp.valid(this.targetId) && Date.now() < this.startTime + this.waitTime) {
@@ -97,12 +103,12 @@ export class EnforcePrayerAction implements IAiAction {
             const distance = getDistance(this.aiId, this.targetId)
 
             if (Date.now() > this.startTime + this.waitTime / 3 && this.timesWarned === 1) {
-                this.sendMessageToNearbyPlayers(this.aiName + ": " + "I think it's time to refresh your prayers!")
-                this.sendMessageToNearbyPlayers(this.aiName + ": " + "Stay still and pray with me to our Lord!")
+                sendChatMessageInRange(this.aiId, this.chaseDistance * 4, this.aiName + ": " + "I think it's time to refresh your prayers!")
+                sendChatMessageInRange(this.aiId, this.chaseDistance * 4, this.aiName + ": " + "Stay still and pray with me to our Lord!")
                 this.timesWarned++
             }
             else if (Date.now() > this.startTime + (this.waitTime / 3) * 2 && this.timesWarned === 2) {
-                this.sendMessageToNearbyPlayers(this.aiName + ": " + "HEY! ON YOUR KNEES!")
+                sendChatMessageInRange(this.aiId, this.chaseDistance * 4, this.aiName + ": " + "HEY! ON YOUR KNEES!")
                 this.timesWarned++
             }
 
@@ -115,7 +121,7 @@ export class EnforcePrayerAction implements IAiAction {
 
         }
         else if (Date.now() > this.startTime + this.waitTime && !this.isTargetPraying()) {
-            this.sendMessageToNearbyPlayers(this.aiName + ": " + "Unbelievable! I WILL bring you on the right path!")
+            sendChatMessageInRange(this.aiId, this.chaseDistance * 4, this.aiName + ": " + "Unbelievable! I WILL bring you on the right path!")
             this.shouldLoop = false
             revmp.drawMeleeWeapon(this.aiId)
             this.setEnemy()
@@ -131,15 +137,4 @@ export class EnforcePrayerAction implements IAiAction {
     private isTargetPraying(): boolean {
         return revmp.isAnimationActive(this.targetId, "S_PRAY");
     }
-
-    private sendMessageToNearbyPlayers(message: string): void {
-        revmp.players.forEach(player => {
-            const distance = getDistance(this.aiId, player)
-            if (distance < this.chaseDistance * 4) {
-                revmp.sendChatMessage(player, message)
-            }
-        })
-
-    }
-
 }

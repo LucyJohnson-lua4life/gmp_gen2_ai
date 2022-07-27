@@ -2,7 +2,7 @@ import { registerAndGetRandomPoint, unregisterFromAllPoints } from "./waynetRegi
 
 export class BigFarmWaynetRegistry {
 
-    private registry: Map<string, number>;
+    private readonly registry: Map<string, number>;
     private availablePoints = [
         "FP_SMALLTALK_NW_BIGFARM_KITCHEN_04",
         "FP_SMALLTALK_NW_BIGFARM_KITCHEN_03",
