@@ -13,7 +13,7 @@ import { respawnNpc} from './aiStateFunctions/spawnFunctions';
 export class AiUpdateLoop {
     //todo: this constant world should only be used temporary!
     private world = "NEWWORLD\\NEWWORLD.ZEN"
-    private aiState: AiState;
+    private readonly aiState: AiState;
     private npcActionUtils: NpcActionUtils
 
     constructor(aiState: AiState) {
@@ -68,7 +68,7 @@ export class AiUpdateLoop {
         if (typeof currentAction !== 'undefined') {
             if (this.isEntityUpdateable(aiId)) {
                 currentAction.executeAction()
-                if (currentAction.shouldLoop === false) {
+                if (!currentAction.shouldLoop) {
                     deleteAiAction(this.aiState, aiId)
                 }
             }

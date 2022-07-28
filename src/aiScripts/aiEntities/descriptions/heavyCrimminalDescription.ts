@@ -55,7 +55,6 @@ export class HeavyCrimminalDescription implements IActionDescription {
 
     private describeRoamingAction(template: IDefaultDescriptionTemplateValues) {
         //do nothing
-        const random = Math.floor(Math.random() * (30 - 15 + 1)) + 15;
         const actionHistory = getAiActionHistory(template.aiState, template.aiId) ?? { entityId: template.aiId }
         const currentAction = getAiAction(template.aiState, template.aiId)
         const lastRoamingTime = actionHistory?.lastRoamingTime ?? 0

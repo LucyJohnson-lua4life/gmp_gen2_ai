@@ -2,7 +2,7 @@ import { registerAndGetRandomPoint, unregisterFromAllPoints} from "./waynetRegis
 
 export class CrimminalWaynetRegistry {
 
-    private registry: Map<string, number>;
+    private readonly registry: Map<string, number>;
     private availablePoints = [
         "NW_CITY_TO_LIGHTHOUSE_16",
         "NW_TO_PASS_01",

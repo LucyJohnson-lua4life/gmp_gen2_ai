@@ -41,8 +41,9 @@ export class NpcActionUtils {
 
     /**
      * Returns nearest character id to given character or -1 if none exist.
-     * @param npcId get id of character that is closest to the given character id
      //TODO: world should be replaced with a world id
+     * @param characterId
+     * @param world
      */
     public getNearestCharacter(characterId: number, world: string): number {
         const worldPositionMap = getCharacterInPositionAreas(this.aiState).get(world);
@@ -54,7 +55,7 @@ export class NpcActionUtils {
             if (typeof nearbyCharacter !== 'undefined') {
                 nearbyCharacter.forEach(targetId => {
                     const nearbyPos = revmp.getPosition(targetId).position
-                    const tmpPos = this.getDistance(pos[0], pos[1], pos[2], nearbyPos[0], nearbyPos[1], nearbyPos[2])
+                    const tmpPos = Math.hypot(pos[0] - nearbyPos[0], pos[1] - nearbyPos[1], pos[2] - nearbyPos[2])
                     if (tmpPos < nearestDist && characterId !== targetId) {
                         nearestDist = tmpPos
                         nearestChar = targetId
@@ -72,17 +73,6 @@ export class NpcActionUtils {
             range = getDistance(aiId, charId)
         }
         return [charId, range]
-    }
-
-    private getDistance(x1: number, y1: number, z1: number, x2: number, y2: number, z2: number): number {
-        if ([x1, y1, z1, x2, y2, z2].some((val) => (typeof val === 'undefined'))) {
-            return 99999
-        }
-        const x = x1 - x2
-        const y = y1 - y2
-        const z = z1 - z2
-
-        return Math.sqrt(x * x + y * y + z * z);
     }
 
     /**

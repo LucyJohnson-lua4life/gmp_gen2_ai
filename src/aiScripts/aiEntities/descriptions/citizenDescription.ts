@@ -4,7 +4,7 @@ import { AiState } from '../../aiStates/aiState';
 import { ForwardAttackWithPause} from '../actions/fightActions';
 import { describeGeneralRoutine, IDefaultDescriptionTemplateValues } from './templates/defaultDescriptionTemplate';
 import { gotoStartPoint, setAttackerToEnemy } from './templates/commonDefaultTemplateDescriptionFunctions';
-import { getAiActionHistory, getAiAction, getAiEnemyInfo, getWaynetRegistry, setAiActionHistory, setAiActionIfUndefined, deleteAiAction } from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
+import { getAiActionHistory, getAiAction, getAiEnemyInfo, getWaynetRegistry, setAiActionHistory, setAiActionIfUndefined} from '../../aiStates/aiStateFunctions/commonAiStateFunctions';
 
 export class CitizenDescription implements IActionDescription {
     entityId: number

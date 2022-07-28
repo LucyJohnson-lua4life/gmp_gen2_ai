@@ -1,12 +1,8 @@
 import * as THREE from 'three';
-import { Waynet } from '../waynet/waynet';
+
 // https://stackoverflow.com/a/9614122/10637905
 /**
  * Returns the angle from two points. Or in relationship with npc's it describes the angle the npc1 needs to look to npc2.
- * @param x1 x-value of the first 2D point
- * @param y1 y-value of the first 2D point
- * @param x2 x-value of the second 2D point
- * @param y2 y-value of the second 2D point
  */
 export function getRadiansAngleToPoint(x1: number, y1: number, x2: number, y2: number): number {
     const dy = y2 - y1;
@@ -54,8 +50,6 @@ export function getWaynetPointRadiansAngle(playerX: number, playerZ: number, way
 
 /**
  * Returns the the angle that is necessary so that npc1 looks to npc2 in radians.
- * @param entityId1 id of the first npc
- * @param entityId2 id of the second npc
  */
 export function getNecessaryAngleToWatchTarget(entityId1: number, entityId2: number): number {
     const position1 = revmp.getPosition(entityId1).position;
@@ -76,8 +70,6 @@ export function isTargetInFrontOfEntity(entityId: number, targetId: number): boo
 
 /**
  * Returns the the distance between 2 npcs.
- * @param entityId1 id of the first npc
- * @param entityId2 id of the second npc
  */
 export function getDistance(entityId1: number, entityId2: number) {
     const position1 = revmp.getPosition(entityId1).position;
@@ -92,8 +84,6 @@ export function getDistance(entityId1: number, entityId2: number) {
 
 /**
    Returns the distance between a character and a waypoint/freepoint
- * @param entityId id of the first npc
- * @param point waypoint/freepoint
  */
 export function getDistanceToPoint(entityId: number, point: revmp.Vec3) {
     const characterPosition = revmp.getPosition(entityId).position;
@@ -129,8 +119,6 @@ export function getPlayerAngle(entityId: number) {
 
 /**
  * Sets the angle of the entity.
- * @param entityId id of the entity for which the angle should be set.
- * @param angle the angle to which the entity should be set.
  */
 export function setPlayerAngle(entityId: number, angle: number) {
     let rot = new THREE.Quaternion()
@@ -140,8 +128,6 @@ export function setPlayerAngle(entityId: number, angle: number) {
 
 /**
  * Returns the animation name.
- * @param entityId id of the entity for which the angle should be set.
- * @param angle the angle to which the entity should be set.
  */
 export function getCombatStateBasedAni(entity: revmp.Entity, ani: string) {
     const index = ani.indexOf('_');
@@ -172,7 +158,7 @@ export function getCombatStateBasedAni(entity: revmp.Entity, ani: string) {
 }
 
 export function isAttackable(entityId: number) {
-    return revmp.isCharacter(entityId) && revmp.getHealth(entityId).current > 0 && revmp.getCombatState(entityId).unconscious === false
+    return revmp.isCharacter(entityId) && revmp.getHealth(entityId).current > 0 && !revmp.getCombatState(entityId).unconscious
 }
 
 export function removeAllAnimations(entityId: number): void {
@@ -192,12 +178,6 @@ export function hasMeleeWeapon(entityId: number): boolean {
 }
 
 export function sendChatMessageInRange(aiId: number, range: number, msg: string): void {
-
-    revmp.players.forEach(playerInRange => {
-        if (getDistance(aiId, playerInRange) < range) {
-            revmp.sendChatMessage(playerInRange, msg)
-        }
-    })
-
-
+    const players = revmp.players.filter(player => getDistance(aiId, player) < range);
+    revmp.sendChatMessage(players, msg);
 }

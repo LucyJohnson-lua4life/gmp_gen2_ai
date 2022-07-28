@@ -4,7 +4,6 @@ import { DemonKingDescription } from "../descriptions/demonKingDescription";
 import { WeaponInstances } from "../equipment/weapons";
 import { IAiNpc } from "../iAiNpc";
 import { getDemonKingInstance, INSTANCE_DEMON_KING} from "./npcInits";
-import { OrcMasterDescription } from "../descriptions/orcMasterDescription";
 import { ArmorInstances } from "../equipment/armors";
 
 export class DemonKing implements IAiNpc {

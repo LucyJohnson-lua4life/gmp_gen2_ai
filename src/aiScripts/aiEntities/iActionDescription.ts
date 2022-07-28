@@ -10,7 +10,7 @@ export interface IActionDescription{
     entityId:number,
     /**
      * Adds new actions into the npc action list based on the npc state and environment.
-     * @param entityManager represents the state of all npc on the server.
+     * @param aiState
      */
     describeAction(aiState: AiState):void;
 }

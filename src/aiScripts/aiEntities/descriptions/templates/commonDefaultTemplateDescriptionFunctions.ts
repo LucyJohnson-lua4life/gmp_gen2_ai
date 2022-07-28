@@ -2,6 +2,7 @@ import { deleteAiAction, getAiAction, getAiAttackEventInfo, getAiEnemyInfo, getA
 import { hasMeleeWeapon } from "../../../aiFunctions/aiUtils"
 import { GotoPoint, WarnEnemy, WarnEnemyActionInput } from "../../actions/commonActions"
 import { IDefaultDescriptionTemplateValues } from "./defaultDescriptionTemplate"
+import {Vector3} from "three";
 
 export function warnEnemy(values: IDefaultDescriptionTemplateValues, warnableEnemyId: number) {
     const currentAction = getAiAction(values.aiState, values.aiId)
@@ -33,16 +34,18 @@ export function setAttackerToEnemy(values: IDefaultDescriptionTemplateValues){
 export function gotoStartPoint(values: IDefaultDescriptionTemplateValues) {
     const startPoint = getAiPosition(values.aiState, values.aiId)?.startPoint
     const startWayPoint = typeof startPoint !== 'undefined' ? getWaynet(values.aiState).waypoints.get(startPoint) : undefined
-    let pointVec: revmp.Vec3 | undefined = undefined;
+    let pointVec: Vector3 | undefined = undefined;
 
     if (typeof startWayPoint === 'undefined') {
-        const startFreepoint = getWaynet(values.aiState).freepoints.find(fp => fp.fpName === startPoint)
-        if (typeof startFreepoint !== 'undefined') {
-            pointVec = [startFreepoint.x, startFreepoint.y, startFreepoint.z]
+        if (startPoint !== undefined) {
+            const startFreepoint = getWaynet(values.aiState).freepoints.get(startPoint)
+            if (typeof startFreepoint !== 'undefined') {
+                pointVec = startFreepoint.pos;
+            }
         }
     }
     else {
-        pointVec = [startWayPoint.x, startWayPoint.y, startWayPoint.z]
+        pointVec = startWayPoint.pos;
     }
 
     if (typeof pointVec !== 'undefined' && typeof startPoint !== 'undefined') {

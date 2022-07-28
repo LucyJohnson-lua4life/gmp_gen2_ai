@@ -2,7 +2,7 @@ import { registerAndGetRandomPoint, unregisterFromAllPoints } from "./waynetRegi
 
 export class TownWaynetRegistry {
 
-    private registry: Map<string, number>;
+    private readonly registry: Map<string, number>;
     private availablePoints = [
         "FP_PEE_CITY_OV_01",
         "FP_STAND_CITY_BEER_03",
